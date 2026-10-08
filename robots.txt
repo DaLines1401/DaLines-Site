@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# Host & Sitemaps
+Host: https://dalines-site.dalines.workers.dev
+Sitemap: https://dalines-site.dalines.workers.dev/sitemap.xml
