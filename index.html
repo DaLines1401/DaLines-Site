@@ -839,6 +839,53 @@
           </div>
         </div>
       </div>
+
+      <!-- TWITCH EMOTE SHOWCASE -->
+      <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#9146FF]/15 via-slate-900/80 to-purple-900/20 border border-[#9146FF]/35 backdrop-blur-md shadow-xl">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-[#9146FF]/20 border border-[#9146FF]/40 flex items-center justify-center text-[#c084fc]">
+              <i class="fa-brands fa-twitch text-sm"></i>
+            </div>
+            <div>
+              <div class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5">
+                <span>🎨 Twitch Emote Showcase</span>
+                <span class="px-2 py-0.5 rounded-full text-[9px] font-mono bg-[#9146FF]/25 text-[#d8b4fe] border border-[#9146FF]/30">OFFICIAL 25 EMOTES</span>
+              </div>
+              <div class="text-[10px] sm:text-[11px] text-slate-400">
+                รวมอีโมตทางการของช่อง DaLines • แตะหรือคลิกที่อีโมตเพื่อเสกอนิเมชั่นลอยขึ้นจอ &amp; คัดลอกโค้ด!
+              </div>
+            </div>
+          </div>
+          <a href="https://www.twitch.tv/subs/dalines" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl bg-[#9146FF] hover:bg-[#772ce8] active:scale-95 text-white text-[11px] font-bold transition flex items-center gap-1.5 shadow-md cursor-pointer">
+            <i class="fa-solid fa-star text-amber-300 text-[10px]"></i>
+            <span>สมัครสมาชิก (Sub)</span>
+          </a>
+        </div>
+
+        <!-- Filter Pills -->
+        <div class="mb-3">
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px]" style="scrollbar-width: none;">
+            <button type="button" data-emote-cat="all" onclick="setEmoteCategory('all', this)" class="emote-cat-btn px-2.5 py-1 rounded-lg bg-[#9146FF] text-white font-bold transition whitespace-nowrap active:scale-95 cursor-pointer">ทั้งหมด (25)</button>
+            <button type="button" data-emote-cat="animated" onclick="setEmoteCategory('animated', this)" class="emote-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer">✨ แอนิเมชัน GIF (11)</button>
+            <button type="button" data-emote-cat="tier1" onclick="setEmoteCategory('tier1', this)" class="emote-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer">⭐ Tier 1 (23)</button>
+            <button type="button" data-emote-cat="tier23" onclick="setEmoteCategory('tier23', this)" class="emote-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer">💎 Tier 2 &amp; 3</button>
+          </div>
+        </div>
+
+        <!-- Emotes Grid Container -->
+        <div id="twitch-emotes-grid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 sm:gap-2.5 max-h-[360px] overflow-y-auto pr-1"></div>
+
+        <!-- Footer Notice -->
+        <div class="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400">
+          <span class="flex items-center gap-1 text-slate-400">
+            <i class="fa-solid fa-wand-magic-sparkles text-[#c084fc]"></i>
+            <span>คลิกที่รูปเพื่อเสกอีโมตลอยขึ้นจอ &amp; ก๊อปปี้ชื่ออีโมต</span>
+          </span>
+          <span class="font-mono text-purple-300">twitch.tv/dalines</span>
+        </div>
+      </div>
     </main>
 
     <!-- TAB 3: PC SPECS -->
@@ -2282,6 +2329,7 @@
       initClipsVault();
       initAimChallenge();
       initBotCommands();
+      initEmoteShowcase();
 
       // Mouse Spotlight
       const cursorGlow = document.getElementById('cursor-glow');
@@ -3851,6 +3899,327 @@
           btn.innerHTML = origHtml;
         }, 1200);
       }
+    }
+
+    // -----------------------------------------------------------------
+    // TWITCH EMOTE SHOWCASE
+    // -----------------------------------------------------------------
+    const TWITCH_EMOTES = [
+      // ANIMATED EMOTES (Tier 1)
+      {
+        id: "emotesv2_1afd53431c18486b9b6040eb30c98378",
+        code: "dalineOmendance",
+        tier: "Tier 1",
+        animated: true,
+        desc: "Omen เต้นดุ๊กดิ๊ก",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_1afd53431c18486b9b6040eb30c98378/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_e0a464898ddf45ac95cb2bfeeba7180f",
+        code: "dalineSagecry",
+        tier: "Tier 1",
+        animated: true,
+        desc: "Sage ร้องไห้น้ำตานอง",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_e0a464898ddf45ac95cb2bfeeba7180f/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_49a39cda53424dfab56f808f967dea27",
+        code: "dalineHearts",
+        tier: "Tier 1",
+        animated: true,
+        desc: "หัวใจเต้นส่งความรัก",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_49a39cda53424dfab56f808f967dea27/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_a863a479d2fd48cb94796a60d4066882",
+        code: "dalineGGWP",
+        tier: "Tier 1",
+        animated: true,
+        desc: "GGWP สวยพี่สวย",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_a863a479d2fd48cb94796a60d4066882/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_92480d23fdd84470aac075b9c0127686",
+        code: "dalineParrot",
+        tier: "Tier 1",
+        animated: true,
+        desc: "นกแก้วปาร์ตี้ Parrot",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_92480d23fdd84470aac075b9c0127686/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_48df1cb6e47e409f86b0f360f8a62c36",
+        code: "dalineHugg",
+        tier: "Tier 1",
+        animated: true,
+        desc: "กอดๆ อบอุ่น",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_48df1cb6e47e409f86b0f360f8a62c36/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_8510cc22ccac4a2f9d01299be656ed24",
+        code: "dalineAhh",
+        tier: "Tier 1",
+        animated: true,
+        desc: "ตกใจ อ้าปากค้าง",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_8510cc22ccac4a2f9d01299be656ed24/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_bcc7b6b38b224fab8d0b67ebea2b396b",
+        code: "dalineShy",
+        tier: "Tier 1",
+        animated: true,
+        desc: "เขินอาย แก้มแดง",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_bcc7b6b38b224fab8d0b67ebea2b396b/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_aa69b9f0dd664a7a8a595ea4d529a992",
+        code: "dalineSwing",
+        tier: "Tier 1",
+        animated: true,
+        desc: "โยกหัวตามจังหวะ",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_aa69b9f0dd664a7a8a595ea4d529a992/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_a1fd9853153c4e649af96baf8fb990b0",
+        code: "daline100bits",
+        tier: "Tier 1",
+        animated: true,
+        desc: "100 Bits ซัพพอร์ต",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_a1fd9853153c4e649af96baf8fb990b0/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_723d758fbc8d450d82f5cb4bfd684bc1",
+        code: "daline10k",
+        tier: "Tier 1",
+        animated: true,
+        desc: "10K ผู้ติดตามฉลอง",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_723d758fbc8d450d82f5cb4bfd684bc1/default/dark/3.0"
+      },
+
+      // STATIC EMOTES (Tier 1)
+      {
+        id: "emotesv2_2115cc966dd642b288e34f77fb7388d8",
+        code: "dalineAaaa",
+        tier: "Tier 1",
+        animated: false,
+        desc: "กรีดร้อง Aaaa",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_2115cc966dd642b288e34f77fb7388d8/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_a5899107cb544d60b99e4b65be23492e",
+        code: "dalineGorrrr",
+        tier: "Tier 1",
+        animated: false,
+        desc: "ตัวอักษร ก ประจำช่อง",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_a5899107cb544d60b99e4b65be23492e/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_345ea24a1c534c0fbec41eb4cb10797c",
+        code: "dalineMorrr",
+        tier: "Tier 1",
+        animated: false,
+        desc: "ตัวอักษร ม",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_345ea24a1c534c0fbec41eb4cb10797c/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_5227e25e986c4b1f992d5c6c8b7fff77",
+        code: "dalineKorrr",
+        tier: "Tier 1",
+        animated: false,
+        desc: "ตัวอักษร ค",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_5227e25e986c4b1f992d5c6c8b7fff77/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_f7150818f4d3455f87a34c4a0f8b063d",
+        code: "dalineWorrr",
+        tier: "Tier 1",
+        animated: false,
+        desc: "ตัวอักษร ว",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_f7150818f4d3455f87a34c4a0f8b063d/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_9b86476ece4d4060a552354b2a72e265",
+        code: "dalineYorrr",
+        tier: "Tier 1",
+        animated: false,
+        desc: "ตัวอักษร ย",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_9b86476ece4d4060a552354b2a72e265/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_b82c5378c2374133b5a225d8c949bba3",
+        code: "dalineAorrr",
+        tier: "Tier 1",
+        animated: false,
+        desc: "ตัวอักษร อ",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_b82c5378c2374133b5a225d8c949bba3/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_275a5d9918cb4a229b1a498b3e391152",
+        code: "dalineSorrr",
+        tier: "Tier 1",
+        animated: false,
+        desc: "ตัวอักษร ส",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_275a5d9918cb4a229b1a498b3e391152/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_bf68fe689230426298faae161ce4bd66",
+        code: "dalineHorrr",
+        tier: "Tier 1",
+        animated: false,
+        desc: "ตัวอักษร ห",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_bf68fe689230426298faae161ce4bd66/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_d58179e40cca423d946e7345233580a6",
+        code: "dalineAr",
+        tier: "Tier 1",
+        animated: false,
+        desc: "สระ อา",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_d58179e40cca423d946e7345233580a6/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_55654702788445fcb5590e619819e067",
+        code: "dalineHeartt",
+        tier: "Tier 1",
+        animated: false,
+        desc: "หัวใจดวงโตสีแดง",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_55654702788445fcb5590e619819e067/default/dark/3.0"
+      },
+      {
+        id: "emotesv2_b9bc764aef1b46ea8916cdea01b2a0ef",
+        code: "dalineDorrr",
+        tier: "Tier 1",
+        animated: false,
+        desc: "ตัวอักษร ด",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_b9bc764aef1b46ea8916cdea01b2a0ef/default/dark/3.0"
+      },
+
+      // TIER 2 & TIER 3
+      {
+        id: "emotesv2_fc05bbb3e0384253a3fcbb3acfb34a4e",
+        code: "dalineShock",
+        tier: "Tier 2",
+        animated: false,
+        desc: "ตกใจช็อกตาค้าง (Tier 2)",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_fc05bbb3e0384253a3fcbb3acfb34a4e/default/dark/3.0"
+      },
+      {
+        id: "307549470",
+        code: "dalineFighting",
+        tier: "Tier 3",
+        animated: false,
+        desc: "สู้ตาย ไฟลุก (Tier 3)",
+        url: "https://static-cdn.jtvnw.net/emoticons/v2/307549470/default/dark/3.0"
+      }
+    ];
+
+    let currentEmoteCat = 'all';
+
+    function initEmoteShowcase() {
+      renderTwitchEmotes(TWITCH_EMOTES);
+    }
+
+    function renderTwitchEmotes(list) {
+      const grid = document.getElementById('twitch-emotes-grid');
+      if (!grid) return;
+
+      grid.innerHTML = list.map(e => {
+        const tierBadgeColor = e.tier === 'Tier 1' 
+          ? 'bg-purple-500/20 text-purple-300 border-purple-500/30' 
+          : (e.tier === 'Tier 2' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' : 'bg-amber-500/20 text-amber-300 border-amber-500/30');
+
+        return `
+          <div onclick="handleEmoteClick('${e.code}', '${e.url}', event, this)" class="emote-card group relative p-2.5 rounded-xl bg-slate-900/80 hover:bg-[#9146FF]/15 border border-slate-800 hover:border-[#9146FF]/50 transition-all duration-200 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 shadow-md">
+            <!-- Emote Image -->
+            <div class="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center my-1 relative">
+              <img src="${e.url}" alt="${e.code}" loading="lazy" class="max-w-full max-h-full object-contain filter group-hover:drop-shadow-[0_0_8px_rgba(168,85,247,0.6)] transition duration-200" />
+            </div>
+
+            <!-- Code & Badges -->
+            <div class="w-full mt-1">
+              <div class="text-[10px] sm:text-[11px] font-mono font-bold text-slate-200 group-hover:text-purple-300 truncate transition">
+                ${e.code}
+              </div>
+              <div class="flex items-center justify-center gap-1 mt-1">
+                <span class="text-[8px] font-mono px-1 py-0.2 rounded border ${tierBadgeColor}">
+                  ${e.tier === 'Tier 1' ? 'T1' : (e.tier === 'Tier 2' ? 'T2' : 'T3')}
+                </span>
+                ${e.animated ? '<span class="text-[8px] font-mono px-1 py-0.2 rounded bg-pink-500/20 text-pink-300 border border-pink-500/30">GIF</span>' : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function setEmoteCategory(cat, btn) {
+      playSound('pop');
+      currentEmoteCat = cat;
+
+      document.querySelectorAll('.emote-cat-btn').forEach(b => {
+        b.className = 'emote-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer';
+      });
+
+      if (btn) {
+        btn.className = 'emote-cat-btn px-2.5 py-1 rounded-lg bg-[#9146FF] text-white font-bold transition whitespace-nowrap active:scale-95 cursor-pointer';
+      }
+
+      const filtered = TWITCH_EMOTES.filter(e => {
+        if (cat === 'all') return true;
+        if (cat === 'animated') return e.animated;
+        if (cat === 'tier1') return e.tier === 'Tier 1';
+        if (cat === 'tier23') return e.tier === 'Tier 2' || e.tier === 'Tier 3';
+        return true;
+      });
+
+      renderTwitchEmotes(filtered);
+    }
+
+    function handleEmoteClick(code, imgUrl, event, card) {
+      playSound('pop');
+      navigator.clipboard.writeText(code);
+      showToast(`คัดลอกอีโมต ${code} แล้ว! ✨`);
+
+      // Spawn floating emote confetti at click coordinates
+      const clickX = event.clientX || (event.touches && event.touches[0].clientX) || (window.innerWidth / 2);
+      const clickY = event.clientY || (event.touches && event.touches[0].clientY) || (window.innerHeight / 2);
+      spawnFloatingEmote(clickX, clickY, imgUrl);
+
+      // Card bounce feedback
+      if (card) {
+        card.style.transform = 'scale(1.12)';
+        card.style.borderColor = '#c084fc';
+        setTimeout(() => {
+          card.style.transform = '';
+          card.style.borderColor = '';
+        }, 200);
+      }
+    }
+
+    function spawnFloatingEmote(x, y, imgUrl) {
+      const el = document.createElement('img');
+      el.src = imgUrl;
+      el.className = 'fixed pointer-events-none z-50 select-none';
+      el.style.left = `${x - 24}px`;
+      el.style.top = `${y - 24}px`;
+      el.style.width = '48px';
+      el.style.height = '48px';
+      el.style.objectFit = 'contain';
+      el.style.opacity = '1';
+      el.style.transition = 'transform 1s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.9s ease-out';
+      el.style.filter = 'drop-shadow(0 0 10px rgba(168, 85, 247, 0.8))';
+      document.body.appendChild(el);
+
+      const randomX = (Math.random() - 0.5) * 90;
+      const randomRot = (Math.random() - 0.5) * 50;
+
+      requestAnimationFrame(() => {
+        el.style.transform = `translate(${randomX}px, -130px) scale(1.35) rotate(${randomRot}deg)`;
+        el.style.opacity = '0';
+      });
+
+      setTimeout(() => {
+        el.remove();
+      }, 1000);
     }
   </script>
 </body>
