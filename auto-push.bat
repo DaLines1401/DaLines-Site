@@ -8,17 +8,24 @@ echo.
 
 cd /d "%~dp0"
 
-echo [*] Checking git changes...
+echo [*] Checking git status...
 git status --short
 
+:: Check if working directory is clean
 git diff --quiet && git diff --cached --quiet
 if %errorlevel% equ 0 (
     git status --porcelain | findstr "^??" >nul
     if errorlevel 1 (
-        echo.
-        echo [i] No changes detected. Everything is up to date!
-        echo.
-        goto done
+        :: Check if there are local unpushed commits
+        for /f %%i in ('git rev-list @{u}..HEAD --count 2^>nul') do (
+            if "%%i"=="0" (
+                echo [i] Everything is up to date! No changes to push.
+                goto done
+            ) else (
+                echo [*] Found %%i unpushed commit(s). Pushing to GitHub...
+                goto do_push
+            )
+        )
     )
 )
 
@@ -26,18 +33,18 @@ echo.
 set /p commit_msg="[?] Enter commit message (Press Enter for auto timestamp): "
 
 if "%commit_msg%"=="" (
-    for /f "tokens=1-3 delims=/ " %%a in ('date /t') do set mydate=%%c-%%a-%%b
-    for /f "tokens=1-2 delims=: " %%a in ('time /t') do set mytime=%%a:%%b
     set commit_msg=Update site: %date% %time%
 )
 
 echo.
-echo [*] Adding files to staging...
+echo [*] Adding files...
 git add -A
 
 echo [*] Committing: "%commit_msg%"...
 git commit -m "%commit_msg%"
 
+:do_push
+echo.
 echo [*] Pushing to GitHub (origin main)...
 git push origin main
 
@@ -50,7 +57,8 @@ if %errorlevel% equ 0 (
     echo ===================================================
 ) else (
     echo.
-    echo [!] Push failed. Please check your internet or git login.
+    echo [!] Push failed.
+    echo Tip: You can also open GitHub Desktop to push anytime!
 )
 
 :done
