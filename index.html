@@ -8,6 +8,11 @@
   <!-- Website Favicon & App Icons -->
   <link rel="icon" type="image/png" sizes="32x32" href="Logo.png" />
   <link rel="apple-touch-icon" href="Logo.png" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="DaLines" />
 
   <!-- Primary Meta Tags -->
   <meta name="title" content="DaLines | Official Profile Hub & Battle Station 🎮" />
@@ -247,9 +252,9 @@
         <span id="live-banner-desc" class="text-slate-300 hidden sm:inline" data-i18n="banner_desc">• สตรีมหลักบน Twitch แวะมาเมาท์กันได้!</span>
       </div>
       <div class="flex items-center gap-2">
-        <button onclick="switchToStreamTab('live')" class="px-3.5 py-1.5 rounded-full text-white text-[11px] font-bold transition active:scale-95 shadow-md flex items-center gap-1.5 bg-[#9146FF] hover:bg-[#772ce8] cursor-pointer">
-          <i class="fa-brands fa-twitch text-xs"></i>
-          <span data-i18n="banner_btn">ชมไลฟ์สด</span>
+        <button id="live-banner-btn" onclick="handleLiveBannerClick()" class="px-3.5 py-1.5 rounded-full text-white text-[11px] font-bold transition active:scale-95 shadow-md flex items-center gap-1.5 bg-[#9146FF] hover:bg-[#772ce8] cursor-pointer">
+          <i id="live-banner-btn-icon" class="fa-brands fa-twitch text-xs"></i>
+          <span id="live-banner-btn-text" data-i18n="banner_btn">ชมไลฟ์สด</span>
         </button>
         <button onclick="dismissLiveBanner()" aria-label="Dismiss Banner" class="text-slate-500 hover:text-slate-300 p-1 transition cursor-pointer">
           <i class="fa-solid fa-xmark text-sm"></i>
@@ -377,6 +382,9 @@
         <a href="https://www.twitch.tv/dalines" target="_blank" rel="noopener noreferrer" aria-label="Twitch" class="tilt-card w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-purple-950/40 hover:bg-purple-600/30 border border-purple-500/40 flex items-center justify-center text-purple-400 hover:text-white transition active:scale-95 shadow-lg">
           <i class="fa-brands fa-twitch text-base sm:text-lg"></i>
         </a>
+        <a href="https://www.youtube.com/@DaLinesTTV" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="tilt-card w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-red-950/40 hover:bg-red-600/30 border border-red-500/40 flex items-center justify-center text-red-500 hover:text-white transition active:scale-95 shadow-lg">
+          <i class="fa-brands fa-youtube text-base sm:text-lg"></i>
+        </a>
         <a href="https://discord.gg/3m9x688YCG" target="_blank" rel="noopener noreferrer" aria-label="Discord" class="tilt-card w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-indigo-950/40 hover:bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center text-[#5865F2] hover:text-white transition active:scale-95 shadow-lg">
           <i class="fa-brands fa-discord text-base sm:text-lg"></i>
         </a>
@@ -442,7 +450,28 @@
         </div>
       </a>
 
-      <!-- 2. Discord Community Card -->
+      <!-- 2. Donation / Support Card (EZDN) -->
+      <a href="https://ezdn.app/dalines" target="_blank" rel="noopener noreferrer" class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-amber-500/20 via-slate-900/80 to-emerald-500/15 border border-amber-500/40 backdrop-blur-md group shadow-xl hover:border-amber-400/60 transition">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-500/25 flex items-center justify-center text-amber-300 text-lg sm:text-xl shrink-0 group-hover:scale-110 transition duration-300 shadow-md">
+              <i class="fa-solid fa-heart text-amber-400"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-white text-sm sm:text-base truncate" data-i18n="donate_title">สนับสนุน DaLines (Donate)</span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-amber-500/25 text-amber-300 border border-amber-500/40 uppercase shrink-0">
+                  <i class="fa-solid fa-bolt-lightning text-[9px] mr-1 text-amber-400"></i>DONATE
+                </span>
+              </div>
+              <p class="text-[11px] sm:text-xs text-slate-300 mt-0.5 truncate" data-i18n="donate_sub">ezdn.app/dalines • พร้อมเพย์ / ทรูมันนี่ โดเนทขึ้นจอและเป็นกำลังใจ</p>
+            </div>
+          </div>
+          <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-amber-400 text-xs sm:text-sm shrink-0 transition"></i>
+        </div>
+      </a>
+
+      <!-- 3. Discord Community Card -->
       <a href="https://discord.gg/3m9x688YCG" target="_blank" rel="noopener noreferrer" class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-indigo-500/25 via-slate-900/80 to-slate-900/90 border border-indigo-500/50 backdrop-blur-md group shadow-xl">
         <div class="flex items-center justify-between gap-3">
           <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
@@ -484,7 +513,28 @@
         </div>
       </a>
 
-      <!-- 4. TikTok Card -->
+      <!-- 4. YouTube Channel Card -->
+      <a href="https://www.youtube.com/@DaLinesTTV" target="_blank" rel="noopener noreferrer" class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-red-600/20 via-slate-900/80 to-slate-900/90 border border-red-500/40 backdrop-blur-md group shadow-xl hover:border-red-500/60 transition">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-red-600/25 flex items-center justify-center text-red-500 text-lg sm:text-xl shrink-0 group-hover:scale-110 transition duration-300 shadow-md">
+              <i class="fa-brands fa-youtube"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-white text-sm sm:text-base truncate">YouTube Channel</span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-red-600/25 text-red-300 border border-red-500/40 uppercase shrink-0">
+                  VIDEOS
+                </span>
+              </div>
+              <p class="text-[11px] sm:text-xs text-slate-300 mt-0.5 truncate" data-i18n="youtube_sub">youtube.com/@DaLinesTTV • ไฮไลท์สตรีม คลิปยิงคมๆ และ VOD ย้อนหลัง</p>
+            </div>
+          </div>
+          <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-red-400 text-xs sm:text-sm shrink-0 transition"></i>
+        </div>
+      </a>
+
+      <!-- 5. TikTok Card -->
       <a href="https://www.tiktok.com/@dalinestuang" target="_blank" rel="noopener noreferrer" class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-pink-500/15 via-slate-900/70 to-slate-900/80 border border-pink-500/35 backdrop-blur-md group shadow-lg">
         <div class="flex items-center justify-between gap-3">
           <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
@@ -783,6 +833,32 @@
           </div>
         </div>
       </div>
+
+      <!-- IN-GAME SENSITIVITY & VALORANT CROSSHAIR -->
+      <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-red-500/15 via-slate-900/80 to-slate-900/90 border border-red-500/40 backdrop-blur-md shadow-xl mt-3">
+        <div class="flex items-center justify-between mb-2.5">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400">
+              <i class="fa-solid fa-crosshairs text-sm"></i>
+            </div>
+            <div>
+              <div class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5" data-i18n="crosshair_title">
+                เป้าเล็ง Valorant (Crosshair Code)
+              </div>
+              <div class="text-[10px] sm:text-[11px] text-slate-400" data-i18n="crosshair_desc">โค้ดเป้าหลักสำหรับใช้ยิงในเกม Valorant ของ DaLines</div>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-red-500/20 text-red-300 border border-red-500/30">VALORANT</span>
+        </div>
+
+        <div class="bg-black/60 border border-slate-800 rounded-xl p-2.5 flex items-center justify-between gap-2">
+          <code class="text-[10px] sm:text-xs text-emerald-300 font-mono truncate select-all">0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1t;10;1l;3;1o;6;1a;0;1m;0;1e;0.338;A;c;7;t;6;o;1;d;1;z;6;a;0;m;1;0t;3;0l;3;0o;5;0a;0;0f;0;1t;10;1l;3;1o;3;1a;0;1m;0;1e;3;S;c;6;s;4;o;1</code>
+          <button onclick="copyValorantCrosshair()" aria-label="Copy Crosshair Code" class="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 active:scale-95 text-white text-xs font-semibold shrink-0 transition flex items-center gap-1.5 shadow-md cursor-pointer">
+            <i class="fa-regular fa-copy"></i>
+            <span data-i18n="crosshair_copy_btn">คัดลอกโค้ด</span>
+          </button>
+        </div>
+      </div>
     </main>
 
     <!-- TAB 5: CHAT RULES & PARTY BOT -->
@@ -796,11 +872,19 @@
         <p class="text-xs text-slate-300 leading-relaxed mb-3" data-i18n="party_desc">
           ชื่อในเกม / IGN: <strong class="text-emerald-300 font-mono text-sm">DaLines</strong> (รบกวนกด Follow ในสตรีมก่อนแอดมาเล่นด้วยกันน้า!)
         </p>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 flex-wrap">
           <button onclick="copyIGN()" class="text-xs px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-medium transition active:scale-95 flex items-center gap-1.5 cursor-pointer">
             <i class="fa-regular fa-copy"></i>
             <span data-i18n="copy_ign">คัดลอกชื่อในเกม: DaLines</span>
           </button>
+          <button onclick="copyValorantCrosshair()" class="text-xs px-3 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 font-medium transition active:scale-95 flex items-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-crosshairs text-xs"></i>
+            <span data-i18n="copy_val_btn">คัดลอกเป้า Valorant</span>
+          </button>
+          <a href="https://ezdn.app/dalines" target="_blank" rel="noopener noreferrer" class="text-xs px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-medium transition active:scale-95 flex items-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-heart text-xs"></i>
+            <span data-i18n="donate_btn_short">โดเนท / ซัพพอร์ต</span>
+          </a>
         </div>
       </div>
 
@@ -950,6 +1034,7 @@
         twitch_sub: "twitch.tv/dalines • สตรีมหลัก เล่นเกม & ปาร์ตี้คุยสดที่นี่",
         discord_sub: "ดิสคอร์ดคอมมูนิตี้ พูดคุย หาตี้เล่นเกม และแจ้งเตือนไลฟ์",
         kick_sub: "kick.com/dalinesth • อีกหนึ่งช่องทางสตรีมสำรอง",
+        youtube_sub: "youtube.com/@DaLinesTTV • ไฮไลท์สตรีม คลิปยิงคมๆ และ VOD ย้อนหลัง",
         tiktok_sub: "@dalinestuang • คลิปไฮไลท์ & ช็อตฟันนี่โมเมนต์",
         facebook_sub: "DaLines Tuang • อัปเดตตารางเวลาสตรีมและข่าวสาร",
         instagram_sub: "@tuangdanai • ไลฟ์สไตล์และรูปภาพเบื้องหลัง",
@@ -962,6 +1047,14 @@
         rule_2: "ให้เกียรติเพื่อนๆ ในแชท ไม่สปอยล์ และงดใช้คำพูดเสียดสีรุนแรง",
         rule_3: "คำสั่งบอท: พิมพ์ !commands ในแชท Twitch เพื่อเล่นกับบอทและดูคำสั่งทั้งหมด",
         footer_thanks: "Just an FPS & Battle Royale lover from Thailand 🇹🇭",
+        donate_title: "สนับสนุน DaLines (Donate)",
+        donate_sub: "ezdn.app/dalines • พร้อมเพย์ / ทรูมันนี่ โดเนทขึ้นจอและเป็นกำลังใจ",
+        donate_btn_short: "โดเนท / ซัพพอร์ต",
+        crosshair_title: "เป้าเล็ง Valorant (Crosshair Code)",
+        crosshair_desc: "โค้ดเป้าหลักสำหรับใช้ยิงในเกม Valorant ของ DaLines",
+        crosshair_copy_btn: "คัดลอกโค้ด",
+        copy_val_btn: "คัดลอกเป้า Valorant",
+        toast_copy_crosshair: "คัดลอกโค้ดเป้า Valorant เรียบร้อย! 🎯",
         toast_copy_link: "คัดลอกลิงก์โปรไฟล์ DaLines แล้วครับ! 🔗",
         toast_copy_ign: "คัดลอก IGN: DaLines เรียบร้อย! 🎮",
         toast_sound_on: "เปิดเสียงเอฟเฟกต์แล้ว 🔊",
@@ -986,6 +1079,7 @@
         twitch_sub: "twitch.tv/dalines • Main stream, live chat & gameplay",
         discord_sub: "Discord Community Hub, party search & stream alerts",
         kick_sub: "kick.com/dalinesth • Secondary streaming platform",
+        youtube_sub: "youtube.com/@DaLinesTTV • Stream highlights, best gameplay moments & VODs",
         tiktok_sub: "@dalinestuang • Highlights & funny gaming moments",
         facebook_sub: "DaLines Tuang • Schedule announcements & updates",
         instagram_sub: "@tuangdanai • Personal vibes & photos",
@@ -998,6 +1092,14 @@
         rule_2: "Respect each other in chat, no spoilers or toxic behavior.",
         rule_3: "Bot commands: Type !commands in Twitch chat to interact.",
         footer_thanks: "Just an FPS & Battle Royale lover from Thailand 🇹🇭",
+        donate_title: "Support DaLines (Donate)",
+        donate_sub: "ezdn.app/dalines • PromptPay / TrueMoney on-screen stream alerts",
+        donate_btn_short: "Donate / Support",
+        crosshair_title: "Valorant Crosshair Code",
+        crosshair_desc: "Official Valorant crosshair code used by DaLines",
+        crosshair_copy_btn: "Copy Code",
+        copy_val_btn: "Copy Valorant Crosshair",
+        toast_copy_crosshair: "Valorant Crosshair code copied! 🎯",
         toast_copy_link: "DaLines Profile link copied! 🔗",
         toast_copy_ign: "IGN: DaLines copied to clipboard! 🎮",
         toast_sound_on: "Sound FX Enabled 🔊",
@@ -1323,7 +1425,82 @@
           }
         });
       }
+
+      // Real-time Twitch Status Check
+      checkTwitchLiveStatus();
+      setInterval(checkTwitchLiveStatus, 60000);
     });
+
+    let currentLiveState = false;
+
+    function handleLiveBannerClick() {
+      playSound('tab');
+      if (currentLiveState) {
+        switchToStreamTab('live');
+      } else {
+        switchToStreamTab('trailer');
+      }
+    }
+
+    async function checkTwitchLiveStatus() {
+      try {
+        const [uptimeRes, gameRes] = await Promise.all([
+          fetch('https://decapi.me/twitch/uptime/dalines'),
+          fetch('https://decapi.me/twitch/game/dalines')
+        ]);
+        if (!uptimeRes.ok) return;
+        const uptime = (await uptimeRes.text()).trim();
+        const game = gameRes.ok ? (await gameRes.text()).trim() : '';
+
+        const isLive = uptime && !uptime.toLowerCase().includes('offline') && !uptime.toLowerCase().includes('error');
+        currentLiveState = isLive;
+
+        const liveDot = document.getElementById('live-dot');
+        const textBadge = document.getElementById('live-text-badge');
+        const bannerDesc = document.getElementById('live-banner-desc');
+        const btnText = document.getElementById('live-banner-btn-text');
+        const streamBadge = document.getElementById('player-status-badge');
+
+        if (isLive) {
+          if (liveDot) liveDot.className = 'w-2.5 h-2.5 rounded-full bg-red-500 live-ping-dot';
+          if (textBadge) {
+            textBadge.className = 'font-gaming font-bold text-red-400 tracking-wider text-[11px] sm:text-xs';
+            textBadge.innerText = '🔴 LIVE NOW';
+          }
+          if (bannerDesc) {
+            const gameTxt = game ? ` • กำลังเล่น ${game}` : '';
+            bannerDesc.innerText = `${gameTxt} (${uptime}) แวะมาเมาท์กันได้!`;
+          }
+          if (btnText) btnText.innerText = (currentLang === 'th') ? 'ชมไลฟ์สด' : 'Watch Live';
+          if (streamBadge) {
+            streamBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-gaming font-bold bg-red-500/20 text-red-400 border border-red-500/30 flex items-center gap-1';
+            streamBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-ping"></span>STREAMING';
+          }
+        } else {
+          if (liveDot) liveDot.className = 'w-2.5 h-2.5 rounded-full bg-slate-500';
+          if (textBadge) {
+            textBadge.className = 'font-gaming font-bold text-slate-400 tracking-wider text-[11px] sm:text-xs';
+            textBadge.innerText = 'OFFLINE';
+          }
+          if (bannerDesc) {
+            bannerDesc.innerText = (currentLang === 'th') 
+              ? '• สตรีมเมอร์ออฟไลน์อยู่ • แวะดูคลิปย้อนหลังหรือคุยในดิสคอร์ดได้!' 
+              : '• Channel is currently offline • Check out highlights or join Discord!';
+          }
+          if (btnText) btnText.innerText = (currentLang === 'th') ? 'คลิปไฮไลท์' : 'Watch VOD';
+        }
+      } catch (err) {
+        // Fallback gracefully
+      }
+    }
+
+    const VALORANT_CROSSHAIR = '0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1t;10;1l;3;1o;6;1a;0;1m;0;1e;0.338;A;c;7;t;6;o;1;d;1;z;6;a;0;m;1;0t;3;0l;3;0o;5;0a;0;0f;0;1t;10;1l;3;1o;3;1a;0;1m;0;1e;3;S;c;6;s;4;o;1';
+
+    function copyValorantCrosshair() {
+      playSound('pop');
+      navigator.clipboard.writeText(VALORANT_CROSSHAIR);
+      showToast(translations[currentLang].toast_copy_crosshair || 'คัดลอกโค้ดเป้า Valorant เรียบร้อย! 🎯');
+    }
 
     function showToast(msg) {
       const toast = document.getElementById('toast');

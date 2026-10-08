@@ -1,0 +1,18 @@
+{
+  "name": "DaLines | Official Profile Hub & Battle Station",
+  "short_name": "DaLines",
+  "description": "สตรีมเมอร์สายยิง รวมช่องทางติดตาม สเปกคอม อุปกรณ์สตรีม และสนับสนุน DaLines",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#06080c",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "Logo.png",
+      "sizes": "300x300",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
