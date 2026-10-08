@@ -18,15 +18,15 @@
   <meta name="title" content="DaLines | Official Profile Hub & Battle Station 🎮" />
   <meta name="description" content="สตรีมเมอร์สายยิง เน้นโยน ชมไลฟ์สด สเปก PC อุปกรณ์เกมมิ่งเกียร์ และซัพพอร์ต DaLines" />
   <meta name="theme-color" content="#10b981" />
-  <link rel="canonical" href="https://pages.dalines.workers.dev/" />
+  <link rel="canonical" href="https://dalines-site.dalines.workers.dev/" />
 
   <!-- Open Graph / Facebook / Discord -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="DaLines Profile Hub" />
-  <meta property="og:url" content="https://pages.dalines.workers.dev/" />
+  <meta property="og:url" content="https://dalines-site.dalines.workers.dev/" />
   <meta property="og:title" content="DaLines | Official Profile Hub & Battle Station 🎮" />
   <meta property="og:description" content="สตรีมเมอร์สายยิง เน้นโยน รวมช่องทางติดตาม สเปกคอม อุปกรณ์สตรีม และสนับสนุน DaLines" />
-  <meta property="og:image" content="https://pages.dalines.workers.dev/banner-480.png" />
+  <meta property="og:image" content="https://dalines-site.dalines.workers.dev/banner-480.png" />
   <meta property="og:image:width" content="853" />
   <meta property="og:image:height" content="480" />
 
@@ -34,7 +34,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="DaLines | Profile Hub & Battle Station 🎮" />
   <meta name="twitter:description" content="สตรีมเมอร์สายยิง เน้นโยน ชมไลฟ์สด สเปกคอม DaLines" />
-  <meta name="twitter:image" content="https://pages.dalines.workers.dev/banner-480.png" />
+  <meta name="twitter:image" content="https://dalines-site.dalines.workers.dev/banner-480.png" />
 
   <!-- Preconnect & Performance Hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -1078,7 +1078,7 @@
           <!-- Room Code Input & Connect Form -->
           <div class="flex items-center gap-1.5 flex-wrap">
             <div class="relative flex-1 min-w-[180px]">
-              <input type="text" id="obs-room-code-input" placeholder="ใส่ Room Code (เช่น tts_abc123)" class="w-full bg-black/60 border border-slate-800 focus:border-cyan-500 rounded-lg px-2.5 py-1.5 text-xs text-cyan-300 font-mono placeholder:text-slate-600 outline-none transition" />
+              <input type="text" id="obs-room-code-input" value="tts_dalines" placeholder="ใส่ Room Code (ค่าเริ่มต้น: tts_dalines)" class="w-full bg-black/60 border border-slate-800 focus:border-cyan-500 rounded-lg px-2.5 py-1.5 text-xs text-cyan-300 font-mono placeholder:text-slate-600 outline-none transition" />
             </div>
             <button type="button" id="btn-connect-obs" onclick="handleConnectObsClick()" class="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 active:scale-95 text-white font-bold text-xs transition flex items-center gap-1.5 cursor-pointer shadow-md">
               <i class="fa-solid fa-plug text-[10px]"></i>
@@ -1317,7 +1317,7 @@
 
     function getTwitchParentsQuery() {
       const host = window.location.hostname;
-      const parents = new Set(['localhost', '127.0.0.1', 'pages.dalines.workers.dev', 'dalines.tv']);
+      const parents = new Set(['localhost', '127.0.0.1', 'dalines-site.dalines.workers.dev', 'pages.dalines.workers.dev', 'dalines.tv']);
       if (host) parents.add(host);
       return Array.from(parents).filter(Boolean).map(p => `parent=${encodeURIComponent(p)}`).join('&');
     }
@@ -2144,14 +2144,14 @@
     let obsSounds = [];
 
     function initObsTts() {
-      const savedRoom = localStorage.getItem('dalines_tts_room') || '';
+      const savedRoom = localStorage.getItem('dalines_tts_room') || 'tts_dalines';
       const input = document.getElementById('obs-room-code-input');
-      if (input && savedRoom) {
+      if (input) {
         input.value = savedRoom;
       }
-      // Auto-connect if room was saved previously
+      // Auto-connect if room was saved previously or default to tts_dalines
       if (savedRoom) {
-        setTimeout(() => connectToObsTts(savedRoom, true), 800);
+        setTimeout(() => connectToObsTts(savedRoom, true), 1000);
       }
     }
 
