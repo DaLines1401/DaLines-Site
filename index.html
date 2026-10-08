@@ -44,6 +44,7 @@
 
   <!-- CDN Resources -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet" />
 
@@ -422,8 +423,8 @@
         <span class="truncate" data-i18n="tab_gear">อุปกรณ์</span>
       </button>
       <button type="button" data-tab="rules" class="tab-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-white cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5">
-        <i class="fa-solid fa-terminal text-cyan-400 text-xs"></i>
-        <span class="truncate" data-i18n="tab_rules">แชท & บอท</span>
+        <i class="fa-solid fa-volume-high text-purple-400 text-xs"></i>
+        <span class="truncate" data-i18n="tab_rules">แชท & เสียงมีม</span>
       </button>
     </nav>
 
@@ -498,6 +499,37 @@
                 <span data-i18n="save_qr_btn">บันทึกรูป QR</span>
               </a>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2.5 TTS Reader Project Card (by DaLines & PaulJaw) -->
+      <div class="tilt-card p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-cyan-500/20 via-slate-900/80 to-blue-900/25 border border-cyan-500/40 backdrop-blur-md shadow-xl group hover:border-cyan-400/60 transition">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-cyan-500/20 flex items-center justify-center text-cyan-400 text-lg sm:text-xl shrink-0 group-hover:scale-110 transition duration-300 shadow-md">
+              <i class="fa-solid fa-microphone-lines"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="font-semibold text-white text-sm sm:text-base truncate">Twitch & TikTok TTS Reader</span>
+                <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-cyan-500/25 text-cyan-300 border border-cyan-500/40 uppercase shrink-0">
+                  OBS DOCK
+                </span>
+                <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-purple-500/25 text-purple-300 border border-purple-500/40 uppercase shrink-0">
+                  DEV BY DALINES
+                </span>
+              </div>
+              <p class="text-[11px] sm:text-xs text-slate-300 mt-0.5 truncate">
+                tts-dalines.pages.dev • ระบบอ่านแชทจอสดอัตโนมัติ & รีโมทคุมผ่านมือถือ
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <a href="https://tts-dalines.pages.dev/" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 active:scale-95 text-white text-xs font-semibold transition flex items-center gap-1 shadow-md cursor-pointer" title="เปิดหน้าเว็บ TTS Reader">
+              <span>เปิดใช้</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            </a>
           </div>
         </div>
       </div>
@@ -865,26 +897,106 @@
         </div>
       </div>
 
-      <!-- IN-GAME SENSITIVITY & VALORANT CROSSHAIR -->
-      <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-red-500/15 via-slate-900/80 to-slate-900/90 border border-red-500/40 backdrop-blur-md shadow-xl mt-3">
-        <div class="flex items-center justify-between mb-2.5">
+      <!-- IN-GAME SENSITIVITY & VALORANT CROSSHAIR SIMULATOR -->
+      <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-cyan-950/40 via-slate-900/85 to-red-950/30 border border-cyan-500/40 backdrop-blur-md shadow-xl mt-3">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-3">
           <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-lg bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400">
+            <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
               <i class="fa-solid fa-crosshairs text-sm"></i>
             </div>
             <div>
               <div class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5" data-i18n="crosshair_title">
-                เป้าเล็ง Valorant (Crosshair Code)
+                เป้าเล็ง Valorant (Crosshair Simulator)
               </div>
-              <div class="text-[10px] sm:text-[11px] text-slate-400" data-i18n="crosshair_desc">โค้ดเป้าหลักสำหรับใช้ยิงในเกม Valorant ของ DaLines</div>
+              <div class="text-[10px] sm:text-[11px] text-slate-400" data-i18n="crosshair_desc">
+                กราฟิกจำลองเป้าจริงของ DaLines • คลิก/แตะในสนามยิงเพื่อทดสอบแรงดีด & เสียงลั่นไก!
+              </div>
             </div>
           </div>
-          <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-red-500/20 text-red-300 border border-red-500/30">VALORANT</span>
+          <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-cyan-500/25 text-cyan-300 border border-cyan-500/40">VALORANT PRO</span>
         </div>
 
-        <div class="bg-black/60 border border-slate-800 rounded-xl p-2.5 flex items-center justify-between gap-2">
-          <code class="text-[10px] sm:text-xs text-emerald-300 font-mono truncate select-all">0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1t;10;1l;3;1o;6;1a;0;1m;0;1e;0.338;A;c;7;t;6;o;1;d;1;z;6;a;0;m;1;0t;3;0l;3;0o;5;0a;0;0f;0;1t;10;1l;3;1o;3;1a;0;1m;0;1e;3;S;c;6;s;4;o;1</code>
-          <button onclick="copyValorantCrosshair()" aria-label="Copy Crosshair Code" class="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 active:scale-95 text-white text-xs font-semibold shrink-0 transition flex items-center gap-1.5 shadow-md cursor-pointer">
+        <!-- Interactive Tactical Shooting Range Stage -->
+        <div id="crosshair-stage" onclick="fireCrosshair(event)" class="relative w-full h-48 sm:h-56 rounded-xl bg-[#070b14] border border-cyan-500/30 overflow-hidden select-none cursor-crosshair flex items-center justify-center transition active:border-cyan-400 shadow-inner group" style="touch-action: manipulation;">
+          <!-- Grid Background -->
+          <div class="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px] opacity-40 pointer-events-none"></div>
+
+          <!-- Concentric Range Rings (Target) -->
+          <div class="absolute w-56 h-56 rounded-full border border-slate-800/80 pointer-events-none"></div>
+          <div class="absolute w-40 h-40 rounded-full border border-slate-700/60 pointer-events-none"></div>
+          <div class="absolute w-24 h-24 rounded-full border border-cyan-500/20 pointer-events-none"></div>
+          <div class="absolute w-12 h-12 rounded-full border border-cyan-400/40 bg-cyan-500/5 pointer-events-none"></div>
+
+          <!-- Tactical Silhouette (Enemy Head & Shoulders) -->
+          <div class="absolute pointer-events-none flex flex-col items-center opacity-30">
+            <!-- Head -->
+            <div class="w-10 h-12 rounded-2xl border-2 border-dashed border-red-500/60 bg-red-500/10"></div>
+            <!-- Neck/Shoulders -->
+            <div class="w-24 h-8 mt-1 rounded-t-3xl border-t-2 border-dashed border-slate-600 bg-slate-800/40"></div>
+          </div>
+
+          <!-- HUD Top Info -->
+          <div class="absolute top-2.5 left-3 flex items-center gap-2 pointer-events-none text-[10px] font-mono text-slate-400">
+            <span class="px-1.5 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-cyan-400">RANGE: 25M</span>
+            <span class="px-1.5 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-slate-400">VANDAL</span>
+          </div>
+          <div class="absolute top-2.5 right-3 flex items-center gap-1.5 pointer-events-none text-[10px] font-mono">
+            <span class="px-2 py-0.5 rounded bg-black/60 border border-slate-800 text-slate-300">
+              HITS: <strong id="ch-hits" class="text-white">0</strong>
+            </span>
+            <span class="px-2 py-0.5 rounded bg-red-500/20 border border-red-500/30 text-red-300">
+              <strong id="ch-headshots">0</strong> HS
+            </span>
+          </div>
+
+          <!-- HUD Bottom Prompt -->
+          <div class="absolute bottom-2.5 inset-x-0 flex items-center justify-center pointer-events-none">
+            <span class="text-[10px] text-cyan-300/80 bg-slate-950/70 border border-cyan-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1.5 shadow-md">
+              <i class="fa-solid fa-crosshairs text-[9px] animate-spin" style="animation-duration: 4s;"></i>
+              <span data-i18n="crosshair_click_hint">แตะหรือคลิกในกรอบเพื่อซ้อมยิง (Tap to test-fire)</span>
+            </span>
+          </div>
+
+          <!-- THE RETICLE (Cyan 6px Center Dot + Inner Lines with black outlines) -->
+          <div id="crosshair-reticle" class="relative pointer-events-none transition-transform duration-75 ease-out flex items-center justify-center z-10" style="filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 1px #000);">
+            <!-- Center Dot (Cyan 6x6) -->
+            <div class="w-1.5 h-1.5 bg-[#00ffff] rounded-[1px] shadow-[0_0_0_1px_#000]"></div>
+            <!-- Top Hash -->
+            <div class="ch-line absolute -top-3 w-1 h-2 bg-[#00ffff] shadow-[0_0_0_1px_#000] rounded-[0.5px]"></div>
+            <!-- Bottom Hash -->
+            <div class="ch-line absolute -bottom-3 w-1 h-2 bg-[#00ffff] shadow-[0_0_0_1px_#000] rounded-[0.5px]"></div>
+            <!-- Left Hash -->
+            <div class="ch-line absolute -left-3 h-1 w-2 bg-[#00ffff] shadow-[0_0_0_1px_#000] rounded-[0.5px]"></div>
+            <!-- Right Hash -->
+            <div class="ch-line absolute -right-3 h-1 w-2 bg-[#00ffff] shadow-[0_0_0_1px_#000] rounded-[0.5px]"></div>
+          </div>
+        </div>
+
+        <!-- Crosshair Specs Badges -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2.5 text-[10px] text-slate-300">
+          <div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#00ffff] inline-block shadow-[0_0_6px_#00ffff]"></span>
+            <span>สี: <strong class="text-cyan-300">Cyan (#00FFFF)</strong></span>
+          </div>
+          <div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-1.5">
+            <i class="fa-regular fa-circle-dot text-cyan-400"></i>
+            <span>Center Dot: <strong class="text-white">ON (6px)</strong></span>
+          </div>
+          <div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-1.5">
+            <i class="fa-solid fa-border-all text-cyan-400"></i>
+            <span>Outlines: <strong class="text-white">ON (1px Black)</strong></span>
+          </div>
+          <div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-1.5">
+            <i class="fa-solid fa-sliders text-cyan-400"></i>
+            <span>Style: <strong class="text-white">Tight Box Dot</strong></span>
+          </div>
+        </div>
+
+        <!-- Code Display & Copy Button -->
+        <div class="bg-black/70 border border-slate-800 rounded-xl p-2.5 flex items-center justify-between gap-2 mt-2.5">
+          <code class="text-[10px] sm:text-xs text-cyan-300 font-mono truncate select-all">0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1t;10;1l;3;1o;6;1a;0;1m;0;1e;0.338;A;c;7;t;6;o;1;d;1;z;6;a;0;m;1;0t;3;0l;3;0o;5;0a;0;0f;0;1t;10;1l;3;1o;3;1a;0;1m;0;1e;3;S;c;6;s;4;o;1</code>
+          <button onclick="copyValorantCrosshair()" aria-label="Copy Crosshair Code" class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 active:scale-95 text-white text-xs font-semibold shrink-0 transition flex items-center gap-1.5 shadow-md cursor-pointer">
             <i class="fa-regular fa-copy"></i>
             <span data-i18n="crosshair_copy_btn">คัดลอกโค้ด</span>
           </button>
@@ -916,6 +1028,188 @@
             <i class="fa-solid fa-heart text-xs"></i>
             <span data-i18n="donate_btn_short">โดเนท / ซัพพอร์ต</span>
           </a>
+        </div>
+      </div>
+
+      <!-- DALINES INTERACTIVE MEME SOUNDBOARD -->
+      <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-purple-500/15 via-slate-900/80 to-pink-900/20 border border-purple-500/40 backdrop-blur-md shadow-xl">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400">
+              <i class="fa-solid fa-volume-high text-sm"></i>
+            </div>
+            <div>
+              <div class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5" data-i18n="soundboard_title">
+                🎮 DaLines Soundboard & Meme FX
+              </div>
+              <div class="text-[10px] sm:text-[11px] text-slate-400" data-i18n="soundboard_desc">
+                กดปุ่มเพื่อเล่นเสียงประจำช่อง & มีมสตรีมเมอร์สายยิงเน้นโยน!
+              </div>
+            </div>
+          </div>
+          <!-- Equalizer Animated Indicator -->
+          <div id="soundboard-eq" class="flex items-end gap-0.5 h-4 px-2 py-1 rounded-md bg-purple-500/20 border border-purple-500/30">
+            <span class="w-1 bg-purple-400 rounded-full h-1.5 transition-all duration-150"></span>
+            <span class="w-1 bg-purple-400 rounded-full h-3 transition-all duration-150"></span>
+            <span class="w-1 bg-purple-400 rounded-full h-2 transition-all duration-150"></span>
+            <span class="w-1 bg-purple-400 rounded-full h-3.5 transition-all duration-150"></span>
+          </div>
+        </div>
+
+        <!-- OBS TTS SYNC & REMOTE PANEL -->
+        <div class="mb-3 p-3 rounded-xl bg-slate-950/70 border border-purple-500/30">
+          <div class="flex items-center justify-between gap-2 flex-wrap mb-2">
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-xs">
+                <i class="fa-solid fa-satellite-dish"></i>
+              </div>
+              <div>
+                <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                  เชื่อมต่อเสียงสตรีม OBS (TTS Live Sync)
+                </span>
+                <p class="text-[10px] text-slate-400">กดปุ่มบนเว็บนี้ให้ไปดังใน OBS สดๆ บนหน้าจอไลฟ์สตรีมของคุณ</p>
+              </div>
+            </div>
+            <span id="obs-sync-badge" class="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-slate-500" id="obs-sync-dot"></span><span id="obs-sync-status-text">OFFLINE</span>
+            </span>
+          </div>
+
+          <!-- Room Code Input & Connect Form -->
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <div class="relative flex-1 min-w-[180px]">
+              <input type="text" id="obs-room-code-input" placeholder="ใส่ Room Code (เช่น tts_abc123)" class="w-full bg-black/60 border border-slate-800 focus:border-cyan-500 rounded-lg px-2.5 py-1.5 text-xs text-cyan-300 font-mono placeholder:text-slate-600 outline-none transition" />
+            </div>
+            <button type="button" id="btn-connect-obs" onclick="handleConnectObsClick()" class="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 active:scale-95 text-white font-bold text-xs transition flex items-center gap-1.5 cursor-pointer shadow-md">
+              <i class="fa-solid fa-plug text-[10px]"></i>
+              <span id="btn-connect-obs-text">เชื่อมต่อ OBS</span>
+            </button>
+            <button type="button" onclick="openTtsHelperModal()" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition flex items-center gap-1 cursor-pointer" title="วิธีดูรหัสห้องใน OBS">
+              <i class="fa-regular fa-circle-question"></i>
+              <span>วิธีดูรหัส</span>
+            </button>
+          </div>
+
+          <!-- Quick OBS Stream Controls (shown when connected) -->
+          <div id="obs-quick-controls" class="hidden mt-2.5 pt-2 border-t border-slate-800/80 flex items-center gap-1.5 flex-wrap">
+            <span class="text-[10px] font-mono text-slate-400 mr-1">OBS CONTROL:</span>
+            <button type="button" onclick="sendObsAction('mute')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-300 text-[10px] font-medium transition cursor-pointer flex items-center gap-1" id="obs-btn-mute">
+              <i class="fa-solid fa-volume-xmark"></i> Mute/Unmute
+            </button>
+            <button type="button" onclick="sendObsAction('skip')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-300 text-[10px] font-medium transition cursor-pointer flex items-center gap-1">
+              <i class="fa-solid fa-forward-step"></i> ข้ามเสียง
+            </button>
+            <button type="button" onclick="sendObsAction('hype', { amount: 25 })" class="px-2 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 active:scale-95 text-amber-300 border border-amber-500/40 text-[10px] font-medium transition cursor-pointer flex items-center gap-1">
+              🔥 เร่ง Hype +25%
+            </button>
+            <button type="button" onclick="sendObsAction('clip', { label: 'ช็อตเด็ดจาก Hub' })" class="px-2 py-1 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 active:scale-95 text-purple-300 border border-purple-500/40 text-[10px] font-medium transition cursor-pointer flex items-center gap-1">
+              📌 ปักหมุดช็อต
+            </button>
+            <button type="button" onclick="sendObsAction('stop_sounds')" class="px-2 py-1 rounded-lg bg-red-500/20 hover:bg-red-500/30 active:scale-95 text-red-300 border border-red-500/40 text-[10px] font-medium transition cursor-pointer flex items-center gap-1">
+              ⏹️ หยุดเสียง
+            </button>
+          </div>
+
+          <!-- Dynamically Synced OBS Custom Sounds Container -->
+          <div id="obs-custom-sounds-wrapper" class="hidden mt-2.5 pt-2 border-t border-slate-800/80">
+            <div class="text-[10px] font-mono text-cyan-400 mb-1.5 flex items-center justify-between">
+              <span>📁 คลังเสียงจาก OBS ของคุณ (Custom Sounds จาก tts-dalines.pages.dev)</span>
+              <span id="obs-sound-count" class="text-slate-400">0 ไฟล์</span>
+            </div>
+            <div id="obs-custom-sounds-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-1.5"></div>
+          </div>
+        </div>
+
+        <!-- Sound Buttons Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5">
+          <!-- 1. โยนแล้ว 1! -->
+          <button type="button" onclick="playMemeSound('yorn', 'โยนแล้วหนึ่ง', this)" class="sound-card group relative p-3 rounded-xl bg-slate-900/70 hover:bg-purple-950/40 border border-purple-500/30 hover:border-purple-500/60 transition-all duration-200 text-left active:scale-95 cursor-pointer shadow-md overflow-hidden">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xl">🗑️</span>
+              <span class="text-[9px] font-mono text-purple-400 px-1 rounded bg-purple-500/20">THROW</span>
+            </div>
+            <div class="text-xs font-bold text-white group-hover:text-purple-300 transition">โยนแล้ว 1!</div>
+            <div class="text-[10px] text-slate-400 mt-0.5 truncate">สตรีมเมอร์เน้นโยน</div>
+          </button>
+
+          <!-- 2. ยิงหัวแตก! -->
+          <button type="button" onclick="playMemeSound('headshot', 'ยิงหัวแตก', this)" class="sound-card group relative p-3 rounded-xl bg-slate-900/70 hover:bg-red-950/40 border border-red-500/30 hover:border-red-500/60 transition-all duration-200 text-left active:scale-95 cursor-pointer shadow-md overflow-hidden">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xl">🎯</span>
+              <span class="text-[9px] font-mono text-red-400 px-1 rounded bg-red-500/20">DINK!</span>
+            </div>
+            <div class="text-xs font-bold text-white group-hover:text-red-300 transition">ยิงหัวแตก!</div>
+            <div class="text-[10px] text-slate-400 mt-0.5 truncate">ลั่นหัวคมจัด</div>
+          </button>
+
+          <!-- 3. แตกหนึ่ง สวยพี่สวย! -->
+          <button type="button" onclick="playMemeSound('taek1', 'แตกหนึ่ง สวยพี่สวย', this)" class="sound-card group relative p-3 rounded-xl bg-slate-900/70 hover:bg-emerald-950/40 border border-emerald-500/30 hover:border-emerald-500/60 transition-all duration-200 text-left active:scale-95 cursor-pointer shadow-md overflow-hidden">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xl">⚡</span>
+              <span class="text-[9px] font-mono text-emerald-400 px-1 rounded bg-emerald-500/20">KILL</span>
+            </div>
+            <div class="text-xs font-bold text-white group-hover:text-emerald-300 transition">แตกหนึ่ง สวยพี่!</div>
+            <div class="text-[10px] text-slate-400 mt-0.5 truncate">เข้าหัวเป๊ะ คิลสวย</div>
+          </button>
+
+          <!-- 4. แชมป์เฉย! -->
+          <button type="button" onclick="playMemeSound('victory', 'แชมป์เฉยเลย', this)" class="sound-card group relative p-3 rounded-xl bg-slate-900/70 hover:bg-amber-950/40 border border-amber-500/30 hover:border-amber-500/60 transition-all duration-200 text-left active:scale-95 cursor-pointer shadow-md overflow-hidden">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xl">👑</span>
+              <span class="text-[9px] font-mono text-amber-400 px-1 rounded bg-amber-500/20">WIN</span>
+            </div>
+            <div class="text-xs font-bold text-white group-hover:text-amber-300 transition">แชมป์เฉย!</div>
+            <div class="text-[10px] text-slate-400 mt-0.5 truncate">ไม่ได้เก่งแค่ดวงดี</div>
+          </button>
+
+          <!-- 5. ขอบคุณคร้าบ! -->
+          <button type="button" onclick="playMemeSound('thanks', 'ขอบคุณครับผม', this)" class="sound-card group relative p-3 rounded-xl bg-slate-900/70 hover:bg-cyan-950/40 border border-cyan-500/30 hover:border-cyan-500/60 transition-all duration-200 text-left active:scale-95 cursor-pointer shadow-md overflow-hidden">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xl">🙏</span>
+              <span class="text-[9px] font-mono text-cyan-400 px-1 rounded bg-cyan-500/20">ALERT</span>
+            </div>
+            <div class="text-xs font-bold text-white group-hover:text-cyan-300 transition">ขอบคุณคร้าบ!</div>
+            <div class="text-[10px] text-slate-400 mt-0.5 truncate">เสียงโดเนท & ซัพ</div>
+          </button>
+
+          <!-- 6. ตวงงงง! ช่วยด้วย -->
+          <button type="button" onclick="playMemeSound('alarm', 'ตวงงงง', this)" class="sound-card group relative p-3 rounded-xl bg-slate-900/70 hover:bg-rose-950/40 border border-rose-500/30 hover:border-rose-500/60 transition-all duration-200 text-left active:scale-95 cursor-pointer shadow-md overflow-hidden">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xl">🚨</span>
+              <span class="text-[9px] font-mono text-rose-400 px-1 rounded bg-rose-500/20">ALARM</span>
+            </div>
+            <div class="text-xs font-bold text-white group-hover:text-rose-300 transition">ตวงงงง! ช่วยด้วย</div>
+            <div class="text-[10px] text-slate-400 mt-0.5 truncate">โดนรุมยิง กรีดร้อง</div>
+          </button>
+
+          <!-- 7. สเปรย์หมดแม็ก! -->
+          <button type="button" onclick="playMemeSound('spray', 'หมดแม็ก', this)" class="sound-card group relative p-3 rounded-xl bg-slate-900/70 hover:bg-orange-950/40 border border-orange-500/30 hover:border-orange-500/60 transition-all duration-200 text-left active:scale-95 cursor-pointer shadow-md overflow-hidden">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xl">🔫</span>
+              <span class="text-[9px] font-mono text-orange-400 px-1 rounded bg-orange-500/20">SPRAY</span>
+            </div>
+            <div class="text-xs font-bold text-white group-hover:text-orange-300 transition">สเปรย์หมดแม็ก</div>
+            <div class="text-[10px] text-slate-400 mt-0.5 truncate">30 นัด โดน 0 นัด</div>
+          </button>
+
+          <!-- 8. วางสไปค์ / Spike Planted -->
+          <button type="button" onclick="playMemeSound('spike', 'สไปค์ลงแล้ว', this)" class="sound-card group relative p-3 rounded-xl bg-slate-900/70 hover:bg-blue-950/40 border border-blue-500/30 hover:border-blue-500/60 transition-all duration-200 text-left active:scale-95 cursor-pointer shadow-md overflow-hidden">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xl">💣</span>
+              <span class="text-[9px] font-mono text-blue-400 px-1 rounded bg-blue-500/20">SPIKE</span>
+            </div>
+            <div class="text-xs font-bold text-white group-hover:text-blue-300 transition">Spike Planted!</div>
+            <div class="text-[10px] text-slate-400 mt-0.5 truncate">วางไปป์เรียบร้อย</div>
+          </button>
+        </div>
+
+        <!-- Currently Playing Status Bar -->
+        <div id="soundboard-status" class="mt-2.5 px-3 py-1.5 rounded-xl bg-black/50 border border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+          <span class="flex items-center gap-1.5">
+            <i class="fa-solid fa-play text-[10px] text-purple-400"></i>
+            <span id="soundboard-status-text">พร้อมเล่นเสียง (Ready to play)</span>
+          </span>
+          <span class="text-[10px] text-slate-500">Web Audio FX</span>
         </div>
       </div>
 
@@ -954,6 +1248,60 @@
   <button id="btn-back-to-top" onclick="scrollToTop()" aria-label="Back to Top" class="fixed bottom-6 right-5 sm:right-8 z-40 w-10 h-10 rounded-full bg-slate-900/80 border border-slate-700 text-slate-300 hover:text-white flex items-center justify-center shadow-2xl backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300 active:scale-90 hover:border-emerald-500/50 cursor-pointer" style="color: var(--primary-color);">
     <i class="fa-solid fa-arrow-up text-sm"></i>
   </button>
+
+  <!-- OBS TTS HELPER MODAL -->
+  <div id="modal-tts-helper" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="tilt-card w-full max-w-md bg-slate-900 border border-cyan-500/50 rounded-2xl p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+            <i class="fa-solid fa-satellite-dish"></i>
+          </div>
+          <span class="text-sm font-bold text-white">วิธีเชื่อมต่อเสียงสดกับ OBS TTS</span>
+        </div>
+        <button type="button" onclick="closeTtsHelperModal()" class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center cursor-pointer text-sm">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs text-slate-300 leading-relaxed">
+        <div class="flex items-start gap-2.5 p-2.5 rounded-xl bg-black/40 border border-slate-800">
+          <span class="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center justify-center font-bold text-[10px] shrink-0">1</span>
+          <div>
+            <strong class="text-white block">เปิดหน้า TTS บน OBS Dock</strong>
+            <span>เปิดหน้า <a href="https://tts-dalines.pages.dev/" target="_blank" rel="noopener noreferrer" class="text-cyan-400 underline">tts-dalines.pages.dev</a> บน OBS Browser Dock หรือเบราว์เซอร์</span>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-2.5 p-2.5 rounded-xl bg-black/40 border border-slate-800">
+          <span class="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center justify-center font-bold text-[10px] shrink-0">2</span>
+          <div>
+            <strong class="text-white block">กดปุ่ม "📱 รีโมทมือถือ"</strong>
+            <span>จะเห็นข้อความ <code class="text-cyan-300 font-mono">ROOM CODE: tts_xxxxxx</code> หรือกดปุ่ม "คัดลอกลิงก์รีโมท"</span>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-2.5 p-2.5 rounded-xl bg-black/40 border border-slate-800">
+          <span class="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center justify-center font-bold text-[10px] shrink-0">3</span>
+          <div>
+            <strong class="text-white block">วางรหัสแล้วกด "เชื่อมต่อ OBS"</strong>
+            <span>นำรหัสมาวางในช่อง แล้วกดปุ่มเชื่อมต่อ ระบบจะจำรหัสไว้ให้อัตโนมัติ</span>
+          </div>
+        </div>
+
+        <div class="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[11px] flex items-center gap-2">
+          <i class="fa-solid fa-circle-check text-base shrink-0"></i>
+          <span>เสร็จสิ้น! ทุกครั้งที่กดปุ่มเสียงบนเว็บนี้ เสียงจะไปดังออกหน้าสตรีม OBS ทันที</span>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-1">
+        <button type="button" onclick="closeTtsHelperModal()" class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs transition cursor-pointer">
+          เข้าใจแล้ว
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Toast Notification -->
   <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl text-black font-semibold text-xs shadow-lg opacity-0 pointer-events-none transition duration-300" style="background-color: var(--primary-color);">
@@ -1058,7 +1406,7 @@
         tab_stream: "สตรีมสด",
         tab_pc: "สเปก PC",
         tab_gear: "อุปกรณ์",
-        tab_rules: "แชท & บอท",
+        tab_rules: "แชท & เสียงมีม",
         btn_mode_live: "🔴 ไลฟ์สด (Twitch Live)",
         btn_mode_trailer: "🎬 เทรลเลอร์ช่อง (Trailer)",
         open_twitch: "ดูบน Twitch",
@@ -1084,9 +1432,12 @@
         donate_qr_hint: "สแกน QR ผ่านแอปธนาคารหรือ TrueMoney โดเนทขึ้นจอสดได้เลยครับ!",
         open_ezdn_btn: "เปิดหน้า EZDN",
         save_qr_btn: "บันทึกรูป QR",
-        crosshair_title: "เป้าเล็ง Valorant (Crosshair Code)",
-        crosshair_desc: "โค้ดเป้าหลักสำหรับใช้ยิงในเกม Valorant ของ DaLines",
+        crosshair_title: "เป้าเล็ง Valorant (Crosshair Simulator)",
+        crosshair_desc: "กราฟิกจำลองเป้าจริงของ DaLines • คลิก/แตะในสนามยิงเพื่อทดสอบแรงดีด & เสียงลั่นไก!",
+        crosshair_click_hint: "แตะหรือคลิกในกรอบเพื่อซ้อมยิง (Tap to test-fire)",
         crosshair_copy_btn: "คัดลอกโค้ด",
+        soundboard_title: "🎮 DaLines Soundboard & Meme FX",
+        soundboard_desc: "กดปุ่มเพื่อเล่นเสียงประจำช่อง & มีมสตรีมเมอร์สายยิงเน้นโยน!",
         copy_val_btn: "คัดลอกเป้า Valorant",
         toast_copy_crosshair: "คัดลอกโค้ดเป้า Valorant เรียบร้อย! 🎯",
         toast_copy_link: "คัดลอกลิงก์โปรไฟล์ DaLines แล้วครับ! 🔗",
@@ -1106,7 +1457,7 @@
         tab_stream: "Live Stream",
         tab_pc: "PC Specs",
         tab_gear: "Gear Setup",
-        tab_rules: "Chat & Bot",
+        tab_rules: "Chat & Soundboard",
         btn_mode_live: "🔴 Live Stream",
         btn_mode_trailer: "🎬 Channel Trailer",
         open_twitch: "Watch on Twitch",
@@ -1132,9 +1483,12 @@
         donate_qr_hint: "Scan QR with Mobile Banking or TrueMoney for live on-screen stream alerts!",
         open_ezdn_btn: "Open EZDN",
         save_qr_btn: "Save QR Image",
-        crosshair_title: "Valorant Crosshair Code",
-        crosshair_desc: "Official Valorant crosshair code used by DaLines",
+        crosshair_title: "Valorant Crosshair (Crosshair Simulator)",
+        crosshair_desc: "Visual simulator of DaLines' crosshair • Click/tap target area to test recoil & sound!",
+        crosshair_click_hint: "Tap or click inside range to test-fire",
         crosshair_copy_btn: "Copy Code",
+        soundboard_title: "🎮 DaLines Soundboard & Meme FX",
+        soundboard_desc: "Tap buttons to play signature streamer memes & sound effects!",
         copy_val_btn: "Copy Valorant Crosshair",
         toast_copy_crosshair: "Valorant Crosshair code copied! 🎯",
         toast_copy_link: "DaLines Profile link copied! 🔗",
@@ -1240,8 +1594,233 @@
           gain.connect(audioCtx.destination);
           osc.start(now);
           osc.stop(now + 0.08);
+        } else if (type === 'gunshot') {
+          playGunshotSynth(audioCtx, now);
+        } else if (type === 'headshot') {
+          playHeadshotSynth(audioCtx, now);
+        } else if (type === 'yorn') {
+          playYornSynth(audioCtx, now);
+        } else if (type === 'taek1') {
+          playTaek1Synth(audioCtx, now);
+        } else if (type === 'victory') {
+          playVictorySynth(audioCtx, now);
+        } else if (type === 'thanks') {
+          playThanksSynth(audioCtx, now);
+        } else if (type === 'alarm') {
+          playAlarmSynth(audioCtx, now);
+        } else if (type === 'spray') {
+          playSpraySynth(audioCtx, now);
+        } else if (type === 'spike') {
+          playSpikeSynth(audioCtx, now);
         }
       } catch (e) {}
+    }
+
+    function playGunshotSynth(audioCtx, now) {
+      const bufferSize = Math.floor(audioCtx.sampleRate * 0.12);
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1400, now);
+      filter.frequency.exponentialRampToValueAtTime(120, now + 0.1);
+
+      const noiseGain = audioCtx.createGain();
+      noiseGain.gain.setValueAtTime(0.25, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(audioCtx.destination);
+      noise.start(now);
+
+      const subOsc = audioCtx.createOscillator();
+      const subGain = audioCtx.createGain();
+      subOsc.type = 'sine';
+      subOsc.frequency.setValueAtTime(150, now);
+      subOsc.frequency.exponentialRampToValueAtTime(40, now + 0.1);
+      subGain.gain.setValueAtTime(0.25, now);
+      subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+
+      subOsc.connect(subGain);
+      subGain.connect(audioCtx.destination);
+      subOsc.start(now);
+      subOsc.stop(now + 0.1);
+    }
+
+    function playHeadshotSynth(audioCtx, now) {
+      [2200, 3300].forEach((freq) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+        osc.frequency.exponentialRampToValueAtTime(freq * 0.7, now + 0.22);
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.22);
+      });
+      playGunshotSynth(audioCtx, now);
+    }
+
+    function playYornSynth(audioCtx, now) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(700, now);
+      osc.frequency.exponentialRampToValueAtTime(160, now + 0.45);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1000, now);
+      filter.frequency.exponentialRampToValueAtTime(300, now + 0.45);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.45);
+
+      const boing = audioCtx.createOscillator();
+      const boingGain = audioCtx.createGain();
+      boing.type = 'sine';
+      boing.frequency.setValueAtTime(220, now + 0.45);
+      boing.frequency.exponentialRampToValueAtTime(440, now + 0.55);
+      boing.frequency.exponentialRampToValueAtTime(200, now + 0.7);
+      boingGain.gain.setValueAtTime(0.12, now + 0.45);
+      boingGain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+      boing.connect(boingGain);
+      boingGain.connect(audioCtx.destination);
+      boing.start(now + 0.45);
+      boing.stop(now + 0.7);
+    }
+
+    function playTaek1Synth(audioCtx, now) {
+      const click1 = audioCtx.createOscillator();
+      const clickGain1 = audioCtx.createGain();
+      click1.type = 'square';
+      click1.frequency.setValueAtTime(1800, now);
+      clickGain1.gain.setValueAtTime(0.15, now);
+      clickGain1.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+      click1.connect(clickGain1);
+      clickGain1.connect(audioCtx.destination);
+      click1.start(now);
+      click1.stop(now + 0.05);
+
+      const click2 = audioCtx.createOscillator();
+      const clickGain2 = audioCtx.createGain();
+      click2.type = 'square';
+      click2.frequency.setValueAtTime(2200, now + 0.08);
+      clickGain2.gain.setValueAtTime(0.18, now + 0.08);
+      clickGain2.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+      click2.connect(clickGain2);
+      clickGain2.connect(audioCtx.destination);
+      click2.start(now + 0.08);
+      click2.stop(now + 0.13);
+
+      [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + 0.15 + i * 0.03);
+        gain.gain.setValueAtTime(0.08, now + 0.15 + i * 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + 0.15 + i * 0.03);
+        osc.stop(now + 0.45);
+      });
+    }
+
+    function playVictorySynth(audioCtx, now) {
+      const notes = [
+        { f: 523.25, t: 0.0, d: 0.1 },
+        { f: 659.25, t: 0.1, d: 0.1 },
+        { f: 783.99, t: 0.2, d: 0.1 },
+        { f: 1046.50, t: 0.3, d: 0.35 }
+      ];
+      notes.forEach(n => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(n.f, now + n.t);
+        gain.gain.setValueAtTime(0.12, now + n.t);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + n.t + n.d);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + n.t);
+        osc.stop(now + n.t + n.d);
+      });
+    }
+
+    function playThanksSynth(audioCtx, now) {
+      const chords = [659.25, 783.99, 987.77, 1318.51];
+      chords.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+        gain.gain.setValueAtTime(0.1, now + idx * 0.06);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.3);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + idx * 0.06);
+        osc.stop(now + idx * 0.06 + 0.3);
+      });
+    }
+
+    function playAlarmSynth(audioCtx, now) {
+      for (let i = 0; i < 3; i++) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        const t = now + i * 0.16;
+        osc.frequency.setValueAtTime(880, t);
+        osc.frequency.linearRampToValueAtTime(587, t + 0.14);
+        gain.gain.setValueAtTime(0.1, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 1600;
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(t);
+        osc.stop(t + 0.15);
+      }
+    }
+
+    function playSpraySynth(audioCtx, now) {
+      for (let i = 0; i < 5; i++) {
+        playGunshotSynth(audioCtx, now + i * 0.09);
+      }
+    }
+
+    function playSpikeSynth(audioCtx, now) {
+      [0, 0.18].forEach(tOffset => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1760, now + tOffset);
+        gain.gain.setValueAtTime(0.15, now + tOffset);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + tOffset + 0.09);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + tOffset);
+        osc.stop(now + tOffset + 0.09);
+      });
     }
 
     function toggleSoundFx() {
@@ -1323,6 +1902,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       setLanguage(currentLang);
       updateSoundIcon();
+      initObsTts();
 
       // Mouse Spotlight
       const cursorGlow = document.getElementById('cursor-glow');
@@ -1553,6 +2133,420 @@
       playSound('pop');
       navigator.clipboard.writeText('DaLines');
       showToast(translations[currentLang].toast_copy_ign);
+    }
+
+    // -----------------------------------------------------------------
+    // OBS TTS LIVE SYNC & REMOTE SOUND ENGINE (WebRTC via PeerJS)
+    // -----------------------------------------------------------------
+    let obsPeer = null;
+    let obsConn = null;
+    let isObsConnected = false;
+    let obsSounds = [];
+
+    function initObsTts() {
+      const savedRoom = localStorage.getItem('dalines_tts_room') || '';
+      const input = document.getElementById('obs-room-code-input');
+      if (input && savedRoom) {
+        input.value = savedRoom;
+      }
+      // Auto-connect if room was saved previously
+      if (savedRoom) {
+        setTimeout(() => connectToObsTts(savedRoom, true), 800);
+      }
+    }
+
+    function handleConnectObsClick() {
+      if (isObsConnected) {
+        disconnectObsTts();
+        return;
+      }
+      const input = document.getElementById('obs-room-code-input');
+      const code = input ? input.value.trim() : '';
+      if (!code) {
+        showToast('กรุณาระบุ Room Code จากหน้า TTS ก่อนครับ 📡');
+        return;
+      }
+      connectToObsTts(code);
+    }
+
+    function connectToObsTts(roomCode, isSilent = false) {
+      if (!roomCode) return;
+      roomCode = roomCode.trim();
+      localStorage.setItem('dalines_tts_room', roomCode);
+
+      updateObsSyncStatus('connecting', 'CONNECTING...');
+
+      if (obsPeer) {
+        try { obsPeer.destroy(); } catch(e){}
+      }
+
+      if (typeof Peer === 'undefined') {
+        updateObsSyncStatus('error', 'PEERJS ERROR');
+        if (!isSilent) showToast('ไม่สามารถโหลดไลบรารี PeerJS ได้');
+        return;
+      }
+
+      try {
+        obsPeer = new Peer();
+        obsPeer.on('open', (myId) => {
+          const conn = obsPeer.connect(roomCode, { reliable: true });
+          obsConn = conn;
+
+          conn.on('open', () => {
+            isObsConnected = true;
+            updateObsSyncStatus('connected', 'ONLINE');
+            if (!isSilent) showToast('🟢 เชื่อมต่อกับ OBS TTS สำเร็จแล้ว!');
+            playSound('thanks');
+            
+            // Request state to get custom soundboard
+            conn.send({ action: 'REQUEST_STATE' });
+          });
+
+          conn.on('data', (data) => {
+            if (data && data.type === 'STATE') {
+              handleObsStateUpdate(data);
+            }
+          });
+
+          conn.on('close', () => {
+            isObsConnected = false;
+            updateObsSyncStatus('disconnected', 'DISCONNECTED');
+            showToast('📱 ตัดการเชื่อมต่อจาก OBS');
+          });
+
+          conn.on('error', (err) => {
+            isObsConnected = false;
+            updateObsSyncStatus('error', 'FAILED');
+            if (!isSilent) showToast('❌ ไม่สามารถเชื่อมต่อไปยังห้องนี้ได้ ตรวจสอบรหัสห้องอีกครั้ง');
+          });
+        });
+
+        obsPeer.on('error', (err) => {
+          isObsConnected = false;
+          updateObsSyncStatus('error', 'OFFLINE');
+          if (!isSilent) showToast('❌ ไม่พบห้อง OBS TTS รหัสนี้ในระบบ');
+        });
+      } catch(e) {
+        updateObsSyncStatus('error', 'ERROR');
+      }
+    }
+
+    function disconnectObsTts() {
+      if (obsConn) {
+        try { obsConn.close(); } catch(e){}
+      }
+      if (obsPeer) {
+        try { obsPeer.destroy(); } catch(e){}
+      }
+      isObsConnected = false;
+      updateObsSyncStatus('disconnected', 'OFFLINE');
+      showToast('ตัดการเชื่อมต่อจาก OBS แล้ว');
+    }
+
+    function updateObsSyncStatus(status, text) {
+      const badge = document.getElementById('obs-sync-badge');
+      const dot = document.getElementById('obs-sync-dot');
+      const statusText = document.getElementById('obs-sync-status-text');
+      const btnText = document.getElementById('btn-connect-obs-text');
+      const quickControls = document.getElementById('obs-quick-controls');
+
+      if (status === 'connected') {
+        if (badge) badge.className = 'px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1';
+        if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse';
+        if (statusText) statusText.innerText = 'ONLINE';
+        if (btnText) btnText.innerText = 'ตัดการเชื่อมต่อ';
+        if (quickControls) quickControls.classList.remove('hidden');
+      } else if (status === 'connecting') {
+        if (badge) badge.className = 'px-2 py-0.5 rounded text-[10px] font-mono bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 flex items-center gap-1';
+        if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-yellow-400 animate-ping';
+        if (statusText) statusText.innerText = text || 'CONNECTING...';
+        if (btnText) btnText.innerText = 'กำลังเชื่อมต่อ...';
+      } else {
+        if (badge) badge.className = 'px-2 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-1';
+        if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-slate-500';
+        if (statusText) statusText.innerText = 'OFFLINE';
+        if (btnText) btnText.innerText = 'เชื่อมต่อ OBS';
+        if (quickControls) quickControls.classList.add('hidden');
+        const customWrapper = document.getElementById('obs-custom-sounds-wrapper');
+        if (customWrapper) customWrapper.classList.add('hidden');
+      }
+    }
+
+    function sendObsAction(action, payload = {}) {
+      if (!isObsConnected || !obsConn || !obsConn.open) {
+        showToast('กรุณาเชื่อมต่อ OBS TTS ก่อนครับ 📡');
+        return false;
+      }
+      try {
+        const cmd = { action, ...payload };
+        obsConn.send(cmd);
+        playSound('pop');
+        showToast(`📡 ส่งคำสั่ง "${action}" ไปยัง OBS สำเร็จ!`);
+        return true;
+      } catch(e) {
+        showToast('❌ ไม่สามารถส่งคำสั่งไปยัง OBS ได้');
+        return false;
+      }
+    }
+
+    function handleObsStateUpdate(state) {
+      if (state.sounds && Array.isArray(state.sounds)) {
+        obsSounds = state.sounds;
+        renderObsCustomSounds(obsSounds);
+      }
+      const muteBtn = document.getElementById('obs-btn-mute');
+      if (muteBtn && state.isMuted !== undefined) {
+        if (state.isMuted) {
+          muteBtn.className = 'px-2 py-1 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[10px] font-bold flex items-center gap-1 cursor-pointer';
+          muteBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> Muted (เปิดเสียง)';
+        } else {
+          muteBtn.className = 'px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-300 text-[10px] font-medium transition cursor-pointer flex items-center gap-1';
+          muteBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Mute/Unmute';
+        }
+      }
+    }
+
+    function renderObsCustomSounds(sounds) {
+      const wrapper = document.getElementById('obs-custom-sounds-wrapper');
+      const grid = document.getElementById('obs-custom-sounds-grid');
+      const countEl = document.getElementById('obs-sound-count');
+      if (!wrapper || !grid) return;
+
+      if (!sounds || sounds.length === 0) {
+        wrapper.classList.add('hidden');
+        return;
+      }
+
+      wrapper.classList.remove('hidden');
+      if (countEl) countEl.innerText = `${sounds.length} ไฟล์`;
+
+      grid.innerHTML = sounds.map(s => `
+        <button type="button" onclick="playObsSoundDirect('${s.id}', '${escapeAttr(s.name)}')" class="p-2 rounded-lg bg-slate-900/90 hover:bg-cyan-950/50 border border-cyan-500/30 hover:border-cyan-400 text-left active:scale-95 transition cursor-pointer flex items-center gap-1.5 shadow-sm overflow-hidden group">
+          <i class="fa-solid fa-play text-[9px] text-cyan-400 group-hover:scale-110 transition shrink-0"></i>
+          <span class="text-[11px] font-semibold text-slate-200 group-hover:text-cyan-300 truncate">${escapeHtml(s.name)}</span>
+        </button>
+      `).join('');
+    }
+
+    function playObsSoundDirect(soundId, soundName) {
+      playSound('pop');
+      if (sendObsAction('play_sound', { soundId, soundName })) {
+        showToast(`▶ กำลังเล่น "${soundName}" ใน OBS สดๆ! 🔊`);
+      }
+    }
+
+    function openTtsHelperModal() {
+      playSound('pop');
+      const modal = document.getElementById('modal-tts-helper');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeTtsHelperModal() {
+      playSound('pop');
+      const modal = document.getElementById('modal-tts-helper');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function escapeAttr(str) {
+      if (!str) return '';
+      return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+
+    // -----------------------------------------------------------------
+    // DALINES SOUNDBOARD CONTROLLER & VOICE FX
+    // -----------------------------------------------------------------
+    function playMemeSound(type, phrase, btnEl) {
+      if (!isSoundEnabled) {
+        isSoundEnabled = true;
+        localStorage.setItem('dalines_sound', true);
+        updateSoundIcon();
+      }
+
+      playSound(type);
+
+      if (phrase) {
+        speakThai(phrase);
+      }
+
+      // Live trigger to OBS TTS if connected
+      if (isObsConnected && obsConn && obsConn.open) {
+        const match = obsSounds.find(s => {
+          const n = (s.name || '').toLowerCase();
+          const kw = (s.keywords || '').toLowerCase();
+          if (type === 'yorn' && (n.includes('โยน') || kw.includes('throw') || kw.includes('โยน'))) return true;
+          if (type === 'headshot' && (n.includes('หัว') || n.includes('dink') || kw.includes('head') || kw.includes('dink'))) return true;
+          if (type === 'taek1' && (n.includes('แตก') || kw.includes('แตก') || kw.includes('kill'))) return true;
+          if (type === 'victory' && (n.includes('แชมป์') || n.includes('ชนะ') || kw.includes('win') || kw.includes('gg'))) return true;
+          if (type === 'thanks' && (n.includes('ขอบคุณ') || kw.includes('thank'))) return true;
+          if (type === 'alarm' && (n.includes('เตือน') || n.includes('ไซเรน') || kw.includes('alarm') || kw.includes('siren'))) return true;
+          if (type === 'spray' && (n.includes('สเปรย์') || kw.includes('spray') || kw.includes('gun'))) return true;
+          if (type === 'spike' && (n.includes('สไปค์') || kw.includes('spike') || kw.includes('bomb'))) return true;
+          return false;
+        });
+
+        if (match) {
+          sendObsAction('play_sound', { soundId: match.id, soundName: match.name });
+          showToast(`📡 สั่งเล่น "${match.name}" ใน OBS สดแล้ว! 🔊`);
+        } else {
+          sendObsAction('hype', { amount: 15 });
+          showToast(`📡 ส่งสัญญาณไปยัง OBS TTS สดๆ แล้ว! (Hype +15%)`);
+        }
+      }
+
+      if (btnEl) {
+        btnEl.classList.add('ring-2', 'ring-purple-400', 'scale-95');
+        setTimeout(() => {
+          btnEl.classList.remove('ring-2', 'ring-purple-400', 'scale-95');
+        }, 220);
+      }
+
+      const eq = document.getElementById('soundboard-eq');
+      if (eq) {
+        const bars = eq.querySelectorAll('span');
+        bars.forEach(b => {
+          b.style.height = `${Math.random() * 12 + 4}px`;
+        });
+        setTimeout(() => {
+          bars.forEach((b, i) => {
+            b.style.height = ['6px', '12px', '8px', '14px'][i] || '8px';
+          });
+        }, 550);
+      }
+
+      const statusText = document.getElementById('soundboard-status-text');
+      if (statusText) {
+        const title = btnEl ? (btnEl.querySelector('.font-bold')?.innerText || type) : type;
+        const obsNote = isObsConnected ? ' [OBS LIVE SYNC]' : '';
+        statusText.innerText = `▶ กำลังเล่น: ${title}${obsNote} 🔊`;
+        setTimeout(() => {
+          if (statusText.innerText.includes(title)) {
+            statusText.innerText = isObsConnected ? 'เชื่อมต่อ OBS แล้ว (พร้อมสั่งเสียง)' : 'พร้อมเล่นเสียง (Ready to play)';
+          }
+        }, 2200);
+      }
+    }
+
+    function speakThai(phrase) {
+      if (!('speechSynthesis' in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(phrase);
+        u.lang = 'th-TH';
+        u.rate = 1.05;
+        u.pitch = 1.05;
+        window.speechSynthesis.speak(u);
+      } catch (e) {}
+    }
+
+    // -----------------------------------------------------------------
+    // INTERACTIVE VALORANT CROSSHAIR SIMULATOR
+    // -----------------------------------------------------------------
+    let crosshairHits = 0;
+    let crosshairHeadshots = 0;
+
+    function fireCrosshair(e) {
+      if (!isSoundEnabled) {
+        isSoundEnabled = true;
+        localStorage.setItem('dalines_sound', true);
+        updateSoundIcon();
+      }
+
+      const stage = document.getElementById('crosshair-stage');
+      const reticle = document.getElementById('crosshair-reticle');
+      if (!stage) return;
+
+      const rect = stage.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const dist = Math.hypot(clickX - centerX, clickY - centerY);
+
+      // Recoil bloom animation on reticle
+      if (reticle) {
+        reticle.style.transform = 'scale(1.4)';
+        setTimeout(() => {
+          reticle.style.transform = 'scale(1)';
+        }, 90);
+      }
+
+      // Spawn bullet spark & decal
+      createBulletImpact(stage, clickX, clickY);
+
+      crosshairHits++;
+      const hitsEl = document.getElementById('ch-hits');
+      if (hitsEl) hitsEl.innerText = crosshairHits;
+
+      let dmgText = '';
+      let dmgColor = '';
+      if (dist <= 26) {
+        crosshairHeadshots++;
+        const hsEl = document.getElementById('ch-headshots');
+        if (hsEl) hsEl.innerText = crosshairHeadshots;
+        playSound('headshot');
+        dmgText = 'HEADSHOT 160 🎯';
+        dmgColor = '#fbbf24';
+      } else if (dist <= 75) {
+        playSound('gunshot');
+        dmgText = 'BODY 40 💥';
+        dmgColor = '#22d3ee';
+      } else {
+        playSound('gunshot');
+        dmgText = 'MISS 💨';
+        dmgColor = '#94a3b8';
+      }
+
+      // Floating damage indicator
+      const floater = document.createElement('div');
+      floater.className = 'absolute font-bold text-xs pointer-events-none transition-all duration-500 ease-out z-20 font-mono';
+      floater.style.left = `${clickX - 25}px`;
+      floater.style.top = `${clickY - 10}px`;
+      floater.style.color = dmgColor;
+      floater.style.textShadow = '0 0 6px rgba(0,0,0,0.9), 0 0 2px #000';
+      floater.innerText = dmgText;
+      stage.appendChild(floater);
+
+      requestAnimationFrame(() => {
+        floater.style.transform = 'translateY(-24px) scale(1.15)';
+        floater.style.opacity = '0';
+      });
+      setTimeout(() => floater.remove(), 550);
+    }
+
+    function createBulletImpact(stage, x, y) {
+      const spark = document.createElement('div');
+      spark.className = 'absolute rounded-full pointer-events-none z-10 transition-opacity duration-200';
+      spark.style.left = `${x - 4}px`;
+      spark.style.top = `${y - 4}px`;
+      spark.style.width = '8px';
+      spark.style.height = '8px';
+      spark.style.backgroundColor = '#fbbf24';
+      spark.style.boxShadow = '0 0 12px 4px #fbbf24, 0 0 4px #ffffff';
+      stage.appendChild(spark);
+
+      setTimeout(() => {
+        spark.style.opacity = '0';
+        setTimeout(() => spark.remove(), 150);
+      }, 50);
+
+      const hole = document.createElement('div');
+      hole.className = 'absolute rounded-full bg-slate-900 border border-black/80 pointer-events-none transition-opacity duration-700 z-0';
+      hole.style.left = `${x - 3}px`;
+      hole.style.top = `${y - 3}px`;
+      hole.style.width = '6px';
+      hole.style.height = '6px';
+      stage.appendChild(hole);
+
+      setTimeout(() => {
+        hole.style.opacity = '0';
+        setTimeout(() => hole.remove(), 700);
+      }, 2000);
     }
   </script>
 </body>
