@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <title>DaLines | Official Profile Hub & Battle Station</title>
+  
+  <!-- Website Favicon & App Icons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="Logo.png" />
+  <link rel="apple-touch-icon" href="Logo.png" />
+
+  <!-- Primary Meta Tags -->
+  <meta name="title" content="DaLines | Official Profile Hub & Battle Station 🎮" />
+  <meta name="description" content="สตรีมเมอร์สายยิง เน้นโยน ชมไลฟ์สด สเปก PC อุปกรณ์เกมมิ่งเกียร์ และซัพพอร์ต DaLines" />
+  <meta name="theme-color" content="#10b981" />
+  <link rel="canonical" href="https://pages.dalines.workers.dev/" />
+
+  <!-- Open Graph / Facebook / Discord -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="DaLines Profile Hub" />
+  <meta property="og:url" content="https://pages.dalines.workers.dev/" />
+  <meta property="og:title" content="DaLines | Official Profile Hub & Battle Station 🎮" />
+  <meta property="og:description" content="สตรีมเมอร์สายยิง เน้นโยน รวมช่องทางติดตาม สเปกคอม อุปกรณ์สตรีม และสนับสนุน DaLines" />
+  <meta property="og:image" content="https://pages.dalines.workers.dev/banner-480.png" />
+  <meta property="og:image:width" content="853" />
+  <meta property="og:image:height" content="480" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="DaLines | Profile Hub & Battle Station 🎮" />
+  <meta name="twitter:description" content="สตรีมเมอร์สายยิง เน้นโยน ชมไลฟ์สด สเปกคอม DaLines" />
+  <meta name="twitter:image" content="https://pages.dalines.workers.dev/banner-480.png" />
+
+  <!-- Preconnect & Performance Hints -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link rel="preconnect" href="https://player.twitch.tv" crossorigin />
+
+  <!-- CDN Resources -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --sat: env(safe-area-inset-top);
+      --sab: env(safe-area-inset-bottom);
+
+      /* ธีม Toxic Emerald Green */
+      --primary-color: #10b981;
+      --primary-glow: rgba(16, 185, 129, 0.5);
+      --primary-hover-bg: rgba(16, 185, 129, 0.16);
+      --primary-border: rgba(16, 185, 129, 0.45);
+      --ambient-blob-1: rgba(5, 150, 105, 0.35);
+      --ambient-blob-2: rgba(16, 185, 129, 0.2);
+    }
+
+    [data-theme="cyan"] {
+      --primary-color: #06b6d4;
+      --primary-glow: rgba(6, 182, 212, 0.5);
+      --primary-hover-bg: rgba(6, 182, 212, 0.16);
+      --primary-border: rgba(6, 182, 212, 0.45);
+      --ambient-blob-1: rgba(8, 145, 178, 0.35);
+      --ambient-blob-2: rgba(34, 211, 238, 0.2);
+    }
+
+    [data-theme="purple"] {
+      --primary-color: #a855f7;
+      --primary-glow: rgba(168, 85, 247, 0.5);
+      --primary-hover-bg: rgba(168, 85, 247, 0.16);
+      --primary-border: rgba(168, 85, 247, 0.45);
+      --ambient-blob-1: rgba(147, 51, 234, 0.35);
+      --ambient-blob-2: rgba(192, 132, 252, 0.2);
+    }
+
+    body {
+      font-family: 'Kanit', sans-serif;
+      background-color: #06080c;
+      padding-bottom: max(5rem, var(--sab));
+      -webkit-tap-highlight-color: transparent;
+      perspective: 1000px;
+    }
+    .font-gaming {
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    /* 3D Tilt Card */
+    .tilt-card {
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: transform 0.15s ease-out, box-shadow 0.25s ease, border-color 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .tilt-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.1), transparent 65%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .tilt-card:hover::before {
+      opacity: 1;
+    }
+
+    /* Glitch Hover Effect */
+    .glitch-hover {
+      display: inline-block;
+      transition: transform 0.2s ease;
+    }
+    .glitch-hover:hover {
+      text-shadow: 2px 0 var(--primary-color), -2px 0 #a855f7;
+      animation: miniGlitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+    }
+    @keyframes miniGlitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-1.5px, 1px); }
+      40% { transform: translate(-1px, -1px); }
+      60% { transform: translate(1.5px, 1px); }
+      80% { transform: translate(1px, -1px); }
+      100% { transform: translate(0); }
+    }
+
+    /* Sparkle Particle on Click */
+    .sparkle-particle {
+      position: fixed;
+      pointer-events: none;
+      border-radius: 50%;
+      animation: sparkleFly 0.65s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+      z-index: 9999;
+    }
+    @keyframes sparkleFly {
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+    }
+
+    /* Tag Shimmer */
+    @keyframes shimmerTag {
+      0% { transform: translateX(-150%) skewX(-20deg); }
+      50%, 100% { transform: translateX(200%) skewX(-20deg); }
+    }
+    .accent-badge {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.2));
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      color: #6ee7b7;
+    }
+    .accent-badge::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 40%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+      animation: shimmerTag 3.5s infinite ease-in-out;
+    }
+
+    /* Mouse Spotlight Glow */
+    #cursor-glow {
+      position: fixed;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--primary-glow) 0%, transparent 65%);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: -5;
+      opacity: 0.38;
+      transition: opacity 0.3s ease, background 0.3s ease;
+      mix-blend-mode: screen;
+    }
+
+    .neon-border-glow {
+      box-shadow: 0 0 25px -2px var(--primary-glow);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+      animation: tabFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes tabFadeIn {
+      from { opacity: 0; transform: translateY(8px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .theme-active-btn {
+      background-color: var(--primary-color) !important;
+      box-shadow: 0 0 16px var(--primary-glow);
+      color: #06080c !important;
+      font-weight: 800 !important;
+    }
+    .theme-color-dot.active {
+      transform: scale(1.25);
+      border-color: #ffffff !important;
+    }
+
+    @keyframes radarPulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.8); }
+      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    .live-ping-dot {
+      animation: radarPulse 1.8s infinite ease-in-out;
+    }
+
+    /* Video Player 16:9 Aspect Ratio */
+    .video-responsive {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 1rem;
+    }
+    .video-responsive iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+
+<body class="text-slate-100 min-h-screen relative selection:bg-emerald-500 selection:text-black antialiased overflow-x-hidden">
+  
+  <!-- REAL-TIME LIVE INDICATOR BANNER (TWITCH) -->
+  <aside id="sticky-live-banner" class="sticky top-0 z-40 w-full bg-slate-950/90 backdrop-blur-md border-b transition-all duration-300 shadow-2xl" style="border-color: var(--primary-border);">
+    <div class="max-w-2xl mx-auto px-3.5 py-2 flex items-center justify-between text-xs">
+      <div class="flex items-center gap-2">
+        <span id="live-dot" class="w-2.5 h-2.5 rounded-full bg-red-500 live-ping-dot"></span>
+        <span id="live-text-badge" class="font-gaming font-bold text-red-400 tracking-wider text-[11px] sm:text-xs">TWITCH LIVE</span>
+        <span id="live-banner-desc" class="text-slate-300 hidden sm:inline" data-i18n="banner_desc">• สตรีมหลักบน Twitch แวะมาเมาท์กันได้!</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="switchToStreamTab('live')" class="px-3.5 py-1.5 rounded-full text-white text-[11px] font-bold transition active:scale-95 shadow-md flex items-center gap-1.5 bg-[#9146FF] hover:bg-[#772ce8] cursor-pointer">
+          <i class="fa-brands fa-twitch text-xs"></i>
+          <span data-i18n="banner_btn">ชมไลฟ์สด</span>
+        </button>
+        <button onclick="dismissLiveBanner()" aria-label="Dismiss Banner" class="text-slate-500 hover:text-slate-300 p-1 transition cursor-pointer">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Interactive Mouse Spotlight -->
+  <div id="cursor-glow" class="hidden sm:block"></div>
+
+  <!-- Ambient Glow Background -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+    <div id="ambient-1" class="absolute -top-32 left-1/2 -translate-x-1/2 w-[90vw] max-w-[650px] h-[90vw] max-h-[650px] rounded-full blur-[100px] sm:blur-[140px] transition-colors duration-500" style="background-color: var(--ambient-blob-1);"></div>
+    <div id="ambient-2" class="absolute top-[35%] -left-32 w-[60vw] max-w-[380px] h-[60vw] max-h-[380px] rounded-full blur-[90px] sm:blur-[120px] transition-colors duration-500" style="background-color: var(--ambient-blob-2);"></div>
+  </div>
+
+  <div class="w-full max-w-md sm:max-w-xl md:max-w-2xl mx-auto px-3.5 sm:px-6 pt-3">
+    
+    <!-- Top Action Bar -->
+    <div class="flex items-center justify-between mb-3.5 flex-wrap gap-2">
+      <div class="flex items-center gap-2">
+        <!-- Theme Palette -->
+        <div class="flex items-center gap-1.5 bg-slate-900/80 border border-slate-800 backdrop-blur-md px-2.5 py-1.5 rounded-full shadow-lg">
+          <span class="text-[11px] text-slate-400 font-medium mr-1 hidden sm:inline" data-i18n="theme_label"><i class="fa-solid fa-palette text-xs mr-1"></i>ธีม</span>
+          <button onclick="setTheme('emerald')" aria-label="Emerald Theme" class="theme-color-dot active w-5 h-5 rounded-full bg-emerald-500 border-2 border-transparent transition-all cursor-pointer" data-color="emerald" title="เขียว Toxic/Emerald"></button>
+          <button onclick="setTheme('cyan')" aria-label="Cyan Theme" class="theme-color-dot w-5 h-5 rounded-full bg-cyan-400 border-2 border-transparent transition-all cursor-pointer" data-color="cyan" title="ฟ้า Cyber Cyan"></button>
+          <button onclick="setTheme('purple')" aria-label="Purple Theme" class="theme-color-dot w-5 h-5 rounded-full bg-purple-500 border-2 border-transparent transition-all cursor-pointer" data-color="purple" title="ม่วง Twitch Violet"></button>
+        </div>
+
+        <!-- Sound FX Toggle Button -->
+        <button id="btn-sound-toggle" onclick="toggleSoundFx()" aria-label="Toggle Sound Effects" class="flex items-center justify-center w-8 h-8 rounded-full bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white transition active:scale-95 shadow-lg backdrop-blur-md cursor-pointer" title="เปิด/ปิดเสียงเอฟเฟกต์">
+          <i id="sound-icon" class="fa-solid fa-volume-high text-xs" style="color: var(--primary-color);"></i>
+        </button>
+
+        <!-- Language Switcher Button (TH / EN) -->
+        <button id="btn-lang-toggle" onclick="toggleLanguage()" class="px-2.5 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-slate-300 hover:text-white text-xs font-semibold tracking-wider transition active:scale-95 shadow-lg backdrop-blur-md flex items-center gap-1 cursor-pointer" title="สลับภาษา / Change Language">
+          <i class="fa-solid fa-globe text-[11px]" style="color: var(--primary-color);"></i>
+          <span id="lang-indicator">EN</span>
+        </button>
+      </div>
+
+      <!-- Share Button -->
+      <button id="btn-share" aria-label="Share Profile" class="flex items-center gap-1.5 text-xs text-slate-300 hover:text-white bg-slate-900/80 border border-slate-800 hover:border-emerald-500/40 px-3.5 py-1.5 rounded-full transition backdrop-blur-md cursor-pointer active:scale-95 shadow-lg">
+        <i class="fa-solid fa-share-nodes" style="color: var(--primary-color);"></i>
+        <span data-i18n="share_btn">แชร์</span>
+      </button>
+    </div>
+
+    <!-- HERO BANNER SECTION (banner-480.png) -->
+    <div class="relative w-full rounded-3xl overflow-hidden mb-6 border shadow-2xl tilt-card group" style="border-color: var(--primary-border);">
+      <div class="relative w-full aspect-[16/9] sm:aspect-[21/9] overflow-hidden bg-slate-950">
+        <img 
+          src="banner-480.png" 
+          alt="DaLines Official Banner" 
+          width="853"
+          height="480"
+          fetchpriority="high"
+          class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out select-none"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-[#06080c] via-transparent to-transparent"></div>
+        <div class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-emerald-500/40 text-[10px] sm:text-xs font-gaming font-bold text-emerald-400 flex items-center gap-1.5 shadow-lg">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          OFFICIAL BANNER
+        </div>
+      </div>
+
+      <!-- Profile Avatar Overlap -->
+      <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center">
+        <div id="profile-container" class="relative group cursor-pointer">
+          <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full p-1 bg-gradient-to-tr from-emerald-400 via-cyan-400 to-purple-600 neon-border-glow transition-transform duration-300 group-hover:scale-105 shadow-2xl">
+            <img 
+              id="profile-img"
+              referrerpolicy="no-referrer"
+              src="Logo.png"
+              width="300"
+              height="300"
+              onerror="this.src='https://static-cdn.jtvnw.net/jtv_user_pictures/a917340f-26d3-4d3a-9b41-34ed68f6b3a1-profile_image-300x300.png'"
+              alt="DaLines Profile" 
+              class="w-full h-full rounded-full object-cover bg-neutral-900 select-none pointer-events-none"
+              loading="eager"
+            />
+          </div>
+          <span class="absolute bottom-1 right-1.5 sm:bottom-1.5 sm:right-2 w-4 h-4 sm:w-5 sm:h-5 bg-[#9146FF] border-2 sm:border-4 border-[#06080c] rounded-full animate-pulse shadow-md" title="Twitch Affiliate"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Header Info -->
+    <header class="flex flex-col items-center text-center mt-3 mb-6">
+      <h1 class="glitch-hover text-2xl sm:text-3xl font-extrabold font-gaming tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-white to-cyan-300 cursor-pointer select-none">
+        DaLines
+      </h1>
+      <p class="text-slate-400 text-xs sm:text-sm mt-1 max-w-xs sm:max-w-md px-2 leading-relaxed" data-i18n="bio_text">
+        🎮 สตรีมเมอร์สายยิง เน้นโยน จริงจังมาเยอะแล้วครับ! • Just an FPS & Battle Royale lover from Thailand 🇹🇭
+      </p>
+
+      <!-- Sub Profile & Stream Details -->
+      <div class="mt-2.5 flex flex-wrap items-center justify-center gap-2">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/90 border border-slate-800 text-[11px] sm:text-xs text-slate-300 shadow-md">
+          <span class="text-emerald-400"><i class="fa-solid fa-user"></i></span>
+          <span data-i18n="name_tag">ตวง (Tuang) • 30 yrs</span>
+        </div>
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/90 border border-slate-800 text-[11px] sm:text-xs text-slate-300 shadow-md">
+          <span class="text-purple-400"><i class="fa-solid fa-award"></i></span>
+          <span data-i18n="stream_tag">Streaming Since May 2017</span>
+        </div>
+      </div>
+
+      <!-- Games Tags -->
+      <div class="flex items-center justify-center gap-2 mt-2.5 flex-wrap">
+        <span class="px-2.5 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-medium bg-orange-500/10 text-orange-300 border border-orange-500/30 flex items-center gap-1">
+          <i class="fa-solid fa-shield-halved text-[9px]"></i> Apex Legends
+        </span>
+        <span class="px-2.5 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-medium bg-red-500/10 text-red-300 border border-red-500/30 flex items-center gap-1">
+          <i class="fa-solid fa-crosshairs text-[9px]"></i> Valorant
+        </span>
+        <span class="px-2.5 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-medium bg-blue-500/10 text-blue-300 border border-blue-500/30 flex items-center gap-1">
+          <i class="fa-solid fa-bolt text-[9px]"></i> Fortnite
+        </span>
+      </div>
+
+      <!-- Quick Platform Buttons -->
+      <div class="flex items-center gap-2 sm:gap-3 mt-4 flex-wrap justify-center">
+        <a href="https://www.twitch.tv/dalines" target="_blank" rel="noopener noreferrer" aria-label="Twitch" class="tilt-card w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-purple-950/40 hover:bg-purple-600/30 border border-purple-500/40 flex items-center justify-center text-purple-400 hover:text-white transition active:scale-95 shadow-lg">
+          <i class="fa-brands fa-twitch text-base sm:text-lg"></i>
+        </a>
+        <a href="https://discord.gg/3m9x688YCG" target="_blank" rel="noopener noreferrer" aria-label="Discord" class="tilt-card w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-indigo-950/40 hover:bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center text-[#5865F2] hover:text-white transition active:scale-95 shadow-lg">
+          <i class="fa-brands fa-discord text-base sm:text-lg"></i>
+        </a>
+        <a href="https://kick.com/dalinesth" target="_blank" rel="noopener noreferrer" aria-label="Kick" class="tilt-card w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-emerald-950/40 hover:bg-emerald-600/30 border border-emerald-500/40 flex items-center justify-center text-emerald-400 hover:text-white transition active:scale-95 shadow-lg font-bold text-xs">
+          KICK
+        </a>
+        <a href="https://www.tiktok.com/@dalinestuang" target="_blank" rel="noopener noreferrer" aria-label="TikTok" class="tilt-card w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-pink-950/40 hover:bg-pink-600/30 border border-pink-500/30 flex items-center justify-center text-pink-400 hover:text-white transition active:scale-95 shadow-lg">
+          <i class="fa-brands fa-tiktok text-base sm:text-lg"></i>
+        </a>
+        <a href="https://www.facebook.com/DaLinesTuang" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="tilt-card w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-blue-950/40 hover:bg-blue-600/30 border border-blue-500/30 flex items-center justify-center text-blue-400 hover:text-white transition active:scale-95 shadow-lg">
+          <i class="fa-brands fa-facebook-f text-base sm:text-lg"></i>
+        </a>
+        <a href="https://www.instagram.com/tuangdanai/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="tilt-card w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-rose-950/40 hover:bg-rose-600/30 border border-rose-500/30 flex items-center justify-center text-rose-400 hover:text-white transition active:scale-95 shadow-lg">
+          <i class="fa-brands fa-instagram text-base sm:text-lg"></i>
+        </a>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs (5 แท็บหลัก) -->
+    <nav class="grid grid-cols-5 p-1 sm:p-1.5 rounded-2xl bg-slate-900/80 border border-slate-800 backdrop-blur-md mb-5 sm:mb-6 gap-1 shadow-xl" aria-label="Main Navigation">
+      <button type="button" data-tab="links" class="tab-btn theme-active-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs rounded-xl transition-all duration-200 cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5">
+        <i class="fa-solid fa-link text-xs"></i>
+        <span class="truncate" data-i18n="tab_links">ช่องทาง</span>
+      </button>
+      <button type="button" data-tab="stream" class="tab-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-white cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5">
+        <i class="fa-solid fa-circle-play text-red-500 text-xs"></i>
+        <span class="truncate" data-i18n="tab_stream">สตรีมสด</span>
+      </button>
+      <button type="button" data-tab="pc" class="tab-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-white cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5">
+        <i class="fa-solid fa-desktop text-xs"></i>
+        <span class="truncate" data-i18n="tab_pc">สเปก PC</span>
+      </button>
+      <button type="button" data-tab="gear" class="tab-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-white cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5">
+        <i class="fa-solid fa-gamepad text-xs"></i>
+        <span class="truncate" data-i18n="tab_gear">อุปกรณ์</span>
+      </button>
+      <button type="button" data-tab="rules" class="tab-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-white cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5">
+        <i class="fa-solid fa-terminal text-cyan-400 text-xs"></i>
+        <span class="truncate" data-i18n="tab_rules">แชท & บอท</span>
+      </button>
+    </nav>
+
+    <!-- TAB 1: STREAM & SOCIAL LINKS -->
+    <main id="tab-links" class="tab-content active space-y-3">
+      <!-- 1. Twitch Card (Main Platform) -->
+      <a href="https://www.twitch.tv/dalines" target="_blank" rel="noopener noreferrer" class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-[#9146FF]/25 via-slate-900/80 to-slate-900/90 border border-[#9146FF]/50 backdrop-blur-md group shadow-xl">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#9146FF]/25 flex items-center justify-center text-[#c084fc] text-lg sm:text-xl shrink-0 group-hover:scale-110 transition duration-300">
+              <i class="fa-brands fa-twitch"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-white text-sm sm:text-base truncate">Twitch Channel</span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase shrink-0 bg-[#9146FF]/30 text-[#e9d5ff] border border-[#9146FF]/50">
+                  <span class="w-1.5 h-1.5 rounded-full bg-purple-300 inline-block mr-1"></span>MAIN STREAM
+                </span>
+              </div>
+              <p class="text-[11px] sm:text-xs text-slate-300 mt-0.5 truncate" data-i18n="twitch_sub">twitch.tv/dalines • สตรีมหลัก เล่นเกม & ปาร์ตี้คุยสดที่นี่</p>
+            </div>
+          </div>
+          <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-purple-400 text-xs sm:text-sm shrink-0 transition"></i>
+        </div>
+      </a>
+
+      <!-- 2. Discord Community Card -->
+      <a href="https://discord.gg/3m9x688YCG" target="_blank" rel="noopener noreferrer" class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-indigo-500/25 via-slate-900/80 to-slate-900/90 border border-indigo-500/50 backdrop-blur-md group shadow-xl">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#5865F2]/25 flex items-center justify-center text-[#818cf8] text-lg sm:text-xl shrink-0 group-hover:scale-110 transition duration-300">
+              <i class="fa-brands fa-discord"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-white text-sm sm:text-base truncate">Discord Community</span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-[#5865F2]/25 text-[#c7d2fe] border border-[#5865F2]/40 uppercase shrink-0">
+                  Join Server
+                </span>
+              </div>
+              <p class="text-[11px] sm:text-xs text-slate-300 mt-0.5 truncate" data-i18n="discord_sub">ดิสคอร์ดคอมมูนิตี้ พูดคุย หาตี้เล่นเกม และแจ้งเตือนไลฟ์</p>
+            </div>
+          </div>
+          <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-indigo-400 text-xs sm:text-sm shrink-0 transition"></i>
+        </div>
+      </a>
+
+      <!-- 3. Kick Card -->
+      <a href="https://kick.com/dalinesth" target="_blank" rel="noopener noreferrer" class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-emerald-500/20 via-slate-900/80 to-slate-900/90 border border-emerald-500/40 backdrop-blur-md group shadow-xl">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-sm font-extrabold shrink-0 group-hover:scale-110 transition duration-300">
+              KICK
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-white text-sm sm:text-base truncate">Kick Channel</span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 uppercase shrink-0">
+                  Live Hub
+                </span>
+              </div>
+              <p class="text-[11px] sm:text-xs text-slate-300 mt-0.5 truncate" data-i18n="kick_sub">kick.com/dalinesth • อีกหนึ่งช่องทางสตรีมสำรอง</p>
+            </div>
+          </div>
+          <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-emerald-400 text-xs sm:text-sm shrink-0 transition"></i>
+        </div>
+      </a>
+
+      <!-- 4. TikTok Card -->
+      <a href="https://www.tiktok.com/@dalinestuang" target="_blank" rel="noopener noreferrer" class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-pink-500/15 via-slate-900/70 to-slate-900/80 border border-pink-500/35 backdrop-blur-md group shadow-lg">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-pink-500/20 flex items-center justify-center text-pink-400 text-lg sm:text-xl shrink-0 group-hover:scale-110 transition duration-300">
+              <i class="fa-brands fa-tiktok"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-white text-sm sm:text-base truncate">TikTok Channel</span>
+                <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-pink-500/20 text-pink-300 border border-pink-500/30 uppercase shrink-0">Shorts</span>
+              </div>
+              <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5 truncate" data-i18n="tiktok_sub">@dalinestuang • คลิปไฮไลท์ & ช็อตฟันนี่โมเมนต์</p>
+            </div>
+          </div>
+          <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-pink-400 text-xs sm:text-sm shrink-0 transition"></i>
+        </div>
+      </a>
+
+      <!-- 5. Facebook Fanpage -->
+      <a href="https://www.facebook.com/DaLinesTuang" target="_blank" rel="noopener noreferrer" class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-blue-600/15 via-slate-900/70 to-slate-900/80 border border-blue-500/35 backdrop-blur-md group shadow-lg">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-blue-600/20 flex items-center justify-center text-blue-400 text-lg sm:text-xl shrink-0 group-hover:scale-110 transition duration-300">
+              <i class="fa-brands fa-facebook-f"></i>
+            </div>
+            <div class="min-w-0">
+              <span class="font-semibold text-white text-sm sm:text-base truncate block">Facebook Page</span>
+              <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5 truncate" data-i18n="facebook_sub">DaLines Tuang • อัปเดตตารางเวลาสตรีมและข่าวสาร</p>
+            </div>
+          </div>
+          <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-blue-400 text-xs sm:text-sm shrink-0 transition"></i>
+        </div>
+      </a>
+
+      <!-- 6. Instagram -->
+      <a href="https://www.instagram.com/tuangdanai/" target="_blank" rel="noopener noreferrer" class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-rose-600/15 via-slate-900/70 to-slate-900/80 border border-rose-500/35 backdrop-blur-md group shadow-lg">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-rose-600/20 flex items-center justify-center text-rose-400 text-lg sm:text-xl shrink-0 group-hover:scale-110 transition duration-300">
+              <i class="fa-brands fa-instagram"></i>
+            </div>
+            <div class="min-w-0">
+              <span class="font-semibold text-white text-sm sm:text-base truncate block">Instagram</span>
+              <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5 truncate" data-i18n="instagram_sub">@tuangdanai • ไลฟ์สไตล์และรูปภาพเบื้องหลัง</p>
+            </div>
+          </div>
+          <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-rose-400 text-xs sm:text-sm shrink-0 transition"></i>
+        </div>
+      </a>
+    </main>
+
+    <!-- TAB 2: LIVE STREAM & TRAILER (DUAL PLAYER WITH CHAT) -->
+    <main id="tab-stream" class="tab-content space-y-3.5">
+      <!-- Player Mode Switcher -->
+      <div class="p-2 rounded-2xl bg-slate-900/80 border border-slate-800 backdrop-blur-md flex items-center justify-center gap-2">
+        <button id="btn-mode-live" onclick="setPlayerMode('live')" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-red-600 text-white shadow-lg cursor-pointer">
+          <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+          <span data-i18n="btn_mode_live">🔴 ไลฟ์สด (Twitch Live)</span>
+        </button>
+        <button id="btn-mode-trailer" onclick="setPlayerMode('trailer')" class="flex-1 py-2 px-3 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 hover:bg-slate-800 cursor-pointer">
+          <i class="fa-solid fa-film text-xs"></i>
+          <span data-i18n="btn_mode_trailer">🎬 เทรลเลอร์ช่อง (Trailer)</span>
+        </button>
+      </div>
+
+      <!-- Player Frame -->
+      <div class="tilt-card p-2 sm:p-3 rounded-2xl bg-slate-900/80 border backdrop-blur-md shadow-2xl flex flex-col items-center" style="border-color: var(--primary-border);">
+        <div class="video-responsive w-full shadow-inner bg-black">
+          <iframe 
+            id="twitch-main-player"
+            src="about:blank"
+            frameborder="0" 
+            allowfullscreen="true" 
+            scrolling="no">
+          </iframe>
+        </div>
+
+        <div class="w-full flex items-center justify-between mt-3 px-1 flex-wrap gap-2">
+          <div class="flex items-center gap-2">
+            <span id="player-status-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-gaming font-bold bg-red-500/20 text-red-400 border border-red-500/30 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-ping"></span>
+              STREAMING
+            </span>
+            <span id="player-title-text" class="text-xs text-slate-300 font-medium">Twitch: dalines</span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <!-- Toggle Chat Button -->
+            <button onclick="toggleTwitchChat()" class="text-xs text-slate-300 hover:text-white transition flex items-center gap-1.5 py-1 px-3 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 font-medium cursor-pointer">
+              <i class="fa-solid fa-comment text-[#9146FF]"></i>
+              <span id="chat-toggle-text">เปิดแชท</span>
+            </button>
+            <a href="https://www.twitch.tv/dalines" target="_blank" rel="noopener noreferrer" class="text-xs text-emerald-400 hover:text-white transition flex items-center gap-1.5 py-1 px-3 rounded-full bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 font-medium">
+              <span data-i18n="open_twitch">ดูบน Twitch</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Collapsible Twitch Chat Frame -->
+        <div id="twitch-chat-container" class="w-full hidden mt-3 pt-3 border-t border-slate-800">
+          <div class="w-full h-80 rounded-xl overflow-hidden bg-black border border-slate-800">
+            <iframe 
+              id="twitch-chat-frame"
+              src="about:blank"
+              class="w-full h-full border-0">
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- TAB 3: PC SPECS -->
+    <main id="tab-pc" class="tab-content space-y-3">
+      <div class="text-xs text-slate-400 flex items-center justify-between px-1 mb-1">
+        <span data-i18n="hw_conf">Hardware Configuration</span>
+        <span class="font-medium" style="color: var(--primary-color);">DaLines Battle Station</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+        <!-- CPU -->
+        <div class="tilt-card p-3 sm:p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md flex items-center justify-between gap-2 shadow-lg">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-orange-500/15 border border-orange-500/30 flex items-center justify-center text-orange-400 shrink-0">
+              <i class="fa-solid fa-microchip text-sm"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-medium">Processor</div>
+              <div class="text-xs sm:text-sm font-semibold text-white truncate">AMD Ryzen 5 <span class="counter-number" data-target="5600">5600</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GPU -->
+        <div class="tilt-card p-3 sm:p-3.5 rounded-2xl bg-slate-900/70 backdrop-blur-md flex items-center justify-between gap-2 shadow-lg" style="border: 1px solid var(--primary-border);">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center shrink-0" style="background-color: var(--primary-hover-bg); border: 1px solid var(--primary-border); color: var(--primary-color);">
+              <i class="fa-solid fa-memory text-sm"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-medium">Graphics Card</div>
+              <div class="text-xs sm:text-sm font-semibold text-white truncate">GALAX RTX 5060 Ti <span class="counter-number" data-target="8">8</span>GB</div>
+            </div>
+          </div>
+          <span class="accent-badge text-[10px] sm:text-[11px] px-2 py-0.5 rounded-lg shrink-0 flex items-center gap-1 font-medium shadow-sm">
+            GALAX
+          </span>
+        </div>
+
+        <!-- RAM -->
+        <div class="tilt-card p-3 sm:p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md flex items-center justify-between gap-2 shadow-lg">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-pink-500/15 border border-pink-500/30 flex items-center justify-center text-pink-400 shrink-0">
+              <i class="fa-solid fa-bars-staggered text-sm"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-medium">RAM Memory</div>
+              <div class="text-xs sm:text-sm font-semibold text-white truncate">Corsair Vengeance RGB Pro <span class="counter-number" data-target="16">16</span>GB</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mainboard -->
+        <div class="tilt-card p-3 sm:p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md flex items-center justify-between gap-2 shadow-lg">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
+              <i class="fa-solid fa-chess-board text-sm"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-medium">Motherboard</div>
+              <div class="text-xs sm:text-sm font-semibold text-white truncate">ASRock B450M Steel Legend</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PSU -->
+        <div class="tilt-card p-3 sm:p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md flex items-center justify-between gap-2 shadow-lg">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-yellow-500/15 border border-yellow-500/30 flex items-center justify-center text-yellow-400 shrink-0">
+              <i class="fa-solid fa-bolt text-sm"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-medium">Power Supply</div>
+              <div class="text-xs sm:text-sm font-semibold text-white truncate">Corsair RM<span class="counter-number" data-target="750">750</span>e</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dual Displays -->
+        <div class="tilt-card p-3 sm:p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md flex items-center justify-between gap-2 shadow-lg">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
+              <i class="fa-solid fa-tv text-sm"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-medium">Monitors (Dual Setup)</div>
+              <div class="text-xs sm:text-sm font-semibold text-white truncate">Xiaomi 2K <span class="counter-number" data-target="165">165</span>Hz • Dell <span class="counter-number" data-target="144">144</span>Hz</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- TAB 4: GAMING GEAR -->
+    <main id="tab-gear" class="tab-content space-y-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+        <!-- Mouse -->
+        <div class="tilt-card p-3 sm:p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md flex items-center justify-between gap-2 shadow-lg">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 shrink-0">
+              <i class="fa-solid fa-computer-mouse text-sm"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-medium truncate">Wireless Mouse</div>
+              <div class="text-xs sm:text-sm font-semibold text-white truncate">ATK Ghost Ultimate</div>
+            </div>
+          </div>
+          <span class="accent-badge text-[10px] sm:text-[11px] px-2 py-0.5 rounded-lg shrink-0 font-medium">FPS Main</span>
+        </div>
+
+        <!-- Controller -->
+        <div class="tilt-card p-3 sm:p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md flex items-center justify-between gap-2 shadow-lg">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+              <i class="fa-solid fa-gamepad text-sm"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-medium truncate">Gamepad Controller</div>
+              <div class="text-xs sm:text-sm font-semibold text-white truncate">BIGBIG WON Blitz 2</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Keyboard -->
+        <div class="tilt-card p-3 sm:p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md flex items-center justify-between gap-2 shadow-lg">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center shrink-0" style="background-color: var(--primary-hover-bg); border: 1px solid var(--primary-border); color: var(--primary-color);">
+              <i class="fa-solid fa-keyboard text-sm"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-medium truncate">Custom Keyboard</div>
+              <div class="text-xs sm:text-sm font-semibold text-white truncate">LOGA X Carnival 96% Aluminum</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mouse Pad -->
+        <div class="tilt-card p-3 sm:p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md flex items-center justify-between gap-2 shadow-lg">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
+              <i class="fa-solid fa-rug text-sm"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-medium truncate">Deskmat / Mousepad</div>
+              <div class="text-xs sm:text-sm font-semibold text-white truncate">Mantra XXL Indigoskin</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Earphone & DAC -->
+        <div class="tilt-card p-3 sm:p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md flex items-center justify-between gap-2 shadow-lg">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-400 shrink-0">
+              <i class="fa-solid fa-headphones text-sm"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-medium truncate">IEM Earphones + DAC</div>
+              <div class="text-xs sm:text-sm font-semibold text-white truncate">BGVP Light + BGVP M01 DAC</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Microphone -->
+        <div class="tilt-card p-3 sm:p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md flex items-center justify-between gap-2 shadow-lg">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-red-500/15 border border-red-500/30 flex items-center justify-center text-red-400 shrink-0">
+              <i class="fa-solid fa-microphone text-sm"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-medium truncate">Stream Microphone</div>
+              <div class="text-xs sm:text-sm font-semibold text-white truncate">FIFINE K690</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Webcam -->
+        <div class="tilt-card p-3 sm:p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md flex items-center justify-between gap-2 shadow-lg sm:col-span-2">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 shrink-0">
+              <i class="fa-solid fa-video text-sm"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-medium truncate">Webcam</div>
+              <div class="text-xs sm:text-sm font-semibold text-white truncate">Logitech C922 Pro Stream</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- TAB 5: CHAT RULES & PARTY BOT -->
+    <main id="tab-rules" class="tab-content space-y-3">
+      <!-- Party & In-game ID -->
+      <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-emerald-500/10 via-slate-900/70 to-cyan-900/20 border border-emerald-500/30 backdrop-blur-md shadow-lg">
+        <div class="flex items-center gap-2.5 mb-2 text-white font-semibold text-sm sm:text-base">
+          <i class="fa-solid fa-users text-emerald-400"></i>
+          <span data-i18n="party_title">Join the Party & Add In-Game</span>
+        </div>
+        <p class="text-xs text-slate-300 leading-relaxed mb-3" data-i18n="party_desc">
+          ชื่อในเกม / IGN: <strong class="text-emerald-300 font-mono text-sm">DaLines</strong> (รบกวนกด Follow ในสตรีมก่อนแอดมาเล่นด้วยกันน้า!)
+        </p>
+        <div class="flex items-center gap-2">
+          <button onclick="copyIGN()" class="text-xs px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-medium transition active:scale-95 flex items-center gap-1.5 cursor-pointer">
+            <i class="fa-regular fa-copy"></i>
+            <span data-i18n="copy_ign">คัดลอกชื่อในเกม: DaLines</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Chat Rules -->
+      <div class="p-4 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md shadow-lg">
+        <div class="flex items-center gap-2 mb-2 text-xs font-semibold uppercase text-slate-400">
+          <i class="fa-solid fa-comment-dots text-purple-400"></i>
+          <span data-i18n="chat_rules_title">กฎกติกาการพูดคุย (Chat Rules)</span>
+        </div>
+        <ul class="text-xs sm:text-sm space-y-2 text-slate-300 leading-relaxed">
+          <li class="flex items-start gap-2">
+            <span class="text-emerald-400 mt-0.5">•</span>
+            <span data-i18n="rule_1">พิมพ์คุยเล่นได้ตลอด ถามได้ไม่กัดครับ เป็นกันเองได้เลย</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-emerald-400 mt-0.5">•</span>
+            <span data-i18n="rule_2">ให้เกียรติเพื่อนๆ ในแชท ไม่สปอยล์ และงดใช้คำพูดเสียดสีรุนแรง</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-0.5">•</span>
+            <span data-i18n="rule_3">คำสั่งบอท: พิมพ์ <code class="bg-slate-800 px-1.5 py-0.5 rounded text-emerald-300 font-mono text-xs">!commands</code> ในแชท Twitch เพื่อเล่นกับบอทและดูคำสั่งทั้งหมด</span>
+          </li>
+        </ul>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-8 text-center text-xs text-slate-500">
+      <p>© 2026 DaLines. All Rights Reserved.</p>
+      <p class="mt-1" data-i18n="footer_thanks">Just an FPS & Battle Royale lover from Thailand 🇹🇭</p>
+    </footer>
+
+  </div>
+
+  <!-- BACK TO TOP FLOATING BUTTON -->
+  <button id="btn-back-to-top" onclick="scrollToTop()" aria-label="Back to Top" class="fixed bottom-6 right-5 sm:right-8 z-40 w-10 h-10 rounded-full bg-slate-900/80 border border-slate-700 text-slate-300 hover:text-white flex items-center justify-center shadow-2xl backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300 active:scale-90 hover:border-emerald-500/50 cursor-pointer" style="color: var(--primary-color);">
+    <i class="fa-solid fa-arrow-up text-sm"></i>
+  </button>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl text-black font-semibold text-xs shadow-lg opacity-0 pointer-events-none transition duration-300" style="background-color: var(--primary-color);">
+    คัดลอกเรียบร้อยแล้วครับ! 🎯
+  </div>
+
+  <script>
+    // -----------------------------------------------------------------
+    // TWITCH VIDEO & STREAM PLAYER CONTROLLER
+    // -----------------------------------------------------------------
+    let currentPlayerMode = 'live'; // 'live' หรือ 'trailer'
+    let isChatOpen = false;
+
+    function getTwitchParentsQuery() {
+      const host = window.location.hostname;
+      const parents = new Set(['localhost', '127.0.0.1', 'pages.dalines.workers.dev', 'dalines.tv']);
+      if (host) parents.add(host);
+      return Array.from(parents).filter(Boolean).map(p => `parent=${encodeURIComponent(p)}`).join('&');
+    }
+
+    function updateTwitchPlayer(mode) {
+      const iframe = document.getElementById('twitch-main-player');
+      const badge = document.getElementById('player-status-badge');
+      const title = document.getElementById('player-title-text');
+      const btnLive = document.getElementById('btn-mode-live');
+      const btnTrailer = document.getElementById('btn-mode-trailer');
+      const parentQuery = getTwitchParentsQuery();
+
+      if (!iframe) return;
+
+      if (mode === 'live') {
+        currentPlayerMode = 'live';
+        iframe.src = `https://player.twitch.tv/?channel=dalines&${parentQuery}&autoplay=true&muted=false`;
+        
+        if (badge) {
+          badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-gaming font-bold bg-red-500/20 text-red-400 border border-red-500/30 flex items-center gap-1';
+          badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-ping"></span>STREAMING';
+        }
+        if (title) title.innerText = 'Twitch: dalines (Live Stream)';
+        
+        btnLive.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-red-600 text-white shadow-lg cursor-pointer';
+        btnTrailer.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 hover:bg-slate-800 cursor-pointer';
+      } else {
+        currentPlayerMode = 'trailer';
+        iframe.src = `https://player.twitch.tv/?video=1475544386&${parentQuery}&autoplay=true`;
+        
+        if (badge) {
+          badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-gaming font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1';
+          badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>TRAILER VOD';
+        }
+        if (title) title.innerText = 'Twitch VOD: 1475544386 (Trailer)';
+        
+        btnTrailer.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-emerald-600 text-white shadow-lg cursor-pointer';
+        btnLive.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 hover:bg-slate-800 cursor-pointer';
+      }
+    }
+
+    function setPlayerMode(mode) {
+      playSound('tab');
+      updateTwitchPlayer(mode);
+    }
+
+    function toggleTwitchChat() {
+      playSound('pop');
+      const chatContainer = document.getElementById('twitch-chat-container');
+      const chatFrame = document.getElementById('twitch-chat-frame');
+      const chatText = document.getElementById('chat-toggle-text');
+      const parentQuery = getTwitchParentsQuery();
+
+      isChatOpen = !isChatOpen;
+      if (isChatOpen) {
+        chatContainer.classList.remove('hidden');
+        chatFrame.src = `https://www.twitch.tv/embed/dalines/chat?${parentQuery}&darkpopout`;
+        chatText.innerText = 'ปิดแชท';
+      } else {
+        chatContainer.classList.add('hidden');
+        chatFrame.src = 'about:blank';
+        chatText.innerText = 'เปิดแชท';
+      }
+    }
+
+    function switchToStreamTab(mode) {
+      playSound('tab');
+      const streamBtn = document.querySelector('[data-tab="stream"]');
+      if (streamBtn) streamBtn.click();
+      setPlayerMode(mode);
+    }
+
+    // -----------------------------------------------------------------
+    // MULTI-LANGUAGE SYSTEM (i18n: TH & EN)
+    // -----------------------------------------------------------------
+    const translations = {
+      th: {
+        banner_desc: "• สตรีมหลักบน Twitch แวะมาเมาท์กันได้!",
+        banner_btn: "ชมไลฟ์สด",
+        theme_label: '<i class="fa-solid fa-palette text-xs mr-1"></i>ธีม',
+        share_btn: "แชร์",
+        bio_text: "🎮 สตรีมเมอร์สายยิง เน้นโยน จริงจังมาเยอะแล้วครับ! • Just an FPS & Battle Royale lover from Thailand 🇹🇭",
+        name_tag: "ตวง (Tuang) • 30 yrs",
+        stream_tag: "Streaming Since May 2017",
+        tab_links: "ช่องทาง",
+        tab_stream: "สตรีมสด",
+        tab_pc: "สเปก PC",
+        tab_gear: "อุปกรณ์",
+        tab_rules: "แชท & บอท",
+        btn_mode_live: "🔴 ไลฟ์สด (Twitch Live)",
+        btn_mode_trailer: "🎬 เทรลเลอร์ช่อง (Trailer)",
+        open_twitch: "ดูบน Twitch",
+        twitch_sub: "twitch.tv/dalines • สตรีมหลัก เล่นเกม & ปาร์ตี้คุยสดที่นี่",
+        discord_sub: "ดิสคอร์ดคอมมูนิตี้ พูดคุย หาตี้เล่นเกม และแจ้งเตือนไลฟ์",
+        kick_sub: "kick.com/dalinesth • อีกหนึ่งช่องทางสตรีมสำรอง",
+        tiktok_sub: "@dalinestuang • คลิปไฮไลท์ & ช็อตฟันนี่โมเมนต์",
+        facebook_sub: "DaLines Tuang • อัปเดตตารางเวลาสตรีมและข่าวสาร",
+        instagram_sub: "@tuangdanai • ไลฟ์สไตล์และรูปภาพเบื้องหลัง",
+        hw_conf: "Hardware Configuration",
+        party_title: "Join the Party & Add In-Game",
+        party_desc: "ชื่อในเกม / IGN: <strong class=\"text-emerald-300 font-mono text-sm\">DaLines</strong> (รบกวนกด Follow ในสตรีมก่อนแอดมาเล่นด้วยกันน้า!)",
+        copy_ign: "คัดลอกชื่อในเกม: DaLines",
+        chat_rules_title: "กฎกติกาการพูดคุย (Chat Rules)",
+        rule_1: "พิมพ์คุยเล่นได้ตลอด ถามได้ไม่กัดครับ เป็นกันเองได้เลย",
+        rule_2: "ให้เกียรติเพื่อนๆ ในแชท ไม่สปอยล์ และงดใช้คำพูดเสียดสีรุนแรง",
+        rule_3: "คำสั่งบอท: พิมพ์ !commands ในแชท Twitch เพื่อเล่นกับบอทและดูคำสั่งทั้งหมด",
+        footer_thanks: "Just an FPS & Battle Royale lover from Thailand 🇹🇭",
+        toast_copy_link: "คัดลอกลิงก์โปรไฟล์ DaLines แล้วครับ! 🔗",
+        toast_copy_ign: "คัดลอก IGN: DaLines เรียบร้อย! 🎮",
+        toast_sound_on: "เปิดเสียงเอฟเฟกต์แล้ว 🔊",
+        toast_sound_off: "ปิดเสียงเอฟเฟกต์แล้ว 🔇"
+      },
+      en: {
+        banner_desc: "• Catch me live on Twitch! Come say hi!",
+        banner_btn: "Watch Live",
+        theme_label: '<i class="fa-solid fa-palette text-xs mr-1"></i>Theme',
+        share_btn: "Share",
+        bio_text: "🎮 FPS & Battle Royale lover from Thailand 🇹🇭 • Streaming Since 2017",
+        name_tag: "Tuang • 30 yrs",
+        stream_tag: "Twitch Affiliate Since Jul 2019",
+        tab_links: "Channels",
+        tab_stream: "Live Stream",
+        tab_pc: "PC Specs",
+        tab_gear: "Gear Setup",
+        tab_rules: "Chat & Bot",
+        btn_mode_live: "🔴 Live Stream",
+        btn_mode_trailer: "🎬 Channel Trailer",
+        open_twitch: "Watch on Twitch",
+        twitch_sub: "twitch.tv/dalines • Main stream, live chat & gameplay",
+        discord_sub: "Discord Community Hub, party search & stream alerts",
+        kick_sub: "kick.com/dalinesth • Secondary streaming platform",
+        tiktok_sub: "@dalinestuang • Highlights & funny gaming moments",
+        facebook_sub: "DaLines Tuang • Schedule announcements & updates",
+        instagram_sub: "@tuangdanai • Personal vibes & photos",
+        hw_conf: "Hardware Configuration",
+        party_title: "Join the Party & In-Game ID",
+        party_desc: "In-Game Name: <strong class=\"text-emerald-300 font-mono text-sm\">DaLines</strong> (Please follow the stream before sending a friend request!)",
+        copy_ign: "Copy IGN: DaLines",
+        chat_rules_title: "Community Guidelines & Chat Rules",
+        rule_1: "Friendly chat, feel free to ask questions and hang out.",
+        rule_2: "Respect each other in chat, no spoilers or toxic behavior.",
+        rule_3: "Bot commands: Type !commands in Twitch chat to interact.",
+        footer_thanks: "Just an FPS & Battle Royale lover from Thailand 🇹🇭",
+        toast_copy_link: "DaLines Profile link copied! 🔗",
+        toast_copy_ign: "IGN: DaLines copied to clipboard! 🎮",
+        toast_sound_on: "Sound FX Enabled 🔊",
+        toast_sound_off: "Sound FX Muted 🔇"
+      }
+    };
+
+    let currentLang = localStorage.getItem('dalines_lang') || 'th';
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('dalines_lang', lang);
+      document.documentElement.lang = lang;
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) {
+          el.innerHTML = translations[lang][key];
+        }
+      });
+
+      const indicator = document.getElementById('lang-indicator');
+      if (indicator) {
+        indicator.innerText = (lang === 'th') ? 'EN' : 'TH';
+      }
+    }
+
+    function toggleLanguage() {
+      const nextLang = (currentLang === 'th') ? 'en' : 'th';
+      setLanguage(nextLang);
+      playSound('theme');
+    }
+
+    // -----------------------------------------------------------------
+    // SOUND EFFECTS ENGINE (Web Audio API)
+    // -----------------------------------------------------------------
+    let audioCtx = null;
+    let isSoundEnabled = localStorage.getItem('dalines_sound') !== 'false';
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playSound(type) {
+      if (!isSoundEnabled) return;
+      try {
+        initAudio();
+        const now = audioCtx.currentTime;
+
+        if (type === 'tab') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(480, now);
+          osc.frequency.exponentialRampToValueAtTime(720, now + 0.06);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.06);
+        } else if (type === 'theme') {
+          [440, 554.37, 659.25].forEach((freq, idx) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+            gain.gain.setValueAtTime(0.05, now + idx * 0.04);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.04 + 0.15);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now + idx * 0.04);
+            osc.stop(now + idx * 0.04 + 0.15);
+          });
+        } else if (type === 'sparkle') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800 + Math.random() * 400, now);
+          osc.frequency.exponentialRampToValueAtTime(1400, now + 0.08);
+          gain.gain.setValueAtTime(0.03, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if (type === 'pop') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(300, now);
+          osc.frequency.exponentialRampToValueAtTime(600, now + 0.08);
+          gain.gain.setValueAtTime(0.06, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        }
+      } catch (e) {}
+    }
+
+    function toggleSoundFx() {
+      isSoundEnabled = !isSoundEnabled;
+      localStorage.setItem('dalines_sound', isSoundEnabled);
+      updateSoundIcon();
+      if (isSoundEnabled) {
+        playSound('pop');
+        showToast(translations[currentLang].toast_sound_on);
+      } else {
+        showToast(translations[currentLang].toast_sound_off);
+      }
+    }
+
+    function updateSoundIcon() {
+      const icon = document.getElementById('sound-icon');
+      if (icon) {
+        if (isSoundEnabled) {
+          icon.className = 'fa-solid fa-volume-high text-xs';
+          icon.style.color = 'var(--primary-color)';
+        } else {
+          icon.className = 'fa-solid fa-volume-xmark text-xs text-slate-500';
+          icon.style.color = '';
+        }
+      }
+    }
+
+    // -----------------------------------------------------------------
+    // THEME CONTROLLER
+    // -----------------------------------------------------------------
+    function setTheme(color) {
+      if (color === 'emerald') {
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme', color);
+      }
+      localStorage.setItem('dalines_theme', color);
+
+      document.querySelectorAll('.theme-color-dot').forEach(dot => {
+        if (dot.getAttribute('data-color') === color) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+      playSound('theme');
+    }
+
+    const savedTheme = localStorage.getItem('dalines_theme') || 'emerald';
+    setTheme(savedTheme);
+
+    function dismissLiveBanner() {
+      const banner = document.getElementById('sticky-live-banner');
+      if (banner) {
+        banner.style.transform = 'translateY(-100%)';
+        banner.style.opacity = '0';
+        setTimeout(() => banner.remove(), 300);
+      }
+      playSound('pop');
+    }
+
+    function scrollToTop() {
+      playSound('pop');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.addEventListener('scroll', () => {
+      const btn = document.getElementById('btn-back-to-top');
+      if (!btn) return;
+      if (window.scrollY > 300) {
+        btn.classList.remove('opacity-0', 'pointer-events-none');
+        btn.classList.add('opacity-100');
+      } else {
+        btn.classList.add('opacity-0', 'pointer-events-none');
+        btn.classList.remove('opacity-100');
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setLanguage(currentLang);
+      updateSoundIcon();
+
+      // Mouse Spotlight
+      const cursorGlow = document.getElementById('cursor-glow');
+      if (cursorGlow && window.matchMedia('(hover: hover)').matches) {
+        window.addEventListener('mousemove', (e) => {
+          cursorGlow.style.left = `${e.clientX}px`;
+          cursorGlow.style.top = `${e.clientY}px`;
+        });
+      }
+
+      // 3D Tilt Effect
+      const tiltCards = document.querySelectorAll('.tilt-card');
+      const isTouchDevice = !window.matchMedia('(hover: hover)').matches;
+
+      if (!isTouchDevice) {
+        tiltCards.forEach(card => {
+          card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * -5;
+            const rotateY = ((x - centerX) / centerX) * 5;
+
+            card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-2px)`;
+            card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
+            card.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`);
+          });
+
+          card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+          });
+        });
+      }
+
+      // Sparkles Effect
+      document.addEventListener('pointerdown', (e) => {
+        playSound('sparkle');
+
+        const themeCol = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim() || '#10b981';
+        const colors = [themeCol, '#ffffff', '#a855f7', '#38bdf8', '#fbbf24'];
+
+        for (let i = 0; i < 6; i++) {
+          const sparkle = document.createElement('div');
+          sparkle.className = 'sparkle-particle';
+          const size = Math.random() * 6 + 4;
+          sparkle.style.width = `${size}px`;
+          sparkle.style.height = `${size}px`;
+          sparkle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          sparkle.style.boxShadow = `0 0 8px ${sparkle.style.backgroundColor}`;
+          sparkle.style.left = `${e.clientX}px`;
+          sparkle.style.top = `${e.clientY}px`;
+
+          const angle = Math.random() * Math.PI * 2;
+          const distance = Math.random() * 45 + 18;
+          sparkle.style.setProperty('--tx', `${Math.cos(angle) * distance - 50}%`);
+          sparkle.style.setProperty('--ty', `${Math.sin(angle) * distance - 50}%`);
+
+          document.body.appendChild(sparkle);
+          setTimeout(() => sparkle.remove(), 650);
+        }
+      });
+
+      // Number Counter
+      function animateCounters(container) {
+        const counters = container.querySelectorAll('.counter-number');
+        counters.forEach(counter => {
+          const target = +counter.getAttribute('data-target');
+          const duration = 600;
+          const start = 0;
+          const startTime = performance.now();
+
+          function updateCount(currentTime) {
+            const progress = Math.min((currentTime - startTime) / duration, 1);
+            const currentVal = Math.floor(progress * (target - start) + start);
+            counter.innerText = currentVal;
+            if (progress < 1) {
+              requestAnimationFrame(updateCount);
+            } else {
+              counter.innerText = target;
+            }
+          }
+          requestAnimationFrame(updateCount);
+        });
+      }
+
+      // Tab Switching
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      tabButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          playSound('tab');
+          const targetTab = button.getAttribute('data-tab');
+
+          tabContents.forEach(content => {
+            if (content.id === `tab-${targetTab}`) {
+              content.classList.add('active');
+              if (targetTab === 'pc') {
+                animateCounters(content);
+              }
+              if (targetTab === 'stream') {
+                updateTwitchPlayer(currentPlayerMode);
+              }
+            } else {
+              content.classList.remove('active');
+            }
+          });
+
+          tabButtons.forEach(btn => {
+            if (btn === button) {
+              btn.className = 'tab-btn theme-active-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs rounded-xl transition-all duration-200 cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5';
+            } else {
+              btn.className = 'tab-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-white cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5';
+            }
+          });
+        });
+      });
+
+      // Share Button
+      const shareBtn = document.getElementById('btn-share');
+      if (shareBtn) {
+        shareBtn.addEventListener('click', () => {
+          playSound('pop');
+          if (navigator.share) {
+            navigator.share({
+              title: 'DaLines | Profile Hub & Battle Station',
+              url: window.location.href
+            }).catch(() => {});
+          } else {
+            navigator.clipboard.writeText(window.location.href);
+            showToast(translations[currentLang].toast_copy_link);
+          }
+        });
+      }
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.innerText = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2200);
+    }
+
+    function copyIGN() {
+      playSound('pop');
+      navigator.clipboard.writeText('DaLines');
+      showToast(translations[currentLang].toast_copy_ign);
+    }
+  </script>
+</body>
+</html>
