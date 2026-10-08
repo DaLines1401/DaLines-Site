@@ -53,7 +53,7 @@ if %errorlevel% equ 0 (
     echo ===================================================
     echo   🎉 Push to GitHub successfully!
     echo   ⚡ Cloudflare is now auto-deploying your site!
-    echo   🌐 Live at: https://pages.dalines.workers.dev/
+    echo   🌐 Live at: https://dalines-site.dalines.workers.dev/
     echo ===================================================
 ) else (
     echo.
