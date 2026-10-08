@@ -491,8 +491,8 @@
         <span class="truncate" data-i18n="tab_gear">อุปกรณ์</span>
       </button>
       <button type="button" data-tab="rules" class="tab-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-white cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5">
-        <i class="fa-solid fa-volume-high text-purple-400 text-xs"></i>
-        <span class="truncate" data-i18n="tab_rules">แชท & เสียงมีม</span>
+        <i class="fa-solid fa-robot text-indigo-400 text-xs"></i>
+        <span class="truncate" data-i18n="tab_rules">แชท & บอท & มีม</span>
       </button>
     </nav>
 
@@ -1413,6 +1413,70 @@
         </div>
       </div>
 
+      <!-- NIGHTBOT STREAM COMMANDS HUB -->
+      <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-indigo-500/15 via-slate-900/80 to-blue-900/20 border border-indigo-500/30 backdrop-blur-md shadow-xl">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-3.5 flex-wrap gap-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400">
+              <i class="fa-solid fa-robot text-sm"></i>
+            </div>
+            <div>
+              <div class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5">
+                <span>🤖 รวมคำสั่ง Nightbot ประจำช่อง DaLines</span>
+                <span class="px-2 py-0.5 rounded-full text-[9px] font-mono bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">NIGHTBOT</span>
+              </div>
+              <div class="text-[10px] sm:text-[11px] text-slate-400">
+                คัดลอกคำสั่งไปพิมพ์ในแชท Twitch หรือคลิกดูคำตอบได้ทันที ไม่ต้องรอถามในไลฟ์!
+              </div>
+            </div>
+          </div>
+          <a href="https://nightbot.tv/t/dalines/commands" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-500/30 text-indigo-300 text-[10px] font-medium transition active:scale-95 flex items-center gap-1 cursor-pointer" title="ดูคำสั่งทั้งหมดบน Nightbot">
+            <span>Nightbot (620+ คำสั่ง)</span>
+            <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+          </a>
+        </div>
+
+        <!-- Search & Filter Controls -->
+        <div class="space-y-2 mb-3.5">
+          <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+            <input type="text" id="bot-cmd-search" oninput="filterBotCommands()" placeholder="ค้นหาคำสั่ง เช่น !sens, !dpi, !specs, !ign, !badday..." class="w-full bg-black/60 border border-slate-800 focus:border-indigo-500 rounded-xl pl-8 pr-8 py-2 text-xs text-white placeholder:text-slate-500 outline-none transition" />
+            <button type="button" id="btn-clear-cmd-search" onclick="clearBotCommandSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white text-xs cursor-pointer">
+              <i class="fa-solid fa-circle-xmark"></i>
+            </button>
+          </div>
+
+          <!-- Category Pills -->
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px]" style="scrollbar-width: none;">
+            <button type="button" data-bot-cat="all" onclick="setBotCmdCategory('all', this)" class="cmd-cat-btn px-2.5 py-1 rounded-lg bg-indigo-600 text-white font-bold transition whitespace-nowrap active:scale-95 cursor-pointer">ทั้งหมด (All)</button>
+            <button type="button" data-bot-cat="aim" onclick="setBotCmdCategory('aim', this)" class="cmd-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer">🎯 เป้า & Sens</button>
+            <button type="button" data-bot-cat="ign" onclick="setBotCmdCategory('ign', this)" class="cmd-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer">🎮 ชื่อในเกม (IGN)</button>
+            <button type="button" data-bot-cat="gear" onclick="setBotCmdCategory('gear', this)" class="cmd-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer">💻 สเปก & อุปกรณ์</button>
+            <button type="button" data-bot-cat="social" onclick="setBotCmdCategory('social', this)" class="cmd-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer">🌐 โซเชียล & ติดตาม</button>
+            <button type="button" data-bot-cat="fun" onclick="setBotCmdCategory('fun', this)" class="cmd-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer">🤣 มีม & กวนๆ</button>
+          </div>
+        </div>
+
+        <!-- Commands Grid -->
+        <div id="bot-commands-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 max-h-[380px] overflow-y-auto pr-1"></div>
+
+        <!-- No Results Fallback -->
+        <div id="bot-commands-empty" class="hidden py-8 text-center text-slate-500 text-xs">
+          <i class="fa-solid fa-ghost text-2xl mb-1 text-slate-600 block"></i>
+          <span>ไม่พบคำสั่งที่ค้นหา ลองพิมพ์คำอื่นดูนะ!</span>
+        </div>
+
+        <!-- Footer Info -->
+        <div class="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400">
+          <span class="flex items-center gap-1">
+            <i class="fa-solid fa-lightbulb text-amber-400"></i>
+            <span>คลิกที่คำสั่งเพื่อคัดลอกลง Clipboard ทันที</span>
+          </span>
+          <span id="cmd-count-badge" class="font-mono text-indigo-300">แสดง 23 คำสั่ง</span>
+        </div>
+      </div>
+
       <!-- Chat Rules -->
       <div class="p-4 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md shadow-lg">
         <div class="flex items-center gap-2 mb-2 text-xs font-semibold uppercase text-slate-400">
@@ -1694,7 +1758,7 @@
         tab_stream: "สตรีมสด",
         tab_pc: "สเปก PC",
         tab_gear: "อุปกรณ์",
-        tab_rules: "แชท & เสียงมีม",
+        tab_rules: "แชท & บอท & มีม",
         btn_mode_live: "🔴 ไลฟ์สด (Twitch Live)",
         btn_mode_trailer: "🎬 เทรลเลอร์ช่อง (Trailer)",
         open_twitch: "ดูบน Twitch",
@@ -1746,7 +1810,7 @@
         tab_stream: "Live Stream",
         tab_pc: "PC Specs",
         tab_gear: "Gear Setup",
-        tab_rules: "Chat & Soundboard",
+        tab_rules: "Chat, Bot & FX",
         btn_mode_live: "🔴 Live Stream",
         btn_mode_trailer: "🎬 Channel Trailer",
         open_twitch: "Watch on Twitch",
@@ -2217,6 +2281,7 @@
       initObsTts();
       initClipsVault();
       initAimChallenge();
+      initBotCommands();
 
       // Mouse Spotlight
       const cursorGlow = document.getElementById('cursor-glow');
@@ -3444,6 +3509,348 @@
         hole.style.opacity = '0';
         setTimeout(() => hole.remove(), 700);
       }, 2000);
+    }
+
+    // -----------------------------------------------------------------
+    // NIGHTBOT STREAM COMMANDS HUB
+    // -----------------------------------------------------------------
+    const NIGHTBOT_COMMANDS = [
+      // 🎯 เป้า & ความไวเมาส์ (Aim & Sens)
+      {
+        name: "!sens",
+        cat: "aim",
+        desc: "ความไวเมาส์ในเกม (In-game Sensitivity)",
+        response: "Valorant : in game sens : 0.3 // ADS : 1.0 | Apex : in game sens : 1.8 // ADS : 1.0",
+        tags: ["sens", "ความไว", "เมาส์", "valorant", "apex"]
+      },
+      {
+        name: "!dpi",
+        cat: "aim",
+        desc: "ค่า DPI ของเมาส์ & Polling Rate",
+        response: "DPI 800 ~ Polling rate 1000hz",
+        tags: ["dpi", "mouse", "เมาส์", "hz"]
+      },
+      {
+        name: "!edpi",
+        cat: "aim",
+        desc: "เครื่องคำนวณ eDPI Valorant",
+        response: "https://gamingsmart.com/valorant-edpi-calculator/",
+        isLink: true,
+        tags: ["edpi", "คำนวณ", "sens"]
+      },
+      {
+        name: "!crosshair",
+        cat: "aim",
+        desc: "การตั้งค่าเป้าเล็ง Valorant ยอดฮิต",
+        response: "Asuna 1-2-1-3 SicK 1-3-2-5 //// Pro Player 1 6 1 1 | 1 3 3 4 //// Cross = on 1 6 off 1 2 | 0 20 1 3 off on",
+        tags: ["crosshair", "เป้า", "วาโล", "asuna", "sick"]
+      },
+      {
+        name: "!เป้าไอจี",
+        cat: "aim",
+        desc: "โค้ดเป้าเล็งโพสต์ Instagram DaLines",
+        response: "Outline : Off Center Dot : on 1 1 Inner line : 1 1 4 2 outer line : 1 1 10 5",
+        tags: ["เป้า", "ig", "crosshair"]
+      },
+      {
+        name: "!res",
+        cat: "aim",
+        desc: "ความละเอียดหน้าจอเล่นเกม (Resolution)",
+        response: "2560x1440 (2K Resolution 165Hz)",
+        tags: ["res", "resolution", "จอ", "2k", "1440p"]
+      },
+      {
+        name: "!senscon",
+        cat: "aim",
+        desc: "เว็บแปลงค่าความไวเมาส์ข้ามเกม",
+        response: "https://gamingsmart.com/mouse-sensitivity-converter/",
+        isLink: true,
+        tags: ["converter", "sens", "แปลง"]
+      },
+
+      // 🎮 ไอดีเกม & ช่องทางเล่นด้วยกัน (IGN)
+      {
+        name: "!ign",
+        cat: "ign",
+        desc: "ชื่อไอดีในเกม Valorant (หลัก & รอง)",
+        response: "หลัก DaLines #0001 | ไก่1 DaLines #0002 | ไก่2 DaLines #0003 | ไก่3 DaLines #0004 | ไก่4 DaLines #0005",
+        tags: ["ign", "ชื่อ", "ไอดี", "id", "valorant"]
+      },
+      {
+        name: "!ignapex",
+        cat: "ign",
+        desc: "ชื่อไอดีในเกม Apex Legends",
+        response: "SKB_DaLines",
+        tags: ["apex", "ign", "เอเปก"]
+      },
+      {
+        name: "!igncod",
+        cat: "ign",
+        desc: "ชื่อไอดีใน Call of Duty (Activision ID)",
+        response: "DaLines#9293978",
+        tags: ["cod", "warzone", "call of duty", "ign"]
+      },
+      {
+        name: "!ignfortnite",
+        cat: "ign",
+        desc: "ชื่อไอดีในเกม Fortnite",
+        response: "FAQ.DaLines",
+        tags: ["fortnite", "ฟอร์ตไนท์", "ign"]
+      },
+      {
+        name: "!steam",
+        cat: "ign",
+        desc: "โปรไฟล์ Steam คอมมูนิตี้ของตวง",
+        response: "https://steamcommunity.com/id/taungrw/",
+        isLink: true,
+        tags: ["steam", "สตรีม", "โปรไฟล์"]
+      },
+
+      // 💻 สเปกคอม & เกมมิ่งเกียร์ (Gear)
+      {
+        name: "!specs",
+        cat: "gear",
+        desc: "สเปกคอมพิวเตอร์สตรีมเมอร์ PC",
+        response: "CPU: Ryzen 7 2700 | GPU: GTX 1070 8GB OC | RAM: Corsair RGB Pro 16GB (3000MHz) | Monitor: Xiaomi Mi 2K 27\" (165Hz) + Dell 144Hz",
+        tags: ["spec", "specs", "สเปก", "คอม", "cpu", "gpu", "จอ"]
+      },
+      {
+        name: "!mouse",
+        cat: "gear",
+        desc: "เมาส์เกมมิ่งประจำกาย",
+        response: "Loga Garuda Wireless",
+        tags: ["mouse", "เมาส์", "loga", "garuda"]
+      },
+      {
+        name: "!headset",
+        cat: "gear",
+        desc: "หูฟัง IEM & DAC ฟังเสียงฝีเท้า",
+        response: "BGVP Light (IEM In-Ear Monitor + BGVP M01 DAC)",
+        tags: ["headset", "headphone", "หูฟัง", "dac", "bgvp"]
+      },
+      {
+        name: "!จอ",
+        cat: "gear",
+        desc: "จอมอนิเตอร์เล่นเกม 2 หน้าจอ",
+        response: "Xiaomi Mi 2K Gaming Monitor 27\" (165Hz) & Dell Gaming S2419HGF (144Hz)",
+        tags: ["จอ", "monitor", "165hz", "144hz", "xiaomi"]
+      },
+      {
+        name: "!mousepad",
+        cat: "gear",
+        desc: "แผ่นรองเมาส์เกมมิ่งเกียร์",
+        response: "https://www.facebook.com/102699194460007/posts/310820390314552/?d=n",
+        isLink: true,
+        tags: ["mousepad", "แผ่นรองเมาส์"]
+      },
+
+      // 🌐 โซเชียล & ติดตาม (Social)
+      {
+        name: "!discord",
+        cat: "social",
+        desc: "ดิสคอร์ดคอมมูนิตี้ DaLines",
+        response: "https://discord.gg/62uf9BE",
+        isLink: true,
+        tags: ["discord", "ดิส", "dc"]
+      },
+      {
+        name: "!donate",
+        cat: "social",
+        desc: "ช่องทางโดเนทขึ้นจอสดสตรีม",
+        response: "ezdn.app/dalines หรือ ธ.กสิกร 632-2-17076-7 (ดนัย วงศ์วิเชียร)",
+        tags: ["donate", "โดเนท", "สนับสนุน", "ezdn", "ทรู"]
+      },
+      {
+        name: "!ig",
+        cat: "social",
+        desc: "Instagram ส่วนตัวของ DaLines",
+        response: "https://www.instagram.com/tuangdanai",
+        isLink: true,
+        tags: ["ig", "instagram", "ไอจี"]
+      },
+      {
+        name: "!เพลง",
+        cat: "social",
+        desc: "เพลงเปิดคลอในสตรีม",
+        response: "https://www.youtube.com/watch?v=pqAeeaf50F8",
+        isLink: true,
+        tags: ["เพลง", "song", "youtube"]
+      },
+
+      // 🤣 มีม & คำสั่งกวนๆ (Fun)
+      {
+        name: "!badday",
+        cat: "fun",
+        desc: "เช็กดวงชะตาประจำวันในเกม",
+        response: "มีโอกาสที่คุณจะเจอวันแย่ ๆ 99% เปลี่ยนเกมเล่นเถอะ!",
+        tags: ["badday", "ดวง", "มีม"]
+      },
+      {
+        name: "!cmd2",
+        cat: "fun",
+        desc: "สูตรลับโกงเกม +aim +fps",
+        response: "+1000%aim +1000fps +norecoil +nocooldown +maxhealth +maxarmor",
+        tags: ["cmd2", "สูตร", "โกง", "aim"]
+      },
+      {
+        name: "!delete",
+        cat: "fun",
+        desc: "อารมณ์ตอนลั่นหัวคมๆ จนอยากลบเกม",
+        response: "░░░ UNINSTALLING VALORANT ░░░ COMPLETE",
+        tags: ["delete", "ลบ", "valorant", "uninstall"]
+      },
+      {
+        name: "!age",
+        cat: "fun",
+        desc: "อายุของสตรีมเมอร์ DaLines",
+        response: "30 y/o (สตรีมมาตั้งแต่ 2017)",
+        tags: ["age", "อายุ", "ตวง"]
+      }
+    ];
+
+    let currentBotCat = 'all';
+
+    function initBotCommands() {
+      renderBotCommands(NIGHTBOT_COMMANDS);
+    }
+
+    function renderBotCommands(list) {
+      const grid = document.getElementById('bot-commands-grid');
+      const emptyEl = document.getElementById('bot-commands-empty');
+      const badge = document.getElementById('cmd-count-badge');
+      if (!grid) return;
+
+      if (!list || list.length === 0) {
+        grid.innerHTML = '';
+        if (emptyEl) emptyEl.classList.remove('hidden');
+        if (badge) badge.innerText = 'ไม่พบคำสั่ง';
+        return;
+      }
+
+      if (emptyEl) emptyEl.classList.add('hidden');
+      if (badge) badge.innerText = `แสดง ${list.length} คำสั่ง`;
+
+      grid.innerHTML = list.map(cmd => {
+        const isUrl = cmd.isLink || (cmd.response && (cmd.response.startsWith('http://') || cmd.response.startsWith('https://')));
+        const safeResp = escapeHtml(cmd.response);
+        const safeName = escapeHtml(cmd.name);
+        const safeDesc = escapeHtml(cmd.desc || '');
+
+        let linkBtn = '';
+        if (isUrl) {
+          linkBtn = `
+            <a href="${cmd.response}" target="_blank" rel="noopener noreferrer" class="px-2 py-0.5 rounded bg-indigo-500/15 hover:bg-indigo-500/30 text-indigo-300 text-[10px] font-medium transition flex items-center gap-1 active:scale-95 cursor-pointer">
+              <span>เปิดลิงก์</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-[8px]"></i>
+            </a>
+          `;
+        }
+
+        return `
+          <div class="p-2.5 sm:p-3 rounded-xl bg-slate-900/80 hover:bg-slate-900 border border-slate-800 hover:border-indigo-500/40 transition-all duration-200 group flex flex-col justify-between shadow-sm">
+            <div>
+              <div class="flex items-center justify-between gap-1.5 mb-1.5">
+                <button type="button" onclick="copyBotCommand('${safeName}', this)" class="cmd-badge-btn px-2 py-0.5 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/35 border border-indigo-500/40 text-indigo-300 font-mono font-bold text-xs flex items-center gap-1.5 transition active:scale-95 cursor-pointer" title="คลิกเพื่อคัดลอกคำสั่ง">
+                  <span>${safeName}</span>
+                  <i class="fa-regular fa-copy text-[10px] opacity-70 group-hover:opacity-100"></i>
+                </button>
+                <span class="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700/60">${cmd.cat}</span>
+              </div>
+              <div class="text-[11px] font-medium text-slate-300 mb-1 leading-snug">${safeDesc}</div>
+              <div class="text-[10px] text-slate-400 bg-black/40 border border-slate-800/80 rounded-lg p-1.5 font-mono break-all line-clamp-2 select-all">${safeResp}</div>
+            </div>
+            <div class="mt-2 pt-1.5 border-t border-slate-800/60 flex items-center justify-between gap-1">
+              <button type="button" onclick="copyBotCommand('${safeName}', this)" class="text-[10px] text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition cursor-pointer">
+                <i class="fa-solid fa-terminal text-[9px]"></i>
+                <span>ก๊อปปี้คำสั่ง</span>
+              </button>
+              <div class="flex items-center gap-1">
+                ${linkBtn}
+                <button type="button" onclick="copyBotResponse('${safeResp.replace(/'/g, "\\'")}', this)" class="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[10px] font-medium transition active:scale-95 cursor-pointer" title="คัดลอกคำตอบ">
+                  <i class="fa-regular fa-clipboard text-[9px]"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterBotCommands() {
+      const input = document.getElementById('bot-cmd-search');
+      const clearBtn = document.getElementById('btn-clear-cmd-search');
+      const q = (input ? input.value : '').trim().toLowerCase();
+
+      if (clearBtn) {
+        if (q.length > 0) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+      }
+
+      const filtered = NIGHTBOT_COMMANDS.filter(c => {
+        const matchCat = (currentBotCat === 'all' || c.cat === currentBotCat);
+        if (!matchCat) return false;
+
+        if (!q) return true;
+
+        const nameMatch = c.name.toLowerCase().includes(q);
+        const descMatch = (c.desc || '').toLowerCase().includes(q);
+        const respMatch = (c.response || '').toLowerCase().includes(q);
+        const tagMatch = c.tags && c.tags.some(t => t.toLowerCase().includes(q));
+
+        return nameMatch || descMatch || respMatch || tagMatch;
+      });
+
+      renderBotCommands(filtered);
+    }
+
+    function setBotCmdCategory(cat, btn) {
+      playSound('pop');
+      currentBotCat = cat;
+
+      document.querySelectorAll('.cmd-cat-btn').forEach(b => {
+        b.className = 'cmd-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer';
+      });
+
+      if (btn) {
+        btn.className = 'cmd-cat-btn px-2.5 py-1 rounded-lg bg-indigo-600 text-white font-bold transition whitespace-nowrap active:scale-95 cursor-pointer';
+      }
+
+      filterBotCommands();
+    }
+
+    function clearBotCommandSearch() {
+      playSound('pop');
+      const input = document.getElementById('bot-cmd-search');
+      if (input) input.value = '';
+      filterBotCommands();
+    }
+
+    function copyBotCommand(cmd, btn) {
+      playSound('pop');
+      navigator.clipboard.writeText(cmd);
+      showToast(`คัดลอกคำสั่ง ${cmd} แล้ว! วางในแชทได้เลย 🤖`);
+
+      if (btn) {
+        const origHtml = btn.innerHTML;
+        btn.innerHTML = `<span class="text-emerald-400">คัดลอกแล้ว!</span> <i class="fa-solid fa-check text-emerald-400 text-[10px]"></i>`;
+        setTimeout(() => {
+          btn.innerHTML = origHtml;
+        }, 1200);
+      }
+    }
+
+    function copyBotResponse(text, btn) {
+      playSound('pop');
+      navigator.clipboard.writeText(text);
+      showToast('คัดลอกข้อความเรียบร้อย! 📋');
+
+      if (btn) {
+        const origHtml = btn.innerHTML;
+        btn.innerHTML = `<i class="fa-solid fa-check text-emerald-400 text-[9px]"></i>`;
+        setTimeout(() => {
+          btn.innerHTML = origHtml;
+        }, 1200);
+      }
     }
   </script>
 </body>
