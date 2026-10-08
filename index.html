@@ -450,11 +450,11 @@
         </div>
       </a>
 
-      <!-- 2. Donation / Support Card (EZDN) -->
-      <a href="https://ezdn.app/dalines" target="_blank" rel="noopener noreferrer" class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-amber-500/20 via-slate-900/80 to-emerald-500/15 border border-amber-500/40 backdrop-blur-md group shadow-xl hover:border-amber-400/60 transition">
-        <div class="flex items-center justify-between gap-3">
+      <!-- 2. Donation & QR Code Card (EZDN) -->
+      <div class="tilt-card p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/20 via-slate-900/85 to-emerald-500/15 border border-amber-500/40 backdrop-blur-md shadow-xl hover:border-amber-400/60 transition group">
+        <div class="flex items-center justify-between gap-3 mb-3">
           <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
-            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-500/25 flex items-center justify-center text-amber-300 text-lg sm:text-xl shrink-0 group-hover:scale-110 transition duration-300 shadow-md">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-500/25 flex items-center justify-center text-amber-300 text-lg sm:text-xl shrink-0 shadow-md">
               <i class="fa-solid fa-heart text-amber-400"></i>
             </div>
             <div class="min-w-0">
@@ -464,12 +464,43 @@
                   <i class="fa-solid fa-bolt-lightning text-[9px] mr-1 text-amber-400"></i>DONATE
                 </span>
               </div>
-              <p class="text-[11px] sm:text-xs text-slate-300 mt-0.5 truncate" data-i18n="donate_sub">ezdn.app/dalines • พร้อมเพย์ / ทรูมันนี่ โดเนทขึ้นจอและเป็นกำลังใจ</p>
+              <p class="text-[11px] sm:text-xs text-slate-300 mt-0.5 truncate" data-i18n="donate_sub">ezdn.app/dalines • สแกน QR หรือกดลิงก์ โดเนทขึ้นจอสด</p>
             </div>
           </div>
-          <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-amber-400 text-xs sm:text-sm shrink-0 transition"></i>
+          <a href="https://ezdn.app/dalines" target="_blank" rel="noopener noreferrer" aria-label="Open EZDN" class="w-8 h-8 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 flex items-center justify-center transition shrink-0" title="เปิดหน้าเว็บ ezdn.app">
+            <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+          </a>
         </div>
-      </a>
+
+        <!-- QR Code Container -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 bg-black/50 border border-slate-800/80 rounded-xl p-3.5 mt-2">
+          <div class="relative shrink-0">
+            <div class="w-36 h-36 sm:w-40 sm:h-40 bg-white p-2 rounded-xl shadow-2xl flex items-center justify-center transition-transform hover:scale-105">
+              <img src="qr-donate.png" alt="DaLines EZDN QR Code" width="160" height="160" class="w-full h-full object-contain rounded-md select-none" />
+            </div>
+          </div>
+          <div class="flex flex-col items-center sm:items-start text-center sm:text-left justify-center space-y-2">
+            <div class="flex items-center gap-1.5 flex-wrap justify-center sm:justify-start">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">PromptPay</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-500/20 text-orange-300 border border-orange-500/30">TrueMoney</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">ขึ้นจอสด</span>
+            </div>
+            <p class="text-[11px] sm:text-xs text-slate-300 max-w-[240px] leading-relaxed" data-i18n="donate_qr_hint">
+              สแกน QR ผ่านแอปธนาคารหรือ TrueMoney โดเนทขึ้นจอสดได้เลยครับ!
+            </p>
+            <div class="flex items-center gap-2 pt-1 flex-wrap justify-center sm:justify-start">
+              <a href="https://ezdn.app/dalines" target="_blank" rel="noopener noreferrer" class="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 font-bold text-xs transition flex items-center gap-1.5 shadow-md cursor-pointer">
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                <span data-i18n="open_ezdn_btn">เปิดหน้า EZDN</span>
+              </a>
+              <a href="qr-donate.png" download="DaLines-EZDN-QR.png" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-200 text-xs font-medium transition flex items-center gap-1.5 border border-slate-700 cursor-pointer">
+                <i class="fa-solid fa-download text-[10px]"></i>
+                <span data-i18n="save_qr_btn">บันทึกรูป QR</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- 3. Discord Community Card -->
       <a href="https://discord.gg/3m9x688YCG" target="_blank" rel="noopener noreferrer" class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-indigo-500/25 via-slate-900/80 to-slate-900/90 border border-indigo-500/50 backdrop-blur-md group shadow-xl">
@@ -1048,8 +1079,11 @@
         rule_3: "คำสั่งบอท: พิมพ์ !commands ในแชท Twitch เพื่อเล่นกับบอทและดูคำสั่งทั้งหมด",
         footer_thanks: "Just an FPS & Battle Royale lover from Thailand 🇹🇭",
         donate_title: "สนับสนุน DaLines (Donate)",
-        donate_sub: "ezdn.app/dalines • พร้อมเพย์ / ทรูมันนี่ โดเนทขึ้นจอและเป็นกำลังใจ",
+        donate_sub: "ezdn.app/dalines • สแกน QR หรือกดลิงก์ โดเนทขึ้นจอสด",
         donate_btn_short: "โดเนท / ซัพพอร์ต",
+        donate_qr_hint: "สแกน QR ผ่านแอปธนาคารหรือ TrueMoney โดเนทขึ้นจอสดได้เลยครับ!",
+        open_ezdn_btn: "เปิดหน้า EZDN",
+        save_qr_btn: "บันทึกรูป QR",
         crosshair_title: "เป้าเล็ง Valorant (Crosshair Code)",
         crosshair_desc: "โค้ดเป้าหลักสำหรับใช้ยิงในเกม Valorant ของ DaLines",
         crosshair_copy_btn: "คัดลอกโค้ด",
@@ -1093,8 +1127,11 @@
         rule_3: "Bot commands: Type !commands in Twitch chat to interact.",
         footer_thanks: "Just an FPS & Battle Royale lover from Thailand 🇹🇭",
         donate_title: "Support DaLines (Donate)",
-        donate_sub: "ezdn.app/dalines • PromptPay / TrueMoney on-screen stream alerts",
+        donate_sub: "ezdn.app/dalines • Scan QR or click link for live stream alerts",
         donate_btn_short: "Donate / Support",
+        donate_qr_hint: "Scan QR with Mobile Banking or TrueMoney for live on-screen stream alerts!",
+        open_ezdn_btn: "Open EZDN",
+        save_qr_btn: "Save QR Image",
         crosshair_title: "Valorant Crosshair Code",
         crosshair_desc: "Official Valorant crosshair code used by DaLines",
         crosshair_copy_btn: "Copy Code",
