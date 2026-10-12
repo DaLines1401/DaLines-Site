@@ -356,6 +356,34 @@
       50% { transform: translateY(-2px); opacity: 0.7; }
       100% { transform: translateY(2px); opacity: 1; }
     }
+    /* Weekly Schedule Timeline Pills */
+    .schedule-day-btn.active {
+      background-color: var(--primary-color) !important;
+      color: #06080c !important;
+      font-weight: 800 !important;
+      box-shadow: 0 0 16px var(--primary-glow);
+      border-color: #ffffff !important;
+    }
+    .schedule-day-btn.today-indicator::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 5px;
+      height: 5px;
+      border-radius: 9999px;
+      background-color: #10b981;
+      box-shadow: 0 0 6px #10b981;
+    }
+    /* Wheel Needle Pointer Bounce */
+    .wheel-pointer {
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.8));
+      transition: transform 0.08s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .wheel-pointer.kick {
+      transform: translateY(-4px) rotate(-14deg);
+    }
   </style>
 </head>
 
@@ -830,23 +858,24 @@
         </div>
       </div>
 
-      <!-- 📡 CYBER LIVE RADAR & STREAM COUNTDOWN HUD -->
-      <div class="cyber-hud-box p-3.5 sm:p-4 rounded-2xl space-y-3 shadow-xl">
+      <!-- 📅 1. WEEKLY STREAM SCHEDULE & CYBER RADAR COUNTDOWN -->
+      <div class="cyber-hud-box p-3.5 sm:p-5 rounded-2xl space-y-3.5 shadow-xl">
+        <!-- Card Header -->
         <div class="flex items-center justify-between flex-wrap gap-2">
           <div class="flex items-center gap-2.5">
             <!-- Animated Radar Icon -->
-            <div class="relative w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0 overflow-hidden">
+            <div class="relative w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0 overflow-hidden shadow-inner">
               <div class="absolute inset-0 rounded-full border border-emerald-400/40 m-1"></div>
               <div class="radar-sweep-hand absolute inset-0 bg-gradient-to-tr from-transparent via-emerald-400/30 to-transparent"></div>
-              <i class="fa-solid fa-satellite-dish text-emerald-400 text-xs relative z-10"></i>
+              <i class="fa-solid fa-satellite-dish text-emerald-400 text-sm relative z-10"></i>
             </div>
             <div>
               <div class="flex items-center gap-1.5">
-                <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">RADAR: ACTIVE</span>
-                <span class="text-[10px] text-slate-400 font-mono">[ SPECTRUM 2.4GHz ]</span>
+                <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">SCHEDULE: SYNCED</span>
+                <span class="text-[10px] text-slate-400 font-mono">[ WEEKLY TIMELINE ]</span>
               </div>
               <h3 class="text-xs sm:text-sm font-bold text-white tracking-wide">
-                ตารางสตรีมสด & เรดาร์ตรวจจับสด
+                ตารางสตรีมสดประจำสัปดาห์ &amp; นับถอยหลัง
               </h3>
             </div>
           </div>
@@ -856,38 +885,93 @@
           </div>
         </div>
 
-        <!-- Countdown Digital HUD Display -->
-        <div class="p-3 rounded-xl bg-black/60 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+        <!-- Real-Time Countdown Digital HUD Display -->
+        <div class="p-3.5 rounded-xl bg-black/60 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
           <div>
             <div class="text-[10px] font-mono text-slate-400 uppercase tracking-wider flex items-center justify-center sm:justify-start gap-1">
               <i class="fa-regular fa-clock text-emerald-400"></i>
-              <span>NEXT MISSION COUNTDOWN</span>
+              <span id="countdown-label">NEXT LIVE MISSION IN:</span>
             </div>
             <div class="text-xs text-slate-300 mt-0.5">
-              ไลฟ์ถัดไป: <strong class="text-white">ทุกวันเวลา 19:30 น. (Valorant / FPS)</strong>
+              รอบไลฟ์ถัดไป: <strong id="next-stream-time-text" class="text-white">วันนี้เวลา 19:30 น. (Valorant)</strong>
             </div>
           </div>
           <!-- Digital Timer Blocks -->
           <div class="flex items-center gap-1.5 font-mono font-extrabold text-sm sm:text-base">
-            <div class="px-2 py-1 rounded-lg bg-slate-900 border border-emerald-500/30 text-emerald-300 shadow-inner">
-              <span id="countdown-hours">00</span><span class="text-[9px] text-slate-500 block font-normal">HRS</span>
+            <div class="px-2.5 py-1 rounded-lg bg-slate-900 border border-emerald-500/30 text-emerald-300 shadow-inner">
+              <span id="countdown-hours">00</span><span class="text-[9px] text-slate-500 block font-normal text-center">HRS</span>
             </div>
             <span class="text-emerald-400 animate-pulse">:</span>
-            <div class="px-2 py-1 rounded-lg bg-slate-900 border border-emerald-500/30 text-emerald-300 shadow-inner">
-              <span id="countdown-minutes">00</span><span class="text-[9px] text-slate-500 block font-normal">MIN</span>
+            <div class="px-2.5 py-1 rounded-lg bg-slate-900 border border-emerald-500/30 text-emerald-300 shadow-inner">
+              <span id="countdown-minutes">00</span><span class="text-[9px] text-slate-500 block font-normal text-center">MIN</span>
             </div>
             <span class="text-emerald-400 animate-pulse">:</span>
-            <div class="px-2 py-1 rounded-lg bg-slate-900 border border-emerald-500/30 text-emerald-300 shadow-inner">
-              <span id="countdown-seconds">00</span><span class="text-[9px] text-slate-500 block font-normal">SEC</span>
+            <div class="px-2.5 py-1 rounded-lg bg-slate-900 border border-emerald-500/30 text-emerald-300 shadow-inner">
+              <span id="countdown-seconds">00</span><span class="text-[9px] text-slate-500 block font-normal text-center">SEC</span>
             </div>
           </div>
         </div>
 
-        <!-- Quick Calendar Link -->
-        <div class="flex items-center justify-between gap-2 text-[10px] sm:text-[11px] pt-1">
-          <span class="text-slate-400 truncate">🔔 ไม่พลาดการถ่ายทอดสด</span>
-          <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=DaLines+Live+Stream&details=ชมไลฟ์สดสตรีมเมอร์สายยิงเน้นโยน+DaLines+บน+Twitch+https://twitch.tv/dalines&location=https://twitch.tv/dalines" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-300 font-semibold transition flex items-center gap-1 active:scale-95 shadow">
-            <i class="fa-solid fa-calendar-plus"></i>
+        <!-- 7-Day Interactive Schedule Timeline Bar -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-[11px] text-slate-400 px-0.5">
+            <span>เลือกดูตารางแต่ละวัน:</span>
+            <span class="flex items-center gap-1 text-[10px] text-emerald-400 font-mono">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+              จุดเขียว = วันนี้ (Today)
+            </span>
+          </div>
+
+          <div class="grid grid-cols-7 gap-1 sm:gap-1.5 text-center">
+            <button type="button" onclick="selectScheduleDay(1)" id="sched-day-1" class="schedule-day-btn relative py-1.5 px-0.5 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white transition active:scale-95 cursor-pointer text-[10px] sm:text-xs font-mono font-medium">
+              <div>จ.</div><span class="text-[9px] text-slate-500 block">Mon</span>
+            </button>
+            <button type="button" onclick="selectScheduleDay(2)" id="sched-day-2" class="schedule-day-btn relative py-1.5 px-0.5 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white transition active:scale-95 cursor-pointer text-[10px] sm:text-xs font-mono font-medium">
+              <div>อ.</div><span class="text-[9px] text-slate-500 block">Tue</span>
+            </button>
+            <button type="button" onclick="selectScheduleDay(3)" id="sched-day-3" class="schedule-day-btn relative py-1.5 px-0.5 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white transition active:scale-95 cursor-pointer text-[10px] sm:text-xs font-mono font-medium">
+              <div>พ.</div><span class="text-[9px] text-slate-500 block">Wed</span>
+            </button>
+            <button type="button" onclick="selectScheduleDay(4)" id="sched-day-4" class="schedule-day-btn relative py-1.5 px-0.5 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white transition active:scale-95 cursor-pointer text-[10px] sm:text-xs font-mono font-medium">
+              <div>พฤ.</div><span class="text-[9px] text-slate-500 block">Thu</span>
+            </button>
+            <button type="button" onclick="selectScheduleDay(5)" id="sched-day-5" class="schedule-day-btn relative py-1.5 px-0.5 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white transition active:scale-95 cursor-pointer text-[10px] sm:text-xs font-mono font-medium">
+              <div>ศ.</div><span class="text-[9px] text-slate-500 block">Fri</span>
+            </button>
+            <button type="button" onclick="selectScheduleDay(6)" id="sched-day-6" class="schedule-day-btn relative py-1.5 px-0.5 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white transition active:scale-95 cursor-pointer text-[10px] sm:text-xs font-mono font-medium">
+              <div>ส.</div><span class="text-[9px] text-slate-500 block">Sat</span>
+            </button>
+            <button type="button" onclick="selectScheduleDay(0)" id="sched-day-0" class="schedule-day-btn relative py-1.5 px-0.5 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white transition active:scale-95 cursor-pointer text-[10px] sm:text-xs font-mono font-medium">
+              <div>อา.</div><span class="text-[9px] text-slate-500 block">Sun</span>
+            </button>
+          </div>
+
+          <!-- Active Day Details Card -->
+          <div id="sched-active-card" class="p-3 sm:p-3.5 rounded-xl bg-slate-900/70 border border-slate-800/80 flex items-center justify-between gap-3 transition-all duration-200">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div id="sched-detail-icon" class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-sm shrink-0">
+                <i class="fa-solid fa-gamepad"></i>
+              </div>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                  <span id="sched-detail-day" class="text-xs font-bold text-white">วันจันทร์ (Monday)</span>
+                  <span id="sched-detail-badge" class="px-2 py-0.2 rounded text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">LIVE 19:30</span>
+                </div>
+                <div id="sched-detail-game" class="text-[11px] text-slate-300 truncate font-medium">🎯 Valorant ไต่แรงค์กับตวง • สายยิงเน้นโยน</div>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <span id="sched-detail-time" class="text-xs font-mono font-bold text-emerald-400 block">19:30 - 23:30</span>
+              <span class="text-[9px] text-slate-500">Twitch / YT</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Calendar Link & Reminder -->
+        <div class="flex items-center justify-between gap-2 text-[10px] sm:text-[11px] pt-1 border-t border-slate-800/80">
+          <span class="text-slate-400 truncate">🔔 รับการแจ้งเตือนสตรีมสด</span>
+          <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=DaLines+Live+Stream&details=ชมไลฟ์สดสตรีมเมอร์สายยิงเน้นโยน+DaLines+บน+Twitch+https://twitch.tv/dalines&location=https://twitch.tv/dalines" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-300 font-semibold transition flex items-center gap-1.5 active:scale-95 shadow">
+            <i class="fa-solid fa-calendar-plus text-xs"></i>
             <span>เพิ่มลงปฏิทิน Google</span>
           </a>
         </div>
@@ -1453,63 +1537,90 @@
         </div>
       </div>
 
-      <!-- 🎲 VALORANT CYBER CHALLENGE RANDOMIZER -->
-      <div class="cyber-hud-box p-3.5 sm:p-5 rounded-2xl space-y-3.5 shadow-xl mt-3">
+      <!-- 🎯 3. VALORANT RANDOMIZER & CHALLENGE ROULETTE WHEEL -->
+      <div class="cyber-hud-box p-3.5 sm:p-5 rounded-2xl space-y-4 shadow-xl mt-3">
+        <!-- Header -->
         <div class="flex items-center justify-between flex-wrap gap-2">
           <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400 text-lg shadow-inner">
-              <i class="fa-solid fa-dice-d20"></i>
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-red-600 to-amber-500 text-white flex items-center justify-center text-lg shadow-inner">
+              <i class="fa-solid fa-dharmachakra animate-spin" style="animation-duration: 12s;"></i>
             </div>
             <div>
               <div class="flex items-center gap-1.5">
-                <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-red-500/20 text-red-400 border border-red-500/40">CYBER SCRAMBLER</span>
-                <span class="text-[10px] text-slate-400 font-mono">[ PROTOCOL: TROLL ]</span>
+                <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-red-500/20 text-red-400 border border-red-500/40">ROULETTE WHEEL</span>
+                <span class="text-[10px] text-slate-400 font-mono">[ PROTOCOL: RANDOMIZER ]</span>
               </div>
               <h3 class="text-xs sm:text-sm font-bold text-white tracking-wide">
-                Valorant Challenge Randomizer (สุ่มชาเลนจ์สุดกวน)
+                Valorant Challenge Wheel (วงล้อหมุนสุ่มชาเลนจ์)
               </h3>
             </div>
           </div>
-          <button id="btn-roll-challenge" onclick="rollCyberChallenge()" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-600 via-orange-500 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-lg active:scale-95 cursor-pointer">
-            <i class="fa-solid fa-shuffle text-xs"></i>
-            <span>สุ่มชาเลนจ์ใหม่</span>
-          </button>
+          
+          <!-- Category Mode Switcher Pills -->
+          <div class="flex items-center gap-1 p-1 rounded-xl bg-slate-900 border border-slate-800 text-[10px] sm:text-[11px] font-medium">
+            <button type="button" onclick="setWheelMode('weapons', this)" class="wheel-mode-btn px-2.5 py-1 rounded-lg bg-red-600 text-white font-bold transition active:scale-95 cursor-pointer">
+              🔫 ปืน
+            </button>
+            <button type="button" onclick="setWheelMode('agents', this)" class="wheel-mode-btn px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition active:scale-95 cursor-pointer">
+              🦸 เอเจนท์
+            </button>
+            <button type="button" onclick="setWheelMode('trolls', this)" class="wheel-mode-btn px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition active:scale-95 cursor-pointer">
+              💀 ชาเลนจ์ปั่น
+            </button>
+          </div>
         </div>
 
         <p class="text-[10px] sm:text-[11px] text-slate-400">
-          สุ่มโจทย์ท้าทายสำหรับคนดูหรือเอาไปเล่นในสตรีมกับ DaLines (สุ่มเอเจนท์ + อาวุธ + เงื่อนไขสุดปั่น)
+          กดหมุนวงล้อเพื่อสุ่มปืน, เอเจนท์ หรือชาเลนจ์สำหรับคนดูท้าสตรีมเมอร์ DaLines ในเกมแบบสดๆ
         </p>
 
-        <!-- 3-Slot Digital HUD Display -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center font-mono">
-          <!-- Slot 1: Agent -->
-          <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-col items-center justify-center">
-            <span class="text-[9px] text-slate-500 uppercase tracking-widest block mb-1">01 // AGENT</span>
-            <div id="slot-agent" class="text-sm font-bold text-cyan-300 truncate">Jett (ไวจัด)</div>
+        <!-- Interactive Canvas Roulette Wheel Section -->
+        <div class="relative flex flex-col items-center justify-center py-2 select-none">
+          <!-- Top Needle Pointer -->
+          <div class="relative z-20 flex flex-col items-center -mb-3 pointer-events-none">
+            <div id="wheel-pointer-needle" class="wheel-pointer w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[22px] border-t-amber-400 drop-shadow-[0_2px_8px_rgba(245,158,11,0.9)]"></div>
           </div>
 
-          <!-- Slot 2: Weapon -->
-          <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-col items-center justify-center">
-            <span class="text-[9px] text-slate-500 uppercase tracking-widest block mb-1">02 // WEAPON</span>
-            <div id="slot-weapon" class="text-sm font-bold text-amber-300 truncate">Odin (สายกดยาว)</div>
+          <!-- Wheel Canvas Container -->
+          <div class="relative w-[280px] h-[280px] sm:w-[310px] sm:h-[310px] flex items-center justify-center p-2 rounded-full border-4 border-slate-800/80 bg-slate-950/80 shadow-[0_0_35px_rgba(0,0,0,0.8)]">
+            <canvas id="roulette-wheel-canvas" width="310" height="310" class="w-full h-full rounded-full cursor-pointer"></canvas>
+
+            <!-- Center Spin Hub Button -->
+            <button id="btn-wheel-center-spin" onclick="spinRouletteWheel()" class="absolute w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-slate-900 border-2 border-amber-400 text-amber-300 hover:text-white hover:bg-amber-500/20 transition-transform active:scale-90 flex flex-col items-center justify-center font-gaming font-black text-xs shadow-[0_0_20px_rgba(245,158,11,0.6)] cursor-pointer z-10">
+              <i class="fa-solid fa-bolt text-xs text-amber-400 mb-0.5 animate-pulse"></i>
+              <span>SPIN</span>
+            </button>
           </div>
 
-          <!-- Slot 3: Rule/Modifier -->
-          <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-col items-center justify-center">
-            <span class="text-[9px] text-slate-500 uppercase tracking-widest block mb-1">03 // MODIFIER</span>
-            <div id="slot-modifier" class="text-sm font-bold text-pink-300 truncate">ห้ามกดปุ่มย่อ (No Crouch)</div>
+          <!-- Spin Action Button -->
+          <div class="mt-4 flex items-center gap-2">
+            <button id="btn-spin-wheel" onclick="spinRouletteWheel()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 via-orange-500 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white text-xs sm:text-sm font-bold font-gaming tracking-wider transition-all transform active:scale-95 shadow-[0_0_20px_rgba(239,68,68,0.5)] flex items-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-play text-xs"></i>
+              <span>หมุนวงล้อเสี่ยงทาย (SPIN WHEEL)</span>
+            </button>
+            <button onclick="rollCyberChallengeCombo()" title="สุ่มครบ 3 ช่องพร้อมกัน" class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold transition active:scale-95 border border-slate-700 shadow flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-shuffle text-xs"></i>
+              <span class="hidden sm:inline">สุ่มคอมโบ 3 ช่อง</span>
+            </button>
           </div>
         </div>
 
-        <!-- Result Box & 1-Click Copy -->
-        <div class="bg-black/60 border border-slate-800 rounded-xl p-2.5 flex items-center justify-between gap-2">
-          <div class="text-[11px] text-slate-300 truncate">
-            <i class="fa-solid fa-gamepad text-red-400 mr-1.5"></i>
-            <span id="challenge-summary-text" class="font-medium text-white">ชาเลนจ์: เล่น Jett + ปืน Odin + ห้ามกดปุ่มย่อ</span>
+        <!-- Wheel Winner Result Display Card -->
+        <div id="wheel-result-card" class="p-3 rounded-xl bg-black/70 border border-amber-500/40 flex items-center justify-between gap-2 transition-all duration-300 shadow-lg">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div id="wheel-result-icon" class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-sm shrink-0">
+              🎯
+            </div>
+            <div class="min-w-0">
+              <div class="text-[10px] font-mono text-slate-400 uppercase tracking-wider">RESULT // ผลสุ่มล่าสุด</div>
+              <div id="wheel-result-text" class="text-xs sm:text-sm font-bold text-amber-300 truncate font-mono">
+                Odin (สายกดยาวไม่ปล่อย)
+              </div>
+            </div>
           </div>
-          <button onclick="copyChallengeToClipboard()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-[11px] font-medium transition flex items-center gap-1 active:scale-95 shrink-0 shadow cursor-pointer">
+          <button onclick="copyWheelResultToClipboard()" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-[11px] font-medium transition flex items-center gap-1 active:scale-95 shrink-0 shadow cursor-pointer">
             <i class="fa-regular fa-copy text-xs"></i>
-            <span>คัดลอกโจทย์</span>
+            <span>คัดลอกผล</span>
           </button>
         </div>
       </div>
@@ -2596,6 +2707,7 @@
       initEmoteShowcase();
       initCyberCanvas();
       initStreamCountdown();
+      initRouletteWheel();
 
       // Mouse Spotlight
       const cursorGlow = document.getElementById('cursor-glow');
@@ -4598,19 +4710,96 @@
       requestAnimationFrame(draw);
     }
 
-    // --- 2. Cyber Live Radar & Stream Countdown Timer ---
+    // =========================================================================
+    // 📅 1. WEEKLY STREAM SCHEDULE & RADAR COUNTDOWN ENGINE
+    // =========================================================================
+
+    const WEEKLY_SCHEDULE_DATA = [
+      { day: 0, name: "วันอาทิตย์ (Sunday)", status: "OFF", badge: "💤 วันพักผ่อน", game: "😴 พักผ่อนชาร์จพลัง • เจอกันใหม่วันจันทร์", time: "OFF DAY", icon: "fa-bed", isLive: false },
+      { day: 1, name: "วันจันทร์ (Monday)", status: "LIVE", badge: "🟢 LIVE 19:30", game: "🎯 Valorant ไต่แรงค์กับตวง • สายยิงเน้นโยน", time: "19:30 - 23:30", icon: "fa-crosshairs", isLive: true },
+      { day: 2, name: "วันอังคาร (Tuesday)", status: "LIVE", badge: "🟢 LIVE 19:30", game: "🏹 Valorant ลุยเดี่ยว • ฝึกเป้าเล็งวันแท็ป", time: "19:30 - 23:30", icon: "fa-bullseye", isLive: true },
+      { day: 3, name: "วันพุธ (Wednesday)", status: "LIVE", badge: "🟢 LIVE 19:30", game: "🛡️ Apex Legends / Party เล่นกับคนดู", time: "19:30 - 23:30", icon: "fa-shield-halved", isLive: true },
+      { day: 4, name: "วันพฤหัสบดี (Thursday)", status: "LIVE", badge: "🟢 LIVE 19:30", game: "🎯 Valorant Custom Game กับคนดูในดิสคอร์ด", time: "19:30 - 23:30", icon: "fa-users", isLive: true },
+      { day: 5, name: "วันศุกร์ (Friday)", status: "LIVE", badge: "🔥 FRIDAY NIGHT", game: "🍻 Friday Night Live สตรีมยาวๆ ฉลองสุดสัปดาห์", time: "20:00 - 00:30", icon: "fa-fire", isLive: true },
+      { day: 6, name: "วันเสาร์ (Saturday)", status: "LIVE", badge: "⭐ WEEKEND SPECIAL", game: "🎮 วาไรตี้ & ชาเลนจ์สุดปั่นตามใจคนดู", time: "19:00 - 23:30", icon: "fa-trophy", isLive: true }
+    ];
+
+    let selectedScheduleDayIndex = 1;
+
+    function selectScheduleDay(dayIndex) {
+      selectedScheduleDayIndex = dayIndex;
+      playSound('tab');
+
+      // Update active button state
+      document.querySelectorAll('.schedule-day-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`sched-day-${dayIndex}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const data = WEEKLY_SCHEDULE_DATA.find(d => d.day === dayIndex);
+      if (!data) return;
+
+      const cardDay = document.getElementById('sched-detail-day');
+      const cardBadge = document.getElementById('sched-detail-badge');
+      const cardGame = document.getElementById('sched-detail-game');
+      const cardTime = document.getElementById('sched-detail-time');
+      const cardIcon = document.getElementById('sched-detail-icon');
+
+      if (cardDay) cardDay.textContent = data.name;
+      if (cardGame) cardGame.textContent = data.game;
+      if (cardTime) cardTime.textContent = data.time;
+
+      if (cardBadge) {
+        cardBadge.textContent = data.badge;
+        cardBadge.className = data.isLive 
+          ? "px-2 py-0.2 rounded text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+          : "px-2 py-0.2 rounded text-[9px] font-mono font-bold bg-slate-800 text-slate-400 border border-slate-700";
+      }
+
+      if (cardIcon) {
+        cardIcon.innerHTML = `<i class="fa-solid ${data.icon}"></i>`;
+        cardIcon.className = data.isLive
+          ? "w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-sm shrink-0"
+          : "w-8 h-8 rounded-lg bg-slate-800 text-slate-400 border border-slate-700 flex items-center justify-center text-sm shrink-0";
+      }
+    }
+
     function initStreamCountdown() {
+      const today = new Date().getDay();
+      
+      // Mark today indicator on schedule button
+      const todayBtn = document.getElementById(`sched-day-${today}`);
+      if (todayBtn) todayBtn.classList.add('today-indicator');
+
+      // Default select today
+      selectScheduleDay(today);
+
       function updateTimer() {
         const now = new Date();
-        // Target: Today at 19:30 (or next day if passed)
+        const curDay = now.getDay();
+        const sched = WEEKLY_SCHEDULE_DATA.find(d => d.day === curDay);
+
         let target = new Date();
         target.setHours(19, 30, 0, 0);
 
-        if (now >= target) {
-          target.setDate(target.getDate() + 1);
+        // If today passed or today is off day, find next live day
+        if (now >= target || (sched && !sched.isLive)) {
+          let nextDays = 1;
+          while (nextDays <= 7) {
+            const nextDate = new Date();
+            nextDate.setDate(now.getDate() + nextDays);
+            const nextDayIndex = nextDate.getDay();
+            const nextSched = WEEKLY_SCHEDULE_DATA.find(d => d.day === nextDayIndex);
+            if (nextSched && nextSched.isLive) {
+              target = new Date();
+              target.setDate(now.getDate() + nextDays);
+              target.setHours(19, 30, 0, 0);
+              break;
+            }
+            nextDays++;
+          }
         }
 
-        const diff = target - now;
+        const diff = Math.max(0, target - now);
         const h = Math.floor(diff / (1000 * 60 * 60));
         const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const s = Math.floor((diff % (1000 * 60)) / 1000);
@@ -4628,7 +4817,10 @@
       setInterval(updateTimer, 1000);
     }
 
-    // --- 3. DaLines Cyber Meme Soundboard Engine ---
+    // =========================================================================
+    // 🎛️ 2. DALINES CYBER MEME SOUNDBOARD ENGINE
+    // =========================================================================
+
     let visualizerTimer = null;
 
     function playCyberSound(soundId) {
@@ -4639,11 +4831,9 @@
       initAudio();
       const now = audioCtx.currentTime;
 
-      // Animate Visualizer Bars
       triggerSpectrumBounce();
 
       if (soundId === 'aim_miss') {
-        // Whiff / Slide down comical drop
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'sawtooth';
@@ -4657,7 +4847,6 @@
         osc.stop(now + 0.35);
         showToast('🎯 สายยิงเน้นโยน! วืดเป็นงานประจำ');
       } else if (soundId === 'laser_sharp') {
-        // High voltage sci-fi laser tap
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'square';
@@ -4671,7 +4860,6 @@
         osc.stop(now + 0.18);
         showToast('⚡ One Tap ลั่นหัว! คมจัดปลัดบอก');
       } else if (soundId === 'miracle_clutch') {
-        // Celestial Chord Arpeggio
         [523.25, 659.25, 783.99, 1046.50].forEach((f, idx) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -4686,7 +4874,6 @@
         });
         showToast('🔮 คลัตช์ 1v5! ปาฏิหาริย์เกิดขึ้นจริง');
       } else if (soundId === 'karma_out') {
-        // 8-bit game over descend
         [320, 280, 240, 180].forEach((f, idx) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -4701,7 +4888,6 @@
         });
         showToast('💀 แต้มบุญหมด! แตกหนึ่งสวยพี่สวย');
       } else if (soundId === 'donate_cash') {
-        // Cash Register Coin Bells
         [987.77, 1318.51].forEach((f, idx) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -4716,7 +4902,6 @@
         });
         showToast('💰 โดเนทเข้าแล้วจ้า! ขอบพระคุณมากครับ');
       } else if (soundId === 'thank_you') {
-        // Warm resonant harmony
         [440, 554.37, 659.25, 880].forEach((f) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -4754,82 +4939,298 @@
       }, 70);
     }
 
-    // --- 4. Valorant Cyber Challenge Randomizer ---
-    const VALORANT_CHALLENGE_DATA = {
-      agents: [
-        "Jett (พุ่งชนทุกไฟต์)", "Reyna (ตึงจัดไม่พึ่งทีม)", "Omen (วาร์ปหลังศัตรู)", 
-        "Sova (สแกนทั่วแมพ)", "Cypher (กล้องส่องทุกมุม)", "Iso (กางโล่ 1v1)", 
-        "Clove (ตายแล้วฟื้น)", "Phoenix (แฟลชตาแตก)", "Viper (พิษคลุมไซท์)", 
-        "Gekko (มอนสเตอร์แก๊ง)", "Yoru (ตัวปลอมสุดป่วน)"
-      ],
-      weapons: [
-        "Odin (สายกดยาวไม่ปล่อย)", "Judge (ซุ่มยิงระยะประชิด)", "Sheriff (วันแท็ปหัวเท่านั้น)", 
-        "Vandal (วันแท็ปคลาสสิก)", "Operator (สไนเปอร์นัดเดียวจอด)", "Bucky (ลูกซองสไนเปอร์)", 
-        "Classic (ปืนฟรีทั้งเกม)", "Phantom (ลั่นเงียบทะลุควัน)", "Marshal (สไนเปอร์พริ้ว)", 
-        "Guardian (ลั่นทีละนัดเน้นแม่น)"
-      ],
-      modifiers: [
-        "ห้ามกดปุ่มย่อตลอดเกม (No Crouch)", 
-        "ห้ามหยุดเดินเวลายิง (Run & Gun Only)", 
-        "กระโดดยิงอย่างเดียว (Jump Shot Only)", 
-        "ยิงมือเดียว ห้ามรีโหลดจนกว่ากระสุนจะหมดแม็ก", 
-        "กลั้นหายใจทุกครั้งที่ลั่นไก", 
-        "หมุน 360 องศาก่อนยิงศัตรูทุกตัว", 
-        "ห้ามใช้อัลติเมทตลอดเกม (No Ult Challenge)", 
-        "เปิดเสียงเกมดังสุด ห้ามปิดไมค์"
-      ]
+    // =========================================================================
+    // 🎯 3. INTERACTIVE CANVAS ROULETTE CHALLENGE WHEEL ENGINE
+    // =========================================================================
+
+    const WHEEL_CONFIG = {
+      weapons: {
+        title: "โหมดสุ่มปืน",
+        items: [
+          { text: "Odin", color: "#ef4444", desc: "สายกดยาวไม่ปล่อย" },
+          { text: "Judge", color: "#06b6d4", desc: "ลูกซองประชิดไซท์" },
+          { text: "Sheriff", color: "#f59e0b", desc: "วันแท็ปหัวคมๆ" },
+          { text: "Vandal", color: "#10b981", desc: "ปืนหลักกู้ชาติ" },
+          { text: "Operator", color: "#a855f7", desc: "สไนเปอร์นัดเดียวจอด" },
+          { text: "Bucky", color: "#ec4899", desc: "ลูกซองสไนเปอร์" },
+          { text: "Classic", color: "#3b82f6", desc: "ปืนพกฟรีทั้งเกม" },
+          { text: "Phantom", color: "#14b8a6", desc: "ลั่นเงียบทะลุสโมก" },
+          { text: "Marshal", color: "#eab308", desc: "สไนเปอร์พริ้วสะบัด" },
+          { text: "Guardian", color: "#6366f1", desc: "เคาะแม่นทีละนัด" }
+        ]
+      },
+      agents: {
+        title: "โหมดสุ่มเอเจนท์",
+        items: [
+          { text: "Jett", color: "#06b6d4", desc: "แดชพุ่งชนทุกไฟต์" },
+          { text: "Reyna", color: "#a855f7", desc: "ตึงจัดไม่พึ่งทีม" },
+          { text: "Omen", color: "#6366f1", desc: "วาร์ปหลังศัตรู" },
+          { text: "Sova", color: "#3b82f6", desc: "ยิงศรช็อตสแกนแมพ" },
+          { text: "Cypher", color: "#f59e0b", desc: "กล้องส่องทุกมุม" },
+          { text: "Iso", color: "#10b981", desc: "กางโล่ 1v1 ดวลเดี่ยว" },
+          { text: "Clove", color: "#ec4899", desc: "ตายแล้วฟื้นมาแก้แค้น" },
+          { text: "Phoenix", color: "#ef4444", desc: "แฟลชตาแตกไฟลุก" },
+          { text: "Viper", color: "#14b8a6", desc: "กางม่านพิษคุมไซท์" },
+          { text: "Gekko", color: "#eab308", desc: "มอนสเตอร์แก๊งป่วนเมือง" },
+          { text: "Yoru", color: "#8b5cf6", desc: "ตัวปลอมสลับมิติ" }
+        ]
+      },
+      trolls: {
+        title: "โหมดชาเลนจ์สุดปั่น",
+        items: [
+          { text: "ห้ามกดปุ่มย่อ", color: "#ef4444", desc: "No Crouch ตลอดทั้งเกม" },
+          { text: "วิ่งยิงอย่างเดียว", color: "#06b6d4", desc: "Run & Gun ห้ามหยุดเดิน" },
+          { text: "กระโดดยิงเท่านั้น", color: "#f59e0b", desc: "Jump Shot Only" },
+          { text: "ยิงจนหมดแม็ก", color: "#10b981", desc: "ห้ามรีโหลดจนกว่ากระสุนหมด" },
+          { text: "กลั้นหายใจเวลายิง", color: "#a855f7", desc: "ท้าทายปอดคนเล่น" },
+          { text: "360 Spin ก่อนยิง", color: "#ec4899", desc: "หมุนรอบตัวก่อนลั่นไก" },
+          { text: "ปืนพกทั้งเกม", color: "#3b82f6", desc: "Pistol Only Challenge" },
+          { text: "ห้ามกดใช้อัลติ", color: "#14b8a6", desc: "No Ultimate Throughout Game" }
+        ]
+      }
     };
 
-    let isShufflingChallenge = false;
+    let currentWheelMode = 'weapons';
+    let currentWheelAngle = 0;
+    let isWheelSpinning = false;
+    let lastTickIndex = -1;
 
-    function rollCyberChallenge() {
-      if (isShufflingChallenge) return;
-      isShufflingChallenge = true;
-      playSound('tab');
-
-      const elAgent = document.getElementById('slot-agent');
-      const elWeapon = document.getElementById('slot-weapon');
-      const elMod = document.getElementById('slot-modifier');
-      const btn = document.getElementById('btn-roll-challenge');
-
-      if (btn) btn.classList.add('opacity-75', 'pointer-events-none');
-      if (elAgent) elAgent.classList.add('slot-shuffling');
-      if (elWeapon) elWeapon.classList.add('slot-shuffling');
-      if (elMod) elMod.classList.add('slot-shuffling');
-
-      let ticks = 0;
-      const shuffleInterval = setInterval(() => {
-        if (elAgent) elAgent.textContent = VALORANT_CHALLENGE_DATA.agents[Math.floor(Math.random() * VALORANT_CHALLENGE_DATA.agents.length)];
-        if (elWeapon) elWeapon.textContent = VALORANT_CHALLENGE_DATA.weapons[Math.floor(Math.random() * VALORANT_CHALLENGE_DATA.weapons.length)];
-        if (elMod) elMod.textContent = VALORANT_CHALLENGE_DATA.modifiers[Math.floor(Math.random() * VALORANT_CHALLENGE_DATA.modifiers.length)];
-        ticks++;
-
-        if (ticks > 12) {
-          clearInterval(shuffleInterval);
-          const finalAgent = VALORANT_CHALLENGE_DATA.agents[Math.floor(Math.random() * VALORANT_CHALLENGE_DATA.agents.length)];
-          const finalWeapon = VALORANT_CHALLENGE_DATA.weapons[Math.floor(Math.random() * VALORANT_CHALLENGE_DATA.weapons.length)];
-          const finalMod = VALORANT_CHALLENGE_DATA.modifiers[Math.floor(Math.random() * VALORANT_CHALLENGE_DATA.modifiers.length)];
-
-          if (elAgent) { elAgent.textContent = finalAgent; elAgent.classList.remove('slot-shuffling'); }
-          if (elWeapon) { elWeapon.textContent = finalWeapon; elWeapon.classList.remove('slot-shuffling'); }
-          if (elMod) { elMod.textContent = finalMod; elMod.classList.remove('slot-shuffling'); }
-
-          const summary = document.getElementById('challenge-summary-text');
-          if (summary) summary.textContent = `ชาเลนจ์: ${finalAgent} + ${finalWeapon} + ${finalMod}`;
-
-          if (btn) btn.classList.remove('opacity-75', 'pointer-events-none');
-          isShufflingChallenge = false;
-          playCyberSound('laser_sharp');
-        }
-      }, 70);
+    function initRouletteWheel() {
+      drawRouletteWheel();
     }
 
-    function copyChallengeToClipboard() {
-      const summary = document.getElementById('challenge-summary-text');
-      const text = summary ? summary.textContent : "ชาเลนจ์ Valorant DaLines";
+    function setWheelMode(mode, btn) {
+      if (isWheelSpinning) return;
+      currentWheelMode = mode;
+      playSound('tab');
+
+      document.querySelectorAll('.wheel-mode-btn').forEach(b => {
+        b.className = 'wheel-mode-btn px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition active:scale-95 cursor-pointer';
+      });
+      if (btn) {
+        btn.className = 'wheel-mode-btn px-2.5 py-1 rounded-lg bg-red-600 text-white font-bold transition active:scale-95 cursor-pointer';
+      }
+
+      drawRouletteWheel();
+
+      const items = WHEEL_CONFIG[mode].items;
+      const res = items[0];
+      const resText = document.getElementById('wheel-result-text');
+      if (resText) resText.textContent = `${res.text} (${res.desc})`;
+    }
+
+    function drawRouletteWheel() {
+      const canvas = document.getElementById('roulette-wheel-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const size = canvas.width;
+      const center = size / 2;
+      const radius = center - 8;
+
+      ctx.clearRect(0, 0, size, size);
+
+      const items = WHEEL_CONFIG[currentWheelMode].items;
+      const numSegments = items.length;
+      const arc = (Math.PI * 2) / numSegments;
+
+      ctx.save();
+      ctx.translate(center, center);
+      ctx.rotate(currentWheelAngle);
+
+      // Draw Segments
+      for (let i = 0; i < numSegments; i++) {
+        const angle = i * arc;
+        const item = items[i];
+
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, radius, angle, angle + arc);
+        ctx.closePath();
+
+        ctx.fillStyle = item.color;
+        ctx.fill();
+
+        // Wedge separator lines
+        ctx.strokeStyle = '#06080c';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        // Text label
+        ctx.save();
+        ctx.rotate(angle + arc / 2);
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 12px Kanit, sans-serif';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+        ctx.shadowBlur = 4;
+        ctx.fillText(item.text, radius - 20, 4);
+        ctx.restore();
+      }
+
+      // Outer rim
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, Math.PI * 2);
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = '#334155';
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function spinRouletteWheel() {
+      if (isWheelSpinning) return;
+      isWheelSpinning = true;
+
+      const btnSpin = document.getElementById('btn-spin-wheel');
+      const btnCenter = document.getElementById('btn-wheel-center-spin');
+      if (btnSpin) btnSpin.classList.add('opacity-60', 'pointer-events-none');
+      if (btnCenter) btnCenter.classList.add('scale-95');
+
+      const items = WHEEL_CONFIG[currentWheelMode].items;
+      const numSegments = items.length;
+      const arc = (Math.PI * 2) / numSegments;
+
+      // Random target: 5 to 8 full spins + random wedge
+      const extraSpins = 5 + Math.floor(Math.random() * 4);
+      const randomStopIndex = Math.floor(Math.random() * numSegments);
+      // Needle is at top: 3*PI/2 (270 deg)
+      // When segment i is at needle, (angle + i * arc + arc/2) % 2PI = 3*PI/2
+      const targetAngleAtPointer = (3 * Math.PI / 2) - (randomStopIndex * arc + arc / 2);
+      const totalRotation = (extraSpins * Math.PI * 2) + ((targetAngleAtPointer - (currentWheelAngle % (Math.PI * 2)) + Math.PI * 4) % (Math.PI * 2));
+
+      const startAngle = currentWheelAngle;
+      const duration = 3800; // ms
+      const startTime = performance.now();
+
+      function playTickSound() {
+        if (!isSoundEnabled) return;
+        try {
+          initAudio();
+          const now = audioCtx.currentTime;
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(650, now);
+          osc.frequency.exponentialRampToValueAtTime(180, now + 0.04);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.04);
+
+          // Pointer visual kick
+          const pointer = document.getElementById('wheel-pointer-needle');
+          if (pointer) {
+            pointer.classList.add('kick');
+            setTimeout(() => pointer.classList.remove('kick'), 50);
+          }
+        } catch (e) {}
+      }
+
+      function animateSpin(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(1, elapsed / duration);
+
+        // Cubic ease out
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        currentWheelAngle = startAngle + totalRotation * easeOut;
+
+        drawRouletteWheel();
+
+        // Calculate tick when segment crosses needle
+        const normalizedAngle = (currentWheelAngle % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+        const currentSegment = Math.floor(((3 * Math.PI / 2 - normalizedAngle + Math.PI * 4) % (Math.PI * 2)) / arc);
+        if (currentSegment !== lastTickIndex) {
+          lastTickIndex = currentSegment;
+          playTickSound();
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(animateSpin);
+        } else {
+          // Finished Spin
+          isWheelSpinning = false;
+          if (btnSpin) btnSpin.classList.remove('opacity-60', 'pointer-events-none');
+          if (btnCenter) btnCenter.classList.remove('scale-95');
+
+          const winner = items[randomStopIndex];
+          const resultCard = document.getElementById('wheel-result-card');
+          const resultText = document.getElementById('wheel-result-text');
+
+          if (resultText) resultText.textContent = `${winner.text} (${winner.desc})`;
+          if (resultCard) {
+            resultCard.style.borderColor = winner.color;
+            resultCard.style.boxShadow = `0 0 25px ${winner.color}80`;
+            setTimeout(() => {
+              resultCard.style.borderColor = '';
+              resultCard.style.boxShadow = '';
+            }, 3000);
+          }
+
+          // Fanfare sound
+          playCyberSound('miracle_clutch');
+          spawnWheelConfetti();
+          showToast(`🎉 ผลสุ่ม: ${winner.text} - ${winner.desc}!`);
+        }
+      }
+
+      requestAnimationFrame(animateSpin);
+    }
+
+    function rollCyberChallengeCombo() {
+      playSound('pop');
+      const wList = WHEEL_CONFIG.weapons.items;
+      const aList = WHEEL_CONFIG.agents.items;
+      const tList = WHEEL_CONFIG.trolls.items;
+
+      const w = wList[Math.floor(Math.random() * wList.length)];
+      const a = aList[Math.floor(Math.random() * aList.length)];
+      const t = tList[Math.floor(Math.random() * tList.length)];
+
+      const resultText = document.getElementById('wheel-result-text');
+      if (resultText) resultText.textContent = `คอมโบ: ${a.text} + ปืน ${w.text} + ${t.text}`;
+
+      playCyberSound('laser_sharp');
+      spawnWheelConfetti();
+      showToast(`⚡ สุ่มคอมโบ: ${a.text} + ${w.text} + ${t.text}`);
+    }
+
+    function copyWheelResultToClipboard() {
+      const resultText = document.getElementById('wheel-result-text');
+      const text = resultText ? resultText.textContent : "ผลสุ่ม DaLines Wheel";
       navigator.clipboard.writeText(text);
       playSound('pop');
-      showToast('คัดลอกโจทย์ชาเลนจ์แล้ว! นำไปวางในแชทสตรีมได้เลย ✨');
+      showToast('คัดลอกผลสุ่มแล้ว! นำไปวางในแชทสตรีมได้เลย ✨');
+    }
+
+    function spawnWheelConfetti() {
+      const colors = ['#ef4444', '#06b6d4', '#f59e0b', '#10b981', '#a855f7', '#ec4899'];
+      for (let i = 0; i < 24; i++) {
+        const el = document.createElement('div');
+        el.className = 'fixed pointer-events-none z-50 rounded-full select-none';
+        const size = Math.random() * 8 + 4;
+        el.style.width = `${size}px`;
+        el.style.height = `${size}px`;
+        el.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        el.style.left = `${window.innerWidth / 2 + (Math.random() - 0.5) * 80}px`;
+        el.style.top = `${window.innerHeight / 2 + (Math.random() - 0.5) * 80}px`;
+        el.style.opacity = '1';
+        el.style.transition = 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s ease-out';
+        document.body.appendChild(el);
+
+        const tx = (Math.random() - 0.5) * 280;
+        const ty = (Math.random() - 0.5) * 280 - 80;
+
+        requestAnimationFrame(() => {
+          el.style.transform = `translate(${tx}px, ${ty}px) scale(0)`;
+          el.style.opacity = '0';
+        });
+
+        setTimeout(() => el.remove(), 850);
+      }
     }
   </script>
 </body>
