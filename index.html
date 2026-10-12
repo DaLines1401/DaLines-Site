@@ -1064,64 +1064,64 @@
         </div>
       </div>
 
-      <!-- HALL OF FAME: HIGHLIGHTS & MEME CLIPS VAULT -->
+      <!-- HALL OF FAME: HIGHLIGHTS & MEME CLIPS VAULT (TWITCH CLIPS) -->
       <div class="p-3.5 sm:p-5 rounded-2xl bg-gradient-to-br from-purple-950/20 via-slate-900/80 to-slate-900/90 border border-purple-500/30 backdrop-blur-md shadow-xl space-y-3.5 mt-3">
         <!-- Section Header -->
         <div class="flex items-center justify-between flex-wrap gap-2">
           <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-lg shadow-inner">
-              🎬
+            <div class="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-lg shadow-inner text-[#c084fc]">
+              <i class="fa-brands fa-twitch"></i>
             </div>
             <div>
               <h3 class="text-xs sm:text-sm font-bold text-white tracking-wide flex items-center gap-2">
                 <span>DaLines Hall of Fame</span>
-                <span class="px-2 py-0.5 rounded-full text-[9px] font-mono bg-purple-500/20 text-purple-300 border border-purple-500/40 font-semibold">CLIPS &amp; HIGHLIGHTS</span>
+                <span class="px-2 py-0.5 rounded-full text-[9px] font-mono bg-[#9146FF]/20 text-[#c084fc] border border-[#9146FF]/40 font-semibold">TWITCH ALL-TIME CLIPS</span>
               </h3>
-              <p class="text-[10px] sm:text-[11px] text-slate-400" data-i18n="clips_desc">ช็อตยิงคม 1v5, จังหวะโยนในตำนาน และโมเมนต์ฮาที่คนดูโหวตสูงสุด</p>
+              <p class="text-[10px] sm:text-[11px] text-slate-400" data-i18n="clips_desc">คลังคลิปไฮไลท์ยอดนิยมตลอดกาลจาก twitch.tv/dalines เรียงตามยอดเข้าชมสูงสุด</p>
             </div>
           </div>
-          <a href="https://www.youtube.com/@DaLinesTTV" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 text-[10px] font-bold transition flex items-center gap-1.5 active:scale-95">
-            <i class="fa-brands fa-youtube text-red-500"></i>
-            <span>YouTube @DaLinesTTV</span>
+          <a href="https://www.twitch.tv/dalines/clips?range=all" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl bg-[#9146FF] hover:bg-[#772ce8] text-white text-[11px] font-bold font-gaming transition flex items-center gap-1.5 shadow-[0_0_15px_rgba(145,70,255,0.4)] active:scale-95">
+            <i class="fa-brands fa-twitch"></i>
+            <span>ชมคลิปทั้งหมดบน Twitch (All-Time)</span>
+            <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
           </a>
         </div>
 
         <!-- Category Filter Pills -->
         <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px] scrollbar-none">
-          <button type="button" onclick="filterClips('all', this)" class="clip-filter-btn px-2.5 py-1 rounded-lg bg-purple-600 text-white font-bold transition active:scale-95 shadow cursor-pointer shrink-0">
-            🔥 ทั้งหมด (All)
+          <button type="button" onclick="filterClips('all', this)" class="clip-filter-btn px-2.5 py-1 rounded-lg bg-[#9146FF] text-white font-bold transition active:scale-95 shadow cursor-pointer shrink-0">
+            🔥 ทั้งหมด (All Clips)
           </button>
-          <button type="button" onclick="filterClips('clutch', this)" class="clip-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white font-medium transition active:scale-95 cursor-pointer shrink-0">
-            👑 ช็อตยิงคม (Clutch &amp; Ace)
+          <button type="button" onclick="filterClips('valorant', this)" class="clip-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white font-medium transition active:scale-95 cursor-pointer shrink-0">
+            🎯 VALORANT
           </button>
-          <button type="button" onclick="filterClips('meme', this)" class="clip-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white font-medium transition active:scale-95 cursor-pointer shrink-0">
-            🤡 จังหวะโยน (Epic Throws)
+          <button type="button" onclick="filterClips('apex', this)" class="clip-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white font-medium transition active:scale-95 cursor-pointer shrink-0">
+            ⚡ Apex Legends
           </button>
-          <button type="button" onclick="filterClips('scream', this)" class="clip-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white font-medium transition active:scale-95 cursor-pointer shrink-0">
-            😱 กรีดร้อง &amp; ฮา (Funny Screams)
+          <button type="button" onclick="filterClips('other', this)" class="clip-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white font-medium transition active:scale-95 cursor-pointer shrink-0">
+            🚗 GTA V &amp; อื่นๆ
           </button>
         </div>
 
         <!-- Clips Grid -->
-        <div id="clips-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div id="clips-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           <!-- Dynamically populated via JS -->
         </div>
 
-        <!-- YouTube & TikTok Channel Promo Card -->
-        <div class="p-3 rounded-xl bg-black/40 border border-slate-800 flex items-center justify-between flex-wrap gap-2 text-xs">
+        <!-- Twitch Channel Clips Promo Card -->
+        <div class="p-3 rounded-xl bg-[#9146FF]/10 border border-[#9146FF]/30 flex items-center justify-between flex-wrap gap-2 text-xs">
           <div class="flex items-center gap-2">
-            <span class="text-lg">📢</span>
+            <div class="w-8 h-8 rounded-lg bg-[#9146FF]/20 text-[#a970ff] flex items-center justify-center text-sm shrink-0">
+              <i class="fa-brands fa-twitch"></i>
+            </div>
             <div class="text-[11px]">
-              <span class="text-slate-300 font-medium">ดูคลิปสั้นและไฮไลท์เต็มทุกสัปดาห์</span>
-              <div class="text-slate-500 text-[10px]">อัปเดตลงทั้ง YouTube Shorts &amp; TikTok เป็นประจำ</div>
+              <span class="text-white font-medium">ดูคลังคลิปและโมเมนต์ย้อนหลังทั้งหมด</span>
+              <div class="text-purple-300/70 text-[10px]">รวมกว่า 60+ คลิปตลอดกาลจาก twitch.tv/dalines/clips?range=all</div>
             </div>
           </div>
           <div class="flex items-center gap-2">
-            <a href="https://www.youtube.com/@DaLinesTTV" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-[10px] font-bold transition flex items-center gap-1 active:scale-95 shadow">
-              <i class="fa-brands fa-youtube"></i> ติดตาม YouTube
-            </a>
-            <a href="https://www.tiktok.com/@dalinestuang" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 rounded-lg bg-pink-600 hover:bg-pink-500 text-white text-[10px] font-bold transition flex items-center gap-1 active:scale-95 shadow">
-              <i class="fa-brands fa-tiktok"></i> ติดตาม TikTok
+            <a href="https://www.twitch.tv/dalines/clips?range=all" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-[#9146FF] hover:bg-[#772ce8] text-white text-[10px] font-bold transition flex items-center gap-1 active:scale-95 shadow">
+              <i class="fa-brands fa-twitch"></i> ชมคลิปทั้งหมดบน Twitch (range=all)
             </a>
           </div>
         </div>
@@ -2065,8 +2065,8 @@
       <div class="flex items-center justify-between flex-wrap gap-2 pt-1 text-xs">
         <span class="text-[11px] text-slate-400">ชอบคลิปนี้กด ❤️ หรือแชร์ให้เพื่อนๆ ได้เลย!</span>
         <div class="flex items-center gap-2">
-          <a id="clip-modal-ext-link" href="#" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 text-[11px] font-bold transition flex items-center gap-1">
-            <span>เปิดบน YouTube</span>
+          <a id="clip-modal-ext-link" href="https://www.twitch.tv/dalines/clips?range=all" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-[#9146FF]/20 hover:bg-[#9146FF]/40 text-[#c084fc] hover:text-white border border-[#9146FF]/40 text-[11px] font-bold transition flex items-center gap-1.5">
+            <i class="fa-brands fa-twitch"></i> <span>เปิดบน Twitch</span>
             <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
           </a>
           <button type="button" onclick="closeClipModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-semibold transition cursor-pointer">
@@ -2218,7 +2218,7 @@
         toast_copy_ign: "คัดลอก IGN: DaLines เรียบร้อย! 🎮",
         toast_sound_on: "เปิดเสียงเอฟเฟกต์แล้ว 🔊",
         toast_sound_off: "ปิดเสียงเอฟเฟกต์แล้ว 🔇",
-        clips_desc: "ช็อตยิงคม 1v5, จังหวะโยนในตำนาน และโมเมนต์ฮาที่คนดูโหวตสูงสุด"
+        clips_desc: "คลังคลิปไฮไลท์ยอดนิยมตลอดกาลจาก twitch.tv/dalines เรียงตามยอดเข้าชมสูงสุด"
       },
       en: {
         banner_desc: "• Catch me live on Twitch! Come say hi!",
@@ -2270,7 +2270,7 @@
         toast_copy_ign: "IGN: DaLines copied to clipboard! 🎮",
         toast_sound_on: "Sound FX Enabled 🔊",
         toast_sound_off: "Sound FX Muted 🔇",
-        clips_desc: "1v5 Clutch highlights, legendary throws, and top community voted moments!"
+        clips_desc: "All-time top clips and highlights from twitch.tv/dalines sorted by view count!"
       }
     };
 
@@ -3249,94 +3249,371 @@
     }
 
     // -----------------------------------------------------------------
-    // DALINES HALL OF FAME & HIGHLIGHTS VAULT
+    // DALINES HALL OF FAME & HIGHLIGHTS VAULT (TWITCH CLIPS: range=all)
+    // Source: https://www.twitch.tv/dalines/clips?range=all
     // -----------------------------------------------------------------
     const DALINES_CLIPS = [
       {
-        id: 'clip-1',
-        title: '1v5 Clutch Ace ด้วย Vandal แต่เกือบแพ้เพราะหาไปป์ไม่เจอ 💥',
-        desc: 'สะบัดหัว 5 ตัวรวด แต่วิ่งวนหา Spike ไม่เจอจนเวลาเกือบหมด เซฟช็อตระดับตำนาน',
-        category: 'clutch',
-        platform: 'YouTube Shorts',
-        platformIcon: 'fa-brands fa-youtube text-red-500',
-        duration: '0:54',
-        badge: '1v5 CLUTCH',
-        badgeClass: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
-        videoUrl: 'https://player.twitch.tv/?video=1475544386&parent=localhost&parent=127.0.0.1&parent=dalines-site.dalines.workers.dev&autoplay=true',
-        extUrl: 'https://www.youtube.com/@DaLinesTTV',
-        defaultLikes: 142
+            "id": "clip-1",
+            "slug": "ElegantEagerGoldfishAMPEnergyCherry-9uGytF396fyRA5xc",
+            "title": "นัวอะไรขนาดนั้น",
+            "game": "VALORANT",
+            "curator": "DaLines",
+            "views": 216,
+            "duration": "0:26",
+            "category": "valorant",
+            "badge": "👑 #1 ALL-TIME TOP",
+            "badgeClass": "bg-amber-500/20 text-amber-300 border-amber-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/a7fd0812-aabe-4df1-9c62-33f743f76411/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/ElegantEagerGoldfishAMPEnergyCherry-9uGytF396fyRA5xc",
+            "createdAt": "2022-04-03"
       },
       {
-        id: 'clip-2',
-        title: 'จังหวะโยนระดับอาจารย์ DaLines: ยืนสบตาศัตรู 3 วิแล้วยิงลงพื้น 🤡',
-        desc: 'กำลังจะยิงหัวเขา แต่เมาส์หลุดขอบโต๊ะ กระสุนลงพื้นเต็มๆ คนดูหัวเราะลั่นห้องแชท',
-        category: 'meme',
-        platform: 'TikTok',
-        platformIcon: 'fa-brands fa-tiktok text-pink-500',
-        duration: '0:38',
-        badge: 'EPIC THROW',
-        badgeClass: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
-        videoUrl: 'https://player.twitch.tv/?video=1475544386&parent=localhost&parent=127.0.0.1&parent=dalines-site.dalines.workers.dev&autoplay=true',
-        extUrl: 'https://www.tiktok.com/@dalinestuang',
-        defaultLikes: 418
+            "id": "clip-2",
+            "slug": "DifficultNiceGarageUncleNox",
+            "title": "Dancing : รถซื้อแกง",
+            "game": "Just Chatting",
+            "curator": "feixian1412",
+            "views": 192,
+            "duration": "0:24",
+            "category": "other",
+            "badge": "🥈 #2 TOP VIRAL",
+            "badgeClass": "bg-slate-400/20 text-slate-200 border-slate-400/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/f7f6701f-12bc-4972-8330-054b2c7ce6e8/landscape/thumb/thumb-0000000000-1280x720.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/DifficultNiceGarageUncleNox",
+            "createdAt": "2020-05-06"
       },
       {
-        id: 'clip-3',
-        title: 'โดนแฟลช Breach ขาวโพลนเต็มเบ้าตา กรีดร้องลั่นบ้าน! 😱',
-        desc: 'กำลังเล็งมุมคมๆ โดนแฟลชกระแทกหน้า ร้องลั่นห้องจนสตรีมเมอร์ข้างบ้านต้องทัก',
-        category: 'scream',
-        platform: 'TikTok',
-        platformIcon: 'fa-brands fa-tiktok text-pink-500',
-        duration: '0:42',
-        badge: 'SCREAM 100dB',
-        badgeClass: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
-        videoUrl: 'https://player.twitch.tv/?video=1475544386&parent=localhost&parent=127.0.0.1&parent=dalines-site.dalines.workers.dev&autoplay=true',
-        extUrl: 'https://www.tiktok.com/@dalinestuang',
-        defaultLikes: 289
+            "id": "clip-3",
+            "slug": "RealChillyPancakeKeepo-XUD53z3NRrGzcqkB",
+            "title": "A clear? then go B",
+            "game": "VALORANT",
+            "curator": "DaLines",
+            "views": 172,
+            "duration": "0:30",
+            "category": "valorant",
+            "badge": "🥉 #3 TOP HIGHLIGHT",
+            "badgeClass": "bg-orange-500/20 text-orange-300 border-orange-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/42467f1d-f0d1-4e95-9449-b7f6a84f18c7/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/RealChillyPancakeKeepo-XUD53z3NRrGzcqkB",
+            "createdAt": "2021-09-29"
       },
       {
-        id: 'clip-4',
-        title: 'สเปรย์ Phantom 30 นัด โดน 0 นัด ทฤษฎีเป้าครอบไม่โดนตัว 🔫',
-        desc: 'ลั่นหมดแม็กไม่โดนแม้แต่เงา ศัตรูหันมายิงทีเดียวดับอนาถ ทฤษฎียิงรอบตัวศัตรู',
-        category: 'meme',
-        platform: 'YouTube Shorts',
-        platformIcon: 'fa-brands fa-youtube text-red-500',
-        duration: '0:45',
-        badge: '0 HIT SPRAY',
-        badgeClass: 'bg-orange-500/20 text-orange-300 border-orange-500/40',
-        videoUrl: 'https://player.twitch.tv/?video=1475544386&parent=localhost&parent=127.0.0.1&parent=dalines-site.dalines.workers.dev&autoplay=true',
-        extUrl: 'https://www.youtube.com/@DaLinesTTV',
-        defaultLikes: 210
+            "id": "clip-4",
+            "slug": "BitterBraveTomatoEleGiggle-LCD4OrW4n4OP0N5Z",
+            "title": "โนเอลร้องเพลง",
+            "game": "Grand Theft Auto V",
+            "curator": "DaLines",
+            "views": 145,
+            "duration": "0:26",
+            "category": "other",
+            "badge": "🚗 GTA V RP",
+            "badgeClass": "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/79fa3232-4084-4500-841a-62a6a2908872/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/BitterBraveTomatoEleGiggle-LCD4OrW4n4OP0N5Z",
+            "createdAt": "2022-05-28"
       },
       {
-        id: 'clip-5',
-        title: 'ดวล Sheriff ระยะ 50 เมตร สะบัดเข้าหัวนัดเดียวหงายเงิบ! 🎯',
-        desc: 'ช็อตฟลุ๊คหรือฝีมือ? สะบัดนัดเดียวศัตรูงงทั้งเซิร์ฟเวอร์ คมเกินบรรยาย',
-        category: 'clutch',
-        platform: 'YouTube Shorts',
-        platformIcon: 'fa-brands fa-youtube text-red-500',
-        duration: '0:31',
-        badge: 'SHERIFF ONE-TAP',
-        badgeClass: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40',
-        videoUrl: 'https://player.twitch.tv/?video=1475544386&parent=localhost&parent=127.0.0.1&parent=dalines-site.dalines.workers.dev&autoplay=true',
-        extUrl: 'https://www.youtube.com/@DaLinesTTV',
-        defaultLikes: 125
+            "id": "clip-5",
+            "slug": "EnchantingLaconicSparrowTheTarFu",
+            "title": "Skip Valorant battle pass 50 tiers",
+            "game": "VALORANT",
+            "curator": "Archuron",
+            "views": 119,
+            "duration": "0:59",
+            "category": "valorant",
+            "badge": "🎯 VALORANT",
+            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/bac763d1-bca8-4134-be26-72ce11275692/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/EnchantingLaconicSparrowTheTarFu",
+            "createdAt": "2020-10-13"
       },
       {
-        id: 'clip-6',
-        title: 'โดนตุ๋ยหลังตอนกำลังสอนเทคนิคคนดูในแชทแบบมั่นใจ 💀',
-        desc: 'พูดไม่ทันขาดคำ "ตรงนี้ปลอดภัย 100%" มีดแทงเข้าหลังทันที จังหวะกรรมตามสนอง',
-        category: 'scream',
-        platform: 'TikTok',
-        platformIcon: 'fa-brands fa-tiktok text-pink-500',
-        duration: '0:29',
-        badge: 'KARMA MOMENT',
-        badgeClass: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
-        videoUrl: 'https://player.twitch.tv/?video=1475544386&parent=localhost&parent=127.0.0.1&parent=dalines-site.dalines.workers.dev&autoplay=true',
-        extUrl: 'https://www.tiktok.com/@dalinestuang',
-        defaultLikes: 512
+            "id": "clip-6",
+            "slug": "KnottyCuriousCattleHoneyBadger",
+            "title": "360 stinger",
+            "game": "VALORANT",
+            "curator": "DaLines",
+            "views": 111,
+            "duration": "0:28",
+            "category": "valorant",
+            "badge": "🎯 VALORANT",
+            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/ba2fdbe3-d147-49d5-bfa8-6bb6a71dc3c9/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/KnottyCuriousCattleHoneyBadger",
+            "createdAt": "2021-02-08"
+      },
+      {
+            "id": "clip-7",
+            "slug": "DependableGracefulWheelBrainSlug-SMdvjtBZ4jL7qMpP",
+            "title": "สมแล้วที่ชื่อ TaoHooo",
+            "game": "VALORANT",
+            "curator": "zealproject",
+            "views": 110,
+            "duration": "0:28",
+            "category": "valorant",
+            "badge": "🎯 VALORANT",
+            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/71cbeeed-d997-4d68-ad0c-c72b7033ddf3/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/DependableGracefulWheelBrainSlug-SMdvjtBZ4jL7qMpP",
+            "createdAt": "2021-04-11"
+      },
+      {
+            "id": "clip-8",
+            "slug": "PlainDiligentWolfBudBlast",
+            "title": "Scrim เค้าเล่นกันอย่างนี้",
+            "game": "Apex Legends",
+            "curator": "DaLines",
+            "views": 110,
+            "duration": "1:00",
+            "category": "apex",
+            "badge": "⚡ APEX HIGHLIGHT",
+            "badgeClass": "bg-amber-500/20 text-amber-300 border-amber-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/42c88ec2-96e0-486d-b9ed-1b14be00edc8/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/PlainDiligentWolfBudBlast",
+            "createdAt": "2020-05-09"
+      },
+      {
+            "id": "clip-9",
+            "slug": "ProtectiveVainGrouseBrokeBack",
+            "title": "ท่าหมา",
+            "game": "Apex Legends",
+            "curator": "ssingtho",
+            "views": 100,
+            "duration": "0:09",
+            "category": "apex",
+            "badge": "🏆 APEX MOMENT",
+            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/208d4b9d-daa6-41e0-8b6a-8d1ea6d6c2be/landscape/thumb/thumb-0000000000-1280x720.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/ProtectiveVainGrouseBrokeBack",
+            "createdAt": "2019-12-03"
+      },
+      {
+            "id": "clip-10",
+            "slug": "LitigiousIronicSageBCouch-ec4xE4jyeoPJ3qif",
+            "title": "กดเรี���กเคสมั้ยล่ะ 55555",
+            "game": "Grand Theft Auto V",
+            "curator": "DaLines",
+            "views": 94,
+            "duration": "1:00",
+            "category": "other",
+            "badge": "🚗 GTA V RP",
+            "badgeClass": "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/15059b4c-070a-45bc-9f6c-7084d18e04fc/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/LitigiousIronicSageBCouch-ec4xE4jyeoPJ3qif",
+            "createdAt": "2022-02-20"
+      },
+      {
+            "id": "clip-11",
+            "slug": "EnergeticImpossibleClipsdadKappaWealth",
+            "title": "โนตม",
+            "game": "Apex Legends",
+            "curator": "Archuron",
+            "views": 90,
+            "duration": "0:07",
+            "category": "apex",
+            "badge": "🏆 APEX MOMENT",
+            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/923a3fcd-3e25-4080-9eee-1beb1c547391/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/EnergeticImpossibleClipsdadKappaWealth",
+            "createdAt": "2020-11-20"
+      },
+      {
+            "id": "clip-12",
+            "slug": "LachrymoseObliviousCardHeyGirl",
+            "title": "RE-45 330m+ ",
+            "game": "Apex Legends",
+            "curator": "DaLines",
+            "views": 84,
+            "duration": "0:33",
+            "category": "apex",
+            "badge": "🏆 APEX MOMENT",
+            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/0bc22c82-b040-4ddd-812a-361460ff1919/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/LachrymoseObliviousCardHeyGirl",
+            "createdAt": "2020-05-24"
+      },
+      {
+            "id": "clip-13",
+            "slug": "InterestingRealBorkRalpherZ-a3CT1ubdygsDQTqS",
+            "title": "[ace] รีบขึ้นได โทษที",
+            "game": "VALORANT",
+            "curator": "DaLines",
+            "views": 82,
+            "duration": "0:30",
+            "category": "valorant",
+            "badge": "🔥 VALORANT ACE",
+            "badgeClass": "bg-red-500/20 text-red-300 border-red-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/6a2f7b98-be2d-45b7-9933-a871b4e782bc/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/InterestingRealBorkRalpherZ-a3CT1ubdygsDQTqS",
+            "createdAt": "2023-08-10"
+      },
+      {
+            "id": "clip-14",
+            "slug": "CuriousAffluentNewtSuperVinlin",
+            "title": "3 เกม apex 10 kills XD",
+            "game": "VALORANT",
+            "curator": "DaLines",
+            "views": 80,
+            "duration": "1:00",
+            "category": "valorant",
+            "badge": "🎯 VALORANT",
+            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/41e514a8-e92c-4eb4-a19a-7e7a98efd3a5/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/CuriousAffluentNewtSuperVinlin",
+            "createdAt": "2021-01-28"
+      },
+      {
+            "id": "clip-15",
+            "slug": "ArtisticAveragePepperoniSoBayed",
+            "title": "เชี้ยเฟี้ยวสัส อย่างเท��� idolเลย",
+            "game": "VALORANT",
+            "curator": "Archuron",
+            "views": 80,
+            "duration": "0:40",
+            "category": "valorant",
+            "badge": "🎯 VALORANT",
+            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/6b14209d-4958-45b6-b60c-387b1a47143a/landscape/thumb/thumb-0000000000-1664x936.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/ArtisticAveragePepperoniSoBayed",
+            "createdAt": "2021-01-06"
+      },
+      {
+            "id": "clip-16",
+            "slug": "AggressiveManlyPenguinKappaClaus",
+            "title": "หมากัดหัวนม",
+            "game": "Apex Legends",
+            "curator": "Archuron",
+            "views": 80,
+            "duration": "0:25",
+            "category": "apex",
+            "badge": "🏆 APEX MOMENT",
+            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/634b8de6-6953-463a-b706-6b662ef64154/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/AggressiveManlyPenguinKappaClaus",
+            "createdAt": "2020-08-22"
+      },
+      {
+            "id": "clip-17",
+            "slug": "HandsomeCallousRatMrDestructoid-Zzz6FfuzdD6PI3fy",
+            "title": "ฝาแฝดหอยแครง",
+            "game": "VALORANT",
+            "curator": "typepy",
+            "views": 77,
+            "duration": "1:00",
+            "category": "valorant",
+            "badge": "🎯 VALORANT",
+            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/bc2ad997-427f-4cf6-8350-9efe70fb2e46/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/HandsomeCallousRatMrDestructoid-Zzz6FfuzdD6PI3fy",
+            "createdAt": "2021-09-26"
+      },
+      {
+            "id": "clip-18",
+            "slug": "HomelyFurtiveSushiCclamChamp-jCKX-x3I_5Gii6zm",
+            "title": "เยนมาเเล้ว",
+            "game": "Apex Legends",
+            "curator": "guyenna",
+            "views": 73,
+            "duration": "0:12",
+            "category": "apex",
+            "badge": "🏆 APEX MOMENT",
+            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/e75a4a7b-2d99-4024-9c13-f0e7a200b8af/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/HomelyFurtiveSushiCclamChamp-jCKX-x3I_5Gii6zm",
+            "createdAt": "2021-05-31"
+      },
+      {
+            "id": "clip-19",
+            "slug": "MoldyDifficultCougarThisIsSparta",
+            "title": "ลงยังไง",
+            "game": "Fortnite",
+            "curator": "Ammarinn",
+            "views": 71,
+            "duration": "0:41",
+            "category": "other",
+            "badge": "🎪 FORTNITE",
+            "badgeClass": "bg-blue-500/20 text-blue-300 border-blue-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/6b8c647e-3ea8-41ef-83d0-46c0d2b80431/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/MoldyDifficultCougarThisIsSparta",
+            "createdAt": "2020-02-19"
+      },
+      {
+            "id": "clip-20",
+            "slug": "LuckyCrispyBasenjiOptimizePrime",
+            "title": "God Havoc",
+            "game": "Apex Legends",
+            "curator": "1StarGamingTH",
+            "views": 71,
+            "duration": "0:28",
+            "category": "apex",
+            "badge": "⚡ APEX HIGHLIGHT",
+            "badgeClass": "bg-amber-500/20 text-amber-300 border-amber-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/77d29652-6aa8-40b2-85fd-d25b9cb9d42e/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/LuckyCrispyBasenjiOptimizePrime",
+            "createdAt": "2020-05-03"
+      },
+      {
+            "id": "clip-21",
+            "slug": "AdventurousBlindingButterBIRB",
+            "title": "Lucky with largest crosshair",
+            "game": "VALORANT",
+            "curator": "DaLines",
+            "views": 69,
+            "duration": "0:23",
+            "category": "valorant",
+            "badge": "🎯 VALORANT",
+            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/4582e1d1-ff92-4392-a61d-4cb74bc3685f/landscape/thumb/thumb-0000000000-1664x936.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/AdventurousBlindingButterBIRB",
+            "createdAt": "2021-01-11"
+      },
+      {
+            "id": "clip-22",
+            "slug": "ExuberantPlausibleCoyoteStoneLightning",
+            "title": "Loba 3.8k Damage",
+            "game": "Apex Legends",
+            "curator": "DaLines",
+            "views": 66,
+            "duration": "1:00",
+            "category": "apex",
+            "badge": "⚡ APEX HIGHLIGHT",
+            "badgeClass": "bg-amber-500/20 text-amber-300 border-amber-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/640d4a55-73d5-4f2a-8496-472c6d518bcb/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/ExuberantPlausibleCoyoteStoneLightning",
+            "createdAt": "2020-05-15"
+      },
+      {
+            "id": "clip-23",
+            "slug": "ComfortableElatedInternSpicyBoy-kX84MxdkorxVtKZH",
+            "title": "เป็นแฟนทำไรได้บ้าง",
+            "game": "VALORANT",
+            "curator": "Archuron",
+            "views": 65,
+            "duration": "0:05",
+            "category": "valorant",
+            "badge": "🎯 VALORANT",
+            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/db8ad1f1-e699-4871-aaaf-d32a64101407/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/ComfortableElatedInternSpicyBoy-kX84MxdkorxVtKZH",
+            "createdAt": "2023-01-15"
+      },
+      {
+            "id": "clip-24",
+            "slug": "InnocentTangiblePuppyDancingBaby",
+            "title": "หลุด",
+            "game": "Apex Legends",
+            "curator": "typepy",
+            "views": 60,
+            "duration": "0:28",
+            "category": "apex",
+            "badge": "🏆 APEX MOMENT",
+            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/da18730e-cc88-48bd-87a9-d5836fe88504/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/InnocentTangiblePuppyDancingBaby",
+            "createdAt": "2020-05-10"
       }
-    ];
+];
 
     let currentClipFilter = 'all';
 
@@ -3355,47 +3632,78 @@
 
       grid.innerHTML = filtered.map(clip => {
         const isLiked = !!likedMap[clip.id];
-        const likes = clip.defaultLikes + (isLiked ? 1 : 0);
+        const likes = clip.views + (isLiked ? 1 : 0);
         return `
-          <div class="tilt-card p-3 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-purple-500/40 transition-all duration-200 flex flex-col justify-between gap-2.5 shadow-lg relative group overflow-hidden">
-            <!-- Top Badges -->
-            <div class="flex items-center justify-between gap-1 text-[10px]">
-              <span class="px-2 py-0.5 rounded-full border font-mono font-bold ${clip.badgeClass}">
-                ${clip.badge}
-              </span>
-              <div class="flex items-center gap-1 text-slate-400 font-mono">
-                <i class="${clip.platformIcon}"></i>
-                <span>${clip.duration}</span>
+          <div class="tilt-card rounded-xl bg-slate-900/90 border border-slate-800 hover:border-purple-500/50 transition-all duration-300 flex flex-col justify-between shadow-lg relative group overflow-hidden">
+            <!-- Video Thumbnail with 16:9 aspect ratio and hover overlay -->
+            <div class="relative w-full aspect-video bg-black/60 overflow-hidden cursor-pointer" onclick="openClipModal('${clip.id}')">
+              <img src="${clip.thumbnailUrl}" alt="${escapeHtml(clip.title)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" onerror="this.src='https://static-cdn.jtvnw.net/ttv-static-metadata/twitch_logo3.jpg'">
+              
+              <!-- Gradient Overlay -->
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-black/30 pointer-events-none"></div>
+
+              <!-- Top Badges -->
+              <div class="absolute top-2 left-2 flex items-center gap-1">
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-mono font-bold border backdrop-blur-md ${clip.badgeClass}">
+                  ${clip.badge}
+                </span>
+              </div>
+
+              <!-- Views Badge -->
+              <div class="absolute top-2 right-2 px-1.5 py-0.5 rounded-md bg-black/75 border border-white/10 text-[9px] font-mono text-purple-300 backdrop-blur-md flex items-center gap-1 shadow">
+                <i class="fa-solid fa-eye text-[8px]"></i>
+                <span>${clip.views} views</span>
+              </div>
+
+              <!-- Center Play Icon -->
+              <div class="absolute inset-0 flex items-center justify-center opacity-85 group-hover:opacity-100 transition-opacity">
+                <div class="w-10 h-10 rounded-full bg-[#9146FF]/90 group-hover:bg-[#9146FF] text-white flex items-center justify-center text-sm shadow-[0_0_20px_rgba(145,70,255,0.7)] group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-play ml-0.5 text-xs"></i>
+                </div>
+              </div>
+
+              <!-- Duration Badge -->
+              <div class="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/80 font-mono text-[9px] text-white border border-white/10">
+                ${clip.duration}
               </div>
             </div>
 
-            <!-- Title & Desc -->
-            <div>
-              <h4 class="text-xs font-bold text-white group-hover:text-purple-300 transition line-clamp-2 leading-snug">
-                ${escapeHtml(clip.title)}
-              </h4>
-              <p class="text-[10px] text-slate-400 mt-1 line-clamp-2 leading-relaxed">
-                ${escapeHtml(clip.desc)}
-              </p>
-            </div>
+            <!-- Content Area -->
+            <div class="p-3 flex flex-col justify-between flex-grow gap-2">
+              <div>
+                <h4 class="text-xs font-bold text-white group-hover:text-purple-300 transition line-clamp-2 leading-snug cursor-pointer" onclick="openClipModal('${clip.id}')">
+                  ${escapeHtml(clip.title)}
+                </h4>
+                <div class="text-[10px] text-slate-400 mt-1 flex items-center justify-between gap-1 font-mono">
+                  <span class="truncate"><i class="fa-solid fa-user-pen text-[9px] text-purple-400 mr-1"></i>${escapeHtml(clip.curator)}</span>
+                  <span class="text-slate-500 shrink-0 font-medium">${clip.game}</span>
+                </div>
+              </div>
 
-            <!-- Action Buttons -->
-            <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between gap-2 text-xs">
-              <button type="button" onclick="openClipModal('${clip.id}')" class="px-3 py-1.5 rounded-lg bg-purple-600/30 hover:bg-purple-600 text-purple-200 hover:text-white border border-purple-500/40 text-[11px] font-bold transition flex items-center gap-1.5 active:scale-95 cursor-pointer shadow">
-                <i class="fa-solid fa-play text-[9px]"></i>
-                <span>ชมคลิป</span>
-              </button>
+              <!-- Action Buttons -->
+              <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between gap-1.5 text-xs">
+                <button type="button" onclick="openClipModal('${clip.id}')" class="px-2.5 py-1.5 rounded-lg bg-[#9146FF]/30 hover:bg-[#9146FF] text-purple-200 hover:text-white border border-[#9146FF]/50 text-[10px] font-bold transition flex items-center gap-1 active:scale-95 cursor-pointer shadow">
+                  <i class="fa-solid fa-play text-[8px]"></i>
+                  <span>ชมคลิป</span>
+                </button>
 
-              <div class="flex items-center gap-1.5">
-                <!-- Like Button -->
-                <button type="button" onclick="toggleClipLike('${clip.id}', event)" class="px-2 py-1 rounded-lg ${isLiked ? 'bg-pink-500/20 text-pink-400 border border-pink-500/40' : 'bg-slate-800 text-slate-400 hover:text-pink-400'} text-[11px] font-mono transition flex items-center gap-1 cursor-pointer active:scale-90">
-                  <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart ${isLiked ? 'text-pink-400' : ''}"></i>
-                  <span id="like-count-${clip.id}">${likes}</span>
-                </button>
-                <!-- Share Button -->
-                <button type="button" onclick="shareClip('${clip.id}', event)" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white text-[11px] transition cursor-pointer" title="แชร์คลิป">
-                  <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                </button>
+                <div class="flex items-center gap-1">
+                  <!-- Like Button -->
+                  <button type="button" onclick="toggleClipLike('${clip.id}', event)" class="px-2 py-1 rounded-lg ${isLiked ? 'bg-pink-500/20 text-pink-400 border border-pink-500/40' : 'bg-slate-800 text-slate-400 hover:text-pink-400'} text-[10px] font-mono transition flex items-center gap-1 cursor-pointer active:scale-90" title="ถูกใจคลิป">
+                    <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart ${isLiked ? 'text-pink-400' : ''}"></i>
+                    <span id="like-count-${clip.id}">${likes}</span>
+                  </button>
+
+                  <!-- Direct Link on Twitch -->
+                  <a href="${clip.clipUrl}" target="_blank" rel="noopener noreferrer" class="p-1.5 rounded-lg bg-slate-800 hover:bg-[#9146FF]/40 text-slate-400 hover:text-white text-[10px] transition cursor-pointer" title="เปิดดูบน Twitch">
+                    <i class="fa-brands fa-twitch"></i>
+                  </a>
+
+                  <!-- Share Link Button -->
+                  <button type="button" onclick="shareClip('${clip.id}', event)" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white text-[10px] transition cursor-pointer" title="แชร์คลิป">
+                    <i class="fa-solid fa-share-nodes"></i>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -3410,7 +3718,7 @@
         b.className = 'clip-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white font-medium transition active:scale-95 cursor-pointer shrink-0';
       });
       if (btn) {
-        btn.className = 'clip-filter-btn px-2.5 py-1 rounded-lg bg-purple-600 text-white font-bold transition active:scale-95 shadow cursor-pointer shrink-0';
+        btn.className = 'clip-filter-btn px-2.5 py-1 rounded-lg bg-[#9146FF] text-white font-bold transition active:scale-95 shadow cursor-pointer shrink-0';
       }
       renderClips();
     }
@@ -3437,11 +3745,15 @@
       const extLink = document.getElementById('clip-modal-ext-link');
 
       if (title) title.innerText = clip.title;
-      if (badge) badge.innerText = `${clip.platform.toUpperCase()} • ${clip.badge}`;
-      if (iframe) iframe.src = clip.videoUrl;
+      if (badge) badge.innerText = `${clip.game.toUpperCase()} • ${clip.views} VIEWS • CLIPPED BY ${clip.curator.toUpperCase()}`;
+      
+      const hostname = window.location.hostname || 'dalines-site.dalines.workers.dev';
+      const embedUrl = `https://clips.twitch.tv/embed?clip=${encodeURIComponent(clip.slug)}&parent=${hostname}&parent=localhost&parent=127.0.0.1&parent=dalines-site.dalines.workers.dev&parent=dalines.pages.dev&autoplay=true`;
+      if (iframe) iframe.src = embedUrl;
+
       if (extLink) {
-        extLink.href = clip.extUrl;
-        extLink.innerHTML = `<span>เปิดบน ${clip.platform}</span> <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>`;
+        extLink.href = clip.clipUrl;
+        extLink.innerHTML = `<i class="fa-brands fa-twitch"></i> <span>เปิดบน Twitch</span> <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>`;
       }
       if (modal) modal.classList.remove('hidden');
     }
@@ -3459,11 +3771,10 @@
       playSound('pop');
       const clip = DALINES_CLIPS.find(c => c.id === clipId);
       if (!clip) return;
-      const shareUrl = `${window.location.origin}${window.location.pathname}#tab-stream`;
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(`${clip.title} - ชมไฮไลท์ DaLines ได้ที่: ${shareUrl}`);
+        navigator.clipboard.writeText(`${clip.title} - ชมคลิป DaLines จาก Twitch: ${clip.clipUrl}`);
       }
-      showToast('คัดลอกลิงก์ไฮไลท์เรียบร้อย! 🎬');
+      showToast('คัดลอกลิงก์คลิป Twitch เรียบร้อย! 🎬');
     }
 
     // -----------------------------------------------------------------

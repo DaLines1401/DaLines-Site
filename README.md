@@ -18,6 +18,7 @@ Official Profile Hub & Battle Station for **DaLines** — Streamer, Gamer, and F
 - 🔊 **Web Audio FX:** ระบบเสียงเอฟเฟกต์ (เปิด/ปิดได้) ทำงานด้วย Web Audio API
 - 🌐 **Multi-Language (TH / EN):** รองรับ 2 ภาษา สลับได้ตลอดเวลา
 - 🛸 **Cyberpunk Command Center:** แบ็กกราวด์อนุภาคโต้ตอบเมาส์ (Interactive Constellation Canvas 60fps), เรดาร์สแกนคลื่นสดพร้อมนาฬิกานับถอยหลังรอบไลฟ์, DaLines Cyber Soundboard แผงเสียงมีมพร้อมแถบคลื่นเสียง, และ Valorant Challenge Randomizer สุ่มโจทย์ท้าทายในสตรีม
+- 🎬 **DaLines Hall of Fame (Twitch Clips):** คลังคลิปไฮไลท์ยอดนิยมตลอดกาลจาก [twitch.tv/dalines/clips?range=all](https://www.twitch.tv/dalines/clips?range=all) แสดงปก Thumbnail คมชัด, ตัวกรองแยกตามเกม (VALORANT, Apex Legends, GTA V & อื่นๆ), ระบบเล่นคลิปผ่าน Twitch Embed Player ใน Modal, ปุ่มกด Like และปุ่มแชร์
 - 🏎️ **Optimized Performance:** Preconnect, Zero Cumulative Layout Shift (CLS), และ SEO / Open Graph Image Preview ขนาดเต็ม
 
 ---
