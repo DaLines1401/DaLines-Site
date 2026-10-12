@@ -17,6 +17,7 @@ Official Profile Hub & Battle Station for **DaLines** — Streamer, Gamer, and F
 - 🎨 **Dynamic Themes:** สลับธีมสีได้ 3 รูปแบบ (Toxic Emerald, Cyber Cyan, Twitch Violet)
 - 🔊 **Web Audio FX:** ระบบเสียงเอฟเฟกต์ (เปิด/ปิดได้) ทำงานด้วย Web Audio API
 - 🌐 **Multi-Language (TH / EN):** รองรับ 2 ภาษา สลับได้ตลอดเวลา
+- 🛸 **Cyberpunk Command Center:** แบ็กกราวด์อนุภาคโต้ตอบเมาส์ (Interactive Constellation Canvas 60fps), เรดาร์สแกนคลื่นสดพร้อมนาฬิกานับถอยหลังรอบไลฟ์, DaLines Cyber Soundboard แผงเสียงมีมพร้อมแถบคลื่นเสียง, และ Valorant Challenge Randomizer สุ่มโจทย์ท้าทายในสตรีม
 - 🏎️ **Optimized Performance:** Preconnect, Zero Cumulative Layout Shift (CLS), และ SEO / Open Graph Image Preview ขนาดเต็ม
 
 ---
