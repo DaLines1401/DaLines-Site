@@ -17,6 +17,7 @@ Official Profile Hub & Battle Station for **DaLines** — Streamer, Gamer, and F
 - 🎨 **Dynamic Themes:** สลับธีมสีได้ 3 รูปแบบ (Toxic Emerald, Cyber Cyan, Twitch Violet)
 - 🔊 **Web Audio FX:** ระบบเสียงเอฟเฟกต์ (เปิด/ปิดได้) ทำงานด้วย Web Audio API
 - 🌐 **Multi-Language (TH / EN):** รองรับ 2 ภาษา สลับได้ตลอดเวลา
+- 🎮 **3D Battle Station Immersive Experience (Three.js):** สัมผัสชุด PC Rig แบบ 3D แยกชิ้นส่วน (Exploded View), แสงนีออน UnrealBloomPass, Hotspots สเปกฮาร์ดแวร์ และเสียงกลไกไฮดรอลิก SFX
 - 🏎️ **Optimized Performance:** Preconnect, Zero Cumulative Layout Shift (CLS), และ SEO / Open Graph Image Preview ขนาดเต็ม
 
 ---
@@ -26,6 +27,7 @@ Official Profile Hub & Battle Station for **DaLines** — Streamer, Gamer, and F
 ```text
 DaLines-Hub/
 ├── index.html         # โค้ดหน้าเว็บหลัก (HTML + Tailwind + JS)
+├── pc-3d.html         # หน้า 3D Immersive Battle Station (Three.js WebGL)
 ├── Logo.png           # โลโก้และรูปโปรไฟล์ DaLines (300x300)
 ├── banner-480.png     # รูปแบนเนอร์หลักประจำช่อง (853x480)
 ├── manifest.json      # ไฟล์ Web App Manifest (PWA)
