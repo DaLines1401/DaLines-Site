@@ -17,7 +17,10 @@ Official Profile Hub & Battle Station for **DaLines** — Streamer, Gamer, and F
 - 🎨 **Dynamic Themes:** สลับธีมสีได้ 3 รูปแบบ (Toxic Emerald, Cyber Cyan, Twitch Violet)
 - 🔊 **Web Audio FX:** ระบบเสียงเอฟเฟกต์ (เปิด/ปิดได้) ทำงานด้วย Web Audio API
 - 🌐 **Multi-Language (TH / EN):** รองรับ 2 ภาษา สลับได้ตลอดเวลา
-- 🎮 **3D Battle Station Immersive Experience (Three.js):** สัมผัสชุด PC Rig แบบ 3D แยกชิ้นส่วน (Exploded View), แสงนีออน UnrealBloomPass, Hotspots สเปกฮาร์ดแวร์ และเสียงกลไกไฮดรอลิก SFX
+- 🛸 **Cyberpunk Command Center:** แบ็กกราวด์อนุภาคโต้ตอบเมาส์ (Interactive Constellation Canvas 60fps), เรดาร์สแกนคลื่นสดพร้อมนาฬิกานับถอยหลังรอบไลฟ์, DaLines Cyber Soundboard แผงเสียงมีมพร้อมแถบคลื่นเสียง, และ Valorant Challenge Randomizer สุ่มโจทย์ท้าทายในสตรีม
+- 🎯 **Valorant Crosshair & 10s Aim Challenge:** จำลองเป้าเล็ง Valorant พร้อมมินิเกมวัดความไวการยิง 10 วินาที
+- 🎬 **DaLines Hall of Fame (Twitch Clips):** คลังคลิปไฮไลท์ยอดนิยมตลอดกาลจาก [twitch.tv/dalines/clips?range=all](https://www.twitch.tv/dalines/clips?range=all) แสดงปก Thumbnail คมชัด, ตัวกรองแยกตามเกม (VALORANT, Apex Legends, GTA V & อื่นๆ), ระบบเล่นคลิปผ่าน Twitch Embed Player ใน Modal, ปุ่มกด Like และปุ่มแชร์
+- 🎮 **FPS E-DPI Calculator & Sensitivity Converter:** เครื่องคำนวณ E-DPI และแปลงค่าความไวเมาส์ข้ามเกม 8 เกมดัง (Valorant, Apex Legends, Fortnite, Delta Force, CS2, Overwatch 2, CoD/Warzone, PUBG) แม่นยำ 100% ตามระยะทางจริง (cm/360°) พร้อมแถบวิเคราะห์สไตล์การเล็ง (Arm/Wrist Aim), แนะนำขนาดแผ่นรองเมาส์, ปุ่มลัดโหลดค่าโปรเพลเยอร์ DaLines (800 DPI), และปุ่มคัดลอกค่าแต่ละเกมในคลิกเดียว
 - 🏎️ **Optimized Performance:** Preconnect, Zero Cumulative Layout Shift (CLS), และ SEO / Open Graph Image Preview ขนาดเต็ม
 
 ---
@@ -27,7 +30,6 @@ Official Profile Hub & Battle Station for **DaLines** — Streamer, Gamer, and F
 ```text
 DaLines-Hub/
 ├── index.html         # โค้ดหน้าเว็บหลัก (HTML + Tailwind + JS)
-├── pc-3d.html         # หน้า 3D Immersive Battle Station (Three.js WebGL)
 ├── Logo.png           # โลโก้และรูปโปรไฟล์ DaLines (300x300)
 ├── banner-480.png     # รูปแบนเนอร์หลักประจำช่อง (853x480)
 ├── manifest.json      # ไฟล์ Web App Manifest (PWA)

@@ -306,6 +306,84 @@
     html {
       scroll-behavior: smooth;
     }
+
+    /* Cyberpunk HUD Styles & Chamfered Cards */
+    .cyber-hud-box {
+      position: relative;
+      background: rgba(11, 15, 25, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--primary-border);
+      clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .cyber-hud-box:hover {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 25px -4px var(--primary-glow);
+    }
+    .cyber-hud-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 14px;
+      height: 14px;
+      background: var(--primary-color);
+      clip-path: polygon(0 0, 100% 100%, 100% 0);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+    /* Animated Radar Sweep */
+    @keyframes sweepRadar {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .radar-sweep-hand {
+      transform-origin: 50% 50%;
+      animation: sweepRadar 3s linear infinite;
+    }
+    /* Cyber Audio Spectrum Visualizer */
+    .spectrum-bar {
+      transition: height 0.08s ease;
+      will-change: height;
+    }
+    /* Futuristic Slot Shuffler Text */
+    .slot-shuffling {
+      animation: slotGlitch 0.1s infinite;
+    }
+    @keyframes slotGlitch {
+      0% { transform: translateY(0); opacity: 1; }
+      50% { transform: translateY(-2px); opacity: 0.7; }
+      100% { transform: translateY(2px); opacity: 1; }
+    }
+    /* Weekly Schedule Timeline Pills */
+    .schedule-day-btn.active {
+      background-color: var(--primary-color) !important;
+      color: #06080c !important;
+      font-weight: 800 !important;
+      box-shadow: 0 0 16px var(--primary-glow);
+      border-color: #ffffff !important;
+    }
+    .schedule-day-btn.today-indicator::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 5px;
+      height: 5px;
+      border-radius: 9999px;
+      background-color: #10b981;
+      box-shadow: 0 0 6px #10b981;
+    }
+    /* Wheel Needle Pointer Bounce */
+    .wheel-pointer {
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.8));
+      transition: transform 0.08s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .wheel-pointer.kick {
+      transform: translateY(-4px) rotate(-14deg);
+    }
   </style>
 </head>
 
@@ -339,6 +417,9 @@
     <div id="ambient-1" class="absolute -top-32 left-1/2 -translate-x-1/2 w-[90vw] max-w-[650px] h-[90vw] max-h-[650px] rounded-full blur-[100px] sm:blur-[140px] transition-colors duration-500" style="background-color: var(--ambient-blob-1);"></div>
     <div id="ambient-2" class="absolute top-[35%] -left-32 w-[60vw] max-w-[380px] h-[60vw] max-h-[380px] rounded-full blur-[90px] sm:blur-[120px] transition-colors duration-500" style="background-color: var(--ambient-blob-2);"></div>
   </div>
+
+  <!-- Interactive Cyber Constellation Canvas -->
+  <canvas id="cyber-bg-canvas" class="fixed inset-0 pointer-events-none -z-20 w-full h-full opacity-65"></canvas>
 
   <div class="w-full max-w-md sm:max-w-xl md:max-w-2xl mx-auto px-3.5 sm:px-6 pt-3">
     
@@ -777,64 +858,270 @@
         </div>
       </div>
 
-      <!-- HALL OF FAME: HIGHLIGHTS & MEME CLIPS VAULT -->
+      <!-- 📅 1. WEEKLY STREAM SCHEDULE & CYBER RADAR COUNTDOWN -->
+      <div class="cyber-hud-box p-3.5 sm:p-5 rounded-2xl space-y-3.5 shadow-xl">
+        <!-- Card Header -->
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center gap-2.5">
+            <!-- Animated Radar Icon -->
+            <div class="relative w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0 overflow-hidden shadow-inner">
+              <div class="absolute inset-0 rounded-full border border-emerald-400/40 m-1"></div>
+              <div class="radar-sweep-hand absolute inset-0 bg-gradient-to-tr from-transparent via-emerald-400/30 to-transparent"></div>
+              <i class="fa-solid fa-satellite-dish text-emerald-400 text-sm relative z-10"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">SCHEDULE: SYNCED</span>
+                <span class="text-[10px] text-slate-400 font-mono">[ WEEKLY TIMELINE ]</span>
+              </div>
+              <h3 class="text-xs sm:text-sm font-bold text-white tracking-wide">
+                ตารางสตรีมสดประจำสัปดาห์ &amp; นับถอยหลัง
+              </h3>
+            </div>
+          </div>
+          <div id="radar-live-status-pill" class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-slate-800 text-slate-300 border border-slate-700 flex items-center gap-1.5 shadow">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span id="radar-live-status-text">OFFLINE // STANDBY</span>
+          </div>
+        </div>
+
+        <!-- Real-Time Countdown Digital HUD Display -->
+        <div class="p-3.5 rounded-xl bg-black/60 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+          <div>
+            <div class="text-[10px] font-mono text-slate-400 uppercase tracking-wider flex items-center justify-center sm:justify-start gap-1">
+              <i class="fa-regular fa-clock text-emerald-400"></i>
+              <span id="countdown-label">NEXT LIVE MISSION IN:</span>
+            </div>
+            <div class="text-xs text-slate-300 mt-0.5">
+              รอบไลฟ์ถัดไป: <strong id="next-stream-time-text" class="text-white">วันนี้เวลา 19:30 น. (Valorant)</strong>
+            </div>
+          </div>
+          <!-- Digital Timer Blocks -->
+          <div class="flex items-center gap-1.5 font-mono font-extrabold text-sm sm:text-base">
+            <div class="px-2.5 py-1 rounded-lg bg-slate-900 border border-emerald-500/30 text-emerald-300 shadow-inner">
+              <span id="countdown-hours">00</span><span class="text-[9px] text-slate-500 block font-normal text-center">HRS</span>
+            </div>
+            <span class="text-emerald-400 animate-pulse">:</span>
+            <div class="px-2.5 py-1 rounded-lg bg-slate-900 border border-emerald-500/30 text-emerald-300 shadow-inner">
+              <span id="countdown-minutes">00</span><span class="text-[9px] text-slate-500 block font-normal text-center">MIN</span>
+            </div>
+            <span class="text-emerald-400 animate-pulse">:</span>
+            <div class="px-2.5 py-1 rounded-lg bg-slate-900 border border-emerald-500/30 text-emerald-300 shadow-inner">
+              <span id="countdown-seconds">00</span><span class="text-[9px] text-slate-500 block font-normal text-center">SEC</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7-Day Interactive Schedule Timeline Bar -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-[11px] text-slate-400 px-0.5">
+            <span>เลือกดูตารางแต่ละวัน:</span>
+            <span class="flex items-center gap-1 text-[10px] text-emerald-400 font-mono">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+              จุดเขียว = วันนี้ (Today)
+            </span>
+          </div>
+
+          <div class="grid grid-cols-7 gap-1 sm:gap-1.5 text-center">
+            <button type="button" onclick="selectScheduleDay(1)" id="sched-day-1" class="schedule-day-btn relative py-1.5 px-0.5 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white transition active:scale-95 cursor-pointer text-[10px] sm:text-xs font-mono font-medium">
+              <div>จ.</div><span class="text-[9px] text-slate-500 block">Mon</span>
+            </button>
+            <button type="button" onclick="selectScheduleDay(2)" id="sched-day-2" class="schedule-day-btn relative py-1.5 px-0.5 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white transition active:scale-95 cursor-pointer text-[10px] sm:text-xs font-mono font-medium">
+              <div>อ.</div><span class="text-[9px] text-slate-500 block">Tue</span>
+            </button>
+            <button type="button" onclick="selectScheduleDay(3)" id="sched-day-3" class="schedule-day-btn relative py-1.5 px-0.5 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white transition active:scale-95 cursor-pointer text-[10px] sm:text-xs font-mono font-medium">
+              <div>พ.</div><span class="text-[9px] text-slate-500 block">Wed</span>
+            </button>
+            <button type="button" onclick="selectScheduleDay(4)" id="sched-day-4" class="schedule-day-btn relative py-1.5 px-0.5 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white transition active:scale-95 cursor-pointer text-[10px] sm:text-xs font-mono font-medium">
+              <div>พฤ.</div><span class="text-[9px] text-slate-500 block">Thu</span>
+            </button>
+            <button type="button" onclick="selectScheduleDay(5)" id="sched-day-5" class="schedule-day-btn relative py-1.5 px-0.5 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white transition active:scale-95 cursor-pointer text-[10px] sm:text-xs font-mono font-medium">
+              <div>ศ.</div><span class="text-[9px] text-slate-500 block">Fri</span>
+            </button>
+            <button type="button" onclick="selectScheduleDay(6)" id="sched-day-6" class="schedule-day-btn relative py-1.5 px-0.5 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white transition active:scale-95 cursor-pointer text-[10px] sm:text-xs font-mono font-medium">
+              <div>ส.</div><span class="text-[9px] text-slate-500 block">Sat</span>
+            </button>
+            <button type="button" onclick="selectScheduleDay(0)" id="sched-day-0" class="schedule-day-btn relative py-1.5 px-0.5 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white transition active:scale-95 cursor-pointer text-[10px] sm:text-xs font-mono font-medium">
+              <div>อา.</div><span class="text-[9px] text-slate-500 block">Sun</span>
+            </button>
+          </div>
+
+          <!-- Active Day Details Card -->
+          <div id="sched-active-card" class="p-3 sm:p-3.5 rounded-xl bg-slate-900/70 border border-slate-800/80 flex items-center justify-between gap-3 transition-all duration-200">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div id="sched-detail-icon" class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-sm shrink-0">
+                <i class="fa-solid fa-gamepad"></i>
+              </div>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                  <span id="sched-detail-day" class="text-xs font-bold text-white">วันจันทร์ (Monday)</span>
+                  <span id="sched-detail-badge" class="px-2 py-0.2 rounded text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">LIVE 19:30</span>
+                </div>
+                <div id="sched-detail-game" class="text-[11px] text-slate-300 truncate font-medium">🎯 Valorant ไต่แรงค์กับตวง • สายยิงเน้นโยน</div>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <span id="sched-detail-time" class="text-xs font-mono font-bold text-emerald-400 block">19:30 - 23:30</span>
+              <span class="text-[9px] text-slate-500">Twitch / YT</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Calendar Link & Reminder -->
+        <div class="flex items-center justify-between gap-2 text-[10px] sm:text-[11px] pt-1 border-t border-slate-800/80">
+          <span class="text-slate-400 truncate">🔔 รับการแจ้งเตือนสตรีมสด</span>
+          <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=DaLines+Live+Stream&details=ชมไลฟ์สดสตรีมเมอร์สายยิงเน้นโยน+DaLines+บน+Twitch+https://twitch.tv/dalines&location=https://twitch.tv/dalines" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-300 font-semibold transition flex items-center gap-1.5 active:scale-95 shadow">
+            <i class="fa-solid fa-calendar-plus text-xs"></i>
+            <span>เพิ่มลงปฏิทิน Google</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 🎛️ DALINES CYBER MEME SOUNDBOARD & VISUALIZER -->
+      <div class="cyber-hud-box p-3.5 sm:p-5 rounded-2xl space-y-3.5 shadow-xl">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-lg shadow-inner">
+              <i class="fa-solid fa-compact-disc"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-400 border border-cyan-500/40">AUDIO FX</span>
+                <span class="text-[10px] text-slate-400 font-mono">[ 44.1kHz WEB-AUDIO ]</span>
+              </div>
+              <h3 class="text-xs sm:text-sm font-bold text-white tracking-wide">
+                DaLines Cyber Meme Soundboard
+              </h3>
+            </div>
+          </div>
+
+          <!-- Real-Time Audio Spectrum Bars -->
+          <div id="cyber-spectrum-bars" class="flex items-end gap-1 h-6 px-2 py-1 rounded-lg bg-black/60 border border-slate-800">
+            <span class="spectrum-bar w-1 bg-cyan-400 rounded-full h-1.5"></span>
+            <span class="spectrum-bar w-1 bg-cyan-400 rounded-full h-3"></span>
+            <span class="spectrum-bar w-1 bg-cyan-400 rounded-full h-1"></span>
+            <span class="spectrum-bar w-1 bg-cyan-400 rounded-full h-4"></span>
+            <span class="spectrum-bar w-1 bg-cyan-400 rounded-full h-2"></span>
+            <span class="spectrum-bar w-1 bg-cyan-400 rounded-full h-5"></span>
+            <span class="spectrum-bar w-1 bg-cyan-400 rounded-full h-1.5"></span>
+            <span class="spectrum-bar w-1 bg-cyan-400 rounded-full h-3"></span>
+          </div>
+        </div>
+
+        <p class="text-[10px] sm:text-[11px] text-slate-400">
+          กดปุ่มเพื่อเล่นซาวด์เอฟเฟกต์และเสียงมีมประจำช่อง DaLines พร้อมวิชวลไลเซอร์เต้นตามเสียง
+        </p>
+
+        <!-- Sound Buttons Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+          <button onclick="playCyberSound('aim_miss')" class="p-2.5 rounded-xl bg-slate-900/80 hover:bg-cyan-950/40 border border-slate-800 hover:border-cyan-500/50 text-slate-200 hover:text-white transition flex items-center gap-2 active:scale-95 shadow group text-left cursor-pointer">
+            <span class="w-6 h-6 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0 group-hover:scale-110 transition">🎯</span>
+            <div class="min-w-0">
+              <div class="font-bold truncate text-[11px]">สายยิงเน้นโยน</div>
+              <div class="text-[9px] text-slate-400 truncate">Signature Whiff</div>
+            </div>
+          </button>
+
+          <button onclick="playCyberSound('laser_sharp')" class="p-2.5 rounded-xl bg-slate-900/80 hover:bg-emerald-950/40 border border-slate-800 hover:border-emerald-500/50 text-slate-200 hover:text-white transition flex items-center gap-2 active:scale-95 shadow group text-left cursor-pointer">
+            <span class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-110 transition">⚡</span>
+            <div class="min-w-0">
+              <div class="font-bold truncate text-[11px]">คมจัดปลัดบอก</div>
+              <div class="text-[9px] text-slate-400 truncate">One Tap Laser</div>
+            </div>
+          </button>
+
+          <button onclick="playCyberSound('miracle_clutch')" class="p-2.5 rounded-xl bg-slate-900/80 hover:bg-purple-950/40 border border-slate-800 hover:border-purple-500/50 text-slate-200 hover:text-white transition flex items-center gap-2 active:scale-95 shadow group text-left cursor-pointer">
+            <span class="w-6 h-6 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0 group-hover:scale-110 transition">🔮</span>
+            <div class="min-w-0">
+              <div class="font-bold truncate text-[11px]">ช็อตปาฏิหาริย์</div>
+              <div class="text-[9px] text-slate-400 truncate">1v5 Miracle</div>
+            </div>
+          </button>
+
+          <button onclick="playCyberSound('karma_out')" class="p-2.5 rounded-xl bg-slate-900/80 hover:bg-red-950/40 border border-slate-800 hover:border-red-500/50 text-slate-200 hover:text-white transition flex items-center gap-2 active:scale-95 shadow group text-left cursor-pointer">
+            <span class="w-6 h-6 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center shrink-0 group-hover:scale-110 transition">💀</span>
+            <div class="min-w-0">
+              <div class="font-bold truncate text-[11px]">แต้มบุญหมด</div>
+              <div class="text-[9px] text-slate-400 truncate">Game Over 8-bit</div>
+            </div>
+          </button>
+
+          <button onclick="playCyberSound('donate_cash')" class="p-2.5 rounded-xl bg-slate-900/80 hover:bg-amber-950/40 border border-slate-800 hover:border-amber-500/50 text-slate-200 hover:text-white transition flex items-center gap-2 active:scale-95 shadow group text-left cursor-pointer">
+            <span class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 group-hover:scale-110 transition">💰</span>
+            <div class="min-w-0">
+              <div class="font-bold truncate text-[11px]">โดเนทปังๆ</div>
+              <div class="text-[9px] text-slate-400 truncate">Jackpot Chime</div>
+            </div>
+          </button>
+
+          <button onclick="playCyberSound('thank_you')" class="p-2.5 rounded-xl bg-slate-900/80 hover:bg-pink-950/40 border border-slate-800 hover:border-pink-500/50 text-slate-200 hover:text-white transition flex items-center gap-2 active:scale-95 shadow group text-left cursor-pointer">
+            <span class="w-6 h-6 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center shrink-0 group-hover:scale-110 transition">🙏</span>
+            <div class="min-w-0">
+              <div class="font-bold truncate text-[11px]">ขอบคุณคร้าบ</div>
+              <div class="text-[9px] text-slate-400 truncate">Warm Resonator</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- HALL OF FAME: HIGHLIGHTS & MEME CLIPS VAULT (TWITCH CLIPS) -->
       <div class="p-3.5 sm:p-5 rounded-2xl bg-gradient-to-br from-purple-950/20 via-slate-900/80 to-slate-900/90 border border-purple-500/30 backdrop-blur-md shadow-xl space-y-3.5 mt-3">
         <!-- Section Header -->
         <div class="flex items-center justify-between flex-wrap gap-2">
           <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-lg shadow-inner">
-              🎬
+            <div class="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-lg shadow-inner text-[#c084fc]">
+              <i class="fa-brands fa-twitch"></i>
             </div>
             <div>
               <h3 class="text-xs sm:text-sm font-bold text-white tracking-wide flex items-center gap-2">
                 <span>DaLines Hall of Fame</span>
-                <span class="px-2 py-0.5 rounded-full text-[9px] font-mono bg-purple-500/20 text-purple-300 border border-purple-500/40 font-semibold">CLIPS &amp; HIGHLIGHTS</span>
+                <span class="px-2 py-0.5 rounded-full text-[9px] font-mono bg-[#9146FF]/20 text-[#c084fc] border border-[#9146FF]/40 font-semibold">TWITCH ALL-TIME CLIPS</span>
               </h3>
-              <p class="text-[10px] sm:text-[11px] text-slate-400" data-i18n="clips_desc">ช็อตยิงคม 1v5, จังหวะโยนในตำนาน และโมเมนต์ฮาที่คนดูโหวตสูงสุด</p>
+              <p class="text-[10px] sm:text-[11px] text-slate-400" data-i18n="clips_desc">คลังคลิปไฮไลท์ยอดนิยมตลอดกาลจาก twitch.tv/dalines เรียงตามยอดเข้าชมสูงสุด</p>
             </div>
           </div>
-          <a href="https://www.youtube.com/@DaLinesTTV" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 text-[10px] font-bold transition flex items-center gap-1.5 active:scale-95">
-            <i class="fa-brands fa-youtube text-red-500"></i>
-            <span>YouTube @DaLinesTTV</span>
+          <a href="https://www.twitch.tv/dalines/clips?range=all" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl bg-[#9146FF] hover:bg-[#772ce8] text-white text-[11px] font-bold font-gaming transition flex items-center gap-1.5 shadow-[0_0_15px_rgba(145,70,255,0.4)] active:scale-95">
+            <i class="fa-brands fa-twitch"></i>
+            <span>ชมคลิปทั้งหมดบน Twitch (All-Time)</span>
+            <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
           </a>
         </div>
 
         <!-- Category Filter Pills -->
         <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px] scrollbar-none">
-          <button type="button" onclick="filterClips('all', this)" class="clip-filter-btn px-2.5 py-1 rounded-lg bg-purple-600 text-white font-bold transition active:scale-95 shadow cursor-pointer shrink-0">
-            🔥 ทั้งหมด (All)
+          <button type="button" onclick="filterClips('all', this)" class="clip-filter-btn px-2.5 py-1 rounded-lg bg-[#9146FF] text-white font-bold transition active:scale-95 shadow cursor-pointer shrink-0">
+            🔥 ทั้งหมด (All Clips)
           </button>
-          <button type="button" onclick="filterClips('clutch', this)" class="clip-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white font-medium transition active:scale-95 cursor-pointer shrink-0">
-            👑 ช็อตยิงคม (Clutch &amp; Ace)
+          <button type="button" onclick="filterClips('valorant', this)" class="clip-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white font-medium transition active:scale-95 cursor-pointer shrink-0">
+            🎯 VALORANT
           </button>
-          <button type="button" onclick="filterClips('meme', this)" class="clip-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white font-medium transition active:scale-95 cursor-pointer shrink-0">
-            🤡 จังหวะโยน (Epic Throws)
+          <button type="button" onclick="filterClips('apex', this)" class="clip-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white font-medium transition active:scale-95 cursor-pointer shrink-0">
+            ⚡ Apex Legends
           </button>
-          <button type="button" onclick="filterClips('scream', this)" class="clip-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white font-medium transition active:scale-95 cursor-pointer shrink-0">
-            😱 กรีดร้อง &amp; ฮา (Funny Screams)
+          <button type="button" onclick="filterClips('other', this)" class="clip-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white font-medium transition active:scale-95 cursor-pointer shrink-0">
+            🚗 GTA V &amp; อื่นๆ
           </button>
         </div>
 
         <!-- Clips Grid -->
-        <div id="clips-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div id="clips-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           <!-- Dynamically populated via JS -->
         </div>
 
-        <!-- YouTube & TikTok Channel Promo Card -->
-        <div class="p-3 rounded-xl bg-black/40 border border-slate-800 flex items-center justify-between flex-wrap gap-2 text-xs">
+        <!-- Twitch Channel Clips Promo Card -->
+        <div class="p-3 rounded-xl bg-[#9146FF]/10 border border-[#9146FF]/30 flex items-center justify-between flex-wrap gap-2 text-xs">
           <div class="flex items-center gap-2">
-            <span class="text-lg">📢</span>
+            <div class="w-8 h-8 rounded-lg bg-[#9146FF]/20 text-[#a970ff] flex items-center justify-center text-sm shrink-0">
+              <i class="fa-brands fa-twitch"></i>
+            </div>
             <div class="text-[11px]">
-              <span class="text-slate-300 font-medium">ดูคลิปสั้นและไฮไลท์เต็มทุกสัปดาห์</span>
-              <div class="text-slate-500 text-[10px]">อัปเดตลงทั้ง YouTube Shorts &amp; TikTok เป็นประจำ</div>
+              <span class="text-white font-medium">ดูคลังคลิปและโมเมนต์ย้อนหลังทั้งหมด</span>
+              <div class="text-purple-300/70 text-[10px]">รวมกว่า 60+ คลิปตลอดกาลจาก twitch.tv/dalines/clips?range=all</div>
             </div>
           </div>
           <div class="flex items-center gap-2">
-            <a href="https://www.youtube.com/@DaLinesTTV" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-[10px] font-bold transition flex items-center gap-1 active:scale-95 shadow">
-              <i class="fa-brands fa-youtube"></i> ติดตาม YouTube
-            </a>
-            <a href="https://www.tiktok.com/@dalinestuang" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 rounded-lg bg-pink-600 hover:bg-pink-500 text-white text-[10px] font-bold transition flex items-center gap-1 active:scale-95 shadow">
-              <i class="fa-brands fa-tiktok"></i> ติดตาม TikTok
+            <a href="https://www.twitch.tv/dalines/clips?range=all" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-[#9146FF] hover:bg-[#772ce8] text-white text-[10px] font-bold transition flex items-center gap-1 active:scale-95 shadow">
+              <i class="fa-brands fa-twitch"></i> ชมคลิปทั้งหมดบน Twitch (range=all)
             </a>
           </div>
         </div>
@@ -1097,177 +1384,244 @@
         </div>
       </div>
 
-      <!-- IN-GAME SENSITIVITY & VALORANT CROSSHAIR SIMULATOR -->
-      <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-cyan-950/40 via-slate-900/85 to-red-950/30 border border-cyan-500/40 backdrop-blur-md shadow-xl mt-3">
+      <!-- 🎮 FPS E-DPI CALCULATOR & CROSS-GAME SENSITIVITY CONVERTER -->
+      <div id="sens-calculator" class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-indigo-950/40 via-slate-900/90 to-cyan-950/40 border border-indigo-500/40 backdrop-blur-md shadow-xl mt-3 space-y-4">
         <!-- Header -->
-        <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center justify-between flex-wrap gap-2.5">
           <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
-              <i class="fa-solid fa-crosshairs text-sm"></i>
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 text-white flex items-center justify-center text-lg shadow-[0_0_15px_rgba(99,102,241,0.4)] shrink-0">
+              <i class="fa-solid fa-calculator"></i>
             </div>
             <div>
-              <div class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5" data-i18n="crosshair_title">
-                เป้าเล็ง Valorant (Crosshair Simulator)
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="text-xs sm:text-sm font-bold text-white tracking-wide" data-i18n="sens_title">
+                  FPS E-DPI Calculator &amp; Sensitivity Converter
+                </h3>
+                <span class="px-2 py-0.5 rounded-full text-[9px] font-mono bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-semibold">8 GAMES READY</span>
               </div>
-              <div class="text-[10px] sm:text-[11px] text-slate-400" data-i18n="crosshair_desc">
-                กราฟิกจำลองเป้าจริงของ DaLines • คลิก/แตะในสนามยิงเพื่อทดสอบแรงดีด & เสียงลั่นไก!
-              </div>
+              <p class="text-[10px] sm:text-[11px] text-slate-400" data-i18n="sens_desc">
+                คำนวณ E-DPI และแปลงค่าความไวเมาส์ข้ามเกมแบบแม่นยำ 100% ตามระยะทางจริง (cm/360°)
+              </p>
             </div>
           </div>
-          <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-cyan-500/25 text-cyan-300 border border-cyan-500/40">VALORANT PRO</span>
-        </div>
 
-        <!-- Mode Switch: Free Practice vs 10s Aim Challenge -->
-        <div class="flex items-center justify-between mb-2 gap-2 flex-wrap">
-          <div class="flex items-center bg-black/60 p-1 rounded-xl border border-slate-800">
-            <button type="button" id="btn-aim-mode-free" onclick="setAimMode('free')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-cyan-600 text-white shadow cursor-pointer">
-              <i class="fa-solid fa-crosshairs text-[10px]"></i>
-              <span>ซ้อมยิงอิสระ</span>
+          <!-- Quick DaLines Presets -->
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <button type="button" onclick="loadDaLinesSensPreset('valorant')" class="px-2.5 py-1.5 rounded-xl bg-red-600/20 hover:bg-red-600 text-red-300 hover:text-white border border-red-500/40 text-[10px] font-bold font-mono transition flex items-center gap-1.5 active:scale-95 cursor-pointer shadow">
+              <i class="fa-solid fa-crosshairs text-[9px]"></i>
+              <span>DaLines Valorant (800 • 0.3)</span>
             </button>
-            <button type="button" id="btn-aim-mode-challenge" onclick="setAimMode('challenge')" class="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-stopwatch text-amber-400 text-[10px]"></i>
-              <span>ท้าประลอง 10 วิ ⚡</span>
+            <button type="button" onclick="loadDaLinesSensPreset('apex')" class="px-2.5 py-1.5 rounded-xl bg-amber-600/20 hover:bg-amber-600 text-amber-300 hover:text-white border border-amber-500/40 text-[10px] font-bold font-mono transition flex items-center gap-1.5 active:scale-95 cursor-pointer shadow">
+              <i class="fa-solid fa-shield-halved text-[9px]"></i>
+              <span>DaLines Apex (800 • 1.8)</span>
             </button>
-          </div>
-          <div id="aim-highscore-badge" class="px-2.5 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[10px] font-mono flex items-center gap-1.5 shadow-sm">
-            <i class="fa-solid fa-trophy text-amber-400 text-xs"></i>
-            <span>สถิติสูงสุด: <strong id="val-aim-highscore" class="text-white">0</strong> แต้ม</span>
           </div>
         </div>
 
-        <!-- Interactive Tactical Shooting Range Stage -->
-        <div id="crosshair-stage" onclick="handleStageClick(event)" class="relative w-full h-52 sm:h-64 rounded-xl bg-[#070b14] border border-cyan-500/30 overflow-hidden select-none cursor-crosshair flex items-center justify-center transition active:border-cyan-400 shadow-inner group" style="touch-action: manipulation;">
-          <!-- Grid Background -->
-          <div class="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px] opacity-40 pointer-events-none"></div>
-
-          <!-- FREE MODE BACKGROUND ELEMENTS (Concentric Range Rings + Silhouette) -->
-          <div id="free-mode-bg" class="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div class="absolute w-56 h-56 rounded-full border border-slate-800/80 pointer-events-none"></div>
-            <div class="absolute w-40 h-40 rounded-full border border-slate-700/60 pointer-events-none"></div>
-            <div class="absolute w-24 h-24 rounded-full border border-cyan-500/20 pointer-events-none"></div>
-            <div class="absolute w-12 h-12 rounded-full border border-cyan-400/40 bg-cyan-500/5 pointer-events-none"></div>
-
-            <!-- Tactical Silhouette (Enemy Head & Shoulders) -->
-            <div class="absolute flex flex-col items-center opacity-30">
-              <div class="w-10 h-12 rounded-2xl border-2 border-dashed border-red-500/60 bg-red-500/10"></div>
-              <div class="w-24 h-8 mt-1 rounded-t-3xl border-t-2 border-dashed border-slate-600 bg-slate-800/40"></div>
+        <!-- Main Input Controls Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-3 bg-black/50 p-3 sm:p-4 rounded-xl border border-slate-800">
+          <!-- 1. Mouse DPI -->
+          <div class="md:col-span-5 space-y-2">
+            <div class="flex items-center justify-between text-xs font-semibold">
+              <label class="text-slate-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-computer-mouse text-indigo-400"></i>
+                <span data-i18n="sens_dpi_label">Mouse DPI:</span>
+              </label>
+              <span id="dpi-display-val" class="text-indigo-400 font-mono font-bold">800 DPI</span>
             </div>
-          </div>
 
-          <!-- FREE MODE HUD TOP -->
-          <div id="free-hud-top" class="absolute top-2.5 inset-x-3 flex items-center justify-between pointer-events-none text-[10px] font-mono">
-            <div class="flex items-center gap-1.5 text-slate-400">
-              <span class="px-1.5 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-cyan-400">RANGE: 25M</span>
-              <span class="px-1.5 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-slate-400">VANDAL</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <span class="px-2 py-0.5 rounded bg-black/60 border border-slate-800 text-slate-300">
-                HITS: <strong id="ch-hits" class="text-white">0</strong>
-              </span>
-              <span class="px-2 py-0.5 rounded bg-red-500/20 border border-red-500/30 text-red-300">
-                <strong id="ch-headshots">0</strong> HS
-              </span>
-            </div>
-          </div>
-
-          <!-- CHALLENGE MODE PROGRESS BAR -->
-          <div id="challenge-progress-bar-wrap" class="hidden absolute top-0 inset-x-0 h-1.5 bg-slate-800 pointer-events-none z-20">
-            <div id="challenge-progress-bar" class="h-full bg-gradient-to-r from-cyan-400 via-amber-400 to-red-500 transition-all ease-linear" style="width: 100%;"></div>
-          </div>
-
-          <!-- CHALLENGE MODE HUD TOP (Active during challenge) -->
-          <div id="challenge-hud" class="hidden absolute top-2.5 inset-x-3 flex items-center justify-between pointer-events-none text-[10px] font-mono z-20">
             <div class="flex items-center gap-2">
-              <span class="px-2 py-0.5 rounded bg-red-950/80 border border-red-500/40 text-red-300 flex items-center gap-1 font-bold">
-                <i class="fa-solid fa-stopwatch animate-pulse"></i>
-                <span id="challenge-timer-text">10.0s</span>
-              </span>
-              <span class="px-2 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-cyan-300">
-                SCORE: <strong id="challenge-score-text" class="text-white text-xs">0</strong>
-              </span>
+              <input type="number" id="sens-input-dpi" value="800" min="100" max="16000" step="50" oninput="onDpiInputChange(this.value)" class="w-full bg-slate-900 border border-slate-700 focus:border-indigo-500 rounded-lg px-3 py-1.5 text-xs text-white font-mono font-bold outline-none transition" />
             </div>
-            <div class="flex items-center gap-1.5">
-              <span class="px-2 py-0.5 rounded bg-black/70 border border-slate-800 text-amber-300">
-                ACC: <strong id="challenge-acc-text">100%</strong>
-              </span>
-              <span class="px-2 py-0.5 rounded bg-purple-950/70 border border-purple-500/30 text-purple-300 hidden sm:inline-block">
-                AVG: <strong id="challenge-reaction-text">--</strong>ms
-              </span>
+
+            <!-- Quick DPI Pills -->
+            <div class="flex items-center gap-1.5 flex-wrap text-[10px] font-mono">
+              <button type="button" onclick="setQuickDpi(400)" class="quick-dpi-btn px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition cursor-pointer">400</button>
+              <button type="button" onclick="setQuickDpi(800)" class="quick-dpi-btn px-2 py-0.5 rounded bg-indigo-600 text-white font-bold transition cursor-pointer">800</button>
+              <button type="button" onclick="setQuickDpi(1200)" class="quick-dpi-btn px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition cursor-pointer">1200</button>
+              <button type="button" onclick="setQuickDpi(1600)" class="quick-dpi-btn px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition cursor-pointer">1600</button>
+              <button type="button" onclick="setQuickDpi(3200)" class="quick-dpi-btn px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition cursor-pointer">3200</button>
             </div>
           </div>
 
-          <!-- CHALLENGE START PROMPT CARD -->
-          <div id="challenge-start-card" class="hidden absolute inset-0 bg-black/75 backdrop-blur-sm z-30 flex flex-col items-center justify-center p-4 text-center">
-            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-2xl mb-2 shadow-[0_0_15px_rgba(245,158,11,0.3)] animate-bounce">
-              ⚡
+          <!-- 2. Base Game & In-game Sens -->
+          <div class="md:col-span-7 space-y-2">
+            <div class="flex items-center justify-between text-xs font-semibold">
+              <label class="text-slate-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-gamepad text-cyan-400"></i>
+                <span data-i18n="sens_base_game_label">เกมต้นทาง &amp; ค่าความไว (Base Sens):</span>
+              </label>
+              <span id="base-sens-display" class="text-cyan-400 font-mono font-bold">0.300</span>
             </div>
-            <h4 class="text-sm sm:text-base font-bold text-white mb-1">DaLines 10s Aim Challenge</h4>
-            <p class="text-[11px] text-slate-300 max-w-xs mb-3">ยิงหัวเป้าหมายที่สุ่มโผล่ให้ไวและแม่นที่สุดใน 10 วินาที เพื่อชิงตำแหน่ง Radiant!</p>
-            <button type="button" onclick="startAimChallenge()" class="px-5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-bold text-xs uppercase tracking-wider shadow-lg shadow-orange-500/30 active:scale-95 transition cursor-pointer flex items-center gap-1.5">
-              <i class="fa-solid fa-play text-xs"></i>
-              <span>เริ่มท้าประลองทันที (START)</span>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <select id="sens-select-game" onchange="onBaseGameChange(this.value)" class="bg-slate-900 border border-slate-700 focus:border-cyan-500 rounded-lg px-2.5 py-1.5 text-xs text-white font-medium outline-none transition cursor-pointer">
+                <option value="valorant">🎯 VALORANT</option>
+                <option value="apex">🛡️ Apex Legends</option>
+                <option value="cs2">🔫 Counter-Strike 2</option>
+                <option value="deltaforce">🦅 Delta Force</option>
+                <option value="cod">💀 Call of Duty / WZ</option>
+                <option value="overwatch">🐱 Overwatch 2</option>
+                <option value="fortnite">⚡ Fortnite (X/Y %)</option>
+                <option value="pubg">🪂 PUBG: BATTLEGROUNDS</option>
+              </select>
+
+              <div class="relative">
+                <input type="number" id="sens-input-value" value="0.3" min="0.001" max="100" step="0.01" oninput="onSensInputChange(this.value)" class="w-full bg-slate-900 border border-slate-700 focus:border-cyan-500 rounded-lg px-3 py-1.5 text-xs text-white font-mono font-bold outline-none transition" />
+              </div>
+            </div>
+
+            <!-- Tactile Range Slider -->
+            <div class="pt-1">
+              <input type="range" id="sens-slider" min="0.01" max="2.0" step="0.01" value="0.3" oninput="onSensSliderChange(this.value)" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-Time Physical Metrics Banner -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs font-mono">
+          <!-- 1. Current eDPI -->
+          <div class="p-2.5 rounded-xl bg-indigo-950/40 border border-indigo-500/30 flex flex-col justify-center">
+            <span class="text-[10px] text-indigo-300 font-sans font-medium">CURRENT E-DPI</span>
+            <div class="flex items-baseline gap-1 mt-0.5">
+              <span id="metric-edpi" class="text-base sm:text-lg font-bold text-white tracking-wider">240</span>
+              <span id="metric-edpi-game" class="text-[9px] text-indigo-400 font-sans">VALORANT</span>
+            </div>
+          </div>
+
+          <!-- 2. Physical 360 Turn Distance -->
+          <div class="p-2.5 rounded-xl bg-cyan-950/40 border border-cyan-500/30 flex flex-col justify-center">
+            <span class="text-[10px] text-cyan-300 font-sans font-medium">PHYSICAL DISTANCE</span>
+            <div class="flex items-baseline gap-1 mt-0.5">
+              <span id="metric-cm360" class="text-base sm:text-lg font-bold text-cyan-300">54.4</span>
+              <span class="text-[10px] text-slate-400">cm / 360°</span>
+            </div>
+          </div>
+
+          <!-- 3. Aiming Style Classification -->
+          <div class="p-2.5 rounded-xl bg-slate-900/70 border border-slate-800 flex flex-col justify-center col-span-2 sm:col-span-2">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-slate-400 font-sans font-medium">AIM STYLE &amp; MOUSEPAD</span>
+              <span id="metric-aim-badge" class="px-2 py-0.5 rounded text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 font-sans">LOW SENS / ARM AIM</span>
+            </div>
+            <p id="metric-aim-desc" class="text-[10px] text-slate-400 font-sans mt-1 line-clamp-1">
+              ใช้ทั้งแขนสะบัด ยิงแม่นยำสูง แนะนำแผ่นรองเมาส์ Size L/XL (~45-50cm+)
+            </p>
+          </div>
+        </div>
+
+        <!-- Converted Games Grid Header -->
+        <div class="flex items-center justify-between text-xs pt-1">
+          <span class="text-slate-300 font-semibold flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-right-arrow-left text-cyan-400 text-[10px]"></i>
+            <span data-i18n="sens_matrix_title">ผลลัพธ์แปลงค่า Sens ที่เท่าเทียมกันทุกเกม (Identical 360° Turn)</span>
+          </span>
+          <span class="text-[10px] text-slate-500 font-mono">1-CLICK COPY READY</span>
+        </div>
+
+        <!-- Converted Games Grid (8 Cards) -->
+        <div id="sens-results-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <!-- Dynamically populated via JS -->
+        </div>
+
+        <!-- Footer / Pro Tip Card -->
+        <div class="p-3 rounded-xl bg-black/40 border border-slate-800/80 flex items-center justify-between flex-wrap gap-2 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="text-base">💡</span>
+            <div class="text-[10px] sm:text-[11px] text-slate-400">
+              <strong class="text-slate-300">ทริคโปรเพลเยอร์:</strong> การใช้ค่า <strong class="text-cyan-300 font-mono">cm/360°</strong> เดียวกันทุกเกม ช่วยรักษากล้ามเนื้อความจำ (Muscle Memory) ให้ยิงแม่นคงที่โดยไม่ต้องฝึกเล็งใหม่
+            </div>
+          </div>
+          <button type="button" onclick="copyAllSensSummary()" class="px-3 py-1 rounded-lg bg-indigo-600/30 hover:bg-indigo-600 text-indigo-200 hover:text-white border border-indigo-500/40 text-[10px] font-bold transition active:scale-95 cursor-pointer shadow">
+            <i class="fa-solid fa-copy mr-1"></i> คัดลอกค่าทุกเกมสรุป
+          </button>
+        </div>
+      </div>
+
+      <!-- 🎯 3. VALORANT RANDOMIZER & CHALLENGE ROULETTE WHEEL -->
+      <div class="cyber-hud-box p-3.5 sm:p-5 rounded-2xl space-y-4 shadow-xl mt-3">
+        <!-- Header -->
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-red-600 to-amber-500 text-white flex items-center justify-center text-lg shadow-inner">
+              <i class="fa-solid fa-dharmachakra animate-spin" style="animation-duration: 12s;"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-red-500/20 text-red-400 border border-red-500/40">ROULETTE WHEEL</span>
+                <span class="text-[10px] text-slate-400 font-mono">[ PROTOCOL: RANDOMIZER ]</span>
+              </div>
+              <h3 class="text-xs sm:text-sm font-bold text-white tracking-wide">
+                Valorant Challenge Wheel (วงล้อหมุนสุ่มชาเลนจ์)
+              </h3>
+            </div>
+          </div>
+          
+          <!-- Category Mode Switcher Pills -->
+          <div class="flex items-center gap-1 p-1 rounded-xl bg-slate-900 border border-slate-800 text-[10px] sm:text-[11px] font-medium">
+            <button type="button" onclick="setWheelMode('weapons', this)" class="wheel-mode-btn px-2.5 py-1 rounded-lg bg-red-600 text-white font-bold transition active:scale-95 cursor-pointer">
+              🔫 ปืน
+            </button>
+            <button type="button" onclick="setWheelMode('agents', this)" class="wheel-mode-btn px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition active:scale-95 cursor-pointer">
+              🦸 เอเจนท์
+            </button>
+            <button type="button" onclick="setWheelMode('trolls', this)" class="wheel-mode-btn px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition active:scale-95 cursor-pointer">
+              💀 ชาเลนจ์ปั่น
+            </button>
+          </div>
+        </div>
+
+        <p class="text-[10px] sm:text-[11px] text-slate-400">
+          กดหมุนวงล้อเพื่อสุ่มปืน, เอเจนท์ หรือชาเลนจ์สำหรับคนดูท้าสตรีมเมอร์ DaLines ในเกมแบบสดๆ
+        </p>
+
+        <!-- Interactive Canvas Roulette Wheel Section -->
+        <div class="relative flex flex-col items-center justify-center py-2 select-none">
+          <!-- Top Needle Pointer -->
+          <div class="relative z-20 flex flex-col items-center -mb-3 pointer-events-none">
+            <div id="wheel-pointer-needle" class="wheel-pointer w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[22px] border-t-amber-400 drop-shadow-[0_2px_8px_rgba(245,158,11,0.9)]"></div>
+          </div>
+
+          <!-- Wheel Canvas Container -->
+          <div class="relative w-[280px] h-[280px] sm:w-[310px] sm:h-[310px] flex items-center justify-center p-2 rounded-full border-4 border-slate-800/80 bg-slate-950/80 shadow-[0_0_35px_rgba(0,0,0,0.8)]">
+            <canvas id="roulette-wheel-canvas" width="310" height="310" class="w-full h-full rounded-full cursor-pointer"></canvas>
+
+            <!-- Center Spin Hub Button -->
+            <button id="btn-wheel-center-spin" onclick="spinRouletteWheel()" class="absolute w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-slate-900 border-2 border-amber-400 text-amber-300 hover:text-white hover:bg-amber-500/20 transition-transform active:scale-90 flex flex-col items-center justify-center font-gaming font-black text-xs shadow-[0_0_20px_rgba(245,158,11,0.6)] cursor-pointer z-10">
+              <i class="fa-solid fa-bolt text-xs text-amber-400 mb-0.5 animate-pulse"></i>
+              <span>SPIN</span>
             </button>
           </div>
 
-          <!-- 3-2-1-GO COUNTDOWN OVERLAY -->
-          <div id="challenge-countdown-overlay" class="hidden absolute inset-0 bg-black/85 backdrop-blur-sm z-40 flex items-center justify-center pointer-events-none">
-            <span id="challenge-countdown-number" class="text-6xl sm:text-7xl font-extrabold text-amber-400 font-mono tracking-widest scale-125 transition-transform duration-200" style="text-shadow: 0 0 25px rgba(245,158,11,0.8);">
-              3
-            </span>
+          <!-- Spin Action Button -->
+          <div class="mt-4 flex items-center gap-2">
+            <button id="btn-spin-wheel" onclick="spinRouletteWheel()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 via-orange-500 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white text-xs sm:text-sm font-bold font-gaming tracking-wider transition-all transform active:scale-95 shadow-[0_0_20px_rgba(239,68,68,0.5)] flex items-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-play text-xs"></i>
+              <span>หมุนวงล้อเสี่ยงทาย (SPIN WHEEL)</span>
+            </button>
+            <button onclick="rollCyberChallengeCombo()" title="สุ่มครบ 3 ช่องพร้อมกัน" class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold transition active:scale-95 border border-slate-700 shadow flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-shuffle text-xs"></i>
+              <span class="hidden sm:inline">สุ่มคอมโบ 3 ช่อง</span>
+            </button>
           </div>
+        </div>
 
-          <!-- DYNAMIC CHALLENGE TARGET ORB -->
-          <div id="challenge-target" onclick="hitChallengeTarget(event)" class="hidden absolute w-11 h-11 -ml-[22px] -mt-[22px] rounded-full z-20 cursor-crosshair flex items-center justify-center active:scale-90 transition-transform">
-            <div class="absolute inset-0 rounded-full border-2 border-red-500/80 bg-red-500/20 animate-ping" style="animation-duration: 1.2s;"></div>
-            <div class="w-9 h-9 rounded-full border-2 border-amber-400 bg-red-600/50 shadow-[0_0_16px_#ef4444] flex items-center justify-center">
-              <div class="w-4 h-4 rounded-full bg-white shadow-[0_0_8px_#ffffff]"></div>
+        <!-- Wheel Winner Result Display Card -->
+        <div id="wheel-result-card" class="p-3 rounded-xl bg-black/70 border border-amber-500/40 flex items-center justify-between gap-2 transition-all duration-300 shadow-lg">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div id="wheel-result-icon" class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-sm shrink-0">
+              🎯
+            </div>
+            <div class="min-w-0">
+              <div class="text-[10px] font-mono text-slate-400 uppercase tracking-wider">RESULT // ผลสุ่มล่าสุด</div>
+              <div id="wheel-result-text" class="text-xs sm:text-sm font-bold text-amber-300 truncate font-mono">
+                Odin (สายกดยาวไม่ปล่อย)
+              </div>
             </div>
           </div>
-
-          <!-- THE RETICLE (Cyan 6px Center Dot + Inner Lines with black outlines) -->
-          <div id="crosshair-reticle" class="relative pointer-events-none transition-transform duration-75 ease-out flex items-center justify-center z-10" style="filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 1px #000);">
-            <div class="w-1.5 h-1.5 bg-[#00ffff] rounded-[1px] shadow-[0_0_0_1px_#000]"></div>
-            <div class="ch-line absolute -top-3 w-1 h-2 bg-[#00ffff] shadow-[0_0_0_1px_#000] rounded-[0.5px]"></div>
-            <div class="ch-line absolute -bottom-3 w-1 h-2 bg-[#00ffff] shadow-[0_0_0_1px_#000] rounded-[0.5px]"></div>
-            <div class="ch-line absolute -left-3 h-1 w-2 bg-[#00ffff] shadow-[0_0_0_1px_#000] rounded-[0.5px]"></div>
-            <div class="ch-line absolute -right-3 h-1 w-2 bg-[#00ffff] shadow-[0_0_0_1px_#000] rounded-[0.5px]"></div>
-          </div>
-
-          <!-- FREE HUD BOTTOM PROMPT -->
-          <div id="free-hud-bottom" class="absolute bottom-2.5 inset-x-0 flex items-center justify-center pointer-events-none">
-            <span class="text-[10px] text-cyan-300/80 bg-slate-950/70 border border-cyan-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1.5 shadow-md">
-              <i class="fa-solid fa-crosshairs text-[9px] animate-spin" style="animation-duration: 4s;"></i>
-              <span data-i18n="crosshair_click_hint">แตะหรือคลิกในกรอบเพื่อซ้อมยิง (Tap to test-fire)</span>
-            </span>
-          </div>
-        </div>
-
-        <!-- Crosshair Specs Badges -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2.5 text-[10px] text-slate-300">
-          <div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-1.5">
-            <span class="w-2.5 h-2.5 rounded-full bg-[#00ffff] inline-block shadow-[0_0_6px_#00ffff]"></span>
-            <span>สี: <strong class="text-cyan-300">Cyan (#00FFFF)</strong></span>
-          </div>
-          <div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-1.5">
-            <i class="fa-regular fa-circle-dot text-cyan-400"></i>
-            <span>Center Dot: <strong class="text-white">ON (6px)</strong></span>
-          </div>
-          <div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-1.5">
-            <i class="fa-solid fa-border-all text-cyan-400"></i>
-            <span>Outlines: <strong class="text-white">ON (1px Black)</strong></span>
-          </div>
-          <div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-1.5">
-            <i class="fa-solid fa-sliders text-cyan-400"></i>
-            <span>Style: <strong class="text-white">Tight Box Dot</strong></span>
-          </div>
-        </div>
-
-        <!-- Code Display & Copy Button -->
-        <div class="bg-black/70 border border-slate-800 rounded-xl p-2.5 flex items-center justify-between gap-2 mt-2.5">
-          <code class="text-[10px] sm:text-xs text-cyan-300 font-mono truncate select-all">0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1t;10;1l;3;1o;6;1a;0;1m;0;1e;0.338;A;c;7;t;6;o;1;d;1;z;6;a;0;m;1;0t;3;0l;3;0o;5;0a;0;0f;0;1t;10;1l;3;1o;3;1a;0;1m;0;1e;3;S;c;6;s;4;o;1</code>
-          <button onclick="copyValorantCrosshair()" aria-label="Copy Crosshair Code" class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 active:scale-95 text-white text-xs font-semibold shrink-0 transition flex items-center gap-1.5 shadow-md cursor-pointer">
-            <i class="fa-regular fa-copy"></i>
-            <span data-i18n="crosshair_copy_btn">คัดลอกโค้ด</span>
+          <button onclick="copyWheelResultToClipboard()" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-[11px] font-medium transition flex items-center gap-1 active:scale-95 shrink-0 shadow cursor-pointer">
+            <i class="fa-regular fa-copy text-xs"></i>
+            <span>คัดลอกผล</span>
           </button>
         </div>
       </div>
@@ -1636,61 +1990,6 @@
     </div>
   </div>
 
-  <!-- AIM CHALLENGE RESULT MODAL -->
-  <div id="modal-aim-result" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[90] flex items-center justify-center p-3 sm:p-4 hidden">
-    <div class="bg-gradient-to-b from-[#0e1626] to-[#080d16] border border-cyan-500/40 rounded-2xl max-w-sm w-full p-5 sm:p-6 flex flex-col items-center text-center shadow-2xl relative shadow-cyan-950/50">
-      <!-- Glow background blob -->
-      <div class="absolute -top-12 w-32 h-32 bg-cyan-500/20 rounded-full blur-2xl pointer-events-none"></div>
-
-      <!-- Trophy & Rank Icon -->
-      <div id="aim-result-icon" class="w-16 h-16 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-3xl mb-3 shadow-[0_0_20px_rgba(245,158,11,0.3)]">
-        🏆
-      </div>
-
-      <!-- New Record Alert Badge (if beaten) -->
-      <div id="aim-new-record-badge" class="hidden mb-2 px-3 py-0.5 rounded-full text-[10px] font-bold bg-amber-400 text-black shadow-lg animate-bounce">
-        🎉 สถิติใหม่ NEW HIGH SCORE!
-      </div>
-
-      <h3 class="text-lg font-extrabold text-white tracking-wide">DaLines Aim Challenge</h3>
-      <p id="aim-result-tier-title" class="text-sm font-bold text-cyan-300 mt-0.5">⚡ คมจัดปลัดบอก (Ascendant)</p>
-      <p id="aim-result-tier-quote" class="text-[11px] text-slate-400 italic mt-1 px-2">"สะบัดหัวคมกริบ! คมกว่าสตรีมเมอร์ตัวจริงไปแล้วนะ"</p>
-
-      <!-- Score Box -->
-      <div class="grid grid-cols-3 gap-2 w-full my-4 bg-black/50 p-3 rounded-xl border border-slate-800">
-        <div class="flex flex-col items-center">
-          <span class="text-[10px] text-slate-400 font-mono">HITS</span>
-          <span id="aim-result-score" class="text-xl font-extrabold text-white">0</span>
-        </div>
-        <div class="flex flex-col items-center border-x border-slate-800 px-1">
-          <span class="text-[10px] text-slate-400 font-mono">ACCURACY</span>
-          <span id="aim-result-acc" class="text-xl font-extrabold text-amber-400">0%</span>
-        </div>
-        <div class="flex flex-col items-center">
-          <span class="text-[10px] text-slate-400 font-mono">AVG TIME</span>
-          <span id="aim-result-reaction" class="text-xl font-extrabold text-cyan-300">0ms</span>
-        </div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="flex flex-col gap-2 w-full">
-        <button type="button" onclick="copyAimResult()" class="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-xs transition active:scale-95 shadow-lg flex items-center justify-center gap-1.5 cursor-pointer">
-          <i class="fa-regular fa-copy"></i>
-          <span>คัดลอกผลคะแนนไปอวด (Copy Score)</span>
-        </button>
-        <div class="flex items-center gap-2 w-full">
-          <button type="button" onclick="startAimChallenge()" class="flex-1 py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs transition active:scale-95 shadow flex items-center justify-center gap-1.5 cursor-pointer">
-            <i class="fa-solid fa-rotate-right"></i>
-            <span>เล่นอีกครั้ง</span>
-          </button>
-          <button type="button" onclick="closeAimResultModal()" class="py-2 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition active:scale-95 cursor-pointer">
-            ปิด
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- VIDEO CLIP PLAYER MODAL -->
   <div id="modal-clip-player" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[90] flex items-center justify-center p-3 sm:p-4 hidden">
     <div class="bg-gradient-to-b from-[#0f1422] to-[#070b14] border border-purple-500/40 rounded-2xl max-w-2xl w-full p-4 sm:p-5 flex flex-col gap-3 shadow-2xl relative">
@@ -1712,8 +2011,8 @@
       <div class="flex items-center justify-between flex-wrap gap-2 pt-1 text-xs">
         <span class="text-[11px] text-slate-400">ชอบคลิปนี้กด ❤️ หรือแชร์ให้เพื่อนๆ ได้เลย!</span>
         <div class="flex items-center gap-2">
-          <a id="clip-modal-ext-link" href="#" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 text-[11px] font-bold transition flex items-center gap-1">
-            <span>เปิดบน YouTube</span>
+          <a id="clip-modal-ext-link" href="https://www.twitch.tv/dalines/clips?range=all" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-[#9146FF]/20 hover:bg-[#9146FF]/40 text-[#c084fc] hover:text-white border border-[#9146FF]/40 text-[11px] font-bold transition flex items-center gap-1.5">
+            <i class="fa-brands fa-twitch"></i> <span>เปิดบน Twitch</span>
             <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
           </a>
           <button type="button" onclick="closeClipModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-semibold transition cursor-pointer">
@@ -1853,10 +2152,11 @@
         donate_qr_hint: "สแกน QR ผ่านแอปธนาคารหรือ TrueMoney โดเนทขึ้นจอสดได้เลยครับ!",
         open_ezdn_btn: "เปิดหน้า EZDN",
         save_qr_btn: "บันทึกรูป QR",
-        crosshair_title: "เป้าเล็ง Valorant (Crosshair Simulator)",
-        crosshair_desc: "กราฟิกจำลองเป้าจริงของ DaLines • คลิก/แตะในสนามยิงเพื่อทดสอบแรงดีด & เสียงลั่นไก!",
-        crosshair_click_hint: "แตะหรือคลิกในกรอบเพื่อซ้อมยิง (Tap to test-fire)",
-        crosshair_copy_btn: "คัดลอกโค้ด",
+        sens_title: "FPS E-DPI Calculator & Sensitivity Converter",
+        sens_desc: "คำนวณ E-DPI และแปลงค่าความไวเมาส์ข้ามเกมแบบแม่นยำ 100% ตามระยะทางจริง (cm/360°)",
+        sens_dpi_label: "Mouse DPI:",
+        sens_base_game_label: "เกมต้นทาง & ค่าความไว (Base Sens):",
+        sens_matrix_title: "ผลลัพธ์แปลงค่า Sens ที่เท่าเทียมกันทุกเกม (Identical 360° Turn)",
         soundboard_title: "🎮 DaLines Soundboard & Meme FX",
         soundboard_desc: "กดปุ่มเพื่อเล่นเสียงประจำช่อง & มีมสตรีมเมอร์สายยิงเน้นโยน!",
         copy_val_btn: "คัดลอกเป้า Valorant",
@@ -1865,7 +2165,7 @@
         toast_copy_ign: "คัดลอก IGN: DaLines เรียบร้อย! 🎮",
         toast_sound_on: "เปิดเสียงเอฟเฟกต์แล้ว 🔊",
         toast_sound_off: "ปิดเสียงเอฟเฟกต์แล้ว 🔇",
-        clips_desc: "ช็อตยิงคม 1v5, จังหวะโยนในตำนาน และโมเมนต์ฮาที่คนดูโหวตสูงสุด"
+        clips_desc: "คลังคลิปไฮไลท์ยอดนิยมตลอดกาลจาก twitch.tv/dalines เรียงตามยอดเข้าชมสูงสุด"
       },
       en: {
         banner_desc: "• Catch me live on Twitch! Come say hi!",
@@ -1905,10 +2205,11 @@
         donate_qr_hint: "Scan QR with Mobile Banking or TrueMoney for live on-screen stream alerts!",
         open_ezdn_btn: "Open EZDN",
         save_qr_btn: "Save QR Image",
-        crosshair_title: "Valorant Crosshair (Crosshair Simulator)",
-        crosshair_desc: "Visual simulator of DaLines' crosshair • Click/tap target area to test recoil & sound!",
-        crosshair_click_hint: "Tap or click inside range to test-fire",
-        crosshair_copy_btn: "Copy Code",
+        sens_title: "FPS E-DPI Calculator & Sensitivity Converter",
+        sens_desc: "Calculate eDPI and convert mouse sensitivity across games accurately by cm/360°",
+        sens_dpi_label: "Mouse DPI:",
+        sens_base_game_label: "Base Game & Sensitivity:",
+        sens_matrix_title: "Equivalent Sensitivity Across All Games (Identical 360° Turn)",
         soundboard_title: "🎮 DaLines Soundboard & Meme FX",
         soundboard_desc: "Tap buttons to play signature streamer memes & sound effects!",
         copy_val_btn: "Copy Valorant Crosshair",
@@ -1917,7 +2218,7 @@
         toast_copy_ign: "IGN: DaLines copied to clipboard! 🎮",
         toast_sound_on: "Sound FX Enabled 🔊",
         toast_sound_off: "Sound FX Muted 🔇",
-        clips_desc: "1v5 Clutch highlights, legendary throws, and top community voted moments!"
+        clips_desc: "All-time top clips and highlights from twitch.tv/dalines sorted by view count!"
       }
     };
 
@@ -2349,9 +2650,12 @@
       updateSoundIcon();
       initObsTts();
       initClipsVault();
-      initAimChallenge();
+      initSensCalculator();
       initBotCommands();
       initEmoteShowcase();
+      initCyberCanvas();
+      initStreamCountdown();
+      initRouletteWheel();
 
       // Mouse Spotlight
       const cursorGlow = document.getElementById('cursor-glow');
@@ -2893,94 +3197,371 @@
     }
 
     // -----------------------------------------------------------------
-    // DALINES HALL OF FAME & HIGHLIGHTS VAULT
+    // DALINES HALL OF FAME & HIGHLIGHTS VAULT (TWITCH CLIPS: range=all)
+    // Source: https://www.twitch.tv/dalines/clips?range=all
     // -----------------------------------------------------------------
     const DALINES_CLIPS = [
       {
-        id: 'clip-1',
-        title: '1v5 Clutch Ace ด้วย Vandal แต่เกือบแพ้เพราะหาไปป์ไม่เจอ 💥',
-        desc: 'สะบัดหัว 5 ตัวรวด แต่วิ่งวนหา Spike ไม่เจอจนเวลาเกือบหมด เซฟช็อตระดับตำนาน',
-        category: 'clutch',
-        platform: 'YouTube Shorts',
-        platformIcon: 'fa-brands fa-youtube text-red-500',
-        duration: '0:54',
-        badge: '1v5 CLUTCH',
-        badgeClass: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
-        videoUrl: 'https://player.twitch.tv/?video=1475544386&parent=localhost&parent=127.0.0.1&parent=dalines-site.dalines.workers.dev&autoplay=true',
-        extUrl: 'https://www.youtube.com/@DaLinesTTV',
-        defaultLikes: 142
+            "id": "clip-1",
+            "slug": "ElegantEagerGoldfishAMPEnergyCherry-9uGytF396fyRA5xc",
+            "title": "นัวอะไรขนาดนั้น",
+            "game": "VALORANT",
+            "curator": "DaLines",
+            "views": 216,
+            "duration": "0:26",
+            "category": "valorant",
+            "badge": "👑 #1 ALL-TIME TOP",
+            "badgeClass": "bg-amber-500/20 text-amber-300 border-amber-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/a7fd0812-aabe-4df1-9c62-33f743f76411/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/ElegantEagerGoldfishAMPEnergyCherry-9uGytF396fyRA5xc",
+            "createdAt": "2022-04-03"
       },
       {
-        id: 'clip-2',
-        title: 'จังหวะโยนระดับอาจารย์ DaLines: ยืนสบตาศัตรู 3 วิแล้วยิงลงพื้น 🤡',
-        desc: 'กำลังจะยิงหัวเขา แต่เมาส์หลุดขอบโต๊ะ กระสุนลงพื้นเต็มๆ คนดูหัวเราะลั่นห้องแชท',
-        category: 'meme',
-        platform: 'TikTok',
-        platformIcon: 'fa-brands fa-tiktok text-pink-500',
-        duration: '0:38',
-        badge: 'EPIC THROW',
-        badgeClass: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
-        videoUrl: 'https://player.twitch.tv/?video=1475544386&parent=localhost&parent=127.0.0.1&parent=dalines-site.dalines.workers.dev&autoplay=true',
-        extUrl: 'https://www.tiktok.com/@dalinestuang',
-        defaultLikes: 418
+            "id": "clip-2",
+            "slug": "DifficultNiceGarageUncleNox",
+            "title": "Dancing : รถซื้อแกง",
+            "game": "Just Chatting",
+            "curator": "feixian1412",
+            "views": 192,
+            "duration": "0:24",
+            "category": "other",
+            "badge": "🥈 #2 TOP VIRAL",
+            "badgeClass": "bg-slate-400/20 text-slate-200 border-slate-400/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/f7f6701f-12bc-4972-8330-054b2c7ce6e8/landscape/thumb/thumb-0000000000-1280x720.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/DifficultNiceGarageUncleNox",
+            "createdAt": "2020-05-06"
       },
       {
-        id: 'clip-3',
-        title: 'โดนแฟลช Breach ขาวโพลนเต็มเบ้าตา กรีดร้องลั่นบ้าน! 😱',
-        desc: 'กำลังเล็งมุมคมๆ โดนแฟลชกระแทกหน้า ร้องลั่นห้องจนสตรีมเมอร์ข้างบ้านต้องทัก',
-        category: 'scream',
-        platform: 'TikTok',
-        platformIcon: 'fa-brands fa-tiktok text-pink-500',
-        duration: '0:42',
-        badge: 'SCREAM 100dB',
-        badgeClass: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
-        videoUrl: 'https://player.twitch.tv/?video=1475544386&parent=localhost&parent=127.0.0.1&parent=dalines-site.dalines.workers.dev&autoplay=true',
-        extUrl: 'https://www.tiktok.com/@dalinestuang',
-        defaultLikes: 289
+            "id": "clip-3",
+            "slug": "RealChillyPancakeKeepo-XUD53z3NRrGzcqkB",
+            "title": "A clear? then go B",
+            "game": "VALORANT",
+            "curator": "DaLines",
+            "views": 172,
+            "duration": "0:30",
+            "category": "valorant",
+            "badge": "🥉 #3 TOP HIGHLIGHT",
+            "badgeClass": "bg-orange-500/20 text-orange-300 border-orange-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/42467f1d-f0d1-4e95-9449-b7f6a84f18c7/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/RealChillyPancakeKeepo-XUD53z3NRrGzcqkB",
+            "createdAt": "2021-09-29"
       },
       {
-        id: 'clip-4',
-        title: 'สเปรย์ Phantom 30 นัด โดน 0 นัด ทฤษฎีเป้าครอบไม่โดนตัว 🔫',
-        desc: 'ลั่นหมดแม็กไม่โดนแม้แต่เงา ศัตรูหันมายิงทีเดียวดับอนาถ ทฤษฎียิงรอบตัวศัตรู',
-        category: 'meme',
-        platform: 'YouTube Shorts',
-        platformIcon: 'fa-brands fa-youtube text-red-500',
-        duration: '0:45',
-        badge: '0 HIT SPRAY',
-        badgeClass: 'bg-orange-500/20 text-orange-300 border-orange-500/40',
-        videoUrl: 'https://player.twitch.tv/?video=1475544386&parent=localhost&parent=127.0.0.1&parent=dalines-site.dalines.workers.dev&autoplay=true',
-        extUrl: 'https://www.youtube.com/@DaLinesTTV',
-        defaultLikes: 210
+            "id": "clip-4",
+            "slug": "BitterBraveTomatoEleGiggle-LCD4OrW4n4OP0N5Z",
+            "title": "โนเอลร้องเพลง",
+            "game": "Grand Theft Auto V",
+            "curator": "DaLines",
+            "views": 145,
+            "duration": "0:26",
+            "category": "other",
+            "badge": "🚗 GTA V RP",
+            "badgeClass": "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/79fa3232-4084-4500-841a-62a6a2908872/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/BitterBraveTomatoEleGiggle-LCD4OrW4n4OP0N5Z",
+            "createdAt": "2022-05-28"
       },
       {
-        id: 'clip-5',
-        title: 'ดวล Sheriff ระยะ 50 เมตร สะบัดเข้าหัวนัดเดียวหงายเงิบ! 🎯',
-        desc: 'ช็อตฟลุ๊คหรือฝีมือ? สะบัดนัดเดียวศัตรูงงทั้งเซิร์ฟเวอร์ คมเกินบรรยาย',
-        category: 'clutch',
-        platform: 'YouTube Shorts',
-        platformIcon: 'fa-brands fa-youtube text-red-500',
-        duration: '0:31',
-        badge: 'SHERIFF ONE-TAP',
-        badgeClass: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40',
-        videoUrl: 'https://player.twitch.tv/?video=1475544386&parent=localhost&parent=127.0.0.1&parent=dalines-site.dalines.workers.dev&autoplay=true',
-        extUrl: 'https://www.youtube.com/@DaLinesTTV',
-        defaultLikes: 125
+            "id": "clip-5",
+            "slug": "EnchantingLaconicSparrowTheTarFu",
+            "title": "Skip Valorant battle pass 50 tiers",
+            "game": "VALORANT",
+            "curator": "Archuron",
+            "views": 119,
+            "duration": "0:59",
+            "category": "valorant",
+            "badge": "🎯 VALORANT",
+            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/bac763d1-bca8-4134-be26-72ce11275692/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/EnchantingLaconicSparrowTheTarFu",
+            "createdAt": "2020-10-13"
       },
       {
-        id: 'clip-6',
-        title: 'โดนตุ๋ยหลังตอนกำลังสอนเทคนิคคนดูในแชทแบบมั่นใจ 💀',
-        desc: 'พูดไม่ทันขาดคำ "ตรงนี้ปลอดภัย 100%" มีดแทงเข้าหลังทันที จังหวะกรรมตามสนอง',
-        category: 'scream',
-        platform: 'TikTok',
-        platformIcon: 'fa-brands fa-tiktok text-pink-500',
-        duration: '0:29',
-        badge: 'KARMA MOMENT',
-        badgeClass: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
-        videoUrl: 'https://player.twitch.tv/?video=1475544386&parent=localhost&parent=127.0.0.1&parent=dalines-site.dalines.workers.dev&autoplay=true',
-        extUrl: 'https://www.tiktok.com/@dalinestuang',
-        defaultLikes: 512
+            "id": "clip-6",
+            "slug": "KnottyCuriousCattleHoneyBadger",
+            "title": "360 stinger",
+            "game": "VALORANT",
+            "curator": "DaLines",
+            "views": 111,
+            "duration": "0:28",
+            "category": "valorant",
+            "badge": "🎯 VALORANT",
+            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/ba2fdbe3-d147-49d5-bfa8-6bb6a71dc3c9/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/KnottyCuriousCattleHoneyBadger",
+            "createdAt": "2021-02-08"
+      },
+      {
+            "id": "clip-7",
+            "slug": "DependableGracefulWheelBrainSlug-SMdvjtBZ4jL7qMpP",
+            "title": "สมแล้วที่ชื่อ TaoHooo",
+            "game": "VALORANT",
+            "curator": "zealproject",
+            "views": 110,
+            "duration": "0:28",
+            "category": "valorant",
+            "badge": "🎯 VALORANT",
+            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/71cbeeed-d997-4d68-ad0c-c72b7033ddf3/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/DependableGracefulWheelBrainSlug-SMdvjtBZ4jL7qMpP",
+            "createdAt": "2021-04-11"
+      },
+      {
+            "id": "clip-8",
+            "slug": "PlainDiligentWolfBudBlast",
+            "title": "Scrim เค้าเล่นกันอย่างนี้",
+            "game": "Apex Legends",
+            "curator": "DaLines",
+            "views": 110,
+            "duration": "1:00",
+            "category": "apex",
+            "badge": "⚡ APEX HIGHLIGHT",
+            "badgeClass": "bg-amber-500/20 text-amber-300 border-amber-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/42c88ec2-96e0-486d-b9ed-1b14be00edc8/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/PlainDiligentWolfBudBlast",
+            "createdAt": "2020-05-09"
+      },
+      {
+            "id": "clip-9",
+            "slug": "ProtectiveVainGrouseBrokeBack",
+            "title": "ท่าหมา",
+            "game": "Apex Legends",
+            "curator": "ssingtho",
+            "views": 100,
+            "duration": "0:09",
+            "category": "apex",
+            "badge": "🏆 APEX MOMENT",
+            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/208d4b9d-daa6-41e0-8b6a-8d1ea6d6c2be/landscape/thumb/thumb-0000000000-1280x720.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/ProtectiveVainGrouseBrokeBack",
+            "createdAt": "2019-12-03"
+      },
+      {
+            "id": "clip-10",
+            "slug": "LitigiousIronicSageBCouch-ec4xE4jyeoPJ3qif",
+            "title": "กดเรี���กเคสมั้ยล่ะ 55555",
+            "game": "Grand Theft Auto V",
+            "curator": "DaLines",
+            "views": 94,
+            "duration": "1:00",
+            "category": "other",
+            "badge": "🚗 GTA V RP",
+            "badgeClass": "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/15059b4c-070a-45bc-9f6c-7084d18e04fc/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/LitigiousIronicSageBCouch-ec4xE4jyeoPJ3qif",
+            "createdAt": "2022-02-20"
+      },
+      {
+            "id": "clip-11",
+            "slug": "EnergeticImpossibleClipsdadKappaWealth",
+            "title": "โนตม",
+            "game": "Apex Legends",
+            "curator": "Archuron",
+            "views": 90,
+            "duration": "0:07",
+            "category": "apex",
+            "badge": "🏆 APEX MOMENT",
+            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/923a3fcd-3e25-4080-9eee-1beb1c547391/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/EnergeticImpossibleClipsdadKappaWealth",
+            "createdAt": "2020-11-20"
+      },
+      {
+            "id": "clip-12",
+            "slug": "LachrymoseObliviousCardHeyGirl",
+            "title": "RE-45 330m+ ",
+            "game": "Apex Legends",
+            "curator": "DaLines",
+            "views": 84,
+            "duration": "0:33",
+            "category": "apex",
+            "badge": "🏆 APEX MOMENT",
+            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/0bc22c82-b040-4ddd-812a-361460ff1919/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/LachrymoseObliviousCardHeyGirl",
+            "createdAt": "2020-05-24"
+      },
+      {
+            "id": "clip-13",
+            "slug": "InterestingRealBorkRalpherZ-a3CT1ubdygsDQTqS",
+            "title": "[ace] รีบขึ้นได โทษที",
+            "game": "VALORANT",
+            "curator": "DaLines",
+            "views": 82,
+            "duration": "0:30",
+            "category": "valorant",
+            "badge": "🔥 VALORANT ACE",
+            "badgeClass": "bg-red-500/20 text-red-300 border-red-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/6a2f7b98-be2d-45b7-9933-a871b4e782bc/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/InterestingRealBorkRalpherZ-a3CT1ubdygsDQTqS",
+            "createdAt": "2023-08-10"
+      },
+      {
+            "id": "clip-14",
+            "slug": "CuriousAffluentNewtSuperVinlin",
+            "title": "3 เกม apex 10 kills XD",
+            "game": "VALORANT",
+            "curator": "DaLines",
+            "views": 80,
+            "duration": "1:00",
+            "category": "valorant",
+            "badge": "🎯 VALORANT",
+            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/41e514a8-e92c-4eb4-a19a-7e7a98efd3a5/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/CuriousAffluentNewtSuperVinlin",
+            "createdAt": "2021-01-28"
+      },
+      {
+            "id": "clip-15",
+            "slug": "ArtisticAveragePepperoniSoBayed",
+            "title": "เชี้ยเฟี้ยวสัส อย่างเท��� idolเลย",
+            "game": "VALORANT",
+            "curator": "Archuron",
+            "views": 80,
+            "duration": "0:40",
+            "category": "valorant",
+            "badge": "🎯 VALORANT",
+            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/6b14209d-4958-45b6-b60c-387b1a47143a/landscape/thumb/thumb-0000000000-1664x936.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/ArtisticAveragePepperoniSoBayed",
+            "createdAt": "2021-01-06"
+      },
+      {
+            "id": "clip-16",
+            "slug": "AggressiveManlyPenguinKappaClaus",
+            "title": "หมากัดหัวนม",
+            "game": "Apex Legends",
+            "curator": "Archuron",
+            "views": 80,
+            "duration": "0:25",
+            "category": "apex",
+            "badge": "🏆 APEX MOMENT",
+            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/634b8de6-6953-463a-b706-6b662ef64154/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/AggressiveManlyPenguinKappaClaus",
+            "createdAt": "2020-08-22"
+      },
+      {
+            "id": "clip-17",
+            "slug": "HandsomeCallousRatMrDestructoid-Zzz6FfuzdD6PI3fy",
+            "title": "ฝาแฝดหอยแครง",
+            "game": "VALORANT",
+            "curator": "typepy",
+            "views": 77,
+            "duration": "1:00",
+            "category": "valorant",
+            "badge": "🎯 VALORANT",
+            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/bc2ad997-427f-4cf6-8350-9efe70fb2e46/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/HandsomeCallousRatMrDestructoid-Zzz6FfuzdD6PI3fy",
+            "createdAt": "2021-09-26"
+      },
+      {
+            "id": "clip-18",
+            "slug": "HomelyFurtiveSushiCclamChamp-jCKX-x3I_5Gii6zm",
+            "title": "เยนมาเเล้ว",
+            "game": "Apex Legends",
+            "curator": "guyenna",
+            "views": 73,
+            "duration": "0:12",
+            "category": "apex",
+            "badge": "🏆 APEX MOMENT",
+            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/e75a4a7b-2d99-4024-9c13-f0e7a200b8af/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/HomelyFurtiveSushiCclamChamp-jCKX-x3I_5Gii6zm",
+            "createdAt": "2021-05-31"
+      },
+      {
+            "id": "clip-19",
+            "slug": "MoldyDifficultCougarThisIsSparta",
+            "title": "ลงยังไง",
+            "game": "Fortnite",
+            "curator": "Ammarinn",
+            "views": 71,
+            "duration": "0:41",
+            "category": "other",
+            "badge": "🎪 FORTNITE",
+            "badgeClass": "bg-blue-500/20 text-blue-300 border-blue-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/6b8c647e-3ea8-41ef-83d0-46c0d2b80431/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/MoldyDifficultCougarThisIsSparta",
+            "createdAt": "2020-02-19"
+      },
+      {
+            "id": "clip-20",
+            "slug": "LuckyCrispyBasenjiOptimizePrime",
+            "title": "God Havoc",
+            "game": "Apex Legends",
+            "curator": "1StarGamingTH",
+            "views": 71,
+            "duration": "0:28",
+            "category": "apex",
+            "badge": "⚡ APEX HIGHLIGHT",
+            "badgeClass": "bg-amber-500/20 text-amber-300 border-amber-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/77d29652-6aa8-40b2-85fd-d25b9cb9d42e/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/LuckyCrispyBasenjiOptimizePrime",
+            "createdAt": "2020-05-03"
+      },
+      {
+            "id": "clip-21",
+            "slug": "AdventurousBlindingButterBIRB",
+            "title": "Lucky with largest crosshair",
+            "game": "VALORANT",
+            "curator": "DaLines",
+            "views": 69,
+            "duration": "0:23",
+            "category": "valorant",
+            "badge": "🎯 VALORANT",
+            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/4582e1d1-ff92-4392-a61d-4cb74bc3685f/landscape/thumb/thumb-0000000000-1664x936.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/AdventurousBlindingButterBIRB",
+            "createdAt": "2021-01-11"
+      },
+      {
+            "id": "clip-22",
+            "slug": "ExuberantPlausibleCoyoteStoneLightning",
+            "title": "Loba 3.8k Damage",
+            "game": "Apex Legends",
+            "curator": "DaLines",
+            "views": 66,
+            "duration": "1:00",
+            "category": "apex",
+            "badge": "⚡ APEX HIGHLIGHT",
+            "badgeClass": "bg-amber-500/20 text-amber-300 border-amber-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/640d4a55-73d5-4f2a-8496-472c6d518bcb/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/ExuberantPlausibleCoyoteStoneLightning",
+            "createdAt": "2020-05-15"
+      },
+      {
+            "id": "clip-23",
+            "slug": "ComfortableElatedInternSpicyBoy-kX84MxdkorxVtKZH",
+            "title": "เป็นแฟนทำไรได้บ้าง",
+            "game": "VALORANT",
+            "curator": "Archuron",
+            "views": 65,
+            "duration": "0:05",
+            "category": "valorant",
+            "badge": "🎯 VALORANT",
+            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/db8ad1f1-e699-4871-aaaf-d32a64101407/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/ComfortableElatedInternSpicyBoy-kX84MxdkorxVtKZH",
+            "createdAt": "2023-01-15"
+      },
+      {
+            "id": "clip-24",
+            "slug": "InnocentTangiblePuppyDancingBaby",
+            "title": "หลุด",
+            "game": "Apex Legends",
+            "curator": "typepy",
+            "views": 60,
+            "duration": "0:28",
+            "category": "apex",
+            "badge": "🏆 APEX MOMENT",
+            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
+            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/da18730e-cc88-48bd-87a9-d5836fe88504/landscape/thumb/thumb-0000000000-1920x1080.jpg",
+            "clipUrl": "https://www.twitch.tv/dalines/clip/InnocentTangiblePuppyDancingBaby",
+            "createdAt": "2020-05-10"
       }
-    ];
+];
 
     let currentClipFilter = 'all';
 
@@ -2999,47 +3580,78 @@
 
       grid.innerHTML = filtered.map(clip => {
         const isLiked = !!likedMap[clip.id];
-        const likes = clip.defaultLikes + (isLiked ? 1 : 0);
+        const likes = clip.views + (isLiked ? 1 : 0);
         return `
-          <div class="tilt-card p-3 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-purple-500/40 transition-all duration-200 flex flex-col justify-between gap-2.5 shadow-lg relative group overflow-hidden">
-            <!-- Top Badges -->
-            <div class="flex items-center justify-between gap-1 text-[10px]">
-              <span class="px-2 py-0.5 rounded-full border font-mono font-bold ${clip.badgeClass}">
-                ${clip.badge}
-              </span>
-              <div class="flex items-center gap-1 text-slate-400 font-mono">
-                <i class="${clip.platformIcon}"></i>
-                <span>${clip.duration}</span>
+          <div class="tilt-card rounded-xl bg-slate-900/90 border border-slate-800 hover:border-purple-500/50 transition-all duration-300 flex flex-col justify-between shadow-lg relative group overflow-hidden">
+            <!-- Video Thumbnail with 16:9 aspect ratio and hover overlay -->
+            <div class="relative w-full aspect-video bg-black/60 overflow-hidden cursor-pointer" onclick="openClipModal('${clip.id}')">
+              <img src="${clip.thumbnailUrl}" alt="${escapeHtml(clip.title)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" onerror="this.src='https://static-cdn.jtvnw.net/ttv-static-metadata/twitch_logo3.jpg'">
+              
+              <!-- Gradient Overlay -->
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-black/30 pointer-events-none"></div>
+
+              <!-- Top Badges -->
+              <div class="absolute top-2 left-2 flex items-center gap-1">
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-mono font-bold border backdrop-blur-md ${clip.badgeClass}">
+                  ${clip.badge}
+                </span>
+              </div>
+
+              <!-- Views Badge -->
+              <div class="absolute top-2 right-2 px-1.5 py-0.5 rounded-md bg-black/75 border border-white/10 text-[9px] font-mono text-purple-300 backdrop-blur-md flex items-center gap-1 shadow">
+                <i class="fa-solid fa-eye text-[8px]"></i>
+                <span>${clip.views} views</span>
+              </div>
+
+              <!-- Center Play Icon -->
+              <div class="absolute inset-0 flex items-center justify-center opacity-85 group-hover:opacity-100 transition-opacity">
+                <div class="w-10 h-10 rounded-full bg-[#9146FF]/90 group-hover:bg-[#9146FF] text-white flex items-center justify-center text-sm shadow-[0_0_20px_rgba(145,70,255,0.7)] group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-play ml-0.5 text-xs"></i>
+                </div>
+              </div>
+
+              <!-- Duration Badge -->
+              <div class="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/80 font-mono text-[9px] text-white border border-white/10">
+                ${clip.duration}
               </div>
             </div>
 
-            <!-- Title & Desc -->
-            <div>
-              <h4 class="text-xs font-bold text-white group-hover:text-purple-300 transition line-clamp-2 leading-snug">
-                ${escapeHtml(clip.title)}
-              </h4>
-              <p class="text-[10px] text-slate-400 mt-1 line-clamp-2 leading-relaxed">
-                ${escapeHtml(clip.desc)}
-              </p>
-            </div>
+            <!-- Content Area -->
+            <div class="p-3 flex flex-col justify-between flex-grow gap-2">
+              <div>
+                <h4 class="text-xs font-bold text-white group-hover:text-purple-300 transition line-clamp-2 leading-snug cursor-pointer" onclick="openClipModal('${clip.id}')">
+                  ${escapeHtml(clip.title)}
+                </h4>
+                <div class="text-[10px] text-slate-400 mt-1 flex items-center justify-between gap-1 font-mono">
+                  <span class="truncate"><i class="fa-solid fa-user-pen text-[9px] text-purple-400 mr-1"></i>${escapeHtml(clip.curator)}</span>
+                  <span class="text-slate-500 shrink-0 font-medium">${clip.game}</span>
+                </div>
+              </div>
 
-            <!-- Action Buttons -->
-            <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between gap-2 text-xs">
-              <button type="button" onclick="openClipModal('${clip.id}')" class="px-3 py-1.5 rounded-lg bg-purple-600/30 hover:bg-purple-600 text-purple-200 hover:text-white border border-purple-500/40 text-[11px] font-bold transition flex items-center gap-1.5 active:scale-95 cursor-pointer shadow">
-                <i class="fa-solid fa-play text-[9px]"></i>
-                <span>ชมคลิป</span>
-              </button>
+              <!-- Action Buttons -->
+              <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between gap-1.5 text-xs">
+                <button type="button" onclick="openClipModal('${clip.id}')" class="px-2.5 py-1.5 rounded-lg bg-[#9146FF]/30 hover:bg-[#9146FF] text-purple-200 hover:text-white border border-[#9146FF]/50 text-[10px] font-bold transition flex items-center gap-1 active:scale-95 cursor-pointer shadow">
+                  <i class="fa-solid fa-play text-[8px]"></i>
+                  <span>ชมคลิป</span>
+                </button>
 
-              <div class="flex items-center gap-1.5">
-                <!-- Like Button -->
-                <button type="button" onclick="toggleClipLike('${clip.id}', event)" class="px-2 py-1 rounded-lg ${isLiked ? 'bg-pink-500/20 text-pink-400 border border-pink-500/40' : 'bg-slate-800 text-slate-400 hover:text-pink-400'} text-[11px] font-mono transition flex items-center gap-1 cursor-pointer active:scale-90">
-                  <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart ${isLiked ? 'text-pink-400' : ''}"></i>
-                  <span id="like-count-${clip.id}">${likes}</span>
-                </button>
-                <!-- Share Button -->
-                <button type="button" onclick="shareClip('${clip.id}', event)" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white text-[11px] transition cursor-pointer" title="แชร์คลิป">
-                  <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                </button>
+                <div class="flex items-center gap-1">
+                  <!-- Like Button -->
+                  <button type="button" onclick="toggleClipLike('${clip.id}', event)" class="px-2 py-1 rounded-lg ${isLiked ? 'bg-pink-500/20 text-pink-400 border border-pink-500/40' : 'bg-slate-800 text-slate-400 hover:text-pink-400'} text-[10px] font-mono transition flex items-center gap-1 cursor-pointer active:scale-90" title="ถูกใจคลิป">
+                    <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart ${isLiked ? 'text-pink-400' : ''}"></i>
+                    <span id="like-count-${clip.id}">${likes}</span>
+                  </button>
+
+                  <!-- Direct Link on Twitch -->
+                  <a href="${clip.clipUrl}" target="_blank" rel="noopener noreferrer" class="p-1.5 rounded-lg bg-slate-800 hover:bg-[#9146FF]/40 text-slate-400 hover:text-white text-[10px] transition cursor-pointer" title="เปิดดูบน Twitch">
+                    <i class="fa-brands fa-twitch"></i>
+                  </a>
+
+                  <!-- Share Link Button -->
+                  <button type="button" onclick="shareClip('${clip.id}', event)" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white text-[10px] transition cursor-pointer" title="แชร์คลิป">
+                    <i class="fa-solid fa-share-nodes"></i>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -3054,7 +3666,7 @@
         b.className = 'clip-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white font-medium transition active:scale-95 cursor-pointer shrink-0';
       });
       if (btn) {
-        btn.className = 'clip-filter-btn px-2.5 py-1 rounded-lg bg-purple-600 text-white font-bold transition active:scale-95 shadow cursor-pointer shrink-0';
+        btn.className = 'clip-filter-btn px-2.5 py-1 rounded-lg bg-[#9146FF] text-white font-bold transition active:scale-95 shadow cursor-pointer shrink-0';
       }
       renderClips();
     }
@@ -3081,11 +3693,15 @@
       const extLink = document.getElementById('clip-modal-ext-link');
 
       if (title) title.innerText = clip.title;
-      if (badge) badge.innerText = `${clip.platform.toUpperCase()} • ${clip.badge}`;
-      if (iframe) iframe.src = clip.videoUrl;
+      if (badge) badge.innerText = `${clip.game.toUpperCase()} • ${clip.views} VIEWS • CLIPPED BY ${clip.curator.toUpperCase()}`;
+      
+      const hostname = window.location.hostname || 'dalines-site.dalines.workers.dev';
+      const embedUrl = `https://clips.twitch.tv/embed?clip=${encodeURIComponent(clip.slug)}&parent=${hostname}&parent=localhost&parent=127.0.0.1&parent=dalines-site.dalines.workers.dev&parent=dalines.pages.dev&autoplay=true`;
+      if (iframe) iframe.src = embedUrl;
+
       if (extLink) {
-        extLink.href = clip.extUrl;
-        extLink.innerHTML = `<span>เปิดบน ${clip.platform}</span> <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>`;
+        extLink.href = clip.clipUrl;
+        extLink.innerHTML = `<i class="fa-brands fa-twitch"></i> <span>เปิดบน Twitch</span> <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>`;
       }
       if (modal) modal.classList.remove('hidden');
     }
@@ -3103,482 +3719,364 @@
       playSound('pop');
       const clip = DALINES_CLIPS.find(c => c.id === clipId);
       if (!clip) return;
-      const shareUrl = `${window.location.origin}${window.location.pathname}#tab-stream`;
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(`${clip.title} - ชมไฮไลท์ DaLines ได้ที่: ${shareUrl}`);
+        navigator.clipboard.writeText(`${clip.title} - ชมคลิป DaLines จาก Twitch: ${clip.clipUrl}`);
       }
-      showToast('คัดลอกลิงก์ไฮไลท์เรียบร้อย! 🎬');
+      showToast('คัดลอกลิงก์คลิป Twitch เรียบร้อย! 🎬');
     }
 
     // -----------------------------------------------------------------
-    // VALORANT CROSSHAIR SIMULATOR & 10s REFLEX AIM CHALLENGE
+    // 🎮 FPS E-DPI CALCULATOR & CROSS-GAME SENSITIVITY CONVERTER
+    // High-precision physical distance conversion (cm/360°)
     // -----------------------------------------------------------------
-    let aimMode = 'free'; // 'free' หรือ 'challenge'
-    let isChallengeRunning = false;
-    let challengeTimer = 10.0;
-    let challengeInterval = null;
-    let challengeScore = 0;
-    let challengeTotalShots = 0;
-    let challengeTargetSpawnTime = 0;
-    let challengeReactionTimes = [];
-    let challengeHighScore = parseInt(localStorage.getItem('dalines_aim_highscore') || '0', 10);
-    let crosshairHits = 0;
-    let crosshairHeadshots = 0;
+    const SENS_GAMES = {
+      valorant: {
+        key: 'valorant',
+        name: 'VALORANT',
+        tag: 'Riot Games',
+        yaw: 0.07,
+        sliderMax: 2.0,
+        sliderStep: 0.01,
+        defaultSens: 0.3,
+        icon: 'fa-solid fa-crosshairs text-red-400',
+        colorBorder: 'hover:border-red-500/50',
+        bgBadge: 'bg-red-500/20 text-red-300 border-red-500/40',
+        calcEdpi: (dpi, sens) => (dpi * sens).toFixed(1),
+        formatSens: (sens) => sens.toFixed(3)
+      },
+      apex: {
+        key: 'apex',
+        name: 'Apex Legends',
+        tag: 'EA / Respawn',
+        yaw: 0.022,
+        sliderMax: 6.0,
+        sliderStep: 0.05,
+        defaultSens: 1.8,
+        icon: 'fa-solid fa-shield-halved text-amber-400',
+        colorBorder: 'hover:border-amber-500/50',
+        bgBadge: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+        calcEdpi: (dpi, sens) => Math.round(dpi * sens),
+        formatSens: (sens) => sens.toFixed(3)
+      },
+      cs2: {
+        key: 'cs2',
+        name: 'Counter-Strike 2',
+        tag: 'Valve',
+        yaw: 0.022,
+        sliderMax: 6.0,
+        sliderStep: 0.05,
+        defaultSens: 0.955,
+        icon: 'fa-solid fa-gun text-yellow-400',
+        colorBorder: 'hover:border-yellow-500/50',
+        bgBadge: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40',
+        calcEdpi: (dpi, sens) => Math.round(dpi * sens),
+        formatSens: (sens) => sens.toFixed(3)
+      },
+      deltaforce: {
+        key: 'deltaforce',
+        name: 'Delta Force',
+        tag: 'TiMi / Tencent',
+        yaw: 0.022,
+        sliderMax: 6.0,
+        sliderStep: 0.05,
+        defaultSens: 0.955,
+        icon: 'fa-solid fa-person-rifle text-emerald-400',
+        colorBorder: 'hover:border-emerald-500/50',
+        bgBadge: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+        calcEdpi: (dpi, sens) => Math.round(dpi * sens),
+        formatSens: (sens) => sens.toFixed(3)
+      },
+      cod: {
+        key: 'cod',
+        name: 'CoD / Warzone',
+        tag: 'Activision',
+        yaw: 0.022,
+        sliderMax: 20.0,
+        sliderStep: 0.1,
+        defaultSens: 0.95,
+        icon: 'fa-solid fa-skull-crossbones text-cyan-400',
+        colorBorder: 'hover:border-cyan-500/50',
+        bgBadge: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40',
+        calcEdpi: (dpi, sens) => Math.round(dpi * sens),
+        formatSens: (sens) => sens.toFixed(2)
+      },
+      overwatch: {
+        key: 'overwatch',
+        name: 'Overwatch 2',
+        tag: 'Blizzard',
+        yaw: 0.0066,
+        sliderMax: 20.0,
+        sliderStep: 0.1,
+        defaultSens: 3.18,
+        icon: 'fa-solid fa-shield-cat text-orange-400',
+        colorBorder: 'hover:border-orange-500/50',
+        bgBadge: 'bg-orange-500/20 text-orange-300 border-orange-500/40',
+        calcEdpi: (dpi, sens) => Math.round(dpi * sens),
+        formatSens: (sens) => sens.toFixed(2)
+      },
+      fortnite: {
+        key: 'fortnite',
+        name: 'Fortnite (X/Y)',
+        tag: 'Epic Games',
+        yaw: 0.005555555555555556,
+        sliderMax: 30.0,
+        sliderStep: 0.1,
+        defaultSens: 3.78,
+        icon: 'fa-solid fa-bolt text-indigo-400',
+        colorBorder: 'hover:border-indigo-500/50',
+        bgBadge: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40',
+        calcEdpi: (dpi, sens) => (dpi * (sens / 100)).toFixed(1),
+        formatSens: (sens) => sens.toFixed(2) + '%'
+      },
+      pubg: {
+        key: 'pubg',
+        name: 'PUBG',
+        tag: 'Krafton',
+        yaw: 0.002222222222222222,
+        sliderMax: 100,
+        sliderStep: 1,
+        defaultSens: 9.5,
+        icon: 'fa-solid fa-parachute-box text-stone-400',
+        colorBorder: 'hover:border-stone-500/50',
+        bgBadge: 'bg-stone-500/20 text-stone-300 border-stone-500/40',
+        calcEdpi: (dpi, sens) => Math.round(dpi * sens),
+        formatSens: (sens) => sens.toFixed(1)
+      }
+    };
 
-    function initAimChallenge() {
-      const hsEl = document.getElementById('val-aim-highscore');
-      if (hsEl) hsEl.innerText = challengeHighScore;
+    let currentSensDpi = 800;
+    let currentBaseGame = 'valorant';
+    let currentBaseSens = 0.3;
+
+    function initSensCalculator() {
+      updateSensCalculator();
     }
 
-    function setAimMode(mode) {
-      aimMode = mode;
-      playSound('tab');
-
-      const btnFree = document.getElementById('btn-aim-mode-free');
-      const btnChallenge = document.getElementById('btn-aim-mode-challenge');
-      const freeBg = document.getElementById('free-mode-bg');
-      const freeHudTop = document.getElementById('free-hud-top');
-      const freeHudBottom = document.getElementById('free-hud-bottom');
-      const challengeHud = document.getElementById('challenge-hud');
-      const challengeStartCard = document.getElementById('challenge-start-card');
-      const challengeTarget = document.getElementById('challenge-target');
-      const challengeProgressBar = document.getElementById('challenge-progress-bar-wrap');
-
-      if (mode === 'free') {
-        if (isChallengeRunning) endAimChallenge(true); // silent abort
-        if (btnFree) btnFree.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-cyan-600 text-white shadow cursor-pointer';
-        if (btnChallenge) btnChallenge.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5 cursor-pointer';
-
-        if (freeBg) freeBg.classList.remove('hidden');
-        if (freeHudTop) freeHudTop.classList.remove('hidden');
-        if (freeHudBottom) freeHudBottom.classList.remove('hidden');
-        if (challengeHud) challengeHud.classList.add('hidden');
-        if (challengeStartCard) challengeStartCard.classList.add('hidden');
-        if (challengeTarget) challengeTarget.classList.add('hidden');
-        if (challengeProgressBar) challengeProgressBar.classList.add('hidden');
-      } else {
-        if (btnChallenge) btnChallenge.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-amber-500 text-black shadow cursor-pointer';
-        if (btnFree) btnFree.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5 cursor-pointer';
-
-        if (freeBg) freeBg.classList.add('hidden');
-        if (freeHudTop) freeHudTop.classList.add('hidden');
-        if (freeHudBottom) freeHudBottom.classList.add('hidden');
-
-        if (!isChallengeRunning) {
-          if (challengeStartCard) challengeStartCard.classList.remove('hidden');
-          if (challengeHud) challengeHud.classList.add('hidden');
-          if (challengeTarget) challengeTarget.classList.add('hidden');
-          if (challengeProgressBar) challengeProgressBar.classList.add('hidden');
-        }
-      }
+    function calculatePhysicalCm360(dpi, sens, yaw) {
+      if (dpi <= 0 || sens <= 0 || yaw <= 0) return 0;
+      return (360 * 2.54) / (dpi * sens * yaw);
     }
 
-    function startAimChallenge() {
-      closeAimResultModal();
-      if (!isSoundEnabled) {
-        isSoundEnabled = true;
-        localStorage.setItem('dalines_sound', true);
-        updateSoundIcon();
-      }
+    function updateSensCalculator() {
+      const baseGameConfig = SENS_GAMES[currentBaseGame] || SENS_GAMES.valorant;
+      const cm360 = calculatePhysicalCm360(currentSensDpi, currentBaseSens, baseGameConfig.yaw);
 
-      const startCard = document.getElementById('challenge-start-card');
-      const countdownOverlay = document.getElementById('challenge-countdown-overlay');
-      const countdownNum = document.getElementById('challenge-countdown-number');
-      if (startCard) startCard.classList.add('hidden');
-      if (countdownOverlay) countdownOverlay.classList.remove('hidden');
+      // 1. Update Header Displays
+      const dpiDisplay = document.getElementById('dpi-display-val');
+      if (dpiDisplay) dpiDisplay.innerText = `${currentSensDpi} DPI`;
 
-      let count = 3;
-      if (countdownNum) countdownNum.innerText = count;
-      playSound('countdown_beep');
+      const baseSensDisplay = document.getElementById('base-sens-display');
+      if (baseSensDisplay) baseSensDisplay.innerText = baseGameConfig.formatSens(currentBaseSens);
 
-      const cdInterval = setInterval(() => {
-        count--;
-        if (count > 0) {
-          if (countdownNum) {
-            countdownNum.innerText = count;
-            countdownNum.style.transform = 'scale(1.3)';
-            setTimeout(() => { if (countdownNum) countdownNum.style.transform = 'scale(1)'; }, 150);
-          }
-          playSound('countdown_beep');
-        } else if (count === 0) {
-          if (countdownNum) {
-            countdownNum.innerText = 'GO!';
-            countdownNum.style.transform = 'scale(1.5)';
-            countdownNum.style.color = '#10b981';
-          }
-          playSound('countdown_go');
+      // 2. Update Metric Banner
+      const edpiVal = baseGameConfig.calcEdpi(currentSensDpi, currentBaseSens);
+      const metricEdpi = document.getElementById('metric-edpi');
+      if (metricEdpi) metricEdpi.innerText = edpiVal;
+
+      const metricEdpiGame = document.getElementById('metric-edpi-game');
+      if (metricEdpiGame) metricEdpiGame.innerText = baseGameConfig.name;
+
+      const metricCm360 = document.getElementById('metric-cm360');
+      if (metricCm360) metricCm360.innerText = (cm360 > 0) ? cm360.toFixed(1) : '--';
+
+      // 3. Aiming Style Analysis
+      const aimBadge = document.getElementById('metric-aim-badge');
+      const aimDesc = document.getElementById('metric-aim-desc');
+      if (aimBadge && aimDesc) {
+        if (cm360 >= 45) {
+          aimBadge.className = 'px-2 py-0.5 rounded text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 font-sans';
+          aimBadge.innerText = 'LOW SENS / ARM AIM 🦾';
+          aimDesc.innerText = 'เล็งด้วยทั้งแขน สะบัดแม่นยำสูงสไตล์แทคติคอล แนะนำแผ่นรองเมาส์ Size L/XL (~45-50cm+)';
+        } else if (cm360 >= 30) {
+          aimBadge.className = 'px-2 py-0.5 rounded text-[9px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-sans';
+          aimBadge.innerText = 'MEDIUM / BALANCED ⚖️';
+          aimDesc.innerText = 'สมดุลยอดนิยม เล็งผสมแขนและข้อมือ ตอบสนองได้ทุกแนวเกม แนะนำแผ่นรองเมาส์ Size M/L (~35-45cm)';
+        } else if (cm360 >= 18) {
+          aimBadge.className = 'px-2 py-0.5 rounded text-[9px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 font-sans';
+          aimBadge.innerText = 'HIGH SENS / WRIST AIM ⚡';
+          aimDesc.innerText = 'เล็งด้วยข้อมือ คล่องตัวสูง หันมุมมองไวมาก เหมาะกับเกมไวอย่าง Apex/Overwatch (~25-35cm)';
         } else {
-          clearInterval(cdInterval);
-          if (countdownOverlay) countdownOverlay.classList.add('hidden');
-          if (countdownNum) {
-            countdownNum.style.color = '#fbbf24';
-            countdownNum.style.transform = 'scale(1)';
-          }
-          runAimChallengeGame();
+          aimBadge.className = 'px-2 py-0.5 rounded text-[9px] font-bold bg-red-500/20 text-red-300 border border-red-500/30 font-sans';
+          aimBadge.innerText = 'ULTRA HIGH / FINGERTIP 🚀';
+          aimDesc.innerText = 'ความไวสูงพิเศษ สะบัดนิดเดียวหมุน 360° ต้องใช้การคุมเมาส์ที่นิ่งมาก';
         }
-      }, 700);
-    }
-
-    function runAimChallengeGame() {
-      isChallengeRunning = true;
-      challengeScore = 0;
-      challengeTotalShots = 0;
-      challengeReactionTimes = [];
-      challengeTimer = 10.0;
-
-      const challengeHud = document.getElementById('challenge-hud');
-      const progressBarWrap = document.getElementById('challenge-progress-bar-wrap');
-      const progressBar = document.getElementById('challenge-progress-bar');
-      const timerText = document.getElementById('challenge-timer-text');
-      const scoreText = document.getElementById('challenge-score-text');
-      const accText = document.getElementById('challenge-acc-text');
-      const reactionText = document.getElementById('challenge-reaction-text');
-
-      if (challengeHud) challengeHud.classList.remove('hidden');
-      if (progressBarWrap) progressBarWrap.classList.remove('hidden');
-      if (progressBar) progressBar.style.width = '100%';
-      if (scoreText) scoreText.innerText = '0';
-      if (accText) accText.innerText = '100%';
-      if (reactionText) reactionText.innerText = '--';
-      if (timerText) timerText.innerText = '10.0s';
-
-      spawnChallengeTarget();
-
-      const startTime = Date.now();
-      const totalDuration = 10000;
-
-      clearInterval(challengeInterval);
-      challengeInterval = setInterval(() => {
-        const elapsed = Date.now() - startTime;
-        const remain = Math.max(0, (totalDuration - elapsed) / 1000);
-        challengeTimer = remain;
-
-        if (timerText) timerText.innerText = `${remain.toFixed(1)}s`;
-        if (progressBar) {
-          const pct = Math.max(0, (remain / 10) * 100);
-          progressBar.style.width = `${pct}%`;
-        }
-
-        if (remain <= 0) {
-          clearInterval(challengeInterval);
-          endAimChallenge(false);
-        }
-      }, 50);
-    }
-
-    function spawnChallengeTarget() {
-      const stage = document.getElementById('crosshair-stage');
-      const target = document.getElementById('challenge-target');
-      if (!stage || !target) return;
-
-      const stageRect = stage.getBoundingClientRect();
-      const targetSize = 44;
-      const margin = 26;
-
-      const maxX = stageRect.width - targetSize - margin;
-      const maxY = stageRect.height - targetSize - margin;
-
-      const randX = Math.floor(margin + Math.random() * Math.max(20, maxX - margin));
-      const randY = Math.floor(margin + Math.random() * Math.max(20, maxY - margin));
-
-      target.style.left = `${randX}px`;
-      target.style.top = `${randY}px`;
-      target.classList.remove('hidden');
-
-      target.style.transform = 'scale(0.3)';
-      requestAnimationFrame(() => {
-        target.style.transform = 'scale(1)';
-      });
-
-      challengeTargetSpawnTime = Date.now();
-    }
-
-    function hitChallengeTarget(e) {
-      e.stopPropagation();
-      if (!isChallengeRunning) return;
-
-      challengeScore++;
-      challengeTotalShots++;
-
-      const rt = Math.max(50, Date.now() - challengeTargetSpawnTime);
-      challengeReactionTimes.push(rt);
-
-      playSound('headshot');
-
-      // Update reticle recoil
-      const reticle = document.getElementById('crosshair-reticle');
-      if (reticle) {
-        reticle.style.transform = 'scale(1.35)';
-        setTimeout(() => { if (reticle) reticle.style.transform = 'scale(1)'; }, 80);
       }
 
-      // Spark effect
-      const stage = document.getElementById('crosshair-stage');
-      const rect = stage.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const clickY = e.clientY - rect.top;
-      createBulletImpact(stage, clickX, clickY);
+      // 4. Update Converted Games Grid
+      const grid = document.getElementById('sens-results-grid');
+      if (grid) {
+        grid.innerHTML = Object.values(SENS_GAMES).map(game => {
+          // targetSens = (360 * 2.54) / (cm360 * dpi * targetYaw)
+          const targetSens = (cm360 > 0 && currentSensDpi > 0)
+            ? (360 * 2.54) / (cm360 * currentSensDpi * game.yaw)
+            : 0;
 
-      // Floating hit text
-      createFloatingHitText(stage, clickX, clickY, `+100 HEADSHOT (${rt}ms)`, '#fbbf24');
+          const isCurrent = (game.key === currentBaseGame);
+          const formattedSens = game.formatSens(targetSens);
+          const rawSensVal = (game.key === 'fortnite') ? targetSens.toFixed(2) : targetSens.toFixed(3);
+          const gameEdpi = game.calcEdpi(currentSensDpi, targetSens);
 
-      // Update HUD
-      updateChallengeHUD();
+          return `
+            <div class="tilt-card p-2.5 rounded-xl bg-slate-900/90 border ${isCurrent ? 'border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.3)]' : 'border-slate-800'} ${game.colorBorder} transition-all duration-200 flex flex-col justify-between gap-2 relative group overflow-hidden">
+              <!-- Top Game Header -->
+              <div class="flex items-center justify-between gap-1">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <i class="${game.icon} text-xs"></i>
+                  <span class="text-[11px] font-bold text-white truncate">${game.name}</span>
+                </div>
+                <span class="px-1.5 py-0.2 rounded text-[8px] font-mono font-bold ${game.bgBadge} shrink-0">
+                  ${isCurrent ? 'BASE' : 'CONV'}
+                </span>
+              </div>
 
-      // Spawn next target immediately
-      spawnChallengeTarget();
-    }
+              <!-- Center Sens Numbers -->
+              <div class="bg-black/60 rounded-lg p-2 border border-slate-800/80 flex flex-col items-center justify-center text-center">
+                <div class="text-sm sm:text-base font-extrabold text-white font-mono tracking-tight group-hover:text-cyan-300 transition">
+                  ${formattedSens}
+                </div>
+                <div class="text-[9px] text-slate-400 font-mono flex items-center gap-1 mt-0.5">
+                  <span>eDPI:</span>
+                  <strong class="text-slate-200">${gameEdpi}</strong>
+                </div>
+              </div>
 
-    function handleStageClick(e) {
-      if (aimMode === 'free') {
-        fireCrosshair(e);
-      } else if (aimMode === 'challenge' && isChallengeRunning) {
-        // Registered as a miss shot
-        challengeTotalShots++;
-        playSound('gunshot');
-
-        const stage = document.getElementById('crosshair-stage');
-        const reticle = document.getElementById('crosshair-reticle');
-        if (reticle) {
-          reticle.style.transform = 'scale(1.25)';
-          setTimeout(() => { if (reticle) reticle.style.transform = 'scale(1)'; }, 80);
-        }
-
-        const rect = stage.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const clickY = e.clientY - rect.top;
-        createBulletImpact(stage, clickX, clickY);
-        createFloatingHitText(stage, clickX, clickY, 'MISS 💨', '#94a3b8');
-
-        updateChallengeHUD();
+              <!-- Bottom Copy Button -->
+              <button type="button" onclick="copySingleGameSens('${game.key}', '${rawSensVal}', event)" class="w-full py-1 px-2 rounded-lg bg-slate-800 hover:bg-cyan-600 text-slate-300 hover:text-white text-[10px] font-mono font-semibold transition flex items-center justify-center gap-1 active:scale-95 cursor-pointer shadow">
+                <i class="fa-regular fa-copy text-[9px]"></i>
+                <span>Copy Sens</span>
+              </button>
+            </div>
+          `;
+        }).join('');
       }
     }
 
-    function updateChallengeHUD() {
-      const scoreText = document.getElementById('challenge-score-text');
-      const accText = document.getElementById('challenge-acc-text');
-      const reactionText = document.getElementById('challenge-reaction-text');
-
-      if (scoreText) scoreText.innerText = challengeScore;
-      if (accText) {
-        const acc = Math.round((challengeScore / Math.max(1, challengeTotalShots)) * 100);
-        accText.innerText = `${acc}%`;
-      }
-      if (reactionText && challengeReactionTimes.length > 0) {
-        const avg = Math.round(challengeReactionTimes.reduce((a, b) => a + b, 0) / challengeReactionTimes.length);
-        reactionText.innerText = `${avg}`;
+    function onDpiInputChange(val) {
+      const num = parseFloat(val);
+      if (!isNaN(num) && num > 0) {
+        currentSensDpi = Math.min(Math.max(num, 100), 32000);
+        updateQuickDpiButtons();
+        updateSensCalculator();
       }
     }
 
-    function createFloatingHitText(stage, x, y, text, color) {
-      const floater = document.createElement('div');
-      floater.className = 'absolute font-bold text-xs pointer-events-none transition-all duration-500 ease-out z-20 font-mono';
-      floater.style.left = `${x - 30}px`;
-      floater.style.top = `${y - 10}px`;
-      floater.style.color = color;
-      floater.style.textShadow = '0 0 6px rgba(0,0,0,0.9), 0 0 2px #000';
-      floater.innerText = text;
-      stage.appendChild(floater);
-
-      requestAnimationFrame(() => {
-        floater.style.transform = 'translateY(-26px) scale(1.15)';
-        floater.style.opacity = '0';
-      });
-      setTimeout(() => floater.remove(), 550);
-    }
-
-    function endAimChallenge(silent = false) {
-      isChallengeRunning = false;
-      clearInterval(challengeInterval);
-
-      const target = document.getElementById('challenge-target');
-      if (target) target.classList.add('hidden');
-
-      const progressBarWrap = document.getElementById('challenge-progress-bar-wrap');
-      if (progressBarWrap) progressBarWrap.classList.add('hidden');
-
-      if (silent) return;
-
-      playSound('victory');
-
-      const acc = Math.round((challengeScore / Math.max(1, challengeTotalShots)) * 100);
-      const avgRt = challengeReactionTimes.length > 0
-        ? Math.round(challengeReactionTimes.reduce((a, b) => a + b, 0) / challengeReactionTimes.length)
-        : 0;
-
-      // Tier & Quotes Calculation
-      let tier = '';
-      let quote = '';
-      let icon = '🏆';
-      if (challengeScore <= 5) {
-        tier = '🤡 โยนสมชื่อ DaLines';
-        quote = '"เป้าไม่ตรง โทษโต๊ะ โทษเน็ต โทษแผ่นรองเมาส์เอียง"';
-        icon = '🤡';
-      } else if (challengeScore <= 13) {
-        tier = '🔫 คนยิงไม่โดน โทษเมาส์ (Silver/Gold)';
-        quote = '"วอร์มมือก่อนลงแรงก์จริง ยิงโดนนกกระจอกตายไป 3 ตัว"';
-        icon = '🔫';
-      } else if (challengeScore <= 21) {
-        tier = '⚡ คมจัดปลัดบอก (Ascendant)';
-        quote = '"สะบัดหัวคมกริบ! เริ่มจะคมกว่าสตรีมเมอร์ตัวจริงแล้วนะเนี่ย"';
-        icon = '⚡';
-      } else {
-        tier = '👑 Radiant ในตำนาน';
-        quote = '"คมระดับพระกาฬ Aimbot ยังกราบ! แคปส่งเข้า Discord ด่วน สตรีมเมอร์ขอยอม!"';
-        icon = '👑';
-      }
-
-      // Check New High Score
-      const isNewRecord = challengeScore > challengeHighScore;
-      if (isNewRecord) {
-        challengeHighScore = challengeScore;
-        localStorage.setItem('dalines_aim_highscore', challengeHighScore);
-        const hsEl = document.getElementById('val-aim-highscore');
-        if (hsEl) hsEl.innerText = challengeHighScore;
-      }
-
-      // Send excitement to OBS if connected
-      if (isObsConnected && obsConn && obsConn.open) {
-        sendObsAction('hype', { amount: 20 });
-      }
-
-      // Populate Result Modal
-      const modal = document.getElementById('modal-aim-result');
-      const iconEl = document.getElementById('aim-result-icon');
-      const newRecordBadge = document.getElementById('aim-new-record-badge');
-      const titleEl = document.getElementById('aim-result-tier-title');
-      const quoteEl = document.getElementById('aim-result-tier-quote');
-      const scoreEl = document.getElementById('aim-result-score');
-      const accEl = document.getElementById('aim-result-acc');
-      const reactionEl = document.getElementById('aim-result-reaction');
-
-      if (iconEl) iconEl.innerText = icon;
-      if (newRecordBadge) {
-        if (isNewRecord && challengeScore > 0) newRecordBadge.classList.remove('hidden');
-        else newRecordBadge.classList.add('hidden');
-      }
-      if (titleEl) titleEl.innerText = tier;
-      if (quoteEl) quoteEl.innerText = quote;
-      if (scoreEl) scoreEl.innerText = `${challengeScore}`;
-      if (accEl) accEl.innerText = `${acc}%`;
-      if (reactionEl) reactionEl.innerText = `${avgRt}ms`;
-
-      if (modal) modal.classList.remove('hidden');
-    }
-
-    function closeAimResultModal() {
+    function setQuickDpi(dpi) {
       playSound('pop');
-      const modal = document.getElementById('modal-aim-result');
-      if (modal) modal.classList.add('hidden');
+      currentSensDpi = dpi;
+      const input = document.getElementById('sens-input-dpi');
+      if (input) input.value = dpi;
+      updateQuickDpiButtons();
+      updateSensCalculator();
+    }
 
-      const startCard = document.getElementById('challenge-start-card');
-      if (startCard && aimMode === 'challenge') {
-        startCard.classList.remove('hidden');
+    function updateQuickDpiButtons() {
+      document.querySelectorAll('.quick-dpi-btn').forEach(btn => {
+        const val = parseInt(btn.innerText, 10);
+        if (val === currentSensDpi) {
+          btn.className = 'quick-dpi-btn px-2 py-0.5 rounded bg-indigo-600 text-white font-bold transition cursor-pointer';
+        } else {
+          btn.className = 'quick-dpi-btn px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition cursor-pointer';
+        }
+      });
+    }
+
+    function onBaseGameChange(gameKey) {
+      playSound('tab');
+      currentBaseGame = gameKey;
+      const config = SENS_GAMES[gameKey] || SENS_GAMES.valorant;
+      currentBaseSens = config.defaultSens;
+
+      const sensInput = document.getElementById('sens-input-value');
+      if (sensInput) sensInput.value = currentBaseSens;
+
+      const slider = document.getElementById('sens-slider');
+      if (slider) {
+        slider.max = config.sliderMax;
+        slider.step = config.sliderStep;
+        slider.value = currentBaseSens;
+      }
+
+      updateSensCalculator();
+    }
+
+    function onSensInputChange(val) {
+      const num = parseFloat(val);
+      if (!isNaN(num) && num > 0) {
+        currentBaseSens = num;
+        const slider = document.getElementById('sens-slider');
+        if (slider) slider.value = num;
+        updateSensCalculator();
       }
     }
 
-    function copyAimResult() {
+    function onSensSliderChange(val) {
+      const num = parseFloat(val);
+      if (!isNaN(num)) {
+        currentBaseSens = num;
+        const sensInput = document.getElementById('sens-input-value');
+        if (sensInput) sensInput.value = num;
+        updateSensCalculator();
+      }
+    }
+
+    function loadDaLinesSensPreset(gameKey) {
+      playSound('sparkle');
+      currentSensDpi = 800;
+      const dpiInput = document.getElementById('sens-input-dpi');
+      if (dpiInput) dpiInput.value = 800;
+      updateQuickDpiButtons();
+
+      currentBaseGame = gameKey;
+      const gameSelect = document.getElementById('sens-select-game');
+      if (gameSelect) gameSelect.value = gameKey;
+
+      const config = SENS_GAMES[gameKey];
+      currentBaseSens = (gameKey === 'valorant') ? 0.3 : 1.8;
+
+      const sensInput = document.getElementById('sens-input-value');
+      if (sensInput) sensInput.value = currentBaseSens;
+
+      const slider = document.getElementById('sens-slider');
+      if (slider) {
+        slider.max = config.sliderMax;
+        slider.step = config.sliderStep;
+        slider.value = currentBaseSens;
+      }
+
+      updateSensCalculator();
+      showToast(`⚡ โหลดค่า DaLines ${config.name} (800 DPI • ${currentBaseSens}) เรียบร้อย!`);
+    }
+
+    function copySingleGameSens(gameKey, rawSens, e) {
+      if (e) e.stopPropagation();
       playSound('pop');
-      const acc = Math.round((challengeScore / Math.max(1, challengeTotalShots)) * 100);
-      const avgRt = challengeReactionTimes.length > 0
-        ? Math.round(challengeReactionTimes.reduce((a, b) => a + b, 0) / challengeReactionTimes.length)
-        : 0;
+      const game = SENS_GAMES[gameKey];
+      if (!game) return;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(rawSens);
+      }
+      showToast(`คัดลอก ${game.name} Sens: ${rawSens} เรียบร้อย! 🎯`);
+    }
 
-      let tier = (challengeScore <= 5) ? '🤡 โยนสมชื่อ DaLines' : (challengeScore <= 13) ? '🔫 คนยิงไม่โดน โทษเมาส์' : (challengeScore <= 21) ? '⚡ คมจัดปลัดบอก (Ascendant)' : '👑 Radiant ในตำนาน';
+    function copyAllSensSummary() {
+      playSound('pop');
+      const baseConfig = SENS_GAMES[currentBaseGame];
+      const cm360 = calculatePhysicalCm360(currentSensDpi, currentBaseSens, baseConfig.yaw);
 
-      const shareText = `🎯 DaLines Aim Challenge: ฉันยิงได้ ${challengeScore} แต้ม! (ความแม่นยำ ${acc}%, เฉลี่ย ${avgRt}ms)\n🏆 อันดับ: ${tier}\n🎮 มาประลองความคมกันได้ที่: https://dalines-site.dalines.workers.dev/`;
+      let text = `🎯 DaLines Sens Calculator Result\n`;
+      text += `DPI: ${currentSensDpi} | Distance: ${cm360.toFixed(1)} cm/360°\n`;
+      text += `Base: ${baseConfig.name} (${baseConfig.formatSens(currentBaseSens)})\n\n`;
+
+      for (const game of Object.values(SENS_GAMES)) {
+        const targetSens = (360 * 2.54) / (cm360 * currentSensDpi * game.yaw);
+        text += `• ${game.name}: ${game.formatSens(targetSens)} (eDPI ${game.calcEdpi(currentSensDpi, targetSens)})\n`;
+      }
+      text += `\nคำนวณสดจาก: ${window.location.origin}`;
 
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(shareText);
+        navigator.clipboard.writeText(text);
       }
-      showToast('คัดลอกผลคะแนนไปอวดแล้ว! 🏆');
-    }
-
-    function fireCrosshair(e) {
-      if (!isSoundEnabled) {
-        isSoundEnabled = true;
-        localStorage.setItem('dalines_sound', true);
-        updateSoundIcon();
-      }
-
-      const stage = document.getElementById('crosshair-stage');
-      const reticle = document.getElementById('crosshair-reticle');
-      if (!stage) return;
-
-      const rect = stage.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const clickY = e.clientY - rect.top;
-
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const dist = Math.hypot(clickX - centerX, clickY - centerY);
-
-      // Recoil bloom animation on reticle
-      if (reticle) {
-        reticle.style.transform = 'scale(1.4)';
-        setTimeout(() => {
-          if (reticle) reticle.style.transform = 'scale(1)';
-        }, 90);
-      }
-
-      // Spawn bullet spark & decal
-      createBulletImpact(stage, clickX, clickY);
-
-      crosshairHits++;
-      const hitsEl = document.getElementById('ch-hits');
-      if (hitsEl) hitsEl.innerText = crosshairHits;
-
-      let dmgText = '';
-      let dmgColor = '';
-      if (dist <= 26) {
-        crosshairHeadshots++;
-        const hsEl = document.getElementById('ch-headshots');
-        if (hsEl) hsEl.innerText = crosshairHeadshots;
-        playSound('headshot');
-        dmgText = 'HEADSHOT 160 🎯';
-        dmgColor = '#fbbf24';
-      } else if (dist <= 75) {
-        playSound('gunshot');
-        dmgText = 'BODY 40 💥';
-        dmgColor = '#22d3ee';
-      } else {
-        playSound('gunshot');
-        dmgText = 'MISS 💨';
-        dmgColor = '#94a3b8';
-      }
-
-      // Floating damage indicator
-      createFloatingHitText(stage, clickX, clickY, dmgText, dmgColor);
-    }
-
-    function createBulletImpact(stage, x, y) {
-      const spark = document.createElement('div');
-      spark.className = 'absolute rounded-full pointer-events-none z-10 transition-opacity duration-200';
-      spark.style.left = `${x - 4}px`;
-      spark.style.top = `${y - 4}px`;
-      spark.style.width = '8px';
-      spark.style.height = '8px';
-      spark.style.backgroundColor = '#fbbf24';
-      spark.style.boxShadow = '0 0 12px 4px #fbbf24, 0 0 4px #ffffff';
-      stage.appendChild(spark);
-
-      setTimeout(() => {
-        spark.style.opacity = '0';
-        setTimeout(() => spark.remove(), 150);
-      }, 50);
-
-      const hole = document.createElement('div');
-      hole.className = 'absolute rounded-full bg-slate-900 border border-black/80 pointer-events-none transition-opacity duration-700 z-0';
-      hole.style.left = `${x - 3}px`;
-      hole.style.top = `${y - 3}px`;
-      hole.style.width = '6px';
-      hole.style.height = '6px';
-      stage.appendChild(hole);
-
-      setTimeout(() => {
-        hole.style.opacity = '0';
-        setTimeout(() => hole.remove(), 700);
-      }, 2000);
+      showToast('คัดลอกตารางสรุปทุกเกมเรียบร้อย! 📋');
     }
 
     // -----------------------------------------------------------------
@@ -3603,9 +4101,9 @@
       {
         name: "!edpi",
         cat: "aim",
-        desc: "เครื่องคำนวณ eDPI Valorant",
-        response: "https://gamingsmart.com/valorant-edpi-calculator/",
-        isLink: true,
+        desc: "เครื่องคำนวณ E-DPI & แปลงค่าความไวเมาส์ 8 เกม",
+        response: "คำนวณ E-DPI และแปลงค่า Sens สดได้ในหน้าเว็บ DaLines Hub ส่วน E-DPI Calculator ครับ! 🎯",
+        isLink: false,
         tags: ["edpi", "คำนวณ", "sens"]
       },
       {
@@ -3632,9 +4130,9 @@
       {
         name: "!senscon",
         cat: "aim",
-        desc: "เว็บแปลงค่าความไวเมาส์ข้ามเกม",
-        response: "https://gamingsmart.com/mouse-sensitivity-converter/",
-        isLink: true,
+        desc: "แปลงค่าความไวเมาส์ข้ามเกม (Apex, Valorant, Fortnite, Delta Force)",
+        response: "ใช้งานระบบ Sens Converter ข้ามเกมแม่นยำ 100% (cm/360°) ได้ในหน้าเว็บ DaLines Hub เลยครับ!",
+        isLink: false,
         tags: ["converter", "sens", "แปลง"]
       },
 
@@ -4242,6 +4740,639 @@
       setTimeout(() => {
         el.remove();
       }, 1000);
+    }
+
+    // =========================================================================
+    // 🛸 CYBERPUNK FUTURISTIC ENHANCEMENTS ENGINE (CANVAS, RADAR, SOUNDBOARD, RANDOMIZER)
+    // =========================================================================
+
+    // --- 1. Interactive Cyber Constellation Canvas Engine ---
+    let cyberParticles = [];
+    let cyberMouse = { x: -9999, y: -9999, radius: 120 };
+
+    function initCyberCanvas() {
+      const canvas = document.getElementById('cyber-bg-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      const isMobile = window.innerWidth < 768;
+      const particleCount = isMobile ? 24 : 52;
+      cyberParticles = [];
+
+      for (let i = 0; i < particleCount; i++) {
+        cyberParticles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.65,
+          vy: (Math.random() - 0.5) * 0.65,
+          size: Math.random() * 1.8 + 1,
+          baseAlpha: Math.random() * 0.45 + 0.35
+        });
+      }
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        cyberMouse.x = e.clientX;
+        cyberMouse.y = e.clientY;
+      });
+
+      window.addEventListener('mouseleave', () => {
+        cyberMouse.x = -9999;
+        cyberMouse.y = -9999;
+      });
+
+      function getPrimaryRGB() {
+        const theme = currentTheme || 'emerald';
+        if (theme === 'cyan') return '6, 182, 212';
+        if (theme === 'purple') return '168, 85, 247';
+        return '16, 185, 129';
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, width, height);
+        const rgb = getPrimaryRGB();
+
+        // Update & draw nodes
+        for (let i = 0; i < cyberParticles.length; i++) {
+          const p = cyberParticles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.x < 0) p.x = width;
+          if (p.x > width) p.x = 0;
+          if (p.y < 0) p.y = height;
+          if (p.y > height) p.y = 0;
+
+          // Mouse gentle repel
+          const dx = cyberMouse.x - p.x;
+          const dy = cyberMouse.y - p.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist < cyberMouse.radius) {
+            const angle = Math.atan2(dy, dx);
+            const force = (cyberMouse.radius - dist) / cyberMouse.radius;
+            p.x -= Math.cos(angle) * force * 1.8;
+            p.y -= Math.sin(angle) * force * 1.8;
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${rgb}, ${p.baseAlpha})`;
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = `rgba(${rgb}, 0.8)`;
+          ctx.fill();
+
+          // Connect nearby nodes
+          for (let j = i + 1; j < cyberParticles.length; j++) {
+            const p2 = cyberParticles[j];
+            const distNodes = Math.hypot(p.x - p2.x, p.y - p2.y);
+            const maxDist = isMobile ? 85 : 115;
+            if (distNodes < maxDist) {
+              const alpha = (1 - distNodes / maxDist) * 0.28;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.strokeStyle = `rgba(${rgb}, ${alpha})`;
+              ctx.lineWidth = 0.8;
+              ctx.stroke();
+            }
+          }
+        }
+
+        requestAnimationFrame(draw);
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    // =========================================================================
+    // 📅 1. WEEKLY STREAM SCHEDULE & RADAR COUNTDOWN ENGINE
+    // =========================================================================
+
+    const WEEKLY_SCHEDULE_DATA = [
+      { day: 0, name: "วันอาทิตย์ (Sunday)", status: "OFF", badge: "💤 วันพักผ่อน", game: "😴 พักผ่อนชาร์จพลัง • เจอกันใหม่วันจันทร์", time: "OFF DAY", icon: "fa-bed", isLive: false },
+      { day: 1, name: "วันจันทร์ (Monday)", status: "LIVE", badge: "🟢 LIVE 19:30", game: "🎯 Valorant ไต่แรงค์กับตวง • สายยิงเน้นโยน", time: "19:30 - 23:30", icon: "fa-crosshairs", isLive: true },
+      { day: 2, name: "วันอังคาร (Tuesday)", status: "LIVE", badge: "🟢 LIVE 19:30", game: "🏹 Valorant ลุยเดี่ยว • ฝึกเป้าเล็งวันแท็ป", time: "19:30 - 23:30", icon: "fa-bullseye", isLive: true },
+      { day: 3, name: "วันพุธ (Wednesday)", status: "LIVE", badge: "🟢 LIVE 19:30", game: "🛡️ Apex Legends / Party เล่นกับคนดู", time: "19:30 - 23:30", icon: "fa-shield-halved", isLive: true },
+      { day: 4, name: "วันพฤหัสบดี (Thursday)", status: "LIVE", badge: "🟢 LIVE 19:30", game: "🎯 Valorant Custom Game กับคนดูในดิสคอร์ด", time: "19:30 - 23:30", icon: "fa-users", isLive: true },
+      { day: 5, name: "วันศุกร์ (Friday)", status: "LIVE", badge: "🔥 FRIDAY NIGHT", game: "🍻 Friday Night Live สตรีมยาวๆ ฉลองสุดสัปดาห์", time: "20:00 - 00:30", icon: "fa-fire", isLive: true },
+      { day: 6, name: "วันเสาร์ (Saturday)", status: "LIVE", badge: "⭐ WEEKEND SPECIAL", game: "🎮 วาไรตี้ & ชาเลนจ์สุดปั่นตามใจคนดู", time: "19:00 - 23:30", icon: "fa-trophy", isLive: true }
+    ];
+
+    let selectedScheduleDayIndex = 1;
+
+    function selectScheduleDay(dayIndex) {
+      selectedScheduleDayIndex = dayIndex;
+      playSound('tab');
+
+      // Update active button state
+      document.querySelectorAll('.schedule-day-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`sched-day-${dayIndex}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const data = WEEKLY_SCHEDULE_DATA.find(d => d.day === dayIndex);
+      if (!data) return;
+
+      const cardDay = document.getElementById('sched-detail-day');
+      const cardBadge = document.getElementById('sched-detail-badge');
+      const cardGame = document.getElementById('sched-detail-game');
+      const cardTime = document.getElementById('sched-detail-time');
+      const cardIcon = document.getElementById('sched-detail-icon');
+
+      if (cardDay) cardDay.textContent = data.name;
+      if (cardGame) cardGame.textContent = data.game;
+      if (cardTime) cardTime.textContent = data.time;
+
+      if (cardBadge) {
+        cardBadge.textContent = data.badge;
+        cardBadge.className = data.isLive 
+          ? "px-2 py-0.2 rounded text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+          : "px-2 py-0.2 rounded text-[9px] font-mono font-bold bg-slate-800 text-slate-400 border border-slate-700";
+      }
+
+      if (cardIcon) {
+        cardIcon.innerHTML = `<i class="fa-solid ${data.icon}"></i>`;
+        cardIcon.className = data.isLive
+          ? "w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-sm shrink-0"
+          : "w-8 h-8 rounded-lg bg-slate-800 text-slate-400 border border-slate-700 flex items-center justify-center text-sm shrink-0";
+      }
+    }
+
+    function initStreamCountdown() {
+      const today = new Date().getDay();
+      
+      // Mark today indicator on schedule button
+      const todayBtn = document.getElementById(`sched-day-${today}`);
+      if (todayBtn) todayBtn.classList.add('today-indicator');
+
+      // Default select today
+      selectScheduleDay(today);
+
+      function updateTimer() {
+        const now = new Date();
+        const curDay = now.getDay();
+        const sched = WEEKLY_SCHEDULE_DATA.find(d => d.day === curDay);
+
+        let target = new Date();
+        target.setHours(19, 30, 0, 0);
+
+        // If today passed or today is off day, find next live day
+        if (now >= target || (sched && !sched.isLive)) {
+          let nextDays = 1;
+          while (nextDays <= 7) {
+            const nextDate = new Date();
+            nextDate.setDate(now.getDate() + nextDays);
+            const nextDayIndex = nextDate.getDay();
+            const nextSched = WEEKLY_SCHEDULE_DATA.find(d => d.day === nextDayIndex);
+            if (nextSched && nextSched.isLive) {
+              target = new Date();
+              target.setDate(now.getDate() + nextDays);
+              target.setHours(19, 30, 0, 0);
+              break;
+            }
+            nextDays++;
+          }
+        }
+
+        const diff = Math.max(0, target - now);
+        const h = Math.floor(diff / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+        const elH = document.getElementById('countdown-hours');
+        const elM = document.getElementById('countdown-minutes');
+        const elS = document.getElementById('countdown-seconds');
+
+        if (elH) elH.textContent = String(h).padStart(2, '0');
+        if (elM) elM.textContent = String(m).padStart(2, '0');
+        if (elS) elS.textContent = String(s).padStart(2, '0');
+      }
+
+      updateTimer();
+      setInterval(updateTimer, 1000);
+    }
+
+    // =========================================================================
+    // 🎛️ 2. DALINES CYBER MEME SOUNDBOARD ENGINE
+    // =========================================================================
+
+    let visualizerTimer = null;
+
+    function playCyberSound(soundId) {
+      if (!isSoundEnabled) {
+        showToast('เปิดเสียงเอฟเฟกต์ที่ปุ่มลำโพงมุมขวาบนก่อนนะครับ 🔊');
+        return;
+      }
+      initAudio();
+      const now = audioCtx.currentTime;
+
+      triggerSpectrumBounce();
+
+      if (soundId === 'aim_miss') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(450, now);
+        osc.frequency.exponentialRampToValueAtTime(80, now + 0.35);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.35);
+        showToast('🎯 สายยิงเน้นโยน! วืดเป็นงานประจำ');
+      } else if (soundId === 'laser_sharp') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(2400, now);
+        osc.frequency.exponentialRampToValueAtTime(300, now + 0.18);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.18);
+        showToast('⚡ One Tap ลั่นหัว! คมจัดปลัดบอก');
+      } else if (soundId === 'miracle_clutch') {
+        [523.25, 659.25, 783.99, 1046.50].forEach((f, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(f, now + idx * 0.06);
+          gain.gain.setValueAtTime(0.08, now + idx * 0.06);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.4);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + idx * 0.06);
+          osc.stop(now + idx * 0.06 + 0.4);
+        });
+        showToast('🔮 คลัตช์ 1v5! ปาฏิหาริย์เกิดขึ้นจริง');
+      } else if (soundId === 'karma_out') {
+        [320, 280, 240, 180].forEach((f, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(f, now + idx * 0.09);
+          gain.gain.setValueAtTime(0.1, now + idx * 0.09);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.08);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + idx * 0.09);
+          osc.stop(now + idx * 0.09 + 0.08);
+        });
+        showToast('💀 แต้มบุญหมด! แตกหนึ่งสวยพี่สวย');
+      } else if (soundId === 'donate_cash') {
+        [987.77, 1318.51].forEach((f, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f, now + idx * 0.07);
+          gain.gain.setValueAtTime(0.12, now + idx * 0.07);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.07 + 0.35);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + idx * 0.07);
+          osc.stop(now + idx * 0.07 + 0.35);
+        });
+        showToast('💰 โดเนทเข้าแล้วจ้า! ขอบพระคุณมากครับ');
+      } else if (soundId === 'thank_you') {
+        [440, 554.37, 659.25, 880].forEach((f) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f, now);
+          gain.gain.setValueAtTime(0.05, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.5);
+        });
+        showToast('🙏 ขอบคุณสำหรับการสนับสนุนและรับชมครับ!');
+      }
+    }
+
+    function triggerSpectrumBounce() {
+      const bars = document.querySelectorAll('.spectrum-bar');
+      if (!bars.length) return;
+
+      if (visualizerTimer) clearInterval(visualizerTimer);
+      let count = 0;
+      visualizerTimer = setInterval(() => {
+        bars.forEach(bar => {
+          const randH = Math.floor(Math.random() * 18) + 4;
+          bar.style.height = `${randH}px`;
+        });
+        count++;
+        if (count > 8) {
+          clearInterval(visualizerTimer);
+          bars.forEach((bar, idx) => {
+            bar.style.height = `${(idx % 3 + 1) * 3}px`;
+          });
+        }
+      }, 70);
+    }
+
+    // =========================================================================
+    // 🎯 3. INTERACTIVE CANVAS ROULETTE CHALLENGE WHEEL ENGINE
+    // =========================================================================
+
+    const WHEEL_CONFIG = {
+      weapons: {
+        title: "โหมดสุ่มปืน",
+        items: [
+          { text: "Odin", color: "#ef4444", desc: "สายกดยาวไม่ปล่อย" },
+          { text: "Judge", color: "#06b6d4", desc: "ลูกซองประชิดไซท์" },
+          { text: "Sheriff", color: "#f59e0b", desc: "วันแท็ปหัวคมๆ" },
+          { text: "Vandal", color: "#10b981", desc: "ปืนหลักกู้ชาติ" },
+          { text: "Operator", color: "#a855f7", desc: "สไนเปอร์นัดเดียวจอด" },
+          { text: "Bucky", color: "#ec4899", desc: "ลูกซองสไนเปอร์" },
+          { text: "Classic", color: "#3b82f6", desc: "ปืนพกฟรีทั้งเกม" },
+          { text: "Phantom", color: "#14b8a6", desc: "ลั่นเงียบทะลุสโมก" },
+          { text: "Marshal", color: "#eab308", desc: "สไนเปอร์พริ้วสะบัด" },
+          { text: "Guardian", color: "#6366f1", desc: "เคาะแม่นทีละนัด" }
+        ]
+      },
+      agents: {
+        title: "โหมดสุ่มเอเจนท์",
+        items: [
+          { text: "Jett", color: "#06b6d4", desc: "แดชพุ่งชนทุกไฟต์" },
+          { text: "Reyna", color: "#a855f7", desc: "ตึงจัดไม่พึ่งทีม" },
+          { text: "Omen", color: "#6366f1", desc: "วาร์ปหลังศัตรู" },
+          { text: "Sova", color: "#3b82f6", desc: "ยิงศรช็อตสแกนแมพ" },
+          { text: "Cypher", color: "#f59e0b", desc: "กล้องส่องทุกมุม" },
+          { text: "Iso", color: "#10b981", desc: "กางโล่ 1v1 ดวลเดี่ยว" },
+          { text: "Clove", color: "#ec4899", desc: "ตายแล้วฟื้นมาแก้แค้น" },
+          { text: "Phoenix", color: "#ef4444", desc: "แฟลชตาแตกไฟลุก" },
+          { text: "Viper", color: "#14b8a6", desc: "กางม่านพิษคุมไซท์" },
+          { text: "Gekko", color: "#eab308", desc: "มอนสเตอร์แก๊งป่วนเมือง" },
+          { text: "Yoru", color: "#8b5cf6", desc: "ตัวปลอมสลับมิติ" }
+        ]
+      },
+      trolls: {
+        title: "โหมดชาเลนจ์สุดปั่น",
+        items: [
+          { text: "ห้ามกดปุ่มย่อ", color: "#ef4444", desc: "No Crouch ตลอดทั้งเกม" },
+          { text: "วิ่งยิงอย่างเดียว", color: "#06b6d4", desc: "Run & Gun ห้ามหยุดเดิน" },
+          { text: "กระโดดยิงเท่านั้น", color: "#f59e0b", desc: "Jump Shot Only" },
+          { text: "ยิงจนหมดแม็ก", color: "#10b981", desc: "ห้ามรีโหลดจนกว่ากระสุนหมด" },
+          { text: "กลั้นหายใจเวลายิง", color: "#a855f7", desc: "ท้าทายปอดคนเล่น" },
+          { text: "360 Spin ก่อนยิง", color: "#ec4899", desc: "หมุนรอบตัวก่อนลั่นไก" },
+          { text: "ปืนพกทั้งเกม", color: "#3b82f6", desc: "Pistol Only Challenge" },
+          { text: "ห้ามกดใช้อัลติ", color: "#14b8a6", desc: "No Ultimate Throughout Game" }
+        ]
+      }
+    };
+
+    let currentWheelMode = 'weapons';
+    let currentWheelAngle = 0;
+    let isWheelSpinning = false;
+    let lastTickIndex = -1;
+
+    function initRouletteWheel() {
+      drawRouletteWheel();
+    }
+
+    function setWheelMode(mode, btn) {
+      if (isWheelSpinning) return;
+      currentWheelMode = mode;
+      playSound('tab');
+
+      document.querySelectorAll('.wheel-mode-btn').forEach(b => {
+        b.className = 'wheel-mode-btn px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition active:scale-95 cursor-pointer';
+      });
+      if (btn) {
+        btn.className = 'wheel-mode-btn px-2.5 py-1 rounded-lg bg-red-600 text-white font-bold transition active:scale-95 cursor-pointer';
+      }
+
+      drawRouletteWheel();
+
+      const items = WHEEL_CONFIG[mode].items;
+      const res = items[0];
+      const resText = document.getElementById('wheel-result-text');
+      if (resText) resText.textContent = `${res.text} (${res.desc})`;
+    }
+
+    function drawRouletteWheel() {
+      const canvas = document.getElementById('roulette-wheel-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const size = canvas.width;
+      const center = size / 2;
+      const radius = center - 8;
+
+      ctx.clearRect(0, 0, size, size);
+
+      const items = WHEEL_CONFIG[currentWheelMode].items;
+      const numSegments = items.length;
+      const arc = (Math.PI * 2) / numSegments;
+
+      ctx.save();
+      ctx.translate(center, center);
+      ctx.rotate(currentWheelAngle);
+
+      // Draw Segments
+      for (let i = 0; i < numSegments; i++) {
+        const angle = i * arc;
+        const item = items[i];
+
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, radius, angle, angle + arc);
+        ctx.closePath();
+
+        ctx.fillStyle = item.color;
+        ctx.fill();
+
+        // Wedge separator lines
+        ctx.strokeStyle = '#06080c';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        // Text label
+        ctx.save();
+        ctx.rotate(angle + arc / 2);
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 12px Kanit, sans-serif';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+        ctx.shadowBlur = 4;
+        ctx.fillText(item.text, radius - 20, 4);
+        ctx.restore();
+      }
+
+      // Outer rim
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, Math.PI * 2);
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = '#334155';
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function spinRouletteWheel() {
+      if (isWheelSpinning) return;
+      isWheelSpinning = true;
+
+      const btnSpin = document.getElementById('btn-spin-wheel');
+      const btnCenter = document.getElementById('btn-wheel-center-spin');
+      if (btnSpin) btnSpin.classList.add('opacity-60', 'pointer-events-none');
+      if (btnCenter) btnCenter.classList.add('scale-95');
+
+      const items = WHEEL_CONFIG[currentWheelMode].items;
+      const numSegments = items.length;
+      const arc = (Math.PI * 2) / numSegments;
+
+      // Random target: 5 to 8 full spins + random wedge
+      const extraSpins = 5 + Math.floor(Math.random() * 4);
+      const randomStopIndex = Math.floor(Math.random() * numSegments);
+      // Needle is at top: 3*PI/2 (270 deg)
+      // When segment i is at needle, (angle + i * arc + arc/2) % 2PI = 3*PI/2
+      const targetAngleAtPointer = (3 * Math.PI / 2) - (randomStopIndex * arc + arc / 2);
+      const totalRotation = (extraSpins * Math.PI * 2) + ((targetAngleAtPointer - (currentWheelAngle % (Math.PI * 2)) + Math.PI * 4) % (Math.PI * 2));
+
+      const startAngle = currentWheelAngle;
+      const duration = 3800; // ms
+      const startTime = performance.now();
+
+      function playTickSound() {
+        if (!isSoundEnabled) return;
+        try {
+          initAudio();
+          const now = audioCtx.currentTime;
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(650, now);
+          osc.frequency.exponentialRampToValueAtTime(180, now + 0.04);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.04);
+
+          // Pointer visual kick
+          const pointer = document.getElementById('wheel-pointer-needle');
+          if (pointer) {
+            pointer.classList.add('kick');
+            setTimeout(() => pointer.classList.remove('kick'), 50);
+          }
+        } catch (e) {}
+      }
+
+      function animateSpin(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(1, elapsed / duration);
+
+        // Cubic ease out
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        currentWheelAngle = startAngle + totalRotation * easeOut;
+
+        drawRouletteWheel();
+
+        // Calculate tick when segment crosses needle
+        const normalizedAngle = (currentWheelAngle % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+        const currentSegment = Math.floor(((3 * Math.PI / 2 - normalizedAngle + Math.PI * 4) % (Math.PI * 2)) / arc);
+        if (currentSegment !== lastTickIndex) {
+          lastTickIndex = currentSegment;
+          playTickSound();
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(animateSpin);
+        } else {
+          // Finished Spin
+          isWheelSpinning = false;
+          if (btnSpin) btnSpin.classList.remove('opacity-60', 'pointer-events-none');
+          if (btnCenter) btnCenter.classList.remove('scale-95');
+
+          const winner = items[randomStopIndex];
+          const resultCard = document.getElementById('wheel-result-card');
+          const resultText = document.getElementById('wheel-result-text');
+
+          if (resultText) resultText.textContent = `${winner.text} (${winner.desc})`;
+          if (resultCard) {
+            resultCard.style.borderColor = winner.color;
+            resultCard.style.boxShadow = `0 0 25px ${winner.color}80`;
+            setTimeout(() => {
+              resultCard.style.borderColor = '';
+              resultCard.style.boxShadow = '';
+            }, 3000);
+          }
+
+          // Fanfare sound
+          playCyberSound('miracle_clutch');
+          spawnWheelConfetti();
+          showToast(`🎉 ผลสุ่ม: ${winner.text} - ${winner.desc}!`);
+        }
+      }
+
+      requestAnimationFrame(animateSpin);
+    }
+
+    function rollCyberChallengeCombo() {
+      playSound('pop');
+      const wList = WHEEL_CONFIG.weapons.items;
+      const aList = WHEEL_CONFIG.agents.items;
+      const tList = WHEEL_CONFIG.trolls.items;
+
+      const w = wList[Math.floor(Math.random() * wList.length)];
+      const a = aList[Math.floor(Math.random() * aList.length)];
+      const t = tList[Math.floor(Math.random() * tList.length)];
+
+      const resultText = document.getElementById('wheel-result-text');
+      if (resultText) resultText.textContent = `คอมโบ: ${a.text} + ปืน ${w.text} + ${t.text}`;
+
+      playCyberSound('laser_sharp');
+      spawnWheelConfetti();
+      showToast(`⚡ สุ่มคอมโบ: ${a.text} + ${w.text} + ${t.text}`);
+    }
+
+    function copyWheelResultToClipboard() {
+      const resultText = document.getElementById('wheel-result-text');
+      const text = resultText ? resultText.textContent : "ผลสุ่ม DaLines Wheel";
+      navigator.clipboard.writeText(text);
+      playSound('pop');
+      showToast('คัดลอกผลสุ่มแล้ว! นำไปวางในแชทสตรีมได้เลย ✨');
+    }
+
+    function spawnWheelConfetti() {
+      const colors = ['#ef4444', '#06b6d4', '#f59e0b', '#10b981', '#a855f7', '#ec4899'];
+      for (let i = 0; i < 24; i++) {
+        const el = document.createElement('div');
+        el.className = 'fixed pointer-events-none z-50 rounded-full select-none';
+        const size = Math.random() * 8 + 4;
+        el.style.width = `${size}px`;
+        el.style.height = `${size}px`;
+        el.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        el.style.left = `${window.innerWidth / 2 + (Math.random() - 0.5) * 80}px`;
+        el.style.top = `${window.innerHeight / 2 + (Math.random() - 0.5) * 80}px`;
+        el.style.opacity = '1';
+        el.style.transition = 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s ease-out';
+        document.body.appendChild(el);
+
+        const tx = (Math.random() - 0.5) * 280;
+        const ty = (Math.random() - 0.5) * 280 - 80;
+
+        requestAnimationFrame(() => {
+          el.style.transform = `translate(${tx}px, ${ty}px) scale(0)`;
+          el.style.opacity = '0';
+        });
+
+        setTimeout(() => el.remove(), 850);
+      }
     }
   </script>
 </body>
