@@ -579,6 +579,80 @@
 
     <!-- TAB 1: STREAM & SOCIAL LINKS -->
     <main id="tab-links" class="tab-content active space-y-3">
+      <!-- 🌟 STREAM SCHEDULE & NOW PLAYING BANNER (OFFLINE / LIVE INFO) -->
+      <div class="tilt-card p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-emerald-500/15 via-slate-900/90 to-purple-950/20 border border-emerald-500/40 backdrop-blur-md shadow-xl space-y-3">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-sm shadow-md">
+              <i class="fa-solid fa-calendar-days"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs sm:text-sm font-bold text-white tracking-wide" data-i18n="sched_banner_title">ตารางเวลาสตรีม &amp; เกมที่เล่นช่วงนี้</span>
+                <span class="px-2 py-0.2 rounded-full text-[9px] font-mono font-bold bg-slate-800 text-emerald-300 border border-emerald-500/30">
+                  SCHEDULE &amp; ROTATION
+                </span>
+              </div>
+              <p class="text-[10px] sm:text-[11px] text-slate-400" data-i18n="sched_banner_sub">
+                แวะมาดูเวลาไลฟ์สดและเกมที่ตวงเล่นประจำช่วงนี้ได้เลย!
+              </p>
+            </div>
+          </div>
+          <a href="https://discord.gg/3m9x688YCG" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg bg-[#5865F2]/20 hover:bg-[#5865F2]/40 text-[#c7d2fe] hover:text-white border border-[#5865F2]/40 text-[10px] font-bold font-mono transition flex items-center gap-1 active:scale-95 shadow">
+            <i class="fa-brands fa-discord"></i>
+            <span data-i18n="discord_notify_btn">แจ้งเตือนใน Discord</span>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs">
+          <!-- 1. Stream Schedule -->
+          <div class="p-3 rounded-xl bg-black/50 border border-slate-800 flex flex-col justify-between space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-slate-300 font-semibold flex items-center gap-1.5 text-xs">
+                <i class="fa-regular fa-clock text-emerald-400"></i>
+                <span data-i18n="sched_time_title">ตารางไลฟ์ (Stream Schedule)</span>
+              </span>
+              <span class="text-[9px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">20:00+ BKK</span>
+            </div>
+            <div class="space-y-1.5 text-[11px]">
+              <div class="flex items-start gap-2">
+                <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono text-[9px] font-bold shrink-0 mt-0.5">จ. - ศ.</span>
+                <span class="text-slate-200" data-i18n="sched_weekday_desc">ช่วงค่ำ <strong>20:00 น. เป็นต้นไป</strong> (ยาวถึงเที่ยงคืน)</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-mono text-[9px] font-bold shrink-0 mt-0.5">ส. - อา.</span>
+                <span class="text-slate-200" data-i18n="sched_weekend_desc">ตามใจสตรีมเมอร์ (ติดตามแจ้งเตือนสดใน Discord)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Current Rotation (Now Playing) -->
+          <div class="p-3 rounded-xl bg-black/50 border border-slate-800 flex flex-col justify-between space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-slate-300 font-semibold flex items-center gap-1.5 text-xs">
+                <i class="fa-solid fa-gamepad text-cyan-400"></i>
+                <span data-i18n="now_playing_title">เกมที่เล่นประจำช่วงนี้ (Now Playing)</span>
+              </span>
+              <span class="text-[9px] font-mono text-cyan-400 bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/30">ROTATION</span>
+            </div>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="px-2 py-1 rounded-lg bg-red-500/15 border border-red-500/30 text-red-300 text-[10px] font-medium flex items-center gap-1">
+                <i class="fa-solid fa-crosshairs text-[9px]"></i> Valorant
+              </span>
+              <span class="px-2 py-1 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[10px] font-medium flex items-center gap-1">
+                <i class="fa-solid fa-shield-halved text-[9px]"></i> Apex Legends
+              </span>
+              <span class="px-2 py-1 rounded-lg bg-blue-500/15 border border-blue-500/30 text-blue-300 text-[10px] font-medium flex items-center gap-1">
+                <i class="fa-solid fa-bolt text-[9px]"></i> Fortnite
+              </span>
+              <span class="px-2 py-1 rounded-lg bg-teal-500/15 border border-teal-500/30 text-teal-300 text-[10px] font-medium flex items-center gap-1">
+                <i class="fa-solid fa-users text-[9px]"></i> เนื้อเรื่อง / Co-op กับคนดู
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- 1. Twitch Card (Main Platform) -->
       <a href="https://www.twitch.tv/dalines" target="_blank" rel="noopener noreferrer" class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-[#9146FF]/25 via-slate-900/80 to-slate-900/90 border border-[#9146FF]/50 backdrop-blur-md group shadow-xl">
         <div class="flex items-center justify-between gap-3">
@@ -652,6 +726,15 @@
         </div>
       </div>
 
+      <!-- 🛠️ CREATOR TOOLS / DEV PROJECTS SECTION -->
+      <div class="pt-2 pb-0.5 flex items-center justify-between">
+        <div class="flex items-center gap-2 text-xs font-bold text-slate-300">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span data-i18n="creator_tools_title">🛠️ Creator Tools &amp; Dev Projects (สำหรับสตรีมเมอร์)</span>
+        </div>
+        <span class="text-[9px] font-mono text-cyan-400/90 bg-cyan-950/50 px-2 py-0.5 rounded-full border border-cyan-500/30">STREAM APPS</span>
+      </div>
+
       <!-- 2.5 TTS Reader Project Card (by DaLines & PaulJaw) -->
       <div class="tilt-card p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-cyan-500/20 via-slate-900/80 to-blue-900/25 border border-cyan-500/40 backdrop-blur-md shadow-xl group hover:border-cyan-400/60 transition">
         <div class="flex items-center justify-between gap-3">
@@ -661,16 +744,13 @@
             </div>
             <div class="min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="font-semibold text-white text-sm sm:text-base truncate">Twitch & TikTok TTS Reader</span>
-                <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-cyan-500/25 text-cyan-300 border border-cyan-500/40 uppercase shrink-0">
-                  OBS DOCK
-                </span>
-                <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-purple-500/25 text-purple-300 border border-purple-500/40 uppercase shrink-0">
-                  DEV BY DALINES
+                <span class="font-semibold text-white text-sm sm:text-base truncate">Twitch &amp; TikTok TTS Reader</span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase shrink-0">
+                  🛠️ DEV PROJECT BY DALINES (สำหรับสตรีมเมอร์)
                 </span>
               </div>
               <p class="text-[11px] sm:text-xs text-slate-300 mt-0.5 truncate">
-                tts-dalines.pages.dev • ระบบอ่านแชทจอสดอัตโนมัติ & รีโมทคุมผ่านมือถือ
+                tts-dalines.pages.dev • ระบบอ่านแชทจอสดอัตโนมัติ &amp; รีโมทคุมผ่านมือถือ
               </p>
             </div>
           </div>
@@ -802,11 +882,11 @@
     <main id="tab-stream" class="tab-content space-y-3.5">
       <!-- Player Mode Switcher -->
       <div class="p-2 rounded-2xl bg-slate-900/80 border border-slate-800 backdrop-blur-md flex items-center justify-center gap-2">
-        <button id="btn-mode-live" onclick="setPlayerMode('live')" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-red-600 text-white shadow-lg cursor-pointer">
-          <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+        <button id="btn-mode-live" onclick="setPlayerMode('live')" class="flex-1 py-2 px-3 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 hover:bg-slate-800 cursor-pointer">
+          <span class="w-2 h-2 rounded-full bg-red-500"></span>
           <span data-i18n="btn_mode_live">🔴 ไลฟ์สด (Twitch Live)</span>
         </button>
-        <button id="btn-mode-trailer" onclick="setPlayerMode('trailer')" class="flex-1 py-2 px-3 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 hover:bg-slate-800 cursor-pointer">
+        <button id="btn-mode-trailer" onclick="setPlayerMode('trailer')" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-emerald-600 text-white shadow-lg cursor-pointer">
           <i class="fa-solid fa-film text-xs"></i>
           <span data-i18n="btn_mode_trailer">🎬 เทรลเลอร์ช่อง (Trailer)</span>
         </button>
@@ -1384,7 +1464,267 @@
         </div>
       </div>
 
-      <!-- 🎮 FPS E-DPI CALCULATOR & CROSS-GAME SENSITIVITY CONVERTER -->
+      <!-- 🎯 1. DALINES PRO SETTINGS & VALORANT SENSITIVITY SPEC TABLE -->
+      <div class="tilt-card p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-red-950/30 via-slate-900/90 to-cyan-950/30 border border-red-500/40 backdrop-blur-md shadow-xl mt-3 space-y-3.5">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-red-600 to-rose-500 text-white flex items-center justify-center text-lg shadow-[0_0_15px_rgba(239,68,68,0.4)] shrink-0">
+              <i class="fa-solid fa-sliders"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="text-xs sm:text-sm font-bold text-white tracking-wide" data-i18n="pro_settings_title">
+                  Pro Settings / Mouse &amp; Sensitivity (Valorant)
+                </h3>
+                <span class="px-2 py-0.5 rounded-full text-[9px] font-mono bg-red-500/20 text-red-300 border border-red-500/40 font-semibold">VALORANT PRO</span>
+              </div>
+              <p class="text-[10px] sm:text-[11px] text-slate-400" data-i18n="pro_settings_desc">
+                การตั้งค่าเมาส์ ความไว และความละเอียดจอจริงของ DaLines ในเกม Valorant
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button type="button" onclick="copyProSettingsSummary()" class="px-3 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 text-[10px] font-bold font-mono transition active:scale-95 flex items-center gap-1.5 cursor-pointer shadow">
+              <i class="fa-regular fa-copy"></i>
+              <span data-i18n="copy_pro_settings_btn">คัดลอกสเปก Sens</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Spec Table Grid (6 Cards) -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs font-mono">
+          <!-- 1. Mouse -->
+          <div class="p-2.5 rounded-xl bg-black/60 border border-slate-800 flex flex-col justify-between">
+            <span class="text-[10px] text-slate-400 font-sans flex items-center gap-1">
+              <i class="fa-solid fa-computer-mouse text-rose-400 text-[10px]"></i> MOUSE
+            </span>
+            <div class="mt-1 font-bold text-white text-xs sm:text-sm truncate" title="ATK Ghost Ultimate">ATK Ghost Ultimate</div>
+            <span class="text-[9px] text-slate-500 font-sans mt-0.5">Wireless Flagship</span>
+          </div>
+
+          <!-- 2. DPI -->
+          <div class="p-2.5 rounded-xl bg-black/60 border border-slate-800 flex flex-col justify-between">
+            <span class="text-[10px] text-slate-400 font-sans flex items-center gap-1">
+              <i class="fa-solid fa-gauge-high text-cyan-400 text-[10px]"></i> DPI
+            </span>
+            <div class="mt-1 font-bold text-cyan-300 text-base sm:text-lg">800</div>
+            <span class="text-[9px] text-slate-500 font-sans mt-0.5">Primary DPI</span>
+          </div>
+
+          <!-- 3. In-Game Sens -->
+          <div class="p-2.5 rounded-xl bg-black/60 border border-slate-800 flex flex-col justify-between">
+            <span class="text-[10px] text-slate-400 font-sans flex items-center gap-1">
+              <i class="fa-solid fa-crosshairs text-red-400 text-[10px]"></i> IN-GAME SENS
+            </span>
+            <div class="mt-1 font-bold text-red-400 text-base sm:text-lg">0.45</div>
+            <span class="text-[9px] text-emerald-400 font-sans mt-0.5">eDPI 360 (Medium)</span>
+          </div>
+
+          <!-- 4. Scoped Sens -->
+          <div class="p-2.5 rounded-xl bg-black/60 border border-slate-800 flex flex-col justify-between">
+            <span class="text-[10px] text-slate-400 font-sans flex items-center gap-1">
+              <i class="fa-solid fa-bullseye text-amber-400 text-[10px]"></i> SCOPED SENS
+            </span>
+            <div class="mt-1 font-bold text-amber-300 text-base sm:text-lg">1.00</div>
+            <span class="text-[9px] text-slate-500 font-sans mt-0.5">1:1 Zoom Ratio</span>
+          </div>
+
+          <!-- 5. Polling Rate / Windows -->
+          <div class="p-2.5 rounded-xl bg-black/60 border border-slate-800 flex flex-col justify-between">
+            <span class="text-[10px] text-slate-400 font-sans flex items-center gap-1">
+              <i class="fa-solid fa-wave-square text-indigo-400 text-[10px]"></i> POLLING / WIN
+            </span>
+            <div class="mt-1 font-bold text-indigo-300 text-xs sm:text-sm">1000Hz</div>
+            <span class="text-[9px] text-slate-400 font-sans mt-0.5">Windows: 6/11 (Raw)</span>
+          </div>
+
+          <!-- 6. Resolution & Hz -->
+          <div class="p-2.5 rounded-xl bg-black/60 border border-slate-800 flex flex-col justify-between">
+            <span class="text-[10px] text-slate-400 font-sans flex items-center gap-1">
+              <i class="fa-solid fa-desktop text-emerald-400 text-[10px]"></i> DISPLAY / RES
+            </span>
+            <div class="mt-1 font-bold text-emerald-300 text-xs sm:text-sm">2560x1440</div>
+            <span class="text-[9px] text-slate-400 font-sans mt-0.5">16:9 • 165Hz</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🎯 2. IN-GAME SENSITIVITY & VALORANT CROSSHAIR SIMULATOR -->
+      <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-cyan-950/40 via-slate-900/85 to-red-950/30 border border-cyan-500/40 backdrop-blur-md shadow-xl mt-3">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+              <i class="fa-solid fa-crosshairs text-sm"></i>
+            </div>
+            <div>
+              <div class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5" data-i18n="crosshair_title">
+                เป้าเล็ง Valorant (Crosshair Simulator)
+              </div>
+              <div class="text-[10px] sm:text-[11px] text-slate-400" data-i18n="crosshair_desc">
+                กราฟิกจำลองเป้าจริงของ DaLines • คลิก/แตะในสนามยิงเพื่อทดสอบแรงดีด &amp; เสียงลั่นไก!
+              </div>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-cyan-500/25 text-cyan-300 border border-cyan-500/40">VALORANT PRO</span>
+        </div>
+
+        <!-- Mode Switch: Free Practice vs 10s Aim Challenge -->
+        <div class="flex items-center justify-between mb-2 gap-2 flex-wrap">
+          <div class="flex items-center bg-black/60 p-1 rounded-xl border border-slate-800">
+            <button type="button" id="btn-aim-mode-free" onclick="setAimMode('free')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-cyan-600 text-white shadow cursor-pointer">
+              <i class="fa-solid fa-crosshairs text-[10px]"></i>
+              <span>ซ้อมยิงอิสระ</span>
+            </button>
+            <button type="button" id="btn-aim-mode-challenge" onclick="setAimMode('challenge')" class="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-stopwatch text-amber-400 text-[10px]"></i>
+              <span>ท้าประลอง 10 วิ ⚡</span>
+            </button>
+          </div>
+          <div id="aim-highscore-badge" class="px-2.5 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[10px] font-mono flex items-center gap-1.5 shadow-sm">
+            <i class="fa-solid fa-trophy text-amber-400 text-xs"></i>
+            <span>สถิติสูงสุด: <strong id="val-aim-highscore" class="text-white">0</strong> แต้ม</span>
+          </div>
+        </div>
+
+        <!-- Interactive Tactical Shooting Range Stage -->
+        <div id="crosshair-stage" onclick="handleStageClick(event)" class="relative w-full h-52 sm:h-64 rounded-xl bg-[#070b14] border border-cyan-500/30 overflow-hidden select-none cursor-crosshair flex items-center justify-center transition active:border-cyan-400 shadow-inner group" style="touch-action: manipulation;">
+          <!-- Grid Background -->
+          <div class="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px] opacity-40 pointer-events-none"></div>
+
+          <!-- FREE MODE BACKGROUND ELEMENTS (Concentric Range Rings + Silhouette) -->
+          <div id="free-mode-bg" class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="absolute w-56 h-56 rounded-full border border-slate-800/80 pointer-events-none"></div>
+            <div class="absolute w-40 h-40 rounded-full border border-slate-700/60 pointer-events-none"></div>
+            <div class="absolute w-24 h-24 rounded-full border border-cyan-500/20 pointer-events-none"></div>
+            <div class="absolute w-12 h-12 rounded-full border border-cyan-400/40 bg-cyan-500/5 pointer-events-none"></div>
+
+            <!-- Tactical Silhouette (Enemy Head & Shoulders) -->
+            <div class="absolute flex flex-col items-center opacity-30">
+              <div class="w-10 h-12 rounded-2xl border-2 border-dashed border-red-500/60 bg-red-500/10"></div>
+              <div class="w-24 h-8 mt-1 rounded-t-3xl border-t-2 border-dashed border-slate-600 bg-slate-800/40"></div>
+            </div>
+          </div>
+
+          <!-- FREE MODE HUD TOP -->
+          <div id="free-hud-top" class="absolute top-2.5 inset-x-3 flex items-center justify-between pointer-events-none text-[10px] font-mono">
+            <div class="flex items-center gap-1.5 text-slate-400">
+              <span class="px-1.5 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-cyan-400">RANGE: 25M</span>
+              <span class="px-1.5 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-slate-400">VANDAL</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="px-2 py-0.5 rounded bg-black/60 border border-slate-800 text-slate-300">
+                HITS: <strong id="ch-hits" class="text-white">0</strong>
+              </span>
+              <span class="px-2 py-0.5 rounded bg-red-500/20 border border-red-500/30 text-red-300">
+                <strong id="ch-headshots">0</strong> HS
+              </span>
+            </div>
+          </div>
+
+          <!-- CHALLENGE MODE PROGRESS BAR -->
+          <div id="challenge-progress-bar-wrap" class="hidden absolute top-0 inset-x-0 h-1.5 bg-slate-800 pointer-events-none z-20">
+            <div id="challenge-progress-bar" class="h-full bg-gradient-to-r from-cyan-400 via-amber-400 to-red-500 transition-all ease-linear" style="width: 100%;"></div>
+          </div>
+
+          <!-- CHALLENGE MODE HUD TOP (Active during challenge) -->
+          <div id="challenge-hud" class="hidden absolute top-2.5 inset-x-3 flex items-center justify-between pointer-events-none text-[10px] font-mono z-20">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded bg-red-950/80 border border-red-500/40 text-red-300 flex items-center gap-1 font-bold">
+                <i class="fa-solid fa-stopwatch animate-pulse"></i>
+                <span id="challenge-timer-text">10.0s</span>
+              </span>
+              <span class="px-2 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-cyan-300">
+                SCORE: <strong id="challenge-score-text" class="text-white text-xs">0</strong>
+              </span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="px-2 py-0.5 rounded bg-black/70 border border-slate-800 text-amber-300">
+                ACC: <strong id="challenge-acc-text">100%</strong>
+              </span>
+              <span class="px-2 py-0.5 rounded bg-purple-950/70 border border-purple-500/30 text-purple-300 hidden sm:inline-block">
+                AVG: <strong id="challenge-reaction-text">--</strong>ms
+              </span>
+            </div>
+          </div>
+
+          <!-- CHALLENGE START PROMPT CARD -->
+          <div id="challenge-start-card" class="hidden absolute inset-0 bg-black/75 backdrop-blur-sm z-30 flex flex-col items-center justify-center p-4 text-center">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-2xl mb-2 shadow-[0_0_15px_rgba(245,158,11,0.3)] animate-bounce">
+              ⚡
+            </div>
+            <h4 class="text-sm sm:text-base font-bold text-white mb-1">DaLines 10s Aim Challenge</h4>
+            <p class="text-[11px] text-slate-300 max-w-xs mb-3">ยิงหัวเป้าหมายที่สุ่มโผล่ให้ไวและแม่นที่สุดใน 10 วินาที เพื่อชิงตำแหน่ง Radiant!</p>
+            <button type="button" onclick="startAimChallenge()" class="px-5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-bold text-xs uppercase tracking-wider shadow-lg shadow-orange-500/30 active:scale-95 transition cursor-pointer flex items-center gap-1.5">
+              <i class="fa-solid fa-play text-xs"></i>
+              <span>เริ่มท้าประลองทันที (START)</span>
+            </button>
+          </div>
+
+          <!-- 3-2-1-GO COUNTDOWN OVERLAY -->
+          <div id="challenge-countdown-overlay" class="hidden absolute inset-0 bg-black/85 backdrop-blur-sm z-40 flex items-center justify-center pointer-events-none">
+            <span id="challenge-countdown-number" class="text-6xl sm:text-7xl font-extrabold text-amber-400 font-mono tracking-widest scale-125 transition-transform duration-200" style="text-shadow: 0 0 25px rgba(245,158,11,0.8);">
+              3
+            </span>
+          </div>
+
+          <!-- DYNAMIC CHALLENGE TARGET ORB -->
+          <div id="challenge-target" onclick="hitChallengeTarget(event)" class="hidden absolute w-11 h-11 -ml-[22px] -mt-[22px] rounded-full z-20 cursor-crosshair flex items-center justify-center active:scale-90 transition-transform">
+            <div class="absolute inset-0 rounded-full border-2 border-red-500/80 bg-red-500/20 animate-ping" style="animation-duration: 1.2s;"></div>
+            <div class="w-9 h-9 rounded-full border-2 border-amber-400 bg-red-600/50 shadow-[0_0_16px_#ef4444] flex items-center justify-center">
+              <div class="w-4 h-4 rounded-full bg-white shadow-[0_0_8px_#ffffff]"></div>
+            </div>
+          </div>
+
+          <!-- THE RETICLE (Cyan 6px Center Dot + Inner Lines with black outlines) -->
+          <div id="crosshair-reticle" class="relative pointer-events-none transition-transform duration-75 ease-out flex items-center justify-center z-10" style="filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 1px #000);">
+            <div class="w-1.5 h-1.5 bg-[#00ffff] rounded-[1px] shadow-[0_0_0_1px_#000]"></div>
+            <div class="ch-line absolute -top-3 w-1 h-2 bg-[#00ffff] shadow-[0_0_0_1px_#000] rounded-[0.5px]"></div>
+            <div class="ch-line absolute -bottom-3 w-1 h-2 bg-[#00ffff] shadow-[0_0_0_1px_#000] rounded-[0.5px]"></div>
+            <div class="ch-line absolute -left-3 h-1 w-2 bg-[#00ffff] shadow-[0_0_0_1px_#000] rounded-[0.5px]"></div>
+            <div class="ch-line absolute -right-3 h-1 w-2 bg-[#00ffff] shadow-[0_0_0_1px_#000] rounded-[0.5px]"></div>
+          </div>
+
+          <!-- FREE HUD BOTTOM PROMPT -->
+          <div id="free-hud-bottom" class="absolute bottom-2.5 inset-x-0 flex items-center justify-center pointer-events-none">
+            <span class="text-[10px] text-cyan-300/80 bg-slate-950/70 border border-cyan-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1.5 shadow-md">
+              <i class="fa-solid fa-crosshairs text-[9px] animate-spin" style="animation-duration: 4s;"></i>
+              <span data-i18n="crosshair_click_hint">แตะหรือคลิกในกรอบเพื่อซ้อมยิง (Tap to test-fire)</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Crosshair Specs Badges -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2.5 text-[10px] text-slate-300">
+          <div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#00ffff] inline-block shadow-[0_0_6px_#00ffff]"></span>
+            <span>สี: <strong class="text-cyan-300">Cyan (#00FFFF)</strong></span>
+          </div>
+          <div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-1.5">
+            <i class="fa-regular fa-circle-dot text-cyan-400"></i>
+            <span>Center Dot: <strong class="text-white">ON (6px)</strong></span>
+          </div>
+          <div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-1.5">
+            <i class="fa-solid fa-border-all text-cyan-400"></i>
+            <span>Outlines: <strong class="text-white">ON (1px Black)</strong></span>
+          </div>
+          <div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-1.5">
+            <i class="fa-solid fa-sliders text-cyan-400"></i>
+            <span>Style: <strong class="text-white">Tight Box Dot</strong></span>
+          </div>
+        </div>
+
+        <!-- Code Display & Copy Button -->
+        <div class="bg-black/70 border border-slate-800 rounded-xl p-2.5 flex items-center justify-between gap-2 mt-2.5">
+          <code class="text-[10px] sm:text-xs text-cyan-300 font-mono truncate select-all">0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1t;10;1l;3;1o;6;1a;0;1m;0;1e;0.338;A;c;7;t;6;o;1;d;1;z;6;a;0;m;1;0t;3;0l;3;0o;5;0a;0;0f;0;1t;10;1l;3;1o;3;1a;0;1m;0;1e;3;S;c;6;s;4;o;1</code>
+          <button onclick="copyValorantCrosshair()" aria-label="Copy Crosshair Code" class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 active:scale-95 text-white text-xs font-semibold shrink-0 transition flex items-center gap-1.5 shadow-md cursor-pointer">
+            <i class="fa-regular fa-copy"></i>
+            <span data-i18n="crosshair_copy_btn">คัดลอกโค้ด</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 🎮 3. FPS E-DPI CALCULATOR & CROSS-GAME SENSITIVITY CONVERTER -->
       <div id="sens-calculator" class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-indigo-950/40 via-slate-900/90 to-cyan-950/40 border border-indigo-500/40 backdrop-blur-md shadow-xl mt-3 space-y-4">
         <!-- Header -->
         <div class="flex items-center justify-between flex-wrap gap-2.5">
@@ -1409,7 +1749,7 @@
           <div class="flex items-center gap-1.5 flex-wrap">
             <button type="button" onclick="loadDaLinesSensPreset('valorant')" class="px-2.5 py-1.5 rounded-xl bg-red-600/20 hover:bg-red-600 text-red-300 hover:text-white border border-red-500/40 text-[10px] font-bold font-mono transition flex items-center gap-1.5 active:scale-95 cursor-pointer shadow">
               <i class="fa-solid fa-crosshairs text-[9px]"></i>
-              <span>DaLines Valorant (800 • 0.3)</span>
+              <span>DaLines Valorant (800 • 0.45)</span>
             </button>
             <button type="button" onclick="loadDaLinesSensPreset('apex')" class="px-2.5 py-1.5 rounded-xl bg-amber-600/20 hover:bg-amber-600 text-amber-300 hover:text-white border border-amber-500/40 text-[10px] font-bold font-mono transition flex items-center gap-1.5 active:scale-95 cursor-pointer shadow">
               <i class="fa-solid fa-shield-halved text-[9px]"></i>
@@ -1636,12 +1976,12 @@
           <span data-i18n="party_title">Join the Party & Add In-Game</span>
         </div>
         <p class="text-xs text-slate-300 leading-relaxed mb-3" data-i18n="party_desc">
-          ชื่อในเกม / IGN: <strong class="text-emerald-300 font-mono text-sm">DaLines</strong> (รบกวนกด Follow ในสตรีมก่อนแอดมาเล่นด้วยกันน้า!)
+          ชื่อในเกม / Riot ID: <strong class="text-emerald-300 font-mono text-sm">DaLines#TTV</strong> (รบกวนกด Follow ในสตรีมก่อนแอดมาเล่นด้วยกันน้า!)
         </p>
         <div class="flex items-center gap-2 flex-wrap">
           <button onclick="copyIGN()" class="text-xs px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-medium transition active:scale-95 flex items-center gap-1.5 cursor-pointer">
             <i class="fa-regular fa-copy"></i>
-            <span data-i18n="copy_ign">คัดลอกชื่อในเกม: DaLines</span>
+            <span data-i18n="copy_ign">คัดลอกชื่อในเกม: DaLines#TTV</span>
           </button>
           <button onclick="copyValorantCrosshair()" class="text-xs px-3 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 font-medium transition active:scale-95 flex items-center gap-1.5 cursor-pointer">
             <i class="fa-solid fa-crosshairs text-xs"></i>
@@ -1656,31 +1996,39 @@
 
       <!-- DALINES INTERACTIVE MEME SOUNDBOARD -->
       <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-purple-500/15 via-slate-900/80 to-pink-900/20 border border-purple-500/40 backdrop-blur-md shadow-xl">
-        <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
           <div class="flex items-center gap-2.5">
             <div class="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400">
               <i class="fa-solid fa-volume-high text-sm"></i>
             </div>
             <div>
               <div class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5" data-i18n="soundboard_title">
-                🎮 DaLines Soundboard & Meme FX
+                🎮 DaLines Soundboard &amp; Meme FX
               </div>
               <div class="text-[10px] sm:text-[11px] text-slate-400" data-i18n="soundboard_desc">
-                กดปุ่มเพื่อเล่นเสียงประจำช่อง & มีมสตรีมเมอร์สายยิงเน้นโยน!
+                กดปุ่มเพื่อเล่นเสียงประจำช่อง &amp; มีมสตรีมเมอร์สายยิงเน้นโยน!
               </div>
             </div>
           </div>
-          <!-- Equalizer Animated Indicator -->
-          <div id="soundboard-eq" class="flex items-end gap-0.5 h-4 px-2 py-1 rounded-md bg-purple-500/20 border border-purple-500/30">
-            <span class="w-1 bg-purple-400 rounded-full h-1.5 transition-all duration-150"></span>
-            <span class="w-1 bg-purple-400 rounded-full h-3 transition-all duration-150"></span>
-            <span class="w-1 bg-purple-400 rounded-full h-2 transition-all duration-150"></span>
-            <span class="w-1 bg-purple-400 rounded-full h-3.5 transition-all duration-150"></span>
+          <div class="flex items-center gap-2">
+            <!-- Streamer OBS Accordion Toggle Button -->
+            <button type="button" onclick="toggleObsStreamerPanel()" id="btn-toggle-obs-panel" class="px-2.5 py-1 rounded-xl bg-purple-500/15 hover:bg-purple-500/30 border border-purple-500/40 text-purple-300 text-[10px] sm:text-xs font-semibold transition active:scale-95 flex items-center gap-1.5 cursor-pointer shadow-sm">
+              <i class="fa-solid fa-gear text-purple-400"></i>
+              <span id="obs-toggle-text" data-i18n="obs_toggle_btn">⚙️ สำหรับสตรีมเมอร์ (OBS Sync)</span>
+              <i id="obs-toggle-chevron" class="fa-solid fa-chevron-down text-[9px] transition-transform duration-200"></i>
+            </button>
+            <!-- Equalizer Animated Indicator -->
+            <div id="soundboard-eq" class="flex items-end gap-0.5 h-4 px-2 py-1 rounded-md bg-purple-500/20 border border-purple-500/30">
+              <span class="w-1 bg-purple-400 rounded-full h-1.5 transition-all duration-150"></span>
+              <span class="w-1 bg-purple-400 rounded-full h-3 transition-all duration-150"></span>
+              <span class="w-1 bg-purple-400 rounded-full h-2 transition-all duration-150"></span>
+              <span class="w-1 bg-purple-400 rounded-full h-3.5 transition-all duration-150"></span>
+            </div>
           </div>
         </div>
 
-        <!-- OBS TTS SYNC & REMOTE PANEL -->
-        <div class="mb-3 p-3 rounded-xl bg-slate-950/70 border border-purple-500/30">
+        <!-- OBS TTS SYNC & REMOTE PANEL (Accordion - Hidden by Default) -->
+        <div id="obs-panel-wrapper" class="hidden mb-3 p-3 rounded-xl bg-slate-950/70 border border-purple-500/30 transition-all duration-300">
           <div class="flex items-center justify-between gap-2 flex-wrap mb-2">
             <div class="flex items-center gap-2">
               <div class="w-6 h-6 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-xs">
@@ -1990,6 +2338,61 @@
     </div>
   </div>
 
+  <!-- AIM CHALLENGE RESULT MODAL -->
+  <div id="modal-aim-result" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[90] flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="bg-gradient-to-b from-[#0e1626] to-[#080d16] border border-cyan-500/40 rounded-2xl max-w-sm w-full p-5 sm:p-6 flex flex-col items-center text-center shadow-2xl relative shadow-cyan-950/50">
+      <!-- Glow background blob -->
+      <div class="absolute -top-12 w-32 h-32 bg-cyan-500/20 rounded-full blur-2xl pointer-events-none"></div>
+
+      <!-- Trophy & Rank Icon -->
+      <div id="aim-result-icon" class="w-16 h-16 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-3xl mb-3 shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+        🏆
+      </div>
+
+      <!-- New Record Alert Badge (if beaten) -->
+      <div id="aim-new-record-badge" class="hidden mb-2 px-3 py-0.5 rounded-full text-[10px] font-bold bg-amber-400 text-black shadow-lg animate-bounce">
+        🎉 สถิติใหม่ NEW HIGH SCORE!
+      </div>
+
+      <h3 class="text-lg font-extrabold text-white tracking-wide">DaLines Aim Challenge</h3>
+      <p id="aim-result-tier-title" class="text-sm font-bold text-cyan-300 mt-0.5">⚡ คมจัดปลัดบอก (Ascendant)</p>
+      <p id="aim-result-tier-quote" class="text-[11px] text-slate-400 italic mt-1 px-2">"สะบัดหัวคมกริบ! คมกว่าสตรีมเมอร์ตัวจริงไปแล้วนะ"</p>
+
+      <!-- Score Box -->
+      <div class="grid grid-cols-3 gap-2 w-full my-4 bg-black/50 p-3 rounded-xl border border-slate-800">
+        <div class="flex flex-col items-center">
+          <span class="text-[10px] text-slate-400 font-mono">HITS</span>
+          <span id="aim-result-score" class="text-xl font-extrabold text-white">0</span>
+        </div>
+        <div class="flex flex-col items-center border-x border-slate-800 px-1">
+          <span class="text-[10px] text-slate-400 font-mono">ACCURACY</span>
+          <span id="aim-result-acc" class="text-xl font-extrabold text-amber-400">0%</span>
+        </div>
+        <div class="flex flex-col items-center">
+          <span class="text-[10px] text-slate-400 font-mono">AVG TIME</span>
+          <span id="aim-result-reaction" class="text-xl font-extrabold text-cyan-300">0ms</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col gap-2 w-full">
+        <button type="button" onclick="copyAimResult()" class="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-xs transition active:scale-95 shadow-lg flex items-center justify-center gap-1.5 cursor-pointer">
+          <i class="fa-regular fa-copy"></i>
+          <span>คัดลอกผลคะแนนไปอวด (Copy Score)</span>
+        </button>
+        <div class="flex items-center gap-2 w-full">
+          <button type="button" onclick="startAimChallenge()" class="flex-1 py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs transition active:scale-95 shadow flex items-center justify-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-rotate-right"></i>
+            <span>เล่นอีกครั้ง</span>
+          </button>
+          <button type="button" onclick="closeAimResultModal()" class="py-2 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition active:scale-95 cursor-pointer">
+            ปิด
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- VIDEO CLIP PLAYER MODAL -->
   <div id="modal-clip-player" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[90] flex items-center justify-center p-3 sm:p-4 hidden">
     <div class="bg-gradient-to-b from-[#0f1422] to-[#070b14] border border-purple-500/40 rounded-2xl max-w-2xl w-full p-4 sm:p-5 flex flex-col gap-3 shadow-2xl relative">
@@ -2030,9 +2433,9 @@
 
   <script>
     // -----------------------------------------------------------------
-    // TWITCH VIDEO & STREAM PLAYER CONTROLLER
+    // TWITCH VIDEO & STREAM PLAYER CONTROLLER (LAZY-LOADED & TRAILER DEFAULT)
     // -----------------------------------------------------------------
-    let currentPlayerMode = 'live'; // 'live' หรือ 'trailer'
+    let currentPlayerMode = 'trailer'; // Default to trailer (channel offline by default)
     let isChatOpen = false;
 
     function getTwitchParentsQuery() {
@@ -2111,8 +2514,19 @@
     }
 
     // -----------------------------------------------------------------
-    // MULTI-LANGUAGE SYSTEM (i18n: TH & EN)
+    // MULTI-LANGUAGE SYSTEM (i18n: TH & EN) & DYNAMIC AGE
     // -----------------------------------------------------------------
+    function calculateAge(birthDateString) {
+      const birthDate = new Date(birthDateString);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      return age;
+    }
+
     const translations = {
       th: {
         banner_desc: "• สตรีมหลักบน Twitch แวะมาเมาท์กันได้!",
@@ -2120,7 +2534,7 @@
         theme_label: '<i class="fa-solid fa-palette text-xs mr-1"></i>ธีม',
         share_btn: "แชร์",
         bio_text: "🎮 สตรีมเมอร์สายยิง เน้นโยน จริงจังมาเยอะแล้วครับ! • Just an FPS & Battle Royale lover from Thailand 🇹🇭",
-        name_tag: "ตวง (Tuang) • 30 yrs",
+        name_tag: "ตวง (Tuang) • 30 ปี",
         stream_tag: "Streaming Since May 2017",
         tab_links: "ช่องทาง",
         tab_stream: "สตรีมสด",
@@ -2138,9 +2552,17 @@
         facebook_sub: "DaLines Tuang • อัปเดตตารางเวลาสตรีมและข่าวสาร",
         instagram_sub: "@tuangdanai • ไลฟ์สไตล์และรูปภาพเบื้องหลัง",
         hw_conf: "Hardware Configuration",
+        sched_banner_title: "ตารางเวลาสตรีม &amp; เกมที่เล่นช่วงนี้",
+        sched_banner_sub: "แวะมาดูเวลาไลฟ์สดและเกมที่ตวงเล่นประจำช่วงนี้ได้เลย!",
+        discord_notify_btn: "แจ้งเตือนใน Discord",
+        sched_time_title: "ตารางไลฟ์ (Stream Schedule)",
+        sched_weekday_desc: "ช่วงค่ำ <strong>20:00 น. เป็นต้นไป</strong> (ยาวถึงเที่ยงคืน)",
+        sched_weekend_desc: "ตามใจสตรีมเมอร์ (ติดตามแจ้งเตือนสดใน Discord)",
+        now_playing_title: "เกมที่เล่นประจำช่วงนี้ (Now Playing)",
+        creator_tools_title: "🛠️ Creator Tools &amp; Dev Projects (สำหรับสตรีมเมอร์)",
         party_title: "Join the Party & Add In-Game",
-        party_desc: "ชื่อในเกม / IGN: <strong class=\"text-emerald-300 font-mono text-sm\">DaLines</strong> (รบกวนกด Follow ในสตรีมก่อนแอดมาเล่นด้วยกันน้า!)",
-        copy_ign: "คัดลอกชื่อในเกม: DaLines",
+        party_desc: "ชื่อในเกม / IGN: <strong class=\"text-emerald-300 font-mono text-sm\">DaLines#TTV</strong> (รบกวนกด Follow ในสตรีมก่อนแอดมาเล่นด้วยกันน้า!)",
+        copy_ign: "คัดลอกชื่อในเกม: DaLines#TTV",
         chat_rules_title: "กฎกติกาการพูดคุย (Chat Rules)",
         rule_1: "พิมพ์คุยเล่นได้ตลอด ถามได้ไม่กัดครับ เป็นกันเองได้เลย",
         rule_2: "ให้เกียรติเพื่อนๆ ในแชท ไม่สปอยล์ และงดใช้คำพูดเสียดสีรุนแรง",
@@ -2152,6 +2574,15 @@
         donate_qr_hint: "สแกน QR ผ่านแอปธนาคารหรือ TrueMoney โดเนทขึ้นจอสดได้เลยครับ!",
         open_ezdn_btn: "เปิดหน้า EZDN",
         save_qr_btn: "บันทึกรูป QR",
+        pro_settings_title: "Pro Settings / Mouse &amp; Sensitivity (Valorant)",
+        pro_settings_desc: "ตารางสเปกค่าความไวเมาส์และหน้าจอที่ DaLines ใช้เล่น Valorant ประจำช่อง",
+        copy_pro_settings_btn: "คัดลอกค่า Setting ทั้งหมด (Copy All Settings)",
+        toast_copy_pro_settings: "คัดลอกค่า Setting Valorant ครบทุกตัวเลขเรียบร้อย! 🖱️",
+        crosshair_title: "Valorant Crosshair &amp; Reflex Aim Simulator",
+        crosshair_desc: "จำลองเป้าเล็งจริงของ DaLines พร้อมสนามทดสอบความคม &amp; ชาเลนจ์ 10 วินาที",
+        crosshair_copy_btn: "คัดลอกโค้ดเป้า (Valorant Code)",
+        crosshair_click_hint: "🎯 คลิกซ้ายในสนามเพื่อทดสอบสะบัดยิง (มีเสียงเอฟเฟกต์กระสุนสมจริง)",
+        obs_toggle_btn: "⚙️ สำหรับสตรีมเมอร์ (OBS Sync)",
         sens_title: "FPS E-DPI Calculator & Sensitivity Converter",
         sens_desc: "คำนวณ E-DPI และแปลงค่าความไวเมาส์ข้ามเกมแบบแม่นยำ 100% ตามระยะทางจริง (cm/360°)",
         sens_dpi_label: "Mouse DPI:",
@@ -2162,7 +2593,7 @@
         copy_val_btn: "คัดลอกเป้า Valorant",
         toast_copy_crosshair: "คัดลอกโค้ดเป้า Valorant เรียบร้อย! 🎯",
         toast_copy_link: "คัดลอกลิงก์โปรไฟล์ DaLines แล้วครับ! 🔗",
-        toast_copy_ign: "คัดลอก IGN: DaLines เรียบร้อย! 🎮",
+        toast_copy_ign: "คัดลอก IGN: DaLines#TTV เรียบร้อย! 🎮",
         toast_sound_on: "เปิดเสียงเอฟเฟกต์แล้ว 🔊",
         toast_sound_off: "ปิดเสียงเอฟเฟกต์แล้ว 🔇",
         clips_desc: "คลังคลิปไฮไลท์ยอดนิยมตลอดกาลจาก twitch.tv/dalines เรียงตามยอดเข้าชมสูงสุด"
@@ -2191,9 +2622,17 @@
         facebook_sub: "DaLines Tuang • Schedule announcements & updates",
         instagram_sub: "@tuangdanai • Personal vibes & photos",
         hw_conf: "Hardware Configuration",
+        sched_banner_title: "Stream Schedule &amp; Current Rotation",
+        sched_banner_sub: "Check out stream broadcast hours and games DaLines is actively playing!",
+        discord_notify_btn: "Discord Alerts",
+        sched_time_title: "Stream Schedule",
+        sched_weekday_desc: "Mon - Fri: <strong>8:00 PM+ (BKK)</strong> until midnight",
+        sched_weekend_desc: "Sat - Sun: Weekend Pop-up Streams (Follow Discord Alerts)",
+        now_playing_title: "Current Rotation (Now Playing)",
+        creator_tools_title: "🛠️ Creator Tools &amp; Dev Projects (For Streamers)",
         party_title: "Join the Party & In-Game ID",
-        party_desc: "In-Game Name: <strong class=\"text-emerald-300 font-mono text-sm\">DaLines</strong> (Please follow the stream before sending a friend request!)",
-        copy_ign: "Copy IGN: DaLines",
+        party_desc: "In-Game Name: <strong class=\"text-emerald-300 font-mono text-sm\">DaLines#TTV</strong> (Please follow the stream before sending a friend request!)",
+        copy_ign: "Copy IGN: DaLines#TTV",
         chat_rules_title: "Community Guidelines & Chat Rules",
         rule_1: "Friendly chat, feel free to ask questions and hang out.",
         rule_2: "Respect each other in chat, no spoilers or toxic behavior.",
@@ -2205,6 +2644,15 @@
         donate_qr_hint: "Scan QR with Mobile Banking or TrueMoney for live on-screen stream alerts!",
         open_ezdn_btn: "Open EZDN",
         save_qr_btn: "Save QR Image",
+        pro_settings_title: "Pro Settings / Mouse &amp; Sensitivity (Valorant)",
+        pro_settings_desc: "Official mouse sensitivity and display hardware settings used by DaLines in Valorant",
+        copy_pro_settings_btn: "Copy All Settings",
+        toast_copy_pro_settings: "Valorant Pro Settings copied to clipboard! 🖱️",
+        crosshair_title: "Valorant Crosshair &amp; Reflex Aim Simulator",
+        crosshair_desc: "Authentic DaLines crosshair reticle with interactive 10-second aim reflex challenge",
+        crosshair_copy_btn: "Copy Valorant Code",
+        crosshair_click_hint: "🎯 Click inside stage to test crosshair flick &amp; recoil sound effects",
+        obs_toggle_btn: "⚙️ Streamer Tools (OBS Sync)",
         sens_title: "FPS E-DPI Calculator & Sensitivity Converter",
         sens_desc: "Calculate eDPI and convert mouse sensitivity across games accurately by cm/360°",
         sens_dpi_label: "Mouse DPI:",
@@ -2215,7 +2663,7 @@
         copy_val_btn: "Copy Valorant Crosshair",
         toast_copy_crosshair: "Valorant Crosshair code copied! 🎯",
         toast_copy_link: "DaLines Profile link copied! 🔗",
-        toast_copy_ign: "IGN: DaLines copied to clipboard! 🎮",
+        toast_copy_ign: "IGN: DaLines#TTV copied to clipboard! 🎮",
         toast_sound_on: "Sound FX Enabled 🔊",
         toast_sound_off: "Sound FX Muted 🔇",
         clips_desc: "All-time top clips and highlights from twitch.tv/dalines sorted by view count!"
@@ -2228,6 +2676,11 @@
       currentLang = lang;
       localStorage.setItem('dalines_lang', lang);
       document.documentElement.lang = lang;
+
+      // Dynamic Age Injection from birthdate 1996-01-14
+      const dynamicAge = calculateAge('1996-01-14');
+      translations.th.name_tag = `ตวง (Tuang) • ${dynamicAge} ปี`;
+      translations.en.name_tag = `Tuang • ${dynamicAge} yrs`;
 
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
@@ -2656,6 +3109,7 @@
       initCyberCanvas();
       initStreamCountdown();
       initRouletteWheel();
+      initAimChallenge();
 
       // Mouse Spotlight
       const cursorGlow = document.getElementById('cursor-glow');
@@ -2832,6 +3286,7 @@
         const streamBadge = document.getElementById('player-status-badge');
 
         if (isLive) {
+          currentPlayerMode = 'live';
           if (liveDot) liveDot.className = 'w-2.5 h-2.5 rounded-full bg-red-500 live-ping-dot';
           if (textBadge) {
             textBadge.className = 'font-gaming font-bold text-red-400 tracking-wider text-[11px] sm:text-xs';
@@ -2846,7 +3301,12 @@
             streamBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-gaming font-bold bg-red-500/20 text-red-400 border border-red-500/30 flex items-center gap-1';
             streamBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-ping"></span>STREAMING';
           }
+          const streamTab = document.getElementById('tab-stream');
+          if (streamTab && streamTab.classList.contains('active')) {
+            updateTwitchPlayer('live');
+          }
         } else {
+          currentPlayerMode = 'trailer';
           if (liveDot) liveDot.className = 'w-2.5 h-2.5 rounded-full bg-slate-500';
           if (textBadge) {
             textBadge.className = 'font-gaming font-bold text-slate-400 tracking-wider text-[11px] sm:text-xs';
@@ -2858,6 +3318,10 @@
               : '• Channel is currently offline • Check out highlights or join Discord!';
           }
           if (btnText) btnText.innerText = (currentLang === 'th') ? 'คลิปไฮไลท์' : 'Watch VOD';
+          if (streamBadge) {
+            streamBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-gaming font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1';
+            streamBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>TRAILER VOD';
+          }
         }
       } catch (err) {
         // Fallback gracefully
@@ -2884,8 +3348,510 @@
 
     function copyIGN() {
       playSound('pop');
-      navigator.clipboard.writeText('DaLines');
+      navigator.clipboard.writeText('DaLines#TTV');
       showToast(translations[currentLang].toast_copy_ign);
+    }
+
+    function copyProSettingsSummary() {
+      playSound('pop');
+      const text = `DaLines Pro Settings (Valorant):
+Mouse: ATK Ghost Ultimate
+DPI: 800
+In-Game Sens: 0.45
+Scoped Sens: 1.00
+eDPI: 360
+Polling Rate: 1000Hz
+Windows Sens: 6/11
+Resolution: 2560x1440 (16:9) 165Hz
+Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1t;10;1l;3;1o;6;1a;0;1m;0;1e;0.338;A;c;7;t;6;o;1;d;1;z;6;a;0;m;1;0t;3;0l;3;0o;5;0a;0;0f;0;1t;10;1l;3;1o;3;1a;0;1m;0;1e;3;S;c;6;s;4;o;1`;
+      navigator.clipboard.writeText(text);
+      showToast(translations[currentLang].toast_copy_pro_settings || 'คัดลอกค่า Setting Valorant ครบทุกตัวเลขเรียบร้อย! 🖱️');
+    }
+
+    function toggleObsStreamerPanel() {
+      playSound('pop');
+      const panel = document.getElementById('obs-panel-wrapper');
+      const btn = document.getElementById('btn-toggle-obs-panel');
+      if (!panel) return;
+      const isHidden = panel.classList.contains('hidden');
+      if (isHidden) {
+        panel.classList.remove('hidden');
+        if (btn) btn.innerHTML = '<i class="fa-solid fa-chevron-up"></i><span>' + (currentLang === 'th' ? 'ซ่อนแผง OBS' : 'Hide OBS Panel') + '</span>';
+      } else {
+        panel.classList.add('hidden');
+        if (btn) btn.innerHTML = '<i class="fa-solid fa-sliders"></i><span>' + (currentLang === 'th' ? '⚙️ สำหรับสตรีมเมอร์ (OBS Sync)' : '⚙️ Streamer Tools (OBS Sync)') + '</span>';
+      }
+    }
+
+    // -----------------------------------------------------------------
+    // VALORANT CROSSHAIR SIMULATOR & 10s REFLEX AIM CHALLENGE
+    // -----------------------------------------------------------------
+    let aimMode = 'free'; // 'free' หรือ 'challenge'
+    let isChallengeRunning = false;
+    let challengeTimer = 10.0;
+    let challengeInterval = null;
+    let challengeScore = 0;
+    let challengeTotalShots = 0;
+    let challengeTargetSpawnTime = 0;
+    let challengeReactionTimes = [];
+    let challengeHighScore = parseInt(localStorage.getItem('dalines_aim_highscore') || '0', 10);
+    let crosshairHits = 0;
+    let crosshairHeadshots = 0;
+
+    function initAimChallenge() {
+      const hsEl = document.getElementById('val-aim-highscore');
+      if (hsEl) hsEl.innerText = challengeHighScore;
+    }
+
+    function setAimMode(mode) {
+      aimMode = mode;
+      playSound('tab');
+
+      const btnFree = document.getElementById('btn-aim-mode-free');
+      const btnChallenge = document.getElementById('btn-aim-mode-challenge');
+      const freeBg = document.getElementById('free-mode-bg');
+      const freeHudTop = document.getElementById('free-hud-top');
+      const freeHudBottom = document.getElementById('free-hud-bottom');
+      const challengeHud = document.getElementById('challenge-hud');
+      const challengeStartCard = document.getElementById('challenge-start-card');
+      const challengeTarget = document.getElementById('challenge-target');
+      const challengeProgressBar = document.getElementById('challenge-progress-bar-wrap');
+
+      if (mode === 'free') {
+        if (isChallengeRunning) endAimChallenge(true); // silent abort
+        if (btnFree) btnFree.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-cyan-600 text-white shadow cursor-pointer';
+        if (btnChallenge) btnChallenge.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5 cursor-pointer';
+
+        if (freeBg) freeBg.classList.remove('hidden');
+        if (freeHudTop) freeHudTop.classList.remove('hidden');
+        if (freeHudBottom) freeHudBottom.classList.remove('hidden');
+        if (challengeHud) challengeHud.classList.add('hidden');
+        if (challengeStartCard) challengeStartCard.classList.add('hidden');
+        if (challengeTarget) challengeTarget.classList.add('hidden');
+        if (challengeProgressBar) challengeProgressBar.classList.add('hidden');
+      } else {
+        if (btnChallenge) btnChallenge.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-amber-500 text-black shadow cursor-pointer';
+        if (btnFree) btnFree.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5 cursor-pointer';
+
+        if (freeBg) freeBg.classList.add('hidden');
+        if (freeHudTop) freeHudTop.classList.add('hidden');
+        if (freeHudBottom) freeHudBottom.classList.add('hidden');
+
+        if (!isChallengeRunning) {
+          if (challengeStartCard) challengeStartCard.classList.remove('hidden');
+          if (challengeHud) challengeHud.classList.add('hidden');
+          if (challengeTarget) challengeTarget.classList.add('hidden');
+          if (challengeProgressBar) challengeProgressBar.classList.add('hidden');
+        }
+      }
+    }
+
+    function startAimChallenge() {
+      closeAimResultModal();
+      if (!isSoundEnabled) {
+        isSoundEnabled = true;
+        localStorage.setItem('dalines_sound', true);
+        updateSoundIcon();
+      }
+
+      const startCard = document.getElementById('challenge-start-card');
+      const countdownOverlay = document.getElementById('challenge-countdown-overlay');
+      const countdownNum = document.getElementById('challenge-countdown-number');
+      if (startCard) startCard.classList.add('hidden');
+      if (countdownOverlay) countdownOverlay.classList.remove('hidden');
+
+      let count = 3;
+      if (countdownNum) countdownNum.innerText = count;
+      playSound('countdown_beep');
+
+      const cdInterval = setInterval(() => {
+        count--;
+        if (count > 0) {
+          if (countdownNum) {
+            countdownNum.innerText = count;
+            countdownNum.style.transform = 'scale(1.3)';
+            setTimeout(() => { if (countdownNum) countdownNum.style.transform = 'scale(1)'; }, 150);
+          }
+          playSound('countdown_beep');
+        } else if (count === 0) {
+          if (countdownNum) {
+            countdownNum.innerText = 'GO!';
+            countdownNum.style.transform = 'scale(1.5)';
+            countdownNum.style.color = '#10b981';
+          }
+          playSound('countdown_go');
+        } else {
+          clearInterval(cdInterval);
+          if (countdownOverlay) countdownOverlay.classList.add('hidden');
+          if (countdownNum) {
+            countdownNum.style.color = '#fbbf24';
+            countdownNum.style.transform = 'scale(1)';
+          }
+          runAimChallengeGame();
+        }
+      }, 700);
+    }
+
+    function runAimChallengeGame() {
+      isChallengeRunning = true;
+      challengeScore = 0;
+      challengeTotalShots = 0;
+      challengeReactionTimes = [];
+      challengeTimer = 10.0;
+
+      const challengeHud = document.getElementById('challenge-hud');
+      const progressBarWrap = document.getElementById('challenge-progress-bar-wrap');
+      const progressBar = document.getElementById('challenge-progress-bar');
+      const timerText = document.getElementById('challenge-timer-text');
+      const scoreText = document.getElementById('challenge-score-text');
+      const accText = document.getElementById('challenge-acc-text');
+      const reactionText = document.getElementById('challenge-reaction-text');
+
+      if (challengeHud) challengeHud.classList.remove('hidden');
+      if (progressBarWrap) progressBarWrap.classList.remove('hidden');
+      if (progressBar) progressBar.style.width = '100%';
+      if (scoreText) scoreText.innerText = '0';
+      if (accText) accText.innerText = '100%';
+      if (reactionText) reactionText.innerText = '--';
+      if (timerText) timerText.innerText = '10.0s';
+
+      spawnChallengeTarget();
+
+      const startTime = Date.now();
+      const totalDuration = 10000;
+
+      clearInterval(challengeInterval);
+      challengeInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const remain = Math.max(0, (totalDuration - elapsed) / 1000);
+        challengeTimer = remain;
+
+        if (timerText) timerText.innerText = `${remain.toFixed(1)}s`;
+        if (progressBar) {
+          const pct = Math.max(0, (remain / 10) * 100);
+          progressBar.style.width = `${pct}%`;
+        }
+
+        if (remain <= 0) {
+          clearInterval(challengeInterval);
+          endAimChallenge(false);
+        }
+      }, 50);
+    }
+
+    function spawnChallengeTarget() {
+      const stage = document.getElementById('crosshair-stage');
+      const target = document.getElementById('challenge-target');
+      if (!stage || !target) return;
+
+      const stageRect = stage.getBoundingClientRect();
+      const targetSize = 44;
+      const margin = 26;
+
+      const maxX = stageRect.width - targetSize - margin;
+      const maxY = stageRect.height - targetSize - margin;
+
+      const randX = Math.floor(margin + Math.random() * Math.max(20, maxX - margin));
+      const randY = Math.floor(margin + Math.random() * Math.max(20, maxY - margin));
+
+      target.style.left = `${randX}px`;
+      target.style.top = `${randY}px`;
+      target.classList.remove('hidden');
+
+      target.style.transform = 'scale(0.3)';
+      requestAnimationFrame(() => {
+        target.style.transform = 'scale(1)';
+      });
+
+      challengeTargetSpawnTime = Date.now();
+    }
+
+    function hitChallengeTarget(e) {
+      e.stopPropagation();
+      if (!isChallengeRunning) return;
+
+      challengeScore++;
+      challengeTotalShots++;
+
+      const rt = Math.max(50, Date.now() - challengeTargetSpawnTime);
+      challengeReactionTimes.push(rt);
+
+      playSound('headshot');
+
+      // Update reticle recoil
+      const reticle = document.getElementById('crosshair-reticle');
+      if (reticle) {
+        reticle.style.transform = 'scale(1.35)';
+        setTimeout(() => { if (reticle) reticle.style.transform = 'scale(1)'; }, 80);
+      }
+
+      // Spark effect
+      const stage = document.getElementById('crosshair-stage');
+      const rect = stage.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+      createBulletImpact(stage, clickX, clickY);
+
+      // Floating hit text
+      createFloatingHitText(stage, clickX, clickY, `+100 HEADSHOT (${rt}ms)`, '#fbbf24');
+
+      // Update HUD
+      updateChallengeHUD();
+
+      // Spawn next target immediately
+      spawnChallengeTarget();
+    }
+
+    function handleStageClick(e) {
+      if (aimMode === 'free') {
+        fireCrosshair(e);
+      } else if (aimMode === 'challenge' && isChallengeRunning) {
+        // Registered as a miss shot
+        challengeTotalShots++;
+        playSound('gunshot');
+
+        const stage = document.getElementById('crosshair-stage');
+        const reticle = document.getElementById('crosshair-reticle');
+        if (reticle) {
+          reticle.style.transform = 'scale(1.25)';
+          setTimeout(() => { if (reticle) reticle.style.transform = 'scale(1)'; }, 80);
+        }
+
+        const rect = stage.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const clickY = e.clientY - rect.top;
+        createBulletImpact(stage, clickX, clickY);
+        createFloatingHitText(stage, clickX, clickY, 'MISS 💨', '#94a3b8');
+
+        updateChallengeHUD();
+      }
+    }
+
+    function updateChallengeHUD() {
+      const scoreText = document.getElementById('challenge-score-text');
+      const accText = document.getElementById('challenge-acc-text');
+      const reactionText = document.getElementById('challenge-reaction-text');
+
+      if (scoreText) scoreText.innerText = challengeScore;
+      if (accText) {
+        const acc = Math.round((challengeScore / Math.max(1, challengeTotalShots)) * 100);
+        accText.innerText = `${acc}%`;
+      }
+      if (reactionText && challengeReactionTimes.length > 0) {
+        const avg = Math.round(challengeReactionTimes.reduce((a, b) => a + b, 0) / challengeReactionTimes.length);
+        reactionText.innerText = `${avg}`;
+      }
+    }
+
+    function createFloatingHitText(stage, x, y, text, color) {
+      const floater = document.createElement('div');
+      floater.className = 'absolute font-bold text-xs pointer-events-none transition-all duration-500 ease-out z-20 font-mono';
+      floater.style.left = `${x - 30}px`;
+      floater.style.top = `${y - 10}px`;
+      floater.style.color = color;
+      floater.style.textShadow = '0 0 6px rgba(0,0,0,0.9), 0 0 2px #000';
+      floater.innerText = text;
+      stage.appendChild(floater);
+
+      requestAnimationFrame(() => {
+        floater.style.transform = 'translateY(-26px) scale(1.15)';
+        floater.style.opacity = '0';
+      });
+      setTimeout(() => floater.remove(), 550);
+    }
+
+    function endAimChallenge(silent = false) {
+      isChallengeRunning = false;
+      clearInterval(challengeInterval);
+
+      const target = document.getElementById('challenge-target');
+      if (target) target.classList.add('hidden');
+
+      const progressBarWrap = document.getElementById('challenge-progress-bar-wrap');
+      if (progressBarWrap) progressBarWrap.classList.add('hidden');
+
+      if (silent) return;
+
+      playSound('victory');
+
+      const acc = Math.round((challengeScore / Math.max(1, challengeTotalShots)) * 100);
+      const avgRt = challengeReactionTimes.length > 0
+        ? Math.round(challengeReactionTimes.reduce((a, b) => a + b, 0) / challengeReactionTimes.length)
+        : 0;
+
+      // Tier & Quotes Calculation
+      let tier = '';
+      let quote = '';
+      let icon = '🏆';
+      if (challengeScore <= 5) {
+        tier = '🤡 โยนสมชื่อ DaLines';
+        quote = '"เป้าไม่ตรง โทษโต๊ะ โทษเน็ต โทษแผ่นรองเมาส์เอียง"';
+        icon = '🤡';
+      } else if (challengeScore <= 13) {
+        tier = '🔫 คนยิงไม่โดน โทษเมาส์ (Silver/Gold)';
+        quote = '"วอร์มมือก่อนลงแรงก์จริง ยิงโดนนกกระจอกตายไป 3 ตัว"';
+        icon = '🔫';
+      } else if (challengeScore <= 21) {
+        tier = '⚡ คมจัดปลัดบอก (Ascendant)';
+        quote = '"สะบัดหัวคมกริบ! เริ่มจะคมกว่าสตรีมเมอร์ตัวจริงแล้วนะเนี่ย"';
+        icon = '⚡';
+      } else {
+        tier = '👑 Radiant ในตำนาน';
+        quote = '"คมระดับพระกาฬ Aimbot ยังกราบ! แคปส่งเข้า Discord ด่วน สตรีมเมอร์ขอยอม!"';
+        icon = '👑';
+      }
+
+      // Check New High Score
+      const isNewRecord = challengeScore > challengeHighScore;
+      if (isNewRecord) {
+        challengeHighScore = challengeScore;
+        localStorage.setItem('dalines_aim_highscore', challengeHighScore);
+        const hsEl = document.getElementById('val-aim-highscore');
+        if (hsEl) hsEl.innerText = challengeHighScore;
+      }
+
+      // Send excitement to OBS if connected
+      if (isObsConnected && obsConn && obsConn.open) {
+        sendObsAction('hype', { amount: 20 });
+      }
+
+      // Populate Result Modal
+      const modal = document.getElementById('modal-aim-result');
+      const iconEl = document.getElementById('aim-result-icon');
+      const newRecordBadge = document.getElementById('aim-new-record-badge');
+      const titleEl = document.getElementById('aim-result-tier-title');
+      const quoteEl = document.getElementById('aim-result-tier-quote');
+      const scoreEl = document.getElementById('aim-result-score');
+      const accEl = document.getElementById('aim-result-acc');
+      const reactionEl = document.getElementById('aim-result-reaction');
+
+      if (iconEl) iconEl.innerText = icon;
+      if (newRecordBadge) {
+        if (isNewRecord && challengeScore > 0) newRecordBadge.classList.remove('hidden');
+        else newRecordBadge.classList.add('hidden');
+      }
+      if (titleEl) titleEl.innerText = tier;
+      if (quoteEl) quoteEl.innerText = quote;
+      if (scoreEl) scoreEl.innerText = `${challengeScore}`;
+      if (accEl) accEl.innerText = `${acc}%`;
+      if (reactionEl) reactionEl.innerText = `${avgRt}ms`;
+
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeAimResultModal() {
+      playSound('pop');
+      const modal = document.getElementById('modal-aim-result');
+      if (modal) modal.classList.add('hidden');
+
+      const startCard = document.getElementById('challenge-start-card');
+      if (startCard && aimMode === 'challenge') {
+        startCard.classList.remove('hidden');
+      }
+    }
+
+    function copyAimResult() {
+      playSound('pop');
+      const acc = Math.round((challengeScore / Math.max(1, challengeTotalShots)) * 100);
+      const avgRt = challengeReactionTimes.length > 0
+        ? Math.round(challengeReactionTimes.reduce((a, b) => a + b, 0) / challengeReactionTimes.length)
+        : 0;
+
+      let tier = (challengeScore <= 5) ? '🤡 โยนสมชื่อ DaLines' : (challengeScore <= 13) ? '🔫 คนยิงไม่โดน โทษเมาส์' : (challengeScore <= 21) ? '⚡ คมจัดปลัดบอก (Ascendant)' : '👑 Radiant ในตำนาน';
+
+      const shareText = `🎯 DaLines Aim Challenge: ฉันยิงได้ ${challengeScore} แต้ม! (ความแม่นยำ ${acc}%, เฉลี่ย ${avgRt}ms)\n🏆 อันดับ: ${tier}\n🎮 มาประลองความคมกันได้ที่: https://dalines-site.dalines.workers.dev/`;
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(shareText);
+      }
+      showToast('คัดลอกผลคะแนนไปอวดแล้ว! 🏆');
+    }
+
+    function fireCrosshair(e) {
+      if (!isSoundEnabled) {
+        isSoundEnabled = true;
+        localStorage.setItem('dalines_sound', true);
+        updateSoundIcon();
+      }
+
+      const stage = document.getElementById('crosshair-stage');
+      const reticle = document.getElementById('crosshair-reticle');
+      if (!stage) return;
+
+      const rect = stage.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const dist = Math.hypot(clickX - centerX, clickY - centerY);
+
+      // Recoil bloom animation on reticle
+      if (reticle) {
+        reticle.style.transform = 'scale(1.4)';
+        setTimeout(() => {
+          if (reticle) reticle.style.transform = 'scale(1)';
+        }, 90);
+      }
+
+      // Spawn bullet spark & decal
+      createBulletImpact(stage, clickX, clickY);
+
+      crosshairHits++;
+      const hitsEl = document.getElementById('ch-hits');
+      if (hitsEl) hitsEl.innerText = crosshairHits;
+
+      let dmgText = '';
+      let dmgColor = '';
+      if (dist <= 26) {
+        crosshairHeadshots++;
+        const hsEl = document.getElementById('ch-headshots');
+        if (hsEl) hsEl.innerText = crosshairHeadshots;
+        playSound('headshot');
+        dmgText = 'HEADSHOT 160 🎯';
+        dmgColor = '#fbbf24';
+      } else if (dist <= 75) {
+        playSound('gunshot');
+        dmgText = 'BODY 40 💥';
+        dmgColor = '#22d3ee';
+      } else {
+        playSound('gunshot');
+        dmgText = 'MISS 💨';
+        dmgColor = '#94a3b8';
+      }
+
+      // Floating damage indicator
+      createFloatingHitText(stage, clickX, clickY, dmgText, dmgColor);
+    }
+
+    function createBulletImpact(stage, x, y) {
+      const spark = document.createElement('div');
+      spark.className = 'absolute rounded-full pointer-events-none z-10 transition-opacity duration-200';
+      spark.style.left = `${x - 4}px`;
+      spark.style.top = `${y - 4}px`;
+      spark.style.width = '8px';
+      spark.style.height = '8px';
+      spark.style.backgroundColor = '#fbbf24';
+      spark.style.boxShadow = '0 0 12px 4px #fbbf24, 0 0 4px #ffffff';
+      stage.appendChild(spark);
+
+      setTimeout(() => {
+        spark.style.opacity = '0';
+        setTimeout(() => spark.remove(), 150);
+      }, 50);
+
+      const hole = document.createElement('div');
+      hole.className = 'absolute rounded-full bg-slate-900 border border-black/80 pointer-events-none transition-opacity duration-700 z-0';
+      hole.style.left = `${x - 3}px`;
+      hole.style.top = `${y - 3}px`;
+      hole.style.width = '6px';
+      hole.style.height = '6px';
+      stage.appendChild(hole);
+
+      setTimeout(() => {
+        hole.style.opacity = '0';
+        setTimeout(() => hole.remove(), 700);
+      }, 2000);
     }
 
     // -----------------------------------------------------------------
@@ -3009,6 +3975,14 @@
         if (statusText) statusText.innerText = 'ONLINE';
         if (btnText) btnText.innerText = 'ตัดการเชื่อมต่อ';
         if (quickControls) quickControls.classList.remove('hidden');
+
+        // Auto-reveal streamer panel if it was folded
+        const obsWrapper = document.getElementById('obs-panel-wrapper');
+        const toggleBtn = document.getElementById('btn-toggle-obs-panel');
+        if (obsWrapper && obsWrapper.classList.contains('hidden')) {
+          obsWrapper.classList.remove('hidden');
+          if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-chevron-up"></i><span>' + (currentLang === 'th' ? 'ซ่อนแผง OBS' : 'Hide OBS Panel') + '</span>';
+        }
       } else if (status === 'connecting') {
         if (badge) badge.className = 'px-2 py-0.5 rounded text-[10px] font-mono bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 flex items-center gap-1';
         if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-yellow-400 animate-ping';
@@ -3202,366 +4176,102 @@
     // -----------------------------------------------------------------
     const DALINES_CLIPS = [
       {
-            "id": "clip-1",
-            "slug": "ElegantEagerGoldfishAMPEnergyCherry-9uGytF396fyRA5xc",
-            "title": "นัวอะไรขนาดนั้น",
-            "game": "VALORANT",
-            "curator": "DaLines",
-            "views": 216,
-            "duration": "0:26",
-            "category": "valorant",
-            "badge": "👑 #1 ALL-TIME TOP",
-            "badgeClass": "bg-amber-500/20 text-amber-300 border-amber-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/a7fd0812-aabe-4df1-9c62-33f743f76411/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/ElegantEagerGoldfishAMPEnergyCherry-9uGytF396fyRA5xc",
-            "createdAt": "2022-04-03"
+        id: "clip-1",
+        title: "นัวอะไรขนาดนั้น (Valorant Clutch Moment)",
+        category: "valorant",
+        duration: "0:26",
+        initialLikes: 216,
+        videoUrl: "https://www.twitch.tv/dalines/clip/ElegantEagerGoldfishAMPEnergyCherry-9uGytF396fyRA5xc",
+        embedUrl: "https://clips.twitch.tv/embed?clip=ElegantEagerGoldfishAMPEnergyCherry-9uGytF396fyRA5xc",
+        youtubeUrl: "",
+        slug: "ElegantEagerGoldfishAMPEnergyCherry-9uGytF396fyRA5xc",
+        curator: "DaLines",
+        game: "VALORANT",
+        badge: "👑 #1 ALL-TIME TOP",
+        badgeClass: "bg-amber-500/20 text-amber-300 border-amber-500/40",
+        thumbnailUrl: "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/a7fd0812-aabe-4df1-9c62-33f743f76411/landscape/thumb/thumb-0000000000-1920x1080.jpg"
       },
       {
-            "id": "clip-2",
-            "slug": "DifficultNiceGarageUncleNox",
-            "title": "Dancing : รถซื้อแกง",
-            "game": "Just Chatting",
-            "curator": "feixian1412",
-            "views": 192,
-            "duration": "0:24",
-            "category": "other",
-            "badge": "🥈 #2 TOP VIRAL",
-            "badgeClass": "bg-slate-400/20 text-slate-200 border-slate-400/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/f7f6701f-12bc-4972-8330-054b2c7ce6e8/landscape/thumb/thumb-0000000000-1280x720.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/DifficultNiceGarageUncleNox",
-            "createdAt": "2020-05-06"
+        id: "clip-2",
+        title: "Dancing : รถซื้อแกง",
+        category: "other",
+        duration: "0:24",
+        initialLikes: 192,
+        videoUrl: "https://www.twitch.tv/dalines/clip/DifficultNiceGarageUncleNox",
+        embedUrl: "https://clips.twitch.tv/embed?clip=DifficultNiceGarageUncleNox",
+        youtubeUrl: "",
+        slug: "DifficultNiceGarageUncleNox",
+        curator: "feixian1412",
+        game: "Just Chatting",
+        badge: "🥈 #2 TOP VIRAL",
+        badgeClass: "bg-slate-400/20 text-slate-200 border-slate-400/40",
+        thumbnailUrl: "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/f7f6701f-12bc-4972-8330-054b2c7ce6e8/landscape/thumb/thumb-0000000000-1280x720.jpg"
       },
       {
-            "id": "clip-3",
-            "slug": "RealChillyPancakeKeepo-XUD53z3NRrGzcqkB",
-            "title": "A clear? then go B",
-            "game": "VALORANT",
-            "curator": "DaLines",
-            "views": 172,
-            "duration": "0:30",
-            "category": "valorant",
-            "badge": "🥉 #3 TOP HIGHLIGHT",
-            "badgeClass": "bg-orange-500/20 text-orange-300 border-orange-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/42467f1d-f0d1-4e95-9449-b7f6a84f18c7/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/RealChillyPancakeKeepo-XUD53z3NRrGzcqkB",
-            "createdAt": "2021-09-29"
+        id: "clip-3",
+        title: "A clear? then go B (จังหวะอ่านเกมขาด)",
+        category: "valorant",
+        duration: "0:30",
+        initialLikes: 172,
+        videoUrl: "https://www.twitch.tv/dalines/clip/RealChillyPancakeKeepo-XUD53z3NRrGzcqkB",
+        embedUrl: "https://clips.twitch.tv/embed?clip=RealChillyPancakeKeepo-XUD53z3NRrGzcqkB",
+        youtubeUrl: "",
+        slug: "RealChillyPancakeKeepo-XUD53z3NRrGzcqkB",
+        curator: "DaLines",
+        game: "VALORANT",
+        badge: "🥉 #3 TOP HIGHLIGHT",
+        badgeClass: "bg-orange-500/20 text-orange-300 border-orange-500/40",
+        thumbnailUrl: "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/42467f1d-f0d1-4e95-9449-b7f6a84f18c7/landscape/thumb/thumb-0000000000-1920x1080.jpg"
       },
       {
-            "id": "clip-4",
-            "slug": "BitterBraveTomatoEleGiggle-LCD4OrW4n4OP0N5Z",
-            "title": "โนเอลร้องเพลง",
-            "game": "Grand Theft Auto V",
-            "curator": "DaLines",
-            "views": 145,
-            "duration": "0:26",
-            "category": "other",
-            "badge": "🚗 GTA V RP",
-            "badgeClass": "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/79fa3232-4084-4500-841a-62a6a2908872/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/BitterBraveTomatoEleGiggle-LCD4OrW4n4OP0N5Z",
-            "createdAt": "2022-05-28"
+        id: "clip-4",
+        title: "โนเอลร้องเพลง (GTA V RP Moment)",
+        category: "other",
+        duration: "0:26",
+        initialLikes: 145,
+        videoUrl: "https://www.twitch.tv/dalines/clip/BitterBraveTomatoEleGiggle-LCD4OrW4n4OP0N5Z",
+        embedUrl: "https://clips.twitch.tv/embed?clip=BitterBraveTomatoEleGiggle-LCD4OrW4n4OP0N5Z",
+        youtubeUrl: "",
+        slug: "BitterBraveTomatoEleGiggle-LCD4OrW4n4OP0N5Z",
+        curator: "DaLines",
+        game: "Grand Theft Auto V",
+        badge: "🚗 GTA V RP",
+        badgeClass: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
+        thumbnailUrl: "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/79fa3232-4084-4500-841a-62a6a2908872/landscape/thumb/thumb-0000000000-1920x1080.jpg"
       },
       {
-            "id": "clip-5",
-            "slug": "EnchantingLaconicSparrowTheTarFu",
-            "title": "Skip Valorant battle pass 50 tiers",
-            "game": "VALORANT",
-            "curator": "Archuron",
-            "views": 119,
-            "duration": "0:59",
-            "category": "valorant",
-            "badge": "🎯 VALORANT",
-            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/bac763d1-bca8-4134-be26-72ce11275692/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/EnchantingLaconicSparrowTheTarFu",
-            "createdAt": "2020-10-13"
+        id: "clip-5",
+        title: "Skip Valorant battle pass 50 tiers",
+        category: "valorant",
+        duration: "0:59",
+        initialLikes: 119,
+        videoUrl: "https://www.twitch.tv/dalines/clip/EnchantingLaconicSparrowTheTarFu",
+        embedUrl: "https://clips.twitch.tv/embed?clip=EnchantingLaconicSparrowTheTarFu",
+        youtubeUrl: "",
+        slug: "EnchantingLaconicSparrowTheTarFu",
+        curator: "Archuron",
+        game: "VALORANT",
+        badge: "🎯 VALORANT",
+        badgeClass: "bg-rose-500/20 text-rose-300 border-rose-500/40",
+        thumbnailUrl: "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/bac763d1-bca8-4134-be26-72ce11275692/landscape/thumb/thumb-0000000000-1920x1080.jpg"
       },
       {
-            "id": "clip-6",
-            "slug": "KnottyCuriousCattleHoneyBadger",
-            "title": "360 stinger",
-            "game": "VALORANT",
-            "curator": "DaLines",
-            "views": 111,
-            "duration": "0:28",
-            "category": "valorant",
-            "badge": "🎯 VALORANT",
-            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/ba2fdbe3-d147-49d5-bfa8-6bb6a71dc3c9/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/KnottyCuriousCattleHoneyBadger",
-            "createdAt": "2021-02-08"
-      },
-      {
-            "id": "clip-7",
-            "slug": "DependableGracefulWheelBrainSlug-SMdvjtBZ4jL7qMpP",
-            "title": "สมแล้วที่ชื่อ TaoHooo",
-            "game": "VALORANT",
-            "curator": "zealproject",
-            "views": 110,
-            "duration": "0:28",
-            "category": "valorant",
-            "badge": "🎯 VALORANT",
-            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/71cbeeed-d997-4d68-ad0c-c72b7033ddf3/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/DependableGracefulWheelBrainSlug-SMdvjtBZ4jL7qMpP",
-            "createdAt": "2021-04-11"
-      },
-      {
-            "id": "clip-8",
-            "slug": "PlainDiligentWolfBudBlast",
-            "title": "Scrim เค้าเล่นกันอย่างนี้",
-            "game": "Apex Legends",
-            "curator": "DaLines",
-            "views": 110,
-            "duration": "1:00",
-            "category": "apex",
-            "badge": "⚡ APEX HIGHLIGHT",
-            "badgeClass": "bg-amber-500/20 text-amber-300 border-amber-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/42c88ec2-96e0-486d-b9ed-1b14be00edc8/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/PlainDiligentWolfBudBlast",
-            "createdAt": "2020-05-09"
-      },
-      {
-            "id": "clip-9",
-            "slug": "ProtectiveVainGrouseBrokeBack",
-            "title": "ท่าหมา",
-            "game": "Apex Legends",
-            "curator": "ssingtho",
-            "views": 100,
-            "duration": "0:09",
-            "category": "apex",
-            "badge": "🏆 APEX MOMENT",
-            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/208d4b9d-daa6-41e0-8b6a-8d1ea6d6c2be/landscape/thumb/thumb-0000000000-1280x720.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/ProtectiveVainGrouseBrokeBack",
-            "createdAt": "2019-12-03"
-      },
-      {
-            "id": "clip-10",
-            "slug": "LitigiousIronicSageBCouch-ec4xE4jyeoPJ3qif",
-            "title": "กดเรี���กเคสมั้ยล่ะ 55555",
-            "game": "Grand Theft Auto V",
-            "curator": "DaLines",
-            "views": 94,
-            "duration": "1:00",
-            "category": "other",
-            "badge": "🚗 GTA V RP",
-            "badgeClass": "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/15059b4c-070a-45bc-9f6c-7084d18e04fc/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/LitigiousIronicSageBCouch-ec4xE4jyeoPJ3qif",
-            "createdAt": "2022-02-20"
-      },
-      {
-            "id": "clip-11",
-            "slug": "EnergeticImpossibleClipsdadKappaWealth",
-            "title": "โนตม",
-            "game": "Apex Legends",
-            "curator": "Archuron",
-            "views": 90,
-            "duration": "0:07",
-            "category": "apex",
-            "badge": "🏆 APEX MOMENT",
-            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/923a3fcd-3e25-4080-9eee-1beb1c547391/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/EnergeticImpossibleClipsdadKappaWealth",
-            "createdAt": "2020-11-20"
-      },
-      {
-            "id": "clip-12",
-            "slug": "LachrymoseObliviousCardHeyGirl",
-            "title": "RE-45 330m+ ",
-            "game": "Apex Legends",
-            "curator": "DaLines",
-            "views": 84,
-            "duration": "0:33",
-            "category": "apex",
-            "badge": "🏆 APEX MOMENT",
-            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/0bc22c82-b040-4ddd-812a-361460ff1919/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/LachrymoseObliviousCardHeyGirl",
-            "createdAt": "2020-05-24"
-      },
-      {
-            "id": "clip-13",
-            "slug": "InterestingRealBorkRalpherZ-a3CT1ubdygsDQTqS",
-            "title": "[ace] รีบขึ้นได โทษที",
-            "game": "VALORANT",
-            "curator": "DaLines",
-            "views": 82,
-            "duration": "0:30",
-            "category": "valorant",
-            "badge": "🔥 VALORANT ACE",
-            "badgeClass": "bg-red-500/20 text-red-300 border-red-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/6a2f7b98-be2d-45b7-9933-a871b4e782bc/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/InterestingRealBorkRalpherZ-a3CT1ubdygsDQTqS",
-            "createdAt": "2023-08-10"
-      },
-      {
-            "id": "clip-14",
-            "slug": "CuriousAffluentNewtSuperVinlin",
-            "title": "3 เกม apex 10 kills XD",
-            "game": "VALORANT",
-            "curator": "DaLines",
-            "views": 80,
-            "duration": "1:00",
-            "category": "valorant",
-            "badge": "🎯 VALORANT",
-            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/41e514a8-e92c-4eb4-a19a-7e7a98efd3a5/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/CuriousAffluentNewtSuperVinlin",
-            "createdAt": "2021-01-28"
-      },
-      {
-            "id": "clip-15",
-            "slug": "ArtisticAveragePepperoniSoBayed",
-            "title": "เชี้ยเฟี้ยวสัส อย่างเท��� idolเลย",
-            "game": "VALORANT",
-            "curator": "Archuron",
-            "views": 80,
-            "duration": "0:40",
-            "category": "valorant",
-            "badge": "🎯 VALORANT",
-            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/6b14209d-4958-45b6-b60c-387b1a47143a/landscape/thumb/thumb-0000000000-1664x936.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/ArtisticAveragePepperoniSoBayed",
-            "createdAt": "2021-01-06"
-      },
-      {
-            "id": "clip-16",
-            "slug": "AggressiveManlyPenguinKappaClaus",
-            "title": "หมากัดหัวนม",
-            "game": "Apex Legends",
-            "curator": "Archuron",
-            "views": 80,
-            "duration": "0:25",
-            "category": "apex",
-            "badge": "🏆 APEX MOMENT",
-            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/634b8de6-6953-463a-b706-6b662ef64154/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/AggressiveManlyPenguinKappaClaus",
-            "createdAt": "2020-08-22"
-      },
-      {
-            "id": "clip-17",
-            "slug": "HandsomeCallousRatMrDestructoid-Zzz6FfuzdD6PI3fy",
-            "title": "ฝาแฝดหอยแครง",
-            "game": "VALORANT",
-            "curator": "typepy",
-            "views": 77,
-            "duration": "1:00",
-            "category": "valorant",
-            "badge": "🎯 VALORANT",
-            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/bc2ad997-427f-4cf6-8350-9efe70fb2e46/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/HandsomeCallousRatMrDestructoid-Zzz6FfuzdD6PI3fy",
-            "createdAt": "2021-09-26"
-      },
-      {
-            "id": "clip-18",
-            "slug": "HomelyFurtiveSushiCclamChamp-jCKX-x3I_5Gii6zm",
-            "title": "เยนมาเเล้ว",
-            "game": "Apex Legends",
-            "curator": "guyenna",
-            "views": 73,
-            "duration": "0:12",
-            "category": "apex",
-            "badge": "🏆 APEX MOMENT",
-            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/e75a4a7b-2d99-4024-9c13-f0e7a200b8af/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/HomelyFurtiveSushiCclamChamp-jCKX-x3I_5Gii6zm",
-            "createdAt": "2021-05-31"
-      },
-      {
-            "id": "clip-19",
-            "slug": "MoldyDifficultCougarThisIsSparta",
-            "title": "ลงยังไง",
-            "game": "Fortnite",
-            "curator": "Ammarinn",
-            "views": 71,
-            "duration": "0:41",
-            "category": "other",
-            "badge": "🎪 FORTNITE",
-            "badgeClass": "bg-blue-500/20 text-blue-300 border-blue-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/6b8c647e-3ea8-41ef-83d0-46c0d2b80431/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/MoldyDifficultCougarThisIsSparta",
-            "createdAt": "2020-02-19"
-      },
-      {
-            "id": "clip-20",
-            "slug": "LuckyCrispyBasenjiOptimizePrime",
-            "title": "God Havoc",
-            "game": "Apex Legends",
-            "curator": "1StarGamingTH",
-            "views": 71,
-            "duration": "0:28",
-            "category": "apex",
-            "badge": "⚡ APEX HIGHLIGHT",
-            "badgeClass": "bg-amber-500/20 text-amber-300 border-amber-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/77d29652-6aa8-40b2-85fd-d25b9cb9d42e/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/LuckyCrispyBasenjiOptimizePrime",
-            "createdAt": "2020-05-03"
-      },
-      {
-            "id": "clip-21",
-            "slug": "AdventurousBlindingButterBIRB",
-            "title": "Lucky with largest crosshair",
-            "game": "VALORANT",
-            "curator": "DaLines",
-            "views": 69,
-            "duration": "0:23",
-            "category": "valorant",
-            "badge": "🎯 VALORANT",
-            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/4582e1d1-ff92-4392-a61d-4cb74bc3685f/landscape/thumb/thumb-0000000000-1664x936.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/AdventurousBlindingButterBIRB",
-            "createdAt": "2021-01-11"
-      },
-      {
-            "id": "clip-22",
-            "slug": "ExuberantPlausibleCoyoteStoneLightning",
-            "title": "Loba 3.8k Damage",
-            "game": "Apex Legends",
-            "curator": "DaLines",
-            "views": 66,
-            "duration": "1:00",
-            "category": "apex",
-            "badge": "⚡ APEX HIGHLIGHT",
-            "badgeClass": "bg-amber-500/20 text-amber-300 border-amber-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/640d4a55-73d5-4f2a-8496-472c6d518bcb/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/ExuberantPlausibleCoyoteStoneLightning",
-            "createdAt": "2020-05-15"
-      },
-      {
-            "id": "clip-23",
-            "slug": "ComfortableElatedInternSpicyBoy-kX84MxdkorxVtKZH",
-            "title": "เป็นแฟนทำไรได้บ้าง",
-            "game": "VALORANT",
-            "curator": "Archuron",
-            "views": 65,
-            "duration": "0:05",
-            "category": "valorant",
-            "badge": "🎯 VALORANT",
-            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/db8ad1f1-e699-4871-aaaf-d32a64101407/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/ComfortableElatedInternSpicyBoy-kX84MxdkorxVtKZH",
-            "createdAt": "2023-01-15"
-      },
-      {
-            "id": "clip-24",
-            "slug": "InnocentTangiblePuppyDancingBaby",
-            "title": "หลุด",
-            "game": "Apex Legends",
-            "curator": "typepy",
-            "views": 60,
-            "duration": "0:28",
-            "category": "apex",
-            "badge": "🏆 APEX MOMENT",
-            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/da18730e-cc88-48bd-87a9-d5836fe88504/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/InnocentTangiblePuppyDancingBaby",
-            "createdAt": "2020-05-10"
+        id: "clip-6",
+        title: "360 stinger สะบัดยิงอย่างตึง",
+        category: "valorant",
+        duration: "0:28",
+        initialLikes: 111,
+        videoUrl: "https://www.twitch.tv/dalines/clip/KnottyCuriousCattleHoneyBadger",
+        embedUrl: "https://clips.twitch.tv/embed?clip=KnottyCuriousCattleHoneyBadger",
+        youtubeUrl: "",
+        slug: "KnottyCuriousCattleHoneyBadger",
+        curator: "DaLines",
+        game: "VALORANT",
+        badge: "🎯 VALORANT",
+        badgeClass: "bg-rose-500/20 text-rose-300 border-rose-500/40",
+        thumbnailUrl: "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/ba2fdbe3-d147-49d5-bfa8-6bb6a71dc3c9/landscape/thumb/thumb-0000000000-1920x1080.jpg"
       }
-];
+    ];
 
     let currentClipFilter = 'all';
 
@@ -3580,7 +4290,8 @@
 
       grid.innerHTML = filtered.map(clip => {
         const isLiked = !!likedMap[clip.id];
-        const likes = clip.views + (isLiked ? 1 : 0);
+        const baseLikes = typeof clip.initialLikes === "number" ? clip.initialLikes : (clip.views || 100);
+        const likes = baseLikes + (isLiked ? 1 : 0);
         return `
           <div class="tilt-card rounded-xl bg-slate-900/90 border border-slate-800 hover:border-purple-500/50 transition-all duration-300 flex flex-col justify-between shadow-lg relative group overflow-hidden">
             <!-- Video Thumbnail with 16:9 aspect ratio and hover overlay -->
@@ -3693,15 +4404,38 @@
       const extLink = document.getElementById('clip-modal-ext-link');
 
       if (title) title.innerText = clip.title;
-      if (badge) badge.innerText = `${clip.game.toUpperCase()} • ${clip.views} VIEWS • CLIPPED BY ${clip.curator.toUpperCase()}`;
-      
-      const hostname = window.location.hostname || 'dalines-site.dalines.workers.dev';
-      const embedUrl = `https://clips.twitch.tv/embed?clip=${encodeURIComponent(clip.slug)}&parent=${hostname}&parent=localhost&parent=127.0.0.1&parent=dalines-site.dalines.workers.dev&parent=dalines.pages.dev&autoplay=true`;
-      if (iframe) iframe.src = embedUrl;
+      if (badge) badge.innerText = `${(clip.game || 'VALORANT').toUpperCase()} • ${clip.duration || '0:30'} • BY ${(clip.curator || 'DaLines').toUpperCase()}`;
+
+      // Resolve embed URL
+      let embedSrc = clip.embedUrl || '';
+      const parentQuery = getTwitchParentsQuery();
+
+      if (!embedSrc) {
+        if (clip.youtubeUrl) {
+          const ytMatch = clip.youtubeUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
+          if (ytMatch) {
+            embedSrc = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
+          }
+        } else if (clip.slug) {
+          embedSrc = `https://clips.twitch.tv/embed?clip=${encodeURIComponent(clip.slug)}&${parentQuery}&autoplay=true`;
+        } else if (clip.videoUrl) {
+          embedSrc = clip.videoUrl;
+        }
+      } else if (embedSrc.includes('twitch.tv/embed') || embedSrc.includes('clips.twitch.tv')) {
+        if (!embedSrc.includes('parent=')) {
+          embedSrc += (embedSrc.includes('?') ? '&' : '?') + parentQuery;
+        }
+        if (!embedSrc.includes('autoplay=')) {
+          embedSrc += '&autoplay=true';
+        }
+      }
+
+      if (iframe) iframe.src = embedSrc || 'about:blank';
 
       if (extLink) {
-        extLink.href = clip.clipUrl;
-        extLink.innerHTML = `<i class="fa-brands fa-twitch"></i> <span>เปิดบน Twitch</span> <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>`;
+        const targetUrl = clip.youtubeUrl || clip.videoUrl || clip.clipUrl || (clip.slug ? `https://www.twitch.tv/dalines/clip/${clip.slug}` : 'https://www.twitch.tv/dalines');
+        extLink.href = targetUrl;
+        extLink.innerHTML = `<i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i> <span>เปิดดูคลิปต้นฉบับ</span>`;
       }
       if (modal) modal.classList.remove('hidden');
     }
@@ -3715,17 +4449,17 @@
     }
 
     function shareClip(clipId, e) {
-      e.stopPropagation();
+      if (e) e.stopPropagation();
       playSound('pop');
       const clip = DALINES_CLIPS.find(c => c.id === clipId);
       if (!clip) return;
+      const targetUrl = clip.youtubeUrl || clip.videoUrl || clip.clipUrl || (clip.slug ? `https://www.twitch.tv/dalines/clip/${clip.slug}` : window.location.href);
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(`${clip.title} - ชมคลิป DaLines จาก Twitch: ${clip.clipUrl}`);
+        navigator.clipboard.writeText(`${clip.title} - ชมคลิป DaLines: ${targetUrl}`);
       }
-      showToast('คัดลอกลิงก์คลิป Twitch เรียบร้อย! 🎬');
+      showToast('คัดลอกลิงก์คลิปเรียบร้อย! 🎬');
     }
 
-    // -----------------------------------------------------------------
     // 🎮 FPS E-DPI CALCULATOR & CROSS-GAME SENSITIVITY CONVERTER
     // High-precision physical distance conversion (cm/360°)
     // -----------------------------------------------------------------
@@ -4088,7 +4822,7 @@
         name: "!sens",
         cat: "aim",
         desc: "ความไวเมาส์ในเกม (In-game Sensitivity)",
-        response: "Valorant : in game sens : 0.3 // ADS : 1.0 | Apex : in game sens : 1.8 // ADS : 1.0",
+        response: "Valorant : in game sens : 0.45 (DPI 800) // Scoped : 1.00 | Apex : in game sens : 1.43 // ADS : 1.0",
         tags: ["sens", "ความไว", "เมาส์", "valorant", "apex"]
       },
       {
@@ -4141,7 +4875,7 @@
         name: "!ign",
         cat: "ign",
         desc: "ชื่อไอดีในเกม Valorant (หลัก & รอง)",
-        response: "หลัก DaLines #0001 | ไก่1 DaLines #0002 | ไก่2 DaLines #0003 | ไก่3 DaLines #0004 | ไก่4 DaLines #0005",
+        response: "Riot ID / Valorant : DaLines#TTV (กด Follow สตรีมก่อนแอดมาเล่นด้วยกันนะ!)",
         tags: ["ign", "ชื่อ", "ไอดี", "id", "valorant"]
       },
       {
@@ -4858,10 +5592,10 @@
 
     const WEEKLY_SCHEDULE_DATA = [
       { day: 0, name: "วันอาทิตย์ (Sunday)", status: "OFF", badge: "💤 วันพักผ่อน", game: "😴 พักผ่อนชาร์จพลัง • เจอกันใหม่วันจันทร์", time: "OFF DAY", icon: "fa-bed", isLive: false },
-      { day: 1, name: "วันจันทร์ (Monday)", status: "LIVE", badge: "🟢 LIVE 19:30", game: "🎯 Valorant ไต่แรงค์กับตวง • สายยิงเน้นโยน", time: "19:30 - 23:30", icon: "fa-crosshairs", isLive: true },
-      { day: 2, name: "วันอังคาร (Tuesday)", status: "LIVE", badge: "🟢 LIVE 19:30", game: "🏹 Valorant ลุยเดี่ยว • ฝึกเป้าเล็งวันแท็ป", time: "19:30 - 23:30", icon: "fa-bullseye", isLive: true },
-      { day: 3, name: "วันพุธ (Wednesday)", status: "LIVE", badge: "🟢 LIVE 19:30", game: "🛡️ Apex Legends / Party เล่นกับคนดู", time: "19:30 - 23:30", icon: "fa-shield-halved", isLive: true },
-      { day: 4, name: "วันพฤหัสบดี (Thursday)", status: "LIVE", badge: "🟢 LIVE 19:30", game: "🎯 Valorant Custom Game กับคนดูในดิสคอร์ด", time: "19:30 - 23:30", icon: "fa-users", isLive: true },
+      { day: 1, name: "วันจันทร์ (Monday)", status: "LIVE", badge: "🟢 LIVE 20:00", game: "🎯 Valorant ไต่แรงค์กับตวง • สายยิงเน้นโยน", time: "20:00 - เที่ยงคืน", icon: "fa-crosshairs", isLive: true },
+      { day: 2, name: "วันอังคาร (Tuesday)", status: "LIVE", badge: "🟢 LIVE 20:00", game: "🏹 Valorant ลุยเดี่ยว • ฝึกเป้าเล็งวันแท็ป", time: "20:00 - เที่ยงคืน", icon: "fa-bullseye", isLive: true },
+      { day: 3, name: "วันพุธ (Wednesday)", status: "LIVE", badge: "🟢 LIVE 20:00", game: "🛡️ Apex Legends / Party เล่นกับคนดู", time: "20:00 - เที่ยงคืน", icon: "fa-shield-halved", isLive: true },
+      { day: 4, name: "วันพฤหัสบดี (Thursday)", status: "LIVE", badge: "🟢 LIVE 20:00", game: "🎯 Valorant Custom Game กับคนดูในดิสคอร์ด", time: "20:00 - เที่ยงคืน", icon: "fa-users", isLive: true },
       { day: 5, name: "วันศุกร์ (Friday)", status: "LIVE", badge: "🔥 FRIDAY NIGHT", game: "🍻 Friday Night Live สตรีมยาวๆ ฉลองสุดสัปดาห์", time: "20:00 - 00:30", icon: "fa-fire", isLive: true },
       { day: 6, name: "วันเสาร์ (Saturday)", status: "LIVE", badge: "⭐ WEEKEND SPECIAL", game: "🎮 วาไรตี้ & ชาเลนจ์สุดปั่นตามใจคนดู", time: "19:00 - 23:30", icon: "fa-trophy", isLive: true }
     ];
@@ -4921,7 +5655,7 @@
         const sched = WEEKLY_SCHEDULE_DATA.find(d => d.day === curDay);
 
         let target = new Date();
-        target.setHours(19, 30, 0, 0);
+        target.setHours(20, 0, 0, 0);
 
         // If today passed or today is off day, find next live day
         if (now >= target || (sched && !sched.isLive)) {
@@ -4934,7 +5668,7 @@
             if (nextSched && nextSched.isLive) {
               target = new Date();
               target.setDate(now.getDate() + nextDays);
-              target.setHours(19, 30, 0, 0);
+              target.setHours(20, 0, 0, 0);
               break;
             }
             nextDays++;
