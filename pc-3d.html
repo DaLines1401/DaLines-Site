@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="th" class="dark">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
   <title>DaLines 3D World | Sky Metropolis & Interactive Battle Station 🎮</title>
-  <meta name="description" content="สำรวจโลก DaLines ในรูปแบบ 3D Isometric Sky Metropolis จำลองเมืองลอยฟ้า Bio, PC Specs, Twitch Clips, และ Community ด้วย Three.js" />
+  <meta name="description"
+    content="สำรวจโลก DaLines ในรูปแบบ 3D Isometric Sky Metropolis จำลองเมืองลอยฟ้า Bio, PC Specs, Twitch Clips, และ Community ด้วย Three.js" />
   <link rel="icon" type="image/png" sizes="32x32" href="Logo.png" />
   <meta name="theme-color" content="#10b981" />
 
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
   <!-- Tailwind CSS CDN -->
@@ -50,11 +54,13 @@
       --primary-color: #10b981;
       --primary-glow: rgba(16, 185, 129, 0.5);
     }
+
     * {
       box-sizing: border-box;
       user-select: none;
       -webkit-user-select: none;
     }
+
     body {
       margin: 0;
       padding: 0;
@@ -65,6 +71,7 @@
       width: 100vw;
       height: 100vh;
     }
+
     #webgl-container {
       position: absolute;
       top: 0;
@@ -73,6 +80,7 @@
       height: 100%;
       z-index: 1;
     }
+
     .hud-layer {
       position: absolute;
       top: 0;
@@ -82,6 +90,7 @@
       pointer-events: none;
       z-index: 20;
     }
+
     .hud-layer * {
       pointer-events: auto;
     }
@@ -91,9 +100,11 @@
       width: 5px;
       height: 5px;
     }
+
     ::-webkit-scrollbar-track {
       background: rgba(15, 23, 42, 0.6);
     }
+
     ::-webkit-scrollbar-thumb {
       background: rgba(16, 185, 129, 0.5);
       border-radius: 999px;
@@ -101,9 +112,19 @@
 
     /* Pulse Glow Animations */
     @keyframes pulseSoft {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.08); opacity: 0.85; }
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.08);
+        opacity: 0.85;
+      }
     }
+
     .pulse-dot {
       animation: pulseSoft 2s infinite ease-in-out;
     }
@@ -112,9 +133,11 @@
     .build-dock-btn {
       transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
+
     .build-dock-btn:hover {
       transform: translateY(-4px) scale(1.03);
     }
+
     .build-dock-btn.active {
       transform: translateY(-5px) scale(1.06);
       box-shadow: 0 0 15px rgba(255, 255, 255, 0.45);
@@ -134,6 +157,7 @@
     #modal-overlay {
       transition: opacity 0.3s ease, visibility 0.3s ease;
     }
+
     #modal-overlay.hidden {
       opacity: 0;
       visibility: hidden;
@@ -141,6 +165,7 @@
     }
   </style>
 </head>
+
 <body class="overflow-hidden select-none">
 
   <!-- 3D Canvas Container -->
@@ -158,9 +183,11 @@
         <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 flex items-center gap-4 sm:gap-6 shadow-2xl">
           <!-- Treasury / Channel Bits -->
           <div class="flex flex-col">
-            <span class="text-[10px] sm:text-[11px] font-mono tracking-wider text-slate-400 font-bold uppercase" data-i18n="treasury_lbl">TREASURY</span>
+            <span class="text-[10px] sm:text-[11px] font-mono tracking-wider text-slate-400 font-bold uppercase"
+              data-i18n="treasury_lbl">TREASURY</span>
             <div class="flex items-center gap-1">
-              <span id="stat-treasury" class="font-gaming font-extrabold text-base sm:text-xl text-[#34d399] tracking-tight">$1,401</span>
+              <span id="stat-treasury"
+                class="font-gaming font-extrabold text-base sm:text-xl text-[#34d399] tracking-tight">$1,401</span>
             </div>
           </div>
 
@@ -168,38 +195,54 @@
 
           <!-- Citizens / Followers -->
           <div class="flex flex-col">
-            <span class="text-[10px] sm:text-[11px] font-mono tracking-wider text-slate-400 font-bold uppercase" data-i18n="citizens_lbl">CITIZENS</span>
-            <span id="stat-citizens" class="font-gaming font-extrabold text-base sm:text-xl text-[#38bdf8] tracking-tight">5,820</span>
+            <span class="text-[10px] sm:text-[11px] font-mono tracking-wider text-slate-400 font-bold uppercase"
+              data-i18n="citizens_lbl">CITIZENS</span>
+            <span id="stat-citizens"
+              class="font-gaming font-extrabold text-base sm:text-xl text-[#38bdf8] tracking-tight">5,820</span>
           </div>
 
           <div class="w-px h-7 bg-slate-700/60"></div>
 
           <!-- Day Count -->
           <div class="flex flex-col">
-            <span class="text-[10px] sm:text-[11px] font-mono tracking-wider text-slate-400 font-bold uppercase" data-i18n="day_lbl">DAY</span>
-            <span id="stat-days" class="font-gaming font-extrabold text-base sm:text-xl text-white tracking-tight">3,080</span>
+            <span class="text-[10px] sm:text-[11px] font-mono tracking-wider text-slate-400 font-bold uppercase"
+              data-i18n="day_lbl">DAY</span>
+            <span id="stat-days"
+              class="font-gaming font-extrabold text-base sm:text-xl text-white tracking-tight">3,080</span>
           </div>
         </div>
 
         <!-- Sub Badges: Return to Hub & Stream Status -->
         <div class="flex items-center gap-2 flex-wrap">
-          <a href="index.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/70 text-xs font-medium backdrop-blur-md transition shadow-md group">
-            <i class="fa-solid fa-arrow-left text-emerald-400 group-hover:-translate-x-0.5 transition-transform text-[11px]"></i>
+          <a href="index.html"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/70 text-xs font-medium backdrop-blur-md transition shadow-md group">
+            <i
+              class="fa-solid fa-arrow-left text-emerald-400 group-hover:-translate-x-0.5 transition-transform text-[11px]"></i>
             <span data-i18n="back_to_hub">DaLines Hub</span>
           </a>
 
-          <a href="snow.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-950/80 hover:bg-sky-900 text-sky-300 hover:text-white border border-sky-500/40 text-xs font-medium backdrop-blur-md transition shadow-md group">
+          <a href="snow.html"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-950/80 hover:bg-sky-900 text-sky-300 hover:text-white border border-sky-500/40 text-xs font-medium backdrop-blur-md transition shadow-md group">
             <i class="fa-solid fa-snowflake text-sky-400"></i>
-            <span>Cozy Snow Plow ❄️</span>
+            <span>Snow Plow ❄️</span>
           </a>
 
-          <div class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-950/70 border border-emerald-500/40 text-[11px] text-emerald-300 backdrop-blur-md">
+          <a href="pixel.html"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-pink-950/80 hover:bg-pink-900 text-pink-300 hover:text-white border border-pink-500/40 text-xs font-medium backdrop-blur-md transition shadow-md group">
+            <i class="fa-solid fa-gamepad text-pink-400"></i>
+            <span>8-Bit Pixel 👾</span>
+          </a>
+
+          <div
+            class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-950/70 border border-emerald-500/40 text-[11px] text-emerald-300 backdrop-blur-md">
             <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-dot"></span>
             <span class="font-mono font-bold">ONLINE</span>
             <span class="text-slate-400 text-[10px] hidden sm:inline">• twitch.tv/dalines</span>
           </div>
 
-          <button id="btn-audio-toggle" onclick="toggleAudio()" class="w-8 h-8 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/70 flex items-center justify-center text-xs backdrop-blur-md transition shadow-md" title="Toggle Sound FX">
+          <button id="btn-audio-toggle" onclick="toggleAudio()"
+            class="w-8 h-8 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/70 flex items-center justify-center text-xs backdrop-blur-md transition shadow-md"
+            title="Toggle Sound FX">
             <i id="audio-icon" class="fa-solid fa-volume-high text-emerald-400"></i>
           </button>
         </div>
@@ -207,29 +250,36 @@
 
       <!-- CENTER (Optional controls for camera & sky) -->
       <div class="hidden md:flex items-center gap-1.5 glass-card px-2.5 py-1.5 rounded-xl shadow-lg">
-        <button onclick="setCameraView('iso')" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+        <button onclick="setCameraView('iso')"
+          class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
           <i class="fa-solid fa-cube text-emerald-400 mr-1"></i> Isometric
         </button>
-        <button onclick="setCameraView('tour')" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+        <button onclick="setCameraView('tour')"
+          class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
           <i class="fa-solid fa-video text-cyan-400 mr-1"></i> Tour
         </button>
-        <button onclick="cycleSky()" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+        <button onclick="cycleSky()"
+          class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
           <i id="sky-icon" class="fa-solid fa-sun text-amber-400 mr-1"></i> Sky
         </button>
-        <button onclick="toggleLang()" class="px-2 py-1 rounded-lg text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition font-mono">
+        <button onclick="toggleLang()"
+          class="px-2 py-1 rounded-lg text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition font-mono">
           <span id="lang-btn-text">TH</span>
         </button>
       </div>
 
       <!-- RIGHT: AI ADVISOR (Exact Layout & Visual Style from Screenshot) -->
-      <div class="glass-card rounded-2xl p-3.5 sm:p-4 w-72 sm:w-84 max-w-[85vw] shadow-2xl border border-indigo-500/30 bg-[#16172e]/90 space-y-2">
+      <div
+        class="glass-card rounded-2xl p-3.5 sm:p-4 w-72 sm:w-84 max-w-[85vw] shadow-2xl border border-indigo-500/30 bg-[#16172e]/90 space-y-2">
         <!-- Header -->
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-violet-400 shadow-[0_0_8px_#c084fc] pulse-dot"></span>
             <span class="font-gaming font-extrabold text-xs sm:text-sm text-violet-200 tracking-wider">AI ADVISOR</span>
           </div>
-          <span class="text-[9px] font-mono text-violet-300 bg-violet-500/20 px-2 py-0.5 rounded-full border border-violet-500/30">v2.6 STREAM</span>
+          <span
+            class="text-[9px] font-mono text-violet-300 bg-violet-500/20 px-2 py-0.5 rounded-full border border-violet-500/30">v2.6
+            STREAM</span>
         </div>
 
         <!-- Status / Spinner -->
@@ -239,22 +289,28 @@
         </div>
 
         <!-- Message Box with typing effect -->
-        <div class="bg-black/40 rounded-xl p-2.5 border border-indigo-950 text-xs text-slate-200 leading-relaxed min-h-[48px] flex items-center">
-          <p id="advisor-text">ยินดีต้อนรับสู่ DaLines Metropolis! คลิกที่สิ่งก่อสร้างเพื่อดู Bio, สเปกคอม หรือเลือกเครื่องมือด้านล่างเพื่อสร้างเมือง</p>
+        <div
+          class="bg-black/40 rounded-xl p-2.5 border border-indigo-950 text-xs text-slate-200 leading-relaxed min-h-[48px] flex items-center">
+          <p id="advisor-text">ยินดีต้อนรับสู่ DaLines Metropolis! คลิกที่สิ่งก่อสร้างเพื่อดู Bio, สเปกคอม
+            หรือเลือกเครื่องมือด้านล่างเพื่อสร้างเมือง</p>
         </div>
 
         <!-- Quick Question Chips -->
         <div class="flex items-center gap-1.5 flex-wrap pt-1 text-[10px]">
-          <button onclick="askAdvisor('who')" class="px-2 py-0.5 rounded-lg bg-violet-950/60 hover:bg-violet-800/80 text-violet-200 border border-violet-500/30 transition">
+          <button onclick="askAdvisor('who')"
+            class="px-2 py-0.5 rounded-lg bg-violet-950/60 hover:bg-violet-800/80 text-violet-200 border border-violet-500/30 transition">
             👤 DaLines คือใคร?
           </button>
-          <button onclick="askAdvisor('pc')" class="px-2 py-0.5 rounded-lg bg-violet-950/60 hover:bg-violet-800/80 text-violet-200 border border-violet-500/30 transition">
+          <button onclick="askAdvisor('pc')"
+            class="px-2 py-0.5 rounded-lg bg-violet-950/60 hover:bg-violet-800/80 text-violet-200 border border-violet-500/30 transition">
             🖥️ สเปกคอม
           </button>
-          <button onclick="askAdvisor('clips')" class="px-2 py-0.5 rounded-lg bg-violet-950/60 hover:bg-violet-800/80 text-violet-200 border border-violet-500/30 transition">
+          <button onclick="askAdvisor('clips')"
+            class="px-2 py-0.5 rounded-lg bg-violet-950/60 hover:bg-violet-800/80 text-violet-200 border border-violet-500/30 transition">
             🎬 ดูคลิปไฮไลท์
           </button>
-          <button onclick="askAdvisor('donate')" class="px-2 py-0.5 rounded-lg bg-violet-950/60 hover:bg-violet-800/80 text-violet-200 border border-violet-500/30 transition">
+          <button onclick="askAdvisor('donate')"
+            class="px-2 py-0.5 rounded-lg bg-violet-950/60 hover:bg-violet-800/80 text-violet-200 border border-violet-500/30 transition">
             💰 โดเนท EZDN
           </button>
         </div>
@@ -267,19 +323,25 @@
 
       <!-- LEFT: BUILD TOOLBAR DOCK (Exact Layout from Screenshot) -->
       <div class="flex items-center">
-        <div class="glass-card rounded-2xl p-2 sm:p-2.5 flex items-center gap-1.5 sm:gap-2 shadow-2xl border border-slate-700/60 bg-[#111622]/90">
+        <div
+          class="glass-card rounded-2xl p-2 sm:p-2.5 flex items-center gap-1.5 sm:gap-2 shadow-2xl border border-slate-700/60 bg-[#111622]/90">
 
           <!-- 1. BULLDOZE TOOL (Red Square with X) -->
-          <button type="button" onclick="selectTool('bulldoze')" id="tool-bulldoze" class="build-dock-btn flex flex-col items-center justify-between w-12 h-14 sm:w-14 sm:h-16 rounded-xl bg-slate-900 border border-slate-800 p-1.5 transition">
-            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-red-600 flex items-center justify-center text-white shadow-md">
+          <button type="button" onclick="selectTool('bulldoze')" id="tool-bulldoze"
+            class="build-dock-btn flex flex-col items-center justify-between w-12 h-14 sm:w-14 sm:h-16 rounded-xl bg-slate-900 border border-slate-800 p-1.5 transition">
+            <div
+              class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-red-600 flex items-center justify-center text-white shadow-md">
               <i class="fa-solid fa-xmark text-sm sm:text-base font-bold"></i>
             </div>
-            <span class="text-[8px] sm:text-[9px] font-gaming font-extrabold tracking-tight text-red-300">BULLDOZE</span>
+            <span
+              class="text-[8px] sm:text-[9px] font-gaming font-extrabold tracking-tight text-red-300">BULLDOZE</span>
           </button>
 
           <!-- 2. ROAD TOOL -->
-          <button type="button" onclick="selectTool('road')" id="tool-road" class="build-dock-btn flex flex-col items-center justify-between w-12 h-14 sm:w-14 sm:h-16 rounded-xl bg-slate-900 border border-slate-800 p-1.5 transition">
-            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#273043] border border-slate-600 flex items-center justify-center text-amber-300">
+          <button type="button" onclick="selectTool('road')" id="tool-road"
+            class="build-dock-btn flex flex-col items-center justify-between w-12 h-14 sm:w-14 sm:h-16 rounded-xl bg-slate-900 border border-slate-800 p-1.5 transition">
+            <div
+              class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#273043] border border-slate-600 flex items-center justify-center text-amber-300">
               <i class="fa-solid fa-road text-xs sm:text-sm"></i>
             </div>
             <div class="flex flex-col items-center">
@@ -289,8 +351,10 @@
           </button>
 
           <!-- 3. HOUSE / STUDIO (Default active with Coral/Orange highlight like screenshot) -->
-          <button type="button" onclick="selectTool('house')" id="tool-house" class="build-dock-btn active flex flex-col items-center justify-between w-12 h-14 sm:w-14 sm:h-16 rounded-xl bg-slate-900 border border-slate-800 p-1.5 transition">
-            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#e76f51] flex items-center justify-center text-white shadow-md">
+          <button type="button" onclick="selectTool('house')" id="tool-house"
+            class="build-dock-btn active flex flex-col items-center justify-between w-12 h-14 sm:w-14 sm:h-16 rounded-xl bg-slate-900 border border-slate-800 p-1.5 transition">
+            <div
+              class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#e76f51] flex items-center justify-center text-white shadow-md">
               <i class="fa-solid fa-house-chimney text-xs sm:text-sm"></i>
             </div>
             <div class="flex flex-col items-center">
@@ -300,8 +364,10 @@
           </button>
 
           <!-- 4. SHOP / TWITCH CAFE -->
-          <button type="button" onclick="selectTool('shop')" id="tool-shop" class="build-dock-btn flex flex-col items-center justify-between w-12 h-14 sm:w-14 sm:h-16 rounded-xl bg-slate-900 border border-slate-800 p-1.5 transition">
-            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#3a86ff] flex items-center justify-center text-white shadow-md">
+          <button type="button" onclick="selectTool('shop')" id="tool-shop"
+            class="build-dock-btn flex flex-col items-center justify-between w-12 h-14 sm:w-14 sm:h-16 rounded-xl bg-slate-900 border border-slate-800 p-1.5 transition">
+            <div
+              class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#3a86ff] flex items-center justify-center text-white shadow-md">
               <i class="fa-solid fa-shop text-xs sm:text-sm"></i>
             </div>
             <div class="flex flex-col items-center">
@@ -311,8 +377,10 @@
           </button>
 
           <!-- 5. FACTORY / RIG TECH -->
-          <button type="button" onclick="selectTool('factory')" id="tool-factory" class="build-dock-btn flex flex-col items-center justify-between w-12 h-14 sm:w-14 sm:h-16 rounded-xl bg-slate-900 border border-slate-800 p-1.5 transition">
-            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#ffbe0b] flex items-center justify-center text-slate-900 shadow-md">
+          <button type="button" onclick="selectTool('factory')" id="tool-factory"
+            class="build-dock-btn flex flex-col items-center justify-between w-12 h-14 sm:w-14 sm:h-16 rounded-xl bg-slate-900 border border-slate-800 p-1.5 transition">
+            <div
+              class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#ffbe0b] flex items-center justify-center text-slate-900 shadow-md">
               <i class="fa-solid fa-industry text-xs sm:text-sm"></i>
             </div>
             <div class="flex flex-col items-center">
@@ -322,8 +390,10 @@
           </button>
 
           <!-- 6. PARK / EMOTE PLAZA -->
-          <button type="button" onclick="selectTool('park')" id="tool-park" class="build-dock-btn flex flex-col items-center justify-between w-12 h-14 sm:w-14 sm:h-16 rounded-xl bg-slate-900 border border-slate-800 p-1.5 transition">
-            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#06d6a0] flex items-center justify-center text-slate-900 shadow-md">
+          <button type="button" onclick="selectTool('park')" id="tool-park"
+            class="build-dock-btn flex flex-col items-center justify-between w-12 h-14 sm:w-14 sm:h-16 rounded-xl bg-slate-900 border border-slate-800 p-1.5 transition">
+            <div
+              class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#06d6a0] flex items-center justify-center text-slate-900 shadow-md">
               <i class="fa-solid fa-tree text-xs sm:text-sm"></i>
             </div>
             <div class="flex flex-col items-center">
@@ -334,14 +404,16 @@
 
           <!-- Vertical Label "BUILD" (from Screenshot) -->
           <div class="h-14 sm:h-16 flex items-center justify-center pl-1 pr-1 border-l border-slate-800">
-            <span class="text-[9px] sm:text-[10px] font-gaming font-extrabold tracking-widest text-slate-500 uppercase [writing-mode:vertical-rl] rotate-180">BUILD</span>
+            <span
+              class="text-[9px] sm:text-[10px] font-gaming font-extrabold tracking-widest text-slate-500 uppercase [writing-mode:vertical-rl] rotate-180">BUILD</span>
           </div>
 
         </div>
       </div>
 
       <!-- RIGHT: CITY FEED (Exact Layout & Visual Style from Screenshot) -->
-      <div class="glass-card rounded-2xl p-3 sm:p-4 w-72 sm:w-88 max-w-[85vw] shadow-2xl border border-slate-800 bg-[#10141e]/95 space-y-2">
+      <div
+        class="glass-card rounded-2xl p-3 sm:p-4 w-72 sm:w-88 max-w-[85vw] shadow-2xl border border-slate-800 bg-[#10141e]/95 space-y-2">
         <!-- Title bar with Red live dot on top right -->
         <div class="flex items-center justify-between">
           <span class="font-gaming font-bold text-xs sm:text-sm text-slate-200 tracking-wider">CITY FEED</span>
@@ -349,7 +421,8 @@
         </div>
 
         <!-- Monospace Console Feed -->
-        <div id="city-feed-container" class="bg-black/60 rounded-xl p-2.5 border border-slate-900/80 font-mono text-[11px] sm:text-xs text-[#34d399] leading-relaxed max-h-24 overflow-y-auto space-y-1">
+        <div id="city-feed-container"
+          class="bg-black/60 rounded-xl p-2.5 border border-slate-900/80 font-mono text-[11px] sm:text-xs text-[#34d399] leading-relaxed max-h-24 overflow-y-auto space-y-1">
           <div class="flex items-start justify-between gap-2">
             <span>Welcome to SkyMetropolis. Terrain generation complete.</span>
             <span class="text-slate-500 text-[10px] shrink-0">08:33</span>
@@ -366,44 +439,61 @@
   </div>
 
   <!-- DALINES DOSSIER / INTERACTIVE MODAL (Triggered when clicking buildings or landmarks) -->
-  <div id="modal-overlay" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-    <div class="glass-card w-full max-w-2xl rounded-3xl border border-slate-700/70 p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+  <div id="modal-overlay"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+    <div
+      class="glass-card w-full max-w-2xl rounded-3xl border border-slate-700/70 p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
 
       <!-- Modal Header -->
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <div class="flex items-center gap-3">
-          <div id="modal-icon-container" class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-lg">
+          <div id="modal-icon-container"
+            class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-lg">
             <i id="modal-icon" class="fa-solid fa-user"></i>
           </div>
           <div>
-            <h2 id="modal-title" class="text-lg sm:text-xl font-gaming font-extrabold text-white">DaLines Gaming Studio</h2>
-            <p id="modal-subtitle" class="text-xs text-slate-400 font-mono">Streamer Base &amp; Battle Command Center</p>
+            <h2 id="modal-title" class="text-lg sm:text-xl font-gaming font-extrabold text-white">DaLines Gaming Studio
+            </h2>
+            <p id="modal-subtitle" class="text-xs text-slate-400 font-mono">Streamer Base &amp; Battle Command Center
+            </p>
           </div>
         </div>
-        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition">
+        <button onclick="closeModal()"
+          class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
       <!-- Navigation Tabs in Modal -->
       <div class="flex items-center gap-2 border-b border-slate-800/80 pb-2 overflow-x-auto text-xs">
-        <button onclick="switchModalTab('bio')" id="modal-tab-bio" class="px-3 py-1.5 rounded-xl bg-emerald-500 text-black font-bold transition">🎮 Bio &amp; Story</button>
-        <button onclick="switchModalTab('specs')" id="modal-tab-specs" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white transition">🖥️ PC Specs</button>
-        <button onclick="switchModalTab('clips')" id="modal-tab-clips" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white transition">🎬 Clips &amp; Highlights</button>
-        <button onclick="switchModalTab('community')" id="modal-tab-community" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white transition">💜 Community &amp; Donate</button>
+        <button onclick="switchModalTab('bio')" id="modal-tab-bio"
+          class="px-3 py-1.5 rounded-xl bg-emerald-500 text-black font-bold transition">🎮 Bio &amp; Story</button>
+        <button onclick="switchModalTab('specs')" id="modal-tab-specs"
+          class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white transition">🖥️ PC Specs</button>
+        <button onclick="switchModalTab('clips')" id="modal-tab-clips"
+          class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white transition">🎬 Clips &amp;
+          Highlights</button>
+        <button onclick="switchModalTab('community')" id="modal-tab-community"
+          class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white transition">💜 Community &amp;
+          Donate</button>
       </div>
 
       <!-- Tab 1: Bio & Channel -->
       <div id="tab-pane-bio" class="space-y-4">
-        <div class="flex flex-col sm:flex-row items-center gap-4 bg-slate-900/60 p-4 rounded-2xl border border-slate-800">
-          <img src="Logo.png" alt="DaLines Logo" class="w-20 h-20 rounded-2xl border border-emerald-500/40 shadow-lg object-cover" />
+        <div
+          class="flex flex-col sm:flex-row items-center gap-4 bg-slate-900/60 p-4 rounded-2xl border border-slate-800">
+          <img src="Logo.png" alt="DaLines Logo"
+            class="w-20 h-20 rounded-2xl border border-emerald-500/40 shadow-lg object-cover" />
           <div class="space-y-1 text-center sm:text-left">
             <div class="flex items-center justify-center sm:justify-start gap-2">
               <span class="text-base font-bold text-white">DaLines (ตวง)</span>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">IGN: DaLines#TTV</span>
+              <span
+                class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">IGN:
+                DaLines#TTV</span>
             </div>
             <p class="text-xs text-slate-300 leading-relaxed">
-              "สตรีมเมอร์สายยิง เน้นโยน จริงจังมาเยอะแล้วครับ!" • Just an FPS &amp; Battle Royale creator from Thailand 🇹🇭
+              "สตรีมเมอร์สายยิง เน้นโยน จริงจังมาเยอะแล้วครับ!" • Just an FPS &amp; Battle Royale creator from Thailand
+              🇹🇭
             </p>
             <div class="flex items-center justify-center sm:justify-start gap-2 text-[11px] text-slate-400 pt-1">
               <span><i class="fa-solid fa-cake-candles text-purple-400 mr-1"></i> 30 ปี</span>
@@ -415,28 +505,32 @@
 
         <!-- Social Channels -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-          <a href="https://www.twitch.tv/dalines" target="_blank" class="p-3 rounded-xl bg-purple-950/40 border border-purple-500/30 hover:border-purple-400 flex items-center gap-2 text-purple-300 hover:text-white transition shadow">
+          <a href="https://www.twitch.tv/dalines" target="_blank"
+            class="p-3 rounded-xl bg-purple-950/40 border border-purple-500/30 hover:border-purple-400 flex items-center gap-2 text-purple-300 hover:text-white transition shadow">
             <i class="fa-brands fa-twitch text-lg text-purple-400"></i>
             <div>
               <div class="font-bold">Twitch</div>
               <div class="text-[10px] text-slate-400">/dalines</div>
             </div>
           </a>
-          <a href="https://www.youtube.com/@DaLinesTTV" target="_blank" class="p-3 rounded-xl bg-red-950/40 border border-red-500/30 hover:border-red-400 flex items-center gap-2 text-red-300 hover:text-white transition shadow">
+          <a href="https://www.youtube.com/@DaLinesTTV" target="_blank"
+            class="p-3 rounded-xl bg-red-950/40 border border-red-500/30 hover:border-red-400 flex items-center gap-2 text-red-300 hover:text-white transition shadow">
             <i class="fa-brands fa-youtube text-lg text-red-400"></i>
             <div>
               <div class="font-bold">YouTube</div>
               <div class="text-[10px] text-slate-400">@DaLinesTTV</div>
             </div>
           </a>
-          <a href="https://discord.gg/3m9x688YCG" target="_blank" class="p-3 rounded-xl bg-indigo-950/40 border border-indigo-500/30 hover:border-indigo-400 flex items-center gap-2 text-indigo-300 hover:text-white transition shadow">
+          <a href="https://discord.gg/3m9x688YCG" target="_blank"
+            class="p-3 rounded-xl bg-indigo-950/40 border border-indigo-500/30 hover:border-indigo-400 flex items-center gap-2 text-indigo-300 hover:text-white transition shadow">
             <i class="fa-brands fa-discord text-lg text-[#5865F2]"></i>
             <div>
               <div class="font-bold">Discord</div>
               <div class="text-[10px] text-slate-400">Community Hub</div>
             </div>
           </a>
-          <a href="https://ezdn.app/dalines" target="_blank" class="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 hover:border-emerald-400 flex items-center gap-2 text-emerald-300 hover:text-white transition shadow">
+          <a href="https://ezdn.app/dalines" target="_blank"
+            class="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 hover:border-emerald-400 flex items-center gap-2 text-emerald-300 hover:text-white transition shadow">
             <i class="fa-solid fa-hand-holding-dollar text-lg text-emerald-400"></i>
             <div>
               <div class="font-bold">EZDN</div>
@@ -461,12 +555,13 @@
           </div>
           <!-- GPU -->
           <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center gap-3">
-            <div class="w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+            <div
+              class="w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
               <i class="fa-solid fa-memory"></i>
             </div>
             <div>
               <div class="text-[10px] text-slate-400 uppercase font-mono">GPU</div>
-              <div class="font-bold text-white">NVIDIA GeForce RTX 4060 8GB</div>
+              <div class="font-bold text-white">NVIDIA GeForce RTX 5060 ti 8GB</div>
             </div>
           </div>
           <!-- RAM -->
@@ -476,7 +571,7 @@
             </div>
             <div>
               <div class="text-[10px] text-slate-400 uppercase font-mono">RAM</div>
-              <div class="font-bold text-white">32GB DDR4 3200MHz Dual-Channel</div>
+              <div class="font-bold text-white">16GB DDR4 3200MHz Dual-Channel</div>
             </div>
           </div>
           <!-- Display -->
@@ -486,18 +581,20 @@
             </div>
             <div>
               <div class="text-[10px] text-slate-400 uppercase font-mono">DISPLAY</div>
-              <div class="font-bold text-white">240Hz High Refresh Rate Gaming Monitor</div>
+              <div class="font-bold text-white">165 Hz </div>
             </div>
           </div>
         </div>
 
         <!-- Pro Sens & Settings Box -->
-        <div class="p-3.5 rounded-xl bg-black/50 border border-emerald-500/30 flex items-center justify-between flex-wrap gap-2 text-xs">
+        <div
+          class="p-3.5 rounded-xl bg-black/50 border border-emerald-500/30 flex items-center justify-between flex-wrap gap-2 text-xs">
           <div>
             <div class="font-bold text-emerald-300">🎯 DaLines Pro Sensitivity (VALORANT)</div>
             <div class="text-[11px] text-slate-400">DPI 800 • In-Game Sens 0.35 • eDPI 280 (46.6 cm/360°)</div>
           </div>
-          <button onclick="copyValorantCode()" class="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black font-bold transition flex items-center gap-1.5">
+          <button onclick="copyValorantCode()"
+            class="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black font-bold transition flex items-center gap-1.5">
             <i class="fa-solid fa-crosshairs"></i>
             <span>Copy Crosshair</span>
           </button>
@@ -512,18 +609,21 @@
               <i class="fa-solid fa-film text-purple-400"></i>
               <span>DaLines Hall of Fame • Top Twitch Clips</span>
             </span>
-            <a href="https://www.twitch.tv/dalines/clips?range=all" target="_blank" class="text-purple-300 hover:text-white text-[11px]">ดูทั้งหมดบน Twitch &rarr;</a>
+            <a href="https://www.twitch.tv/dalines/clips?range=all" target="_blank"
+              class="text-purple-300 hover:text-white text-[11px]">ดูทั้งหมดบน Twitch &rarr;</a>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
             <div class="p-2.5 rounded-lg bg-black/40 border border-slate-800 hover:border-purple-500/40 transition">
               <div class="font-bold text-white">🔥 Valorant Ace Clutch 1v5</div>
               <div class="text-[10px] text-slate-400">จังหวะยิงคมกริบ กวาดเรียบยกทีม</div>
-              <a href="https://www.twitch.tv/dalines" target="_blank" class="mt-1.5 inline-block text-[11px] text-purple-400 font-bold">ชมคลิป &rarr;</a>
+              <a href="https://www.twitch.tv/dalines" target="_blank"
+                class="mt-1.5 inline-block text-[11px] text-purple-400 font-bold">ชมคลิป &rarr;</a>
             </div>
             <div class="p-2.5 rounded-lg bg-black/40 border border-slate-800 hover:border-purple-500/40 transition">
               <div class="font-bold text-white">⚡ Apex Legends Kraber Headshot</div>
               <div class="text-[10px] text-slate-400">สไนกลางเวหา ล้มแชมป์แบบเหนือเมฆ</div>
-              <a href="https://www.twitch.tv/dalines" target="_blank" class="mt-1.5 inline-block text-[11px] text-purple-400 font-bold">ชมคลิป &rarr;</a>
+              <a href="https://www.twitch.tv/dalines" target="_blank"
+                class="mt-1.5 inline-block text-[11px] text-purple-400 font-bold">ชมคลิป &rarr;</a>
             </div>
           </div>
         </div>
@@ -531,14 +631,16 @@
 
       <!-- Tab 4: Community & Donate -->
       <div id="tab-pane-community" class="hidden space-y-3">
-        <div class="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-slate-900 to-purple-950/40 border border-emerald-500/40 flex items-center justify-between gap-4 flex-wrap">
+        <div
+          class="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-slate-900 to-purple-950/40 border border-emerald-500/40 flex items-center justify-between gap-4 flex-wrap">
           <div class="space-y-1">
             <div class="text-sm font-bold text-white">สนับสนุน DaLines ผ่าน EZDN</div>
             <p class="text-xs text-slate-300">
               แจ้งเตือนขึ้นจอสด พร้อมระบบ Text-to-Speech อ่านข้อความของคุณทันที
             </p>
           </div>
-          <a href="https://ezdn.app/dalines" target="_blank" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs transition shadow-lg flex items-center gap-1.5">
+          <a href="https://ezdn.app/dalines" target="_blank"
+            class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs transition shadow-lg flex items-center gap-1.5">
             <i class="fa-solid fa-heart"></i>
             <span>โดเนท ezdn.app/dalines</span>
           </a>
@@ -553,7 +655,8 @@
             สมัครสมาชิก Twitch (Subscribe) เพื่อปลดล็อกอีโมตและตราประจำช่องเท่ๆ
           </p>
           <div class="flex items-center gap-2 pt-1">
-            <a href="https://www.twitch.tv/subs/dalines" target="_blank" class="px-3 py-1.5 rounded-lg bg-[#9146FF] hover:bg-[#772ce8] text-white text-xs font-bold transition">
+            <a href="https://www.twitch.tv/subs/dalines" target="_blank"
+              class="px-3 py-1.5 rounded-lg bg-[#9146FF] hover:bg-[#772ce8] text-white text-xs font-bold transition">
               สมัคร Sub ช่อง DaLines &rarr;
             </a>
           </div>
@@ -1253,7 +1356,7 @@
         setAdvisorText('DaLines (ตวง) อายุ 30 ปี เป็นสตรีมเมอร์สาย FPS & Battle Royale จากไทย เริ่มสตรีมตั้งแต่ พ.ค. 2017!');
         openLandmarkDossier('house');
       } else if (topic === 'pc') {
-        setAdvisorText('สเปกคอมหลัก: Ryzen 5 5600 + RTX 4060 + 32GB RAM จอ 240Hz และใช้เมาส์ 800 DPI!');
+        setAdvisorText('สเปกคอมหลัก: Ryzen 5 5600 + RTX 5060Ti + 16GB RAM จอ 165Hz และใช้เมาส์ 800 DPI!');
         openLandmarkDossier('factory');
       } else if (topic === 'clips') {
         setAdvisorText('รวมช็อตเด็ด! ทั้ง Ace 1v5 ใน Valorant และ Kraber ยิงกลางเวหาใน Apex Legends');
@@ -1339,8 +1442,8 @@
         switchModalTab('bio');
       } else if (type === 'factory') {
         title.textContent = 'Battle Station Rig Workshop';
-        subtitle.textContent = 'AMD Ryzen 5 5600 + RTX 4060 High Performance Rig';
-        icon.className = 'fa-solid fa-industry';
+        subtitle.textContent = 'AMD Ryzen 5 5600 + RTX 5060 Ti High Performance Rig';
+        60        icon.className = 'fa-solid fa-industry';
         switchModalTab('specs');
       } else if (type === 'shop') {
         title.textContent = 'Twitch Lounge & Clips Arena';
@@ -1450,4 +1553,5 @@
     }, 18000);
   </script>
 </body>
+
 </html>

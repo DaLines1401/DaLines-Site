@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="th" class="dark">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
   <title>DaLines Cozy Snow Plow | 3D Winter Wonderland & Streamer Base ❄️🚜</title>
-  <meta name="description" content="ขับรถกวาดหิมะ 3D Cozy Snow Plow สัมผัสหมู่บ้านฤดูหนาวแสนอบอุ่น สำรวจ DaLines Cabin, สเปกคอม Arctic Rig, Twitch Lounge และเคลียร์หิมะให้ครบ 100%" />
+  <meta name="description"
+    content="ขับรถกวาดหิมะ 3D Cozy Snow Plow สัมผัสหมู่บ้านฤดูหนาวแสนอบอุ่น สำรวจ DaLines Cabin, สเปกคอม Arctic Rig, Twitch Lounge และเคลียร์หิมะให้ครบ 100%" />
   <link rel="icon" type="image/png" sizes="32x32" href="Logo.png" />
   <meta name="theme-color" content="#38bdf8" />
 
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
   <!-- Tailwind CSS CDN -->
@@ -51,6 +55,7 @@
       user-select: none;
       -webkit-user-select: none;
     }
+
     body {
       margin: 0;
       padding: 0;
@@ -61,6 +66,7 @@
       width: 100vw;
       height: 100vh;
     }
+
     #game-canvas {
       position: absolute;
       top: 0;
@@ -69,6 +75,7 @@
       height: 100%;
       z-index: 1;
     }
+
     .hud-overlay {
       position: absolute;
       top: 0;
@@ -78,9 +85,11 @@
       pointer-events: none;
       z-index: 20;
     }
+
     .hud-overlay * {
       pointer-events: auto;
     }
+
     .cozy-glass {
       background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(16px);
@@ -88,6 +97,7 @@
       border: 1.5px solid rgba(255, 255, 255, 0.9);
       box-shadow: 0 12px 30px -8px rgba(15, 23, 42, 0.2);
     }
+
     .dark .cozy-glass {
       background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(16px);
@@ -96,24 +106,36 @@
       box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.45);
       color: #f8fafc;
     }
+
     /* Touch controls */
     .touch-btn {
       touch-action: manipulation;
       transition: transform 0.1s ease, background-color 0.1s ease;
     }
+
     .touch-btn:active {
       transform: scale(0.92);
       background-color: rgba(56, 189, 248, 0.5) !important;
     }
+
     @keyframes pulseCozy {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.05);
+      }
     }
+
     .pulse-cozy {
       animation: pulseCozy 2.5s infinite ease-in-out;
     }
   </style>
 </head>
+
 <body class="overflow-hidden select-none">
 
   <!-- 3D Canvas -->
@@ -128,37 +150,54 @@
       <!-- Left: Village Info & Progress -->
       <div class="flex flex-col gap-2">
         <div class="cozy-glass rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 flex items-center gap-3.5 sm:gap-5 shadow-xl">
-          <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center text-xl shadow-inner shrink-0">
+          <div
+            class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center text-xl shadow-inner shrink-0">
             <i class="fa-solid fa-snowplow"></i>
           </div>
           <div>
             <div class="flex items-center gap-2">
-              <h1 class="text-xs sm:text-sm font-bold font-gaming tracking-wide text-slate-800 dark:text-white flex items-center gap-1.5">
+              <h1
+                class="text-xs sm:text-sm font-bold font-gaming tracking-wide text-slate-800 dark:text-white flex items-center gap-1.5">
                 <span>DaLines Cozy Village</span>
-                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-600 dark:text-sky-300 border border-sky-500/30">SNOW PLOW</span>
+                <span
+                  class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-600 dark:text-sky-300 border border-sky-500/30">SNOW
+                  PLOW</span>
               </h1>
             </div>
             <!-- Progress Bar -->
             <div class="flex items-center gap-2 mt-1">
-              <div class="w-24 sm:w-36 h-2.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden p-0.5 border border-slate-300 dark:border-slate-600">
-                <div id="snow-progress-bar" class="h-full rounded-full bg-gradient-to-r from-sky-400 to-emerald-400 transition-all duration-300" style="width: 0%;"></div>
+              <div
+                class="w-24 sm:w-36 h-2.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden p-0.5 border border-slate-300 dark:border-slate-600">
+                <div id="snow-progress-bar"
+                  class="h-full rounded-full bg-gradient-to-r from-sky-400 to-emerald-400 transition-all duration-300"
+                  style="width: 0%;"></div>
               </div>
-              <span id="snow-progress-text" class="text-[11px] sm:text-xs font-mono font-bold text-sky-600 dark:text-sky-400">0%</span>
+              <span id="snow-progress-text"
+                class="text-[11px] sm:text-xs font-mono font-bold text-sky-600 dark:text-sky-400">0%</span>
             </div>
           </div>
         </div>
 
         <!-- Sub Navigation Links -->
         <div class="flex items-center gap-2 flex-wrap">
-          <a href="index.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl cozy-glass text-xs font-semibold hover:bg-white/90 dark:hover:bg-slate-800 transition shadow-md group">
+          <a href="index.html"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl cozy-glass text-xs font-semibold hover:bg-white/90 dark:hover:bg-slate-800 transition shadow-md group">
             <i class="fa-solid fa-arrow-left text-sky-500 group-hover:-translate-x-0.5 transition-transform"></i>
             <span>Main Hub</span>
           </a>
-          <a href="pc-3d.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl cozy-glass text-xs font-semibold hover:bg-white/90 dark:hover:bg-slate-800 transition shadow-md text-emerald-600 dark:text-emerald-400">
+          <a href="pc-3d.html"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl cozy-glass text-xs font-semibold hover:bg-white/90 dark:hover:bg-slate-800 transition shadow-md text-emerald-600 dark:text-emerald-400">
             <i class="fa-solid fa-city"></i>
-            <span>Sky Metropolis 3D</span>
+            <span>Sky Metropolis</span>
           </a>
-          <button onclick="resetTruckPosition()" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl cozy-glass text-xs text-slate-600 dark:text-slate-300 hover:text-amber-500 transition shadow-md" title="Reset Truck Position">
+          <a href="pixel.html"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl cozy-glass text-xs font-semibold hover:bg-white/90 dark:hover:bg-slate-800 transition shadow-md text-pink-600 dark:text-pink-400">
+            <i class="fa-solid fa-gamepad"></i>
+            <span>8-Bit Pixel 👾</span>
+          </a>
+          <button onclick="resetTruckPosition()"
+            class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl cozy-glass text-xs text-slate-600 dark:text-slate-300 hover:text-amber-500 transition shadow-md"
+            title="Reset Truck Position">
             <i class="fa-solid fa-rotate-right"></i>
             <span class="hidden sm:inline">Reset Plow</span>
           </button>
@@ -168,19 +207,22 @@
       <!-- Right: Atmosphere & Audio Controls -->
       <div class="flex items-center gap-2">
         <!-- Honk Button -->
-        <button onclick="honkHorn()" class="cozy-glass px-3 py-2 rounded-xl text-xs font-bold text-amber-500 hover:text-amber-400 transition flex items-center gap-1.5 shadow-md active:scale-95">
+        <button onclick="honkHorn()"
+          class="cozy-glass px-3 py-2 rounded-xl text-xs font-bold text-amber-500 hover:text-amber-400 transition flex items-center gap-1.5 shadow-md active:scale-95">
           <i class="fa-solid fa-bullhorn"></i>
           <span class="hidden sm:inline">BEEP</span>
         </button>
 
         <!-- Sky Theme Switcher -->
-        <button onclick="cycleSky()" class="cozy-glass px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:text-sky-500 transition flex items-center gap-1.5 shadow-md">
+        <button onclick="cycleSky()"
+          class="cozy-glass px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:text-sky-500 transition flex items-center gap-1.5 shadow-md">
           <i id="sky-icon" class="fa-solid fa-sun text-amber-400"></i>
           <span id="sky-name" class="hidden sm:inline">Day</span>
         </button>
 
         <!-- Sound Toggle -->
-        <button id="audio-toggle-btn" onclick="toggleAudio()" class="w-9 h-9 rounded-xl cozy-glass text-sky-500 hover:text-sky-400 flex items-center justify-center text-sm transition shadow-md">
+        <button id="audio-toggle-btn" onclick="toggleAudio()"
+          class="w-9 h-9 rounded-xl cozy-glass text-sky-500 hover:text-sky-400 flex items-center justify-center text-sm transition shadow-md">
           <i id="audio-icon" class="fa-solid fa-volume-high"></i>
         </button>
       </div>
@@ -192,7 +234,8 @@
       <div class="cozy-glass rounded-2xl px-4 py-2 border-2 border-amber-400 flex items-center gap-2.5 shadow-2xl">
         <span class="w-3 h-3 rounded-full bg-amber-400 animate-ping"></span>
         <span id="landmark-prompt-text" class="text-xs sm:text-sm font-bold text-slate-800 dark:text-white"></span>
-        <span class="text-[10px] font-mono font-bold bg-amber-500 text-black px-2 py-0.5 rounded-md">PRESS E / CLICK</span>
+        <span class="text-[10px] font-mono font-bold bg-amber-500 text-black px-2 py-0.5 rounded-md">PRESS E /
+          CLICK</span>
       </div>
     </div>
 
@@ -201,17 +244,21 @@
 
       <!-- Bottom Left: On-Screen Mobile Drive Controls -->
       <div class="flex md:hidden flex-col items-center gap-1.5 pointer-events-auto">
-        <button id="m-btn-up" class="touch-btn w-12 h-12 rounded-xl cozy-glass flex items-center justify-center text-lg text-sky-500 shadow-lg active:bg-sky-400">
+        <button id="m-btn-up"
+          class="touch-btn w-12 h-12 rounded-xl cozy-glass flex items-center justify-center text-lg text-sky-500 shadow-lg active:bg-sky-400">
           <i class="fa-solid fa-arrow-up"></i>
         </button>
         <div class="flex items-center gap-2">
-          <button id="m-btn-left" class="touch-btn w-12 h-12 rounded-xl cozy-glass flex items-center justify-center text-lg text-sky-500 shadow-lg active:bg-sky-400">
+          <button id="m-btn-left"
+            class="touch-btn w-12 h-12 rounded-xl cozy-glass flex items-center justify-center text-lg text-sky-500 shadow-lg active:bg-sky-400">
             <i class="fa-solid fa-arrow-left"></i>
           </button>
-          <button id="m-btn-down" class="touch-btn w-12 h-12 rounded-xl cozy-glass flex items-center justify-center text-lg text-sky-500 shadow-lg active:bg-sky-400">
+          <button id="m-btn-down"
+            class="touch-btn w-12 h-12 rounded-xl cozy-glass flex items-center justify-center text-lg text-sky-500 shadow-lg active:bg-sky-400">
             <i class="fa-solid fa-arrow-down"></i>
           </button>
-          <button id="m-btn-right" class="touch-btn w-12 h-12 rounded-xl cozy-glass flex items-center justify-center text-lg text-sky-500 shadow-lg active:bg-sky-400">
+          <button id="m-btn-right"
+            class="touch-btn w-12 h-12 rounded-xl cozy-glass flex items-center justify-center text-lg text-sky-500 shadow-lg active:bg-sky-400">
             <i class="fa-solid fa-arrow-right"></i>
           </button>
         </div>
@@ -220,11 +267,13 @@
       <!-- Bottom Center: Cozy Companion Guidance Card -->
       <div class="mx-auto max-w-lg w-full px-2">
         <div class="cozy-glass rounded-2xl p-3 sm:p-3.5 shadow-2xl flex items-center gap-3">
-          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-sky-500/20 text-sky-500 flex items-center justify-center text-lg shrink-0">
+          <div
+            class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-sky-500/20 text-sky-500 flex items-center justify-center text-lg shrink-0">
             <i class="fa-solid fa-snowflake fa-spin" style="animation-duration: 8s;"></i>
           </div>
           <div class="min-w-0 flex-1">
-            <div class="text-[10px] font-mono font-bold text-sky-500 dark:text-sky-300 uppercase tracking-wider">COZY GUIDE</div>
+            <div class="text-[10px] font-mono font-bold text-sky-500 dark:text-sky-300 uppercase tracking-wider">COZY
+              GUIDE</div>
             <p id="guide-message" class="text-xs text-slate-700 dark:text-slate-200 font-medium truncate">
               ใช้ปุ่ม WASD หรือลูกศรขับรถกวาดหิมะ เคลียร์ทางเพื่อเปิดจุดสำรวจรอบหมู่บ้าน DaLines!
             </p>
@@ -242,15 +291,18 @@
       <div class="hidden sm:flex flex-col gap-1.5">
         <div class="cozy-glass rounded-xl p-2 flex flex-col gap-1 text-xs shadow-lg">
           <span class="text-[9px] font-mono font-bold text-slate-400 uppercase px-1">FAST TRAVEL</span>
-          <button onclick="fastTravel('cabin')" class="px-2 py-1 rounded-lg hover:bg-sky-500/20 text-left transition text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+          <button onclick="fastTravel('cabin')"
+            class="px-2 py-1 rounded-lg hover:bg-sky-500/20 text-left transition text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
             <i class="fa-solid fa-house-chimney text-amber-500 text-[10px]"></i>
             <span>Cozy Cabin</span>
           </button>
-          <button onclick="fastTravel('rig')" class="px-2 py-1 rounded-lg hover:bg-sky-500/20 text-left transition text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+          <button onclick="fastTravel('rig')"
+            class="px-2 py-1 rounded-lg hover:bg-sky-500/20 text-left transition text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
             <i class="fa-solid fa-microchip text-cyan-400 text-[10px]"></i>
             <span>Arctic Rig</span>
           </button>
-          <button onclick="fastTravel('cocoa')" class="px-2 py-1 rounded-lg hover:bg-sky-500/20 text-left transition text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+          <button onclick="fastTravel('cocoa')"
+            class="px-2 py-1 rounded-lg hover:bg-sky-500/20 text-left transition text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
             <i class="fa-solid fa-mug-hot text-amber-600 text-[10px]"></i>
             <span>Cocoa Lounge</span>
           </button>
@@ -262,46 +314,65 @@
   </div>
 
   <!-- INTERACTIVE LANDMARK DOSSIER MODAL -->
-  <div id="modal-overlay" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-    <div class="cozy-glass w-full max-w-2xl rounded-3xl p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto border border-white/20">
+  <div id="modal-overlay"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+    <div
+      class="cozy-glass w-full max-w-2xl rounded-3xl p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto border border-white/20">
 
       <!-- Header -->
       <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
         <div class="flex items-center gap-3">
-          <div id="modal-icon-wrap" class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center text-xl">
+          <div id="modal-icon-wrap"
+            class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center text-xl">
             <i id="modal-icon" class="fa-solid fa-house-chimney"></i>
           </div>
           <div>
-            <h2 id="modal-title" class="text-base sm:text-xl font-bold font-gaming text-slate-900 dark:text-white">DaLines Cozy Cabin</h2>
-            <p id="modal-sub" class="text-xs text-slate-500 dark:text-slate-400 font-mono">Streamer Base in the Snowy Woods</p>
+            <h2 id="modal-title" class="text-base sm:text-xl font-bold font-gaming text-slate-900 dark:text-white">
+              DaLines Cozy Cabin</h2>
+            <p id="modal-sub" class="text-xs text-slate-500 dark:text-slate-400 font-mono">Streamer Base in the Snowy
+              Woods</p>
           </div>
         </div>
-        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-white flex items-center justify-center transition">
+        <button onclick="closeModal()"
+          class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-white flex items-center justify-center transition">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
       <!-- Tab Buttons -->
       <div class="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2 overflow-x-auto text-xs">
-        <button onclick="switchTab('bio')" id="tab-bio-btn" class="px-3 py-1.5 rounded-xl bg-amber-500 text-black font-bold transition">🏡 Bio &amp; Story</button>
-        <button onclick="switchTab('specs')" id="tab-specs-btn" class="px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium transition">🖥️ PC Specs</button>
-        <button onclick="switchTab('clips')" id="tab-clips-btn" class="px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium transition">🎬 Twitch Clips</button>
-        <button onclick="switchTab('community')" id="tab-community-btn" class="px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium transition">💜 Community &amp; Donate</button>
+        <button onclick="switchTab('bio')" id="tab-bio-btn"
+          class="px-3 py-1.5 rounded-xl bg-amber-500 text-black font-bold transition">🏡 Bio &amp; Story</button>
+        <button onclick="switchTab('specs')" id="tab-specs-btn"
+          class="px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium transition">🖥️
+          PC Specs</button>
+        <button onclick="switchTab('clips')" id="tab-clips-btn"
+          class="px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium transition">🎬
+          Twitch Clips</button>
+        <button onclick="switchTab('community')" id="tab-community-btn"
+          class="px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium transition">💜
+          Community &amp; Donate</button>
       </div>
 
       <!-- Tab 1: Bio & Story -->
       <div id="tab-bio-pane" class="space-y-4">
-        <div class="flex flex-col sm:flex-row items-center gap-4 bg-white/50 dark:bg-slate-900/60 p-4 rounded-2xl border border-white/40 dark:border-slate-800">
-          <img src="Logo.png" alt="DaLines Logo" class="w-20 h-20 rounded-2xl border border-sky-400 shadow-md object-cover" />
+        <div
+          class="flex flex-col sm:flex-row items-center gap-4 bg-white/50 dark:bg-slate-900/60 p-4 rounded-2xl border border-white/40 dark:border-slate-800">
+          <img src="Logo.png" alt="DaLines Logo"
+            class="w-20 h-20 rounded-2xl border border-sky-400 shadow-md object-cover" />
           <div class="space-y-1 text-center sm:text-left">
             <div class="flex items-center justify-center sm:justify-start gap-2">
               <span class="text-base font-bold text-slate-900 dark:text-white">DaLines (ตวง)</span>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-sky-500/20 text-sky-600 dark:text-sky-400 font-bold">IGN: DaLines#TTV</span>
+              <span
+                class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-sky-500/20 text-sky-600 dark:text-sky-400 font-bold">IGN:
+                DaLines#TTV</span>
             </div>
             <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              "สตรีมเมอร์สายยิง เน้นโยน จริงจังมาเยอะแล้วครับ! • Just an FPS &amp; Battle Royale creator from Thailand 🇹🇭"
+              "สตรีมเมอร์สายยิง เน้นโยน จริงจังมาเยอะแล้วครับ! • Just an FPS &amp; Battle Royale creator from Thailand
+              🇹🇭"
             </p>
-            <div class="flex items-center justify-center sm:justify-start gap-2 text-[11px] text-slate-500 dark:text-slate-400 pt-1">
+            <div
+              class="flex items-center justify-center sm:justify-start gap-2 text-[11px] text-slate-500 dark:text-slate-400 pt-1">
               <span><i class="fa-solid fa-cake-candles text-amber-500 mr-1"></i> อายุ 30 ปี</span>
               <span>•</span>
               <span><i class="fa-solid fa-calendar-check text-emerald-500 mr-1"></i> สตรีมสดตั้งแต่ พ.ค. 2017</span>
@@ -311,28 +382,32 @@
 
         <!-- Social Channels -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-          <a href="https://www.twitch.tv/dalines" target="_blank" class="p-3 rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-700 dark:text-purple-300 flex items-center gap-2 hover:scale-[1.02] transition shadow-sm">
+          <a href="https://www.twitch.tv/dalines" target="_blank"
+            class="p-3 rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-700 dark:text-purple-300 flex items-center gap-2 hover:scale-[1.02] transition shadow-sm">
             <i class="fa-brands fa-twitch text-lg text-purple-500"></i>
             <div>
               <div class="font-bold">Twitch</div>
               <div class="text-[10px] text-slate-500 dark:text-slate-400">/dalines</div>
             </div>
           </a>
-          <a href="https://www.youtube.com/@DaLinesTTV" target="_blank" class="p-3 rounded-xl bg-red-500/15 border border-red-500/30 text-red-700 dark:text-red-300 flex items-center gap-2 hover:scale-[1.02] transition shadow-sm">
+          <a href="https://www.youtube.com/@DaLinesTTV" target="_blank"
+            class="p-3 rounded-xl bg-red-500/15 border border-red-500/30 text-red-700 dark:text-red-300 flex items-center gap-2 hover:scale-[1.02] transition shadow-sm">
             <i class="fa-brands fa-youtube text-lg text-red-500"></i>
             <div>
               <div class="font-bold">YouTube</div>
               <div class="text-[10px] text-slate-500 dark:text-slate-400">@DaLinesTTV</div>
             </div>
           </a>
-          <a href="https://discord.gg/3m9x688YCG" target="_blank" class="p-3 rounded-xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300 flex items-center gap-2 hover:scale-[1.02] transition shadow-sm">
+          <a href="https://discord.gg/3m9x688YCG" target="_blank"
+            class="p-3 rounded-xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300 flex items-center gap-2 hover:scale-[1.02] transition shadow-sm">
             <i class="fa-brands fa-discord text-lg text-[#5865F2]"></i>
             <div>
               <div class="font-bold">Discord</div>
               <div class="text-[10px] text-slate-500 dark:text-slate-400">Community</div>
             </div>
           </a>
-          <a href="https://ezdn.app/dalines" target="_blank" class="p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 flex items-center gap-2 hover:scale-[1.02] transition shadow-sm">
+          <a href="https://ezdn.app/dalines" target="_blank"
+            class="p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 flex items-center gap-2 hover:scale-[1.02] transition shadow-sm">
             <i class="fa-solid fa-hand-holding-dollar text-lg text-emerald-500"></i>
             <div>
               <div class="font-bold">EZDN</div>
@@ -345,7 +420,8 @@
       <!-- Tab 2: PC Specs -->
       <div id="tab-specs-pane" class="hidden space-y-3">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-          <div class="p-3 rounded-xl bg-white/50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-center gap-3">
+          <div
+            class="p-3 rounded-xl bg-white/50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-center gap-3">
             <div class="w-9 h-9 rounded-lg bg-orange-500/20 text-orange-500 flex items-center justify-center shrink-0">
               <i class="fa-solid fa-microchip"></i>
             </div>
@@ -355,43 +431,49 @@
             </div>
           </div>
 
-          <div class="p-3 rounded-xl bg-white/50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-center gap-3">
-            <div class="w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0">
+          <div
+            class="p-3 rounded-xl bg-white/50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-center gap-3">
+            <div
+              class="w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0">
               <i class="fa-solid fa-memory"></i>
             </div>
             <div>
               <div class="text-[10px] text-slate-500 dark:text-slate-400 font-mono">GPU</div>
-              <div class="font-bold text-slate-900 dark:text-white">NVIDIA GeForce RTX 4060 8GB</div>
+              <div class="font-bold text-slate-900 dark:text-white">NVIDIA GeForce RTX 5060 ti 8GB</div>
             </div>
           </div>
 
-          <div class="p-3 rounded-xl bg-white/50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-center gap-3">
+          <div
+            class="p-3 rounded-xl bg-white/50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-center gap-3">
             <div class="w-9 h-9 rounded-lg bg-sky-500/20 text-sky-500 flex items-center justify-center shrink-0">
               <i class="fa-solid fa-bolt"></i>
             </div>
             <div>
               <div class="text-[10px] text-slate-500 dark:text-slate-400 font-mono">RAM</div>
-              <div class="font-bold text-slate-900 dark:text-white">32GB DDR4 3200MHz</div>
+              <div class="font-bold text-slate-900 dark:text-white">16 GB DDR4 3200MHz</div>
             </div>
           </div>
 
-          <div class="p-3 rounded-xl bg-white/50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-center gap-3">
+          <div
+            class="p-3 rounded-xl bg-white/50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-center gap-3">
             <div class="w-9 h-9 rounded-lg bg-purple-500/20 text-purple-500 flex items-center justify-center shrink-0">
               <i class="fa-solid fa-display"></i>
             </div>
             <div>
               <div class="text-[10px] text-slate-500 dark:text-slate-400 font-mono">DISPLAY</div>
-              <div class="font-bold text-slate-900 dark:text-white">240Hz High Refresh Rate</div>
+              <div class="font-bold text-slate-900 dark:text-white">2k Resolution , 165Hz </div>
             </div>
           </div>
         </div>
 
-        <div class="p-3 rounded-xl bg-black/40 border border-sky-400/40 flex items-center justify-between flex-wrap gap-2 text-xs">
+        <div
+          class="p-3 rounded-xl bg-black/40 border border-sky-400/40 flex items-center justify-between flex-wrap gap-2 text-xs">
           <div>
             <div class="font-bold text-sky-300">🎯 DaLines Pro Sensitivity</div>
-            <div class="text-[11px] text-slate-300">DPI 800 • In-Game Sens 0.35 • eDPI 280</div>
+            <div class="text-[11px] text-slate-300">DPI 800 • In-Game Sens 0.45 • eDPI 360</div>
           </div>
-          <button onclick="copyValorantCode()" class="px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-black font-bold transition flex items-center gap-1.5">
+          <button onclick="copyValorantCode()"
+            class="px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-black font-bold transition flex items-center gap-1.5">
             <i class="fa-solid fa-crosshairs"></i>
             <span>Copy Crosshair</span>
           </button>
@@ -400,24 +482,28 @@
 
       <!-- Tab 3: Clips -->
       <div id="tab-clips-pane" class="hidden space-y-3">
-        <div class="p-3 rounded-xl bg-white/50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+        <div
+          class="p-3 rounded-xl bg-white/50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
           <div class="flex items-center justify-between text-xs">
             <span class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
               <i class="fa-solid fa-film text-purple-500"></i>
               <span>DaLines Top Twitch Clips</span>
             </span>
-            <a href="https://www.twitch.tv/dalines/clips?range=all" target="_blank" class="text-purple-600 dark:text-purple-400 hover:underline text-[11px]">ดูบน Twitch &rarr;</a>
+            <a href="https://www.twitch.tv/dalines/clips?range=all" target="_blank"
+              class="text-purple-600 dark:text-purple-400 hover:underline text-[11px]">ดูบน Twitch &rarr;</a>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
             <div class="p-2.5 rounded-lg bg-black/40 border border-slate-700 text-white">
               <div class="font-bold text-white">🔥 Valorant Ace Clutch 1v5</div>
               <div class="text-[10px] text-slate-300">จังหวะยิงคมกริบ กวาดเรียบยกทีม</div>
-              <a href="https://www.twitch.tv/dalines" target="_blank" class="mt-1 text-[11px] text-purple-400 font-bold inline-block">ชมคลิป &rarr;</a>
+              <a href="https://www.twitch.tv/dalines" target="_blank"
+                class="mt-1 text-[11px] text-purple-400 font-bold inline-block">ชมคลิป &rarr;</a>
             </div>
             <div class="p-2.5 rounded-lg bg-black/40 border border-slate-700 text-white">
               <div class="font-bold text-white">⚡ Apex Legends Kraber Snipe</div>
               <div class="text-[10px] text-slate-300">สอยกลางเวหา แชมป์เหนือเมฆ</div>
-              <a href="https://www.twitch.tv/dalines" target="_blank" class="mt-1 text-[11px] text-purple-400 font-bold inline-block">ชมคลิป &rarr;</a>
+              <a href="https://www.twitch.tv/dalines" target="_blank"
+                class="mt-1 text-[11px] text-purple-400 font-bold inline-block">ชมคลิป &rarr;</a>
             </div>
           </div>
         </div>
@@ -425,14 +511,16 @@
 
       <!-- Tab 4: Community & Donate -->
       <div id="tab-community-pane" class="hidden space-y-3">
-        <div class="p-4 rounded-2xl bg-gradient-to-r from-sky-500/20 via-amber-500/20 to-emerald-500/20 border border-amber-400/40 flex items-center justify-between gap-4 flex-wrap">
+        <div
+          class="p-4 rounded-2xl bg-gradient-to-r from-sky-500/20 via-amber-500/20 to-emerald-500/20 border border-amber-400/40 flex items-center justify-between gap-4 flex-wrap">
           <div>
             <div class="text-sm font-bold text-slate-900 dark:text-white">สนับสนุน DaLines ผ่าน EZDN</div>
             <p class="text-xs text-slate-600 dark:text-slate-300">
               แจ้งเตือนขึ้นจอสด พร้อม Text-to-Speech อ่านข้อความของคุณ
             </p>
           </div>
-          <a href="https://ezdn.app/dalines" target="_blank" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs transition shadow-md flex items-center gap-1.5">
+          <a href="https://ezdn.app/dalines" target="_blank"
+            class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs transition shadow-md flex items-center gap-1.5">
             <i class="fa-solid fa-heart"></i>
             <span>โดเนท ezdn.app/dalines</span>
           </a>
@@ -1283,4 +1371,5 @@
     });
   </script>
 </body>
+
 </html>
