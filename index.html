@@ -154,6 +154,15 @@
       --ambient-blob-2: rgba(192, 132, 252, 0.2);
     }
 
+    [data-theme="gold"] {
+      --primary-color: #eab308;
+      --primary-glow: rgba(234, 179, 8, 0.55);
+      --primary-hover-bg: rgba(234, 179, 8, 0.18);
+      --primary-border: rgba(250, 204, 21, 0.5);
+      --ambient-blob-1: rgba(202, 138, 4, 0.4);
+      --ambient-blob-2: rgba(253, 224, 71, 0.25);
+    }
+
     :root {
       --banner-height: 45px;
     }
@@ -591,14 +600,77 @@
           <button onclick="setTheme('purple')" aria-label="Purple Theme"
             class="theme-color-dot w-5 h-5 rounded-full bg-purple-500 border-2 border-transparent transition-all cursor-pointer"
             data-color="purple" title="ม่วง Twitch Violet"></button>
+          <button id="theme-dot-gold" onclick="setTheme('gold')" aria-label="Cyberpunk Gold Theme"
+            class="theme-color-dot hidden w-5 h-5 rounded-full bg-yellow-400 border-2 border-transparent transition-all cursor-pointer shadow-[0_0_10px_rgba(250,204,21,0.6)]"
+            data-color="gold" title="ทอง Cyberpunk Gold (Edition พิเศษ)"></button>
         </div>
 
-        <!-- Sound FX Toggle Button -->
-        <button id="btn-sound-toggle" onclick="toggleSoundFx()" aria-label="Toggle Sound Effects"
-          class="flex items-center justify-center w-8 h-8 rounded-full bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white transition active:scale-95 shadow-lg backdrop-blur-md cursor-pointer"
-          title="เปิด/ปิดเสียงเอฟเฟกต์">
-          <i id="sound-icon" class="fa-solid fa-volume-high text-xs" style="color: var(--primary-color);"></i>
-        </button>
+        <!-- Master Volume & Sound Toggle Pill Capsule -->
+        <div class="relative flex items-center" id="volume-control-wrapper">
+          <div
+            class="flex items-center bg-slate-900/80 border border-slate-800 rounded-full shadow-lg backdrop-blur-md p-0.5 hover:border-slate-700 transition">
+            <!-- Sound FX Toggle Button (Mute / Unmute) -->
+            <button id="btn-sound-toggle" onclick="toggleSoundFx()" aria-label="Toggle Sound Effects"
+              class="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full text-slate-400 hover:text-white transition active:scale-95 cursor-pointer"
+              title="เปิด/ปิดเสียงเอฟเฟกต์ (Mute/Unmute)">
+              <i id="sound-icon" class="fa-solid fa-volume-high text-xs" style="color: var(--primary-color);"></i>
+            </button>
+
+            <!-- Volume Dropdown Trigger Button with Badge -->
+            <button id="btn-volume-dropdown" onclick="toggleVolumeDropdown(event)" aria-label="Adjust Master Volume"
+              class="flex items-center gap-1 pl-1 pr-2 py-1 rounded-full text-[10px] font-mono text-slate-300 hover:text-white hover:bg-slate-800/80 transition cursor-pointer select-none"
+              title="คลิกเพื่อปรับระดับเสียง 0 - 100%">
+              <span id="volume-badge-text">80%</span>
+              <i id="volume-dropdown-chevron"
+                class="fa-solid fa-chevron-down text-[8px] text-slate-400 transition-transform duration-200"></i>
+            </button>
+          </div>
+
+          <!-- Master Volume Popover / Dropdown Panel -->
+          <div id="volume-dropdown-panel"
+            class="hidden absolute top-full left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 mt-2 z-50 w-52 sm:w-56 p-3 sm:p-3.5 rounded-2xl bg-slate-900/95 border border-slate-800/90 backdrop-blur-xl shadow-2xl space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                <i class="fa-solid fa-sliders text-[11px]" style="color: var(--primary-color);"></i>
+                <span data-i18n="master_volume_title">ระดับเสียงหลัก</span>
+              </span>
+              <span id="volume-slider-label" class="text-xs font-mono font-bold text-emerald-400">80%</span>
+            </div>
+
+            <!-- Volume Slider Track -->
+            <div class="space-y-1.5">
+              <input type="range" id="master-volume-slider" min="0" max="100" value="80" step="1"
+                oninput="onVolumeSliderInput(this.value)"
+                class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                style="accent-color: var(--primary-color);" />
+              <div class="flex justify-between text-[9px] font-mono text-slate-400 px-0.5">
+                <span>0% (Mute)</span>
+                <span>50%</span>
+                <span>100%</span>
+              </div>
+            </div>
+
+            <!-- Quick Presets -->
+            <div class="flex items-center justify-between gap-1 pt-1.5 border-t border-slate-800">
+              <button onclick="setQuickVolume(0)" type="button"
+                class="flex-1 py-1 rounded-lg text-[10px] font-mono font-medium text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800 transition cursor-pointer text-center">
+                Mute
+              </button>
+              <button onclick="setQuickVolume(50)" type="button"
+                class="flex-1 py-1 rounded-lg text-[10px] font-mono font-medium text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800 transition cursor-pointer text-center">
+                50%
+              </button>
+              <button onclick="setQuickVolume(80)" type="button"
+                class="flex-1 py-1 rounded-lg text-[10px] font-mono font-medium text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800 transition cursor-pointer text-center">
+                80%
+              </button>
+              <button onclick="setQuickVolume(100)" type="button"
+                class="flex-1 py-1 rounded-lg text-[10px] font-mono font-medium text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800 transition cursor-pointer text-center">
+                100%
+              </button>
+            </div>
+          </div>
+        </div>
 
         <!-- Language Switcher Button (TH / EN) -->
         <button id="btn-lang-toggle" onclick="toggleLanguage()"
@@ -633,13 +705,13 @@
 
       <!-- Profile Avatar Overlap -->
       <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center">
-        <div id="profile-container" class="relative group cursor-pointer">
+        <div id="profile-container" onclick="handleProfileEasterEgg(event)" class="relative group cursor-pointer" title="DaLines Profile (คลิกหรือแตะ 5 ครั้งเพื่อค้นหา Easter Egg)">
           <div
             class="w-24 h-24 sm:w-28 sm:h-28 rounded-full p-1 bg-gradient-to-tr from-emerald-400 via-cyan-400 to-purple-600 neon-border-glow transition-transform duration-300 group-hover:scale-105 shadow-2xl">
             <img id="profile-img" referrerpolicy="no-referrer" src="Logo.png" width="300" height="300"
               onerror="this.src='https://static-cdn.jtvnw.net/jtv_user_pictures/a917340f-26d3-4d3a-9b41-34ed68f6b3a1-profile_image-300x300.png'"
               alt="DaLines Profile"
-              class="w-full h-full rounded-full object-cover bg-neutral-900 select-none pointer-events-none"
+              class="w-full h-full rounded-full object-cover bg-neutral-900 select-none cursor-pointer"
               loading="eager" />
           </div>
           <span
@@ -3044,9 +3116,41 @@
     </div>
   </div>
 
+  <!-- 📲 PWA Custom Install Prompt Banner -->
+  <aside id="pwa-install-banner" aria-label="Install DaLines Hub as Application"
+    class="hidden fixed bottom-4 left-3 right-3 sm:left-1/2 sm:-translate-x-1/2 sm:w-full sm:max-w-lg z-50 p-3 sm:p-3.5 rounded-2xl bg-slate-900/95 border backdrop-blur-xl shadow-2xl transition-all duration-300 ease-out translate-y-full opacity-0 flex items-center justify-between gap-3"
+    style="border-color: var(--primary-border); box-shadow: 0 10px 30px -5px rgba(0,0,0,0.8), 0 0 20px var(--primary-glow);">
+    <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+      <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-950 p-0.5 border border-slate-700/60 shrink-0 overflow-hidden shadow-md flex items-center justify-center">
+        <img src="Logo.png" alt="DaLines App Icon" width="40" height="40" class="w-full h-full object-cover rounded-lg" />
+      </div>
+      <div class="min-w-0">
+        <p class="text-xs sm:text-[13px] font-semibold text-white leading-tight">
+          📲 ติดตั้ง DaLines Hub ลงหน้าจอมือถือเพื่อใช้งานเป็นแอป
+        </p>
+        <p class="text-[10px] sm:text-[11px] text-slate-400 font-mono mt-0.5 truncate">
+          เปิดไว • ไม่กินแบต • เข้าถึงเร็ว ⚡
+        </p>
+      </div>
+    </div>
+    <div class="flex items-center gap-1.5 shrink-0">
+      <button id="btn-pwa-install" onclick="installPwaApp()" type="button"
+        class="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-bold text-slate-950 transition-transform active:scale-95 shadow-md flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+        style="background-color: var(--primary-color);">
+        <i class="fa-solid fa-download text-[11px]"></i>
+        <span>ติดตั้ง (Install)</span>
+      </button>
+      <button onclick="dismissPwaPrompt()" type="button" aria-label="Dismiss Install Banner"
+        class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-xs transition active:scale-90 cursor-pointer"
+        title="ปิดแจ้งเตือน (จำค่า 7 วัน)">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </aside>
+
   <!-- Toast Notification -->
   <div id="toast"
-    class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl text-black font-semibold text-xs shadow-lg opacity-0 pointer-events-none transition duration-300"
+    class="fixed bottom-20 sm:bottom-24 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl text-black font-semibold text-xs shadow-lg opacity-0 pointer-events-none transition duration-300"
     style="background-color: var(--primary-color);">
     คัดลอกเรียบร้อยแล้วครับ! 🎯
   </div>
@@ -3240,6 +3344,7 @@
         bank_account_label: "เลขที่บัญชี:",
         copy_bank_btn: "คัดลอกเลขบัญชี",
         toast_copy_bank: "คัดลอกเลขบัญชี 6322170767 เรียบร้อย! 🏦",
+        master_volume_title: "ระดับเสียงหลัก",
         toast_sound_on: "เปิดเสียงเอฟเฟกต์แล้ว 🔊",
         toast_sound_off: "ปิดเสียงเอฟเฟกต์แล้ว 🔇",
         clips_desc: "คลังคลิปไฮไลท์ยอดนิยมตลอดกาลจาก twitch.tv/dalines เรียงตามยอดเข้าชมสูงสุด"
@@ -3314,6 +3419,7 @@
         bank_account_label: "Account No:",
         copy_bank_btn: "Copy Account No.",
         toast_copy_bank: "Account number 6322170767 copied! 🏦",
+        master_volume_title: "Master Volume",
         toast_sound_on: "Sound FX Enabled 🔊",
         toast_sound_off: "Sound FX Muted 🔇",
         clips_desc: "All-time top clips and highlights from twitch.tv/dalines sorted by view count!"
@@ -3352,10 +3458,16 @@
     }
 
     // -----------------------------------------------------------------
-    // SOUND EFFECTS ENGINE (Web Audio API)
+    // SOUND EFFECTS ENGINE (Web Audio API & Master Volume Control)
     // -----------------------------------------------------------------
     let audioCtx = null;
+    let masterGainNode = null;
     let isSoundEnabled = localStorage.getItem('dalines_sound') !== 'false';
+    let savedMasterVol = localStorage.getItem('dalines_master_volume');
+    let masterVolume = savedMasterVol !== null ? parseFloat(savedMasterVol) : 0.8;
+    if (isNaN(masterVolume) || masterVolume < 0 || masterVolume > 1) {
+      masterVolume = 0.8;
+    }
 
     function triggerHaptic(duration = 15) {
       try {
@@ -3371,13 +3483,128 @@
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       }
+      if (!masterGainNode) {
+        masterGainNode = audioCtx.createGain();
+        const effectiveVol = (isSoundEnabled && masterVolume > 0) ? masterVolume : 0;
+        masterGainNode.gain.setValueAtTime(effectiveVol, audioCtx.currentTime);
+        masterGainNode.connect(audioCtx.destination);
+      }
       if (audioCtx.state === 'suspended') {
         audioCtx.resume();
       }
     }
 
+    function getAudioDestination() {
+      initAudio();
+      return masterGainNode || audioCtx.destination;
+    }
+
+    function applyMasterVolume() {
+      if (audioCtx && masterGainNode) {
+        const effectiveVol = (isSoundEnabled && masterVolume > 0) ? masterVolume : 0;
+        masterGainNode.gain.setValueAtTime(effectiveVol, audioCtx.currentTime);
+      }
+    }
+
+    function toggleVolumeDropdown(e) {
+      if (e) e.stopPropagation();
+      const panel = document.getElementById('volume-dropdown-panel');
+      const chevron = document.getElementById('volume-dropdown-chevron');
+      if (!panel) return;
+      const isClosed = panel.classList.contains('hidden');
+      if (isClosed) {
+        panel.classList.remove('hidden');
+        if (chevron) chevron.style.transform = 'rotate(180deg)';
+        updateVolumeUI();
+      } else {
+        closeVolumeDropdown();
+      }
+    }
+
+    function closeVolumeDropdown() {
+      const panel = document.getElementById('volume-dropdown-panel');
+      const chevron = document.getElementById('volume-dropdown-chevron');
+      if (panel) panel.classList.add('hidden');
+      if (chevron) chevron.style.transform = 'rotate(0deg)';
+    }
+
+    function onVolumeSliderInput(val) {
+      const pct = parseInt(val, 10);
+      const vol = Math.min(Math.max(pct / 100, 0), 1);
+      masterVolume = vol;
+      localStorage.setItem('dalines_master_volume', vol);
+
+      if (pct === 0) {
+        isSoundEnabled = false;
+        localStorage.setItem('dalines_sound', false);
+      } else if (!isSoundEnabled) {
+        isSoundEnabled = true;
+        localStorage.setItem('dalines_sound', true);
+      }
+
+      applyMasterVolume();
+      updateSoundIcon();
+      updateVolumeUI();
+    }
+
+    function setQuickVolume(pct) {
+      const vol = Math.min(Math.max(pct / 100, 0), 1);
+      masterVolume = vol;
+      localStorage.setItem('dalines_master_volume', vol);
+
+      if (pct === 0) {
+        isSoundEnabled = false;
+        localStorage.setItem('dalines_sound', false);
+      } else {
+        isSoundEnabled = true;
+        localStorage.setItem('dalines_sound', true);
+      }
+
+      applyMasterVolume();
+      updateSoundIcon();
+      updateVolumeUI();
+      if (pct > 0) {
+        playSound('pop');
+      }
+      triggerHaptic(15);
+    }
+
+    function updateSoundIcon() {
+      const icon = document.getElementById('sound-icon');
+      if (icon) {
+        if (!isSoundEnabled || masterVolume === 0) {
+          icon.className = 'fa-solid fa-volume-xmark text-xs text-slate-500';
+          icon.style.color = '';
+        } else if (masterVolume < 0.5) {
+          icon.className = 'fa-solid fa-volume-low text-xs';
+          icon.style.color = 'var(--primary-color)';
+        } else {
+          icon.className = 'fa-solid fa-volume-high text-xs';
+          icon.style.color = 'var(--primary-color)';
+        }
+      }
+      updateVolumeUI();
+    }
+
+    function updateVolumeUI() {
+      const badge = document.getElementById('volume-badge-text');
+      const slider = document.getElementById('master-volume-slider');
+      const sliderLabel = document.getElementById('volume-slider-label');
+      const pct = Math.round(masterVolume * 100);
+
+      if (badge) {
+        badge.innerText = (!isSoundEnabled || masterVolume === 0) ? '0%' : `${pct}%`;
+      }
+      if (slider) {
+        slider.value = (!isSoundEnabled) ? 0 : pct;
+      }
+      if (sliderLabel) {
+        sliderLabel.innerText = (!isSoundEnabled || masterVolume === 0) ? 'Muted (0%)' : `${pct}%`;
+      }
+    }
+
     function playSound(type) {
-      if (!isSoundEnabled) return;
+      if (!isSoundEnabled || masterVolume === 0) return;
       try {
         initAudio();
         const now = audioCtx.currentTime;
@@ -3391,7 +3618,7 @@
           gain.gain.setValueAtTime(0.08, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now);
           osc.stop(now + 0.06);
         } else if (type === 'theme') {
@@ -3403,7 +3630,7 @@
             gain.gain.setValueAtTime(0.05, now + idx * 0.04);
             gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.04 + 0.15);
             osc.connect(gain);
-            gain.connect(audioCtx.destination);
+            gain.connect(getAudioDestination());
             osc.start(now + idx * 0.04);
             osc.stop(now + idx * 0.04 + 0.15);
           });
@@ -3416,7 +3643,7 @@
           gain.gain.setValueAtTime(0.03, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now);
           osc.stop(now + 0.08);
         } else if (type === 'pop') {
@@ -3428,7 +3655,7 @@
           gain.gain.setValueAtTime(0.06, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now);
           osc.stop(now + 0.08);
         } else if (type === 'gunshot') {
@@ -3457,7 +3684,7 @@
           gain.gain.setValueAtTime(0.12, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now);
           osc.stop(now + 0.09);
         } else if (type === 'countdown_go') {
@@ -3468,7 +3695,7 @@
           gain.gain.setValueAtTime(0.2, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now);
           osc.stop(now + 0.22);
         }
@@ -3496,7 +3723,7 @@
 
       noise.connect(filter);
       filter.connect(noiseGain);
-      noiseGain.connect(audioCtx.destination);
+      noiseGain.connect(getAudioDestination());
       noise.start(now);
 
       const subOsc = audioCtx.createOscillator();
@@ -3508,7 +3735,7 @@
       subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
 
       subOsc.connect(subGain);
-      subGain.connect(audioCtx.destination);
+      subGain.connect(getAudioDestination());
       subOsc.start(now);
       subOsc.stop(now + 0.1);
     }
@@ -3523,7 +3750,7 @@
         gain.gain.setValueAtTime(0.18, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(getAudioDestination());
         osc.start(now);
         osc.stop(now + 0.22);
       });
@@ -3546,7 +3773,7 @@
 
       osc.connect(filter);
       filter.connect(gain);
-      gain.connect(audioCtx.destination);
+      gain.connect(getAudioDestination());
       osc.start(now);
       osc.stop(now + 0.45);
 
@@ -3559,7 +3786,7 @@
       boingGain.gain.setValueAtTime(0.12, now + 0.45);
       boingGain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
       boing.connect(boingGain);
-      boingGain.connect(audioCtx.destination);
+      boingGain.connect(getAudioDestination());
       boing.start(now + 0.45);
       boing.stop(now + 0.7);
     }
@@ -3572,7 +3799,7 @@
       clickGain1.gain.setValueAtTime(0.15, now);
       clickGain1.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
       click1.connect(clickGain1);
-      clickGain1.connect(audioCtx.destination);
+      clickGain1.connect(getAudioDestination());
       click1.start(now);
       click1.stop(now + 0.05);
 
@@ -3583,7 +3810,7 @@
       clickGain2.gain.setValueAtTime(0.18, now + 0.08);
       clickGain2.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
       click2.connect(clickGain2);
-      clickGain2.connect(audioCtx.destination);
+      clickGain2.connect(getAudioDestination());
       click2.start(now + 0.08);
       click2.stop(now + 0.13);
 
@@ -3595,7 +3822,7 @@
         gain.gain.setValueAtTime(0.08, now + 0.15 + i * 0.03);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(getAudioDestination());
         osc.start(now + 0.15 + i * 0.03);
         osc.stop(now + 0.45);
       });
@@ -3616,7 +3843,7 @@
         gain.gain.setValueAtTime(0.12, now + n.t);
         gain.gain.exponentialRampToValueAtTime(0.001, now + n.t + n.d);
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(getAudioDestination());
         osc.start(now + n.t);
         osc.stop(now + n.t + n.d);
       });
@@ -3632,7 +3859,7 @@
         gain.gain.setValueAtTime(0.1, now + idx * 0.06);
         gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.3);
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(getAudioDestination());
         osc.start(now + idx * 0.06);
         osc.stop(now + idx * 0.06 + 0.3);
       });
@@ -3655,7 +3882,7 @@
 
         osc.connect(filter);
         filter.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(getAudioDestination());
         osc.start(t);
         osc.stop(t + 0.15);
       }
@@ -3676,7 +3903,7 @@
         gain.gain.setValueAtTime(0.15, now + tOffset);
         gain.gain.exponentialRampToValueAtTime(0.001, now + tOffset + 0.09);
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(getAudioDestination());
         osc.start(now + tOffset);
         osc.stop(now + tOffset + 0.09);
       });
@@ -3685,6 +3912,11 @@
     function toggleSoundFx() {
       isSoundEnabled = !isSoundEnabled;
       localStorage.setItem('dalines_sound', isSoundEnabled);
+      if (isSoundEnabled && masterVolume === 0) {
+        masterVolume = 0.8;
+        localStorage.setItem('dalines_master_volume', 0.8);
+      }
+      applyMasterVolume();
       updateSoundIcon();
       if (isSoundEnabled) {
         playSound('pop');
@@ -3694,23 +3926,13 @@
       }
     }
 
-    function updateSoundIcon() {
-      const icon = document.getElementById('sound-icon');
-      if (icon) {
-        if (isSoundEnabled) {
-          icon.className = 'fa-solid fa-volume-high text-xs';
-          icon.style.color = 'var(--primary-color)';
-        } else {
-          icon.className = 'fa-solid fa-volume-xmark text-xs text-slate-500';
-          icon.style.color = '';
-        }
-      }
-    }
+    // -----------------------------------------------------------------
+    // THEME CONTROLLER & EASTER EGG (CYBERPUNK GOLD)
+    // -----------------------------------------------------------------
+    let currentTheme = localStorage.getItem('dalines_theme') || 'emerald';
 
-    // -----------------------------------------------------------------
-    // THEME CONTROLLER
-    // -----------------------------------------------------------------
     function setTheme(color) {
+      currentTheme = color;
       if (color === 'emerald') {
         document.documentElement.removeAttribute('data-theme');
       } else {
@@ -3728,8 +3950,210 @@
       playSound('theme');
     }
 
+    function initGoldTheme() {
+      const isGoldUnlocked = localStorage.getItem('dalines_unlocked_gold') === 'true';
+      const goldDot = document.getElementById('theme-dot-gold');
+      if (goldDot && isGoldUnlocked) {
+        goldDot.classList.remove('hidden');
+      }
+    }
+
+    let profileClickCount = 0;
+    let profileClickResetTimer = null;
+
+    function handleProfileEasterEgg(e) {
+      if (e) {
+        e.stopPropagation();
+      }
+
+      profileClickCount++;
+      triggerHaptic(15);
+      playSound('pop');
+
+      // Visual tap bounce on avatar
+      const avatar = document.getElementById('profile-img') || document.getElementById('profile-container');
+      if (avatar) {
+        avatar.style.transition = 'transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        avatar.style.transform = `scale(1.15) rotate(${profileClickCount % 2 === 0 ? 8 : -8}deg)`;
+        setTimeout(() => {
+          if (avatar) avatar.style.transform = '';
+        }, 150);
+      }
+
+      clearTimeout(profileClickResetTimer);
+
+      if (profileClickCount >= 5) {
+        profileClickCount = 0;
+        triggerGoldEasterEgg();
+      } else {
+        profileClickResetTimer = setTimeout(() => {
+          profileClickCount = 0;
+        }, 2000);
+      }
+    }
+
+    function triggerGoldEasterEgg() {
+      triggerHaptic(40);
+      playFanfareSound();
+      triggerConfettiExplosion();
+
+      localStorage.setItem('dalines_unlocked_gold', 'true');
+      const goldDot = document.getElementById('theme-dot-gold');
+      if (goldDot) {
+        goldDot.classList.remove('hidden');
+        goldDot.classList.add('animate-bounce');
+        setTimeout(() => goldDot.classList.remove('animate-bounce'), 1200);
+      }
+
+      setTheme('gold');
+      showToast("🎉 ยินดีด้วย! คุณปลดล็อกธีมลับ DaLines Gold Edition สำเร็จ!");
+    }
+
+    function playFanfareSound() {
+      if (!isSoundEnabled || masterVolume === 0) return;
+      try {
+        initAudio();
+        const now = audioCtx.currentTime;
+        const dest = getAudioDestination();
+
+        const notes = [
+          { f: 523.25, t: 0.00, d: 0.15 }, // C5
+          { f: 659.25, t: 0.14, d: 0.15 }, // E5
+          { f: 783.99, t: 0.28, d: 0.18 }, // G5
+          { f: 1046.50, t: 0.46, d: 0.65 }, // C6
+          { f: 1318.51, t: 0.50, d: 0.65 }, // E6
+          { f: 1567.98, t: 0.54, d: 0.80 }  // G6
+        ];
+
+        notes.forEach(n => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          const startTime = now + n.t;
+          osc.frequency.setValueAtTime(n.f, startTime);
+          gain.gain.setValueAtTime(0.2, startTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, startTime + n.d);
+          osc.connect(gain);
+          gain.connect(dest);
+          osc.start(startTime);
+          osc.stop(startTime + n.d);
+        });
+
+        for (let i = 0; i < 8; i++) {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          const t = now + 0.45 + i * 0.06;
+          osc.frequency.setValueAtTime(1760 + i * 180 + Math.random() * 100, t);
+          gain.gain.setValueAtTime(0.08, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+          osc.connect(gain);
+          gain.connect(dest);
+          osc.start(t);
+          osc.stop(t + 0.2);
+        }
+      } catch (e) {
+        console.error('Fanfare audio error:', e);
+      }
+    }
+
+    function triggerConfettiExplosion() {
+      let canvas = document.getElementById('easter-egg-confetti-canvas');
+      if (!canvas) {
+        canvas = document.createElement('canvas');
+        canvas.id = 'easter-egg-confetti-canvas';
+        canvas.style.position = 'fixed';
+        canvas.style.inset = '0';
+        canvas.style.width = '100vw';
+        canvas.style.height = '100vh';
+        canvas.style.pointerEvents = 'none';
+        canvas.style.zIndex = '99999';
+        document.body.appendChild(canvas);
+      }
+
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const colors = ['#facc15', '#eab308', '#fbbf24', '#fef08a', '#10b981', '#06b6d4', '#a855f7', '#f43f5e', '#ffffff'];
+      const particles = [];
+      const count = 140;
+
+      const originX = canvas.width / 2;
+      const originY = Math.min(canvas.height * 0.35, 280);
+
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 15 + 6;
+        particles.push({
+          x: originX,
+          y: originY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 5,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotationSpeed: (Math.random() - 0.5) * 14,
+          gravity: 0.25,
+          opacity: 1,
+          decay: Math.random() * 0.008 + 0.008,
+          isCircle: Math.random() > 0.5
+        });
+      }
+
+      let animId;
+      const startTime = performance.now();
+
+      function animate(now) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = 0;
+
+        for (let p of particles) {
+          if (p.opacity <= 0) continue;
+          alive++;
+
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.vx *= 0.98;
+          p.vy *= 0.98;
+          p.rotation += p.rotationSpeed;
+          p.opacity -= p.decay;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.globalAlpha = Math.max(0, p.opacity);
+          ctx.fillStyle = p.color;
+
+          if (p.isCircle) {
+            ctx.beginPath();
+            ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+          }
+
+          ctx.restore();
+        }
+
+        if (alive > 0 && now - startTime < 4500) {
+          animId = requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          cancelAnimationFrame(animId);
+          if (canvas && canvas.parentNode) {
+            canvas.parentNode.removeChild(canvas);
+          }
+        }
+      }
+
+      animId = requestAnimationFrame(animate);
+    }
+
     const savedTheme = localStorage.getItem('dalines_theme') || 'emerald';
     setTheme(savedTheme);
+    initGoldTheme();
 
     function updateBannerHeight() {
       const banner = document.getElementById('sticky-live-banner');
@@ -3843,6 +4267,12 @@
     document.addEventListener('DOMContentLoaded', () => {
       setLanguage(currentLang);
       updateSoundIcon();
+      updateVolumeUI();
+      initGoldTheme();
+      const profileImg = document.getElementById('profile-img');
+      if (profileImg) {
+        profileImg.addEventListener('click', handleProfileEasterEgg);
+      }
       initObsTts();
       initClipsVault();
       initSensCalculator();
@@ -3852,6 +4282,17 @@
       initStreamCountdown();
       initRouletteWheel();
       initAimChallenge();
+
+      // Click outside to close volume dropdown
+      document.addEventListener('click', (e) => {
+        const wrapper = document.getElementById('volume-control-wrapper');
+        const panel = document.getElementById('volume-dropdown-panel');
+        if (panel && !panel.classList.contains('hidden')) {
+          if (wrapper && !wrapper.contains(e.target)) {
+            closeVolumeDropdown();
+          }
+        }
+      });
 
       // Mouse Spotlight
       const cursorGlow = document.getElementById('cursor-glow');
@@ -4942,6 +5383,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
         u.lang = 'th-TH';
         u.rate = 1.05;
         u.pitch = 1.05;
+        u.volume = (isSoundEnabled && masterVolume > 0) ? masterVolume : 0;
         window.speechSynthesis.speak(u);
       } catch (e) { }
     }
@@ -6318,6 +6760,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
         const theme = currentTheme || 'emerald';
         if (theme === 'cyan') return '6, 182, 212';
         if (theme === 'purple') return '168, 85, 247';
+        if (theme === 'gold') return '234, 179, 8';
         return '16, 185, 129';
       }
 
@@ -6492,7 +6935,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
 
     function playCyberSound(soundId) {
       triggerHaptic(20);
-      if (!isSoundEnabled) {
+      if (!isSoundEnabled || masterVolume === 0) {
         showToast('เปิดเสียงเอฟเฟกต์ที่ปุ่มลำโพงมุมขวาบนก่อนนะครับ 🔊');
         return;
       }
@@ -6510,7 +6953,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
         gain.gain.setValueAtTime(0.12, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(getAudioDestination());
         osc.start(now);
         osc.stop(now + 0.35);
         showToast('🎯 สายยิงเน้นโยน! วืดเป็นงานประจำ');
@@ -6523,7 +6966,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
         gain.gain.setValueAtTime(0.15, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(getAudioDestination());
         osc.start(now);
         osc.stop(now + 0.18);
         showToast('⚡ One Tap ลั่นหัว! คมจัดปลัดบอก');
@@ -6536,7 +6979,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
           gain.gain.setValueAtTime(0.08, now + idx * 0.06);
           gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.4);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now + idx * 0.06);
           osc.stop(now + idx * 0.06 + 0.4);
         });
@@ -6550,7 +6993,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
           gain.gain.setValueAtTime(0.1, now + idx * 0.09);
           gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.08);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now + idx * 0.09);
           osc.stop(now + idx * 0.09 + 0.08);
         });
@@ -6564,7 +7007,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
           gain.gain.setValueAtTime(0.12, now + idx * 0.07);
           gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.07 + 0.35);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now + idx * 0.07);
           osc.stop(now + idx * 0.07 + 0.35);
         });
@@ -6578,7 +7021,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
           gain.gain.setValueAtTime(0.05, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now);
           osc.stop(now + 0.5);
         });
@@ -6773,7 +7216,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
       const startTime = performance.now();
 
       function playTickSound() {
-        if (!isSoundEnabled) return;
+        if (!isSoundEnabled || masterVolume === 0) return;
         try {
           initAudio();
           const now = audioCtx.currentTime;
@@ -6785,7 +7228,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
           gain.gain.setValueAtTime(0.08, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now);
           osc.stop(now + 0.04);
 
@@ -6900,6 +7343,89 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
         setTimeout(() => el.remove(), 850);
       }
     }
+
+    // -----------------------------------------------------------------
+    // 📲 PWA CUSTOM INSTALL PROMPT CONTROLLER
+    // -----------------------------------------------------------------
+    let deferredInstallPrompt = null;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent standard browser mini-infobar
+      e.preventDefault();
+      deferredInstallPrompt = e;
+
+      // Don't show if already in standalone app mode
+      if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+        return;
+      }
+
+      // Check 7-day dismissal expiry
+      const dismissedUntil = localStorage.getItem('dalines_pwa_dismissed_until');
+      if (dismissedUntil && Date.now() < parseInt(dismissedUntil, 10)) {
+        return;
+      }
+
+      showPwaInstallBanner();
+    });
+
+    function showPwaInstallBanner() {
+      const banner = document.getElementById('pwa-install-banner');
+      if (!banner) return;
+      banner.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        banner.classList.remove('translate-y-full', 'opacity-0');
+      });
+    }
+
+    async function installPwaApp() {
+      playSound('pop');
+      triggerHaptic(20);
+
+      if (!deferredInstallPrompt) {
+        showToast('💡 เพื่อติดตั้ง: แตะเมนูแชร์ของเบราว์เซอร์ แล้วเลือก "เพิ่มลงหน้าจอโฮม"');
+        hidePwaInstallBanner();
+        return;
+      }
+
+      try {
+        deferredInstallPrompt.prompt();
+        const { outcome } = await deferredInstallPrompt.userChoice;
+        if (outcome === 'accepted') {
+          showToast('🎉 ขอบคุณที่ติดตั้ง DaLines Hub ครับ!');
+        }
+      } catch (err) {
+        console.error('PWA install error:', err);
+      } finally {
+        deferredInstallPrompt = null;
+        hidePwaInstallBanner();
+      }
+    }
+
+    function dismissPwaPrompt() {
+      playSound('pop');
+      triggerHaptic(15);
+      hidePwaInstallBanner();
+
+      // Remember dismissal for 7 days (7 * 24 * 60 * 60 * 1000 = 604,800,000 ms)
+      const expiry = Date.now() + 604800000;
+      localStorage.setItem('dalines_pwa_dismissed_until', expiry);
+    }
+
+    function hidePwaInstallBanner() {
+      const banner = document.getElementById('pwa-install-banner');
+      if (!banner) return;
+      banner.classList.add('translate-y-full', 'opacity-0');
+      setTimeout(() => {
+        if (banner) banner.classList.add('hidden');
+      }, 350);
+    }
+
+    window.addEventListener('appinstalled', () => {
+      deferredInstallPrompt = null;
+      hidePwaInstallBanner();
+      localStorage.removeItem('dalines_pwa_dismissed_until');
+      showToast('✨ DaLines Hub ติดตั้งลงเครื่องเรียบร้อยแล้ว!');
+    });
   </script>
 </body>
 
