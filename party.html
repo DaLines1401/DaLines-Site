@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="th" class="dark">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
   <title>DaLines Cozy Party Lounge | Chibi Gacha & Wheel of Fate 🎉🎴</title>
-  <meta name="description" content="ห้องปาร์ตี้มินิเกม DaLines Cozy Party Lounge สุ่มการ์ดมีม Chibi Gacha และหมุนวงล้อบทลงโทษสตรีมเมอร์ Wheel of Fate รองรับ OBS Overlay สด" />
+  <meta name="description"
+    content="ห้องปาร์ตี้มินิเกม DaLines Cozy Party Lounge สุ่มการ์ดมีม Chibi Gacha และหมุนวงล้อบทลงโทษสตรีมเมอร์ Wheel of Fate รองรับ OBS Overlay สด" />
   <link rel="icon" type="image/png" sizes="32x32" href="Logo.png" />
   <meta name="theme-color" content="#f472b6" />
 
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Mali:wght@400;600;700&family=Orbitron:wght@600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Mali:wght@400;600;700&family=Orbitron:wght@600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
   <!-- Tailwind CSS CDN -->
@@ -49,6 +53,7 @@
       user-select: none;
       -webkit-user-select: none;
     }
+
     body {
       margin: 0;
       padding: 0;
@@ -63,6 +68,7 @@
     body.obs-mode {
       background: transparent !important;
     }
+
     body.obs-mode .non-obs {
       display: none !important;
     }
@@ -80,53 +86,79 @@
       transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
       transform-style: preserve-3d;
     }
+
     .card-3d:hover {
       transform: translateY(-8px) scale(1.03);
     }
+
     .holo-ur {
       background: linear-gradient(135deg, #fbbf24 0%, #f43f5e 35%, #8b5cf6 70%, #06b6d4 100%);
       box-shadow: 0 0 25px rgba(251, 191, 36, 0.6);
       animation: holoShift 4s infinite alternate;
     }
+
     .holo-ssr {
       background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #3b82f6 100%);
       box-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
     }
+
     .holo-sr {
       background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
       box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
     }
+
     .holo-r {
       background: linear-gradient(135deg, #64748b 0%, #475569 100%);
       box-shadow: 0 0 10px rgba(100, 116, 139, 0.3);
     }
+
     @keyframes holoShift {
-      0% { filter: hue-rotate(0deg); }
-      100% { filter: hue-rotate(45deg); }
+      0% {
+        filter: hue-rotate(0deg);
+      }
+
+      100% {
+        filter: hue-rotate(45deg);
+      }
     }
 
     /* Cute Bouncy Buttons */
     .cute-btn {
       transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
+
     .cute-btn:hover {
       transform: translateY(-3px) scale(1.02);
     }
+
     .cute-btn:active {
       transform: translateY(2px) scale(0.97);
     }
 
     /* Pack Tear Animation */
     @keyframes packBurst {
-      0% { transform: scale(1); filter: brightness(1); }
-      50% { transform: scale(1.15) rotate(3deg); filter: brightness(1.8); }
-      100% { transform: scale(0); opacity: 0; }
+      0% {
+        transform: scale(1);
+        filter: brightness(1);
+      }
+
+      50% {
+        transform: scale(1.15) rotate(3deg);
+        filter: brightness(1.8);
+      }
+
+      100% {
+        transform: scale(0);
+        opacity: 0;
+      }
     }
+
     .pack-bursting {
       animation: packBurst 0.6s forwards;
     }
   </style>
 </head>
+
 <body id="page-body">
 
   <!-- TOP NAVIGATION BAR (Non-OBS) -->
@@ -136,32 +168,55 @@
       <!-- Left: Logo & Title -->
       <div class="flex items-center gap-3">
         <a href="index.html" class="flex items-center gap-2.5 group">
-          <img src="Logo.png" alt="DaLines Logo" class="w-9 h-9 rounded-xl border border-pink-400 shadow-md group-hover:scale-105 transition" />
+          <img src="Logo.png" alt="DaLines Logo"
+            class="w-9 h-9 rounded-xl border border-pink-400 shadow-md group-hover:scale-105 transition" />
           <div>
             <div class="flex items-center gap-1.5">
-              <span class="text-xs sm:text-sm font-bold font-gaming text-white tracking-wide">DaLines Party Lounge</span>
-              <span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-pink-500/20 text-pink-300 border border-pink-500/30">CHIBI ARCADE</span>
+              <span class="text-xs sm:text-sm font-bold font-gaming text-white tracking-wide">DaLines Party
+                Lounge</span>
+              <span
+                class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-pink-500/20 text-pink-300 border border-pink-500/30">CHIBI
+                ARCADE</span>
             </div>
-            <div class="text-[10px] sm:text-[11px] text-pink-300/80 font-cute">มินิเกมเปิดการ์ด &amp; วงล้อชาเลนจ์สตรีมสด 🎉</div>
+            <div class="text-[10px] sm:text-[11px] text-pink-300/80 font-cute">มินิเกมเปิดการ์ด &amp;
+              วงล้อชาเลนจ์สตรีมสด 🎉</div>
           </div>
         </a>
       </div>
 
       <!-- Navigation Cross-links -->
       <div class="flex items-center gap-2 flex-wrap text-xs">
-        <a href="index.html" class="cute-btn px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 shadow-sm flex items-center gap-1.5">
+        <a href="index.html"
+          class="cute-btn px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 shadow-sm flex items-center gap-1.5">
           <i class="fa-solid fa-arrow-left text-pink-400"></i>
           <span>Hub</span>
         </a>
+        <a href="pc-3d.html"
+          class="cute-btn px-2.5 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-city"></i>
+          <span class="hidden sm:inline">Metropolis 3D</span>
+        </a>
+        <a href="snow.html"
+          class="cute-btn px-2.5 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-sky-400 border border-sky-500/30 shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-snowplow"></i>
+          <span class="hidden sm:inline">Snow Plow ❄️</span>
+        </a>
+        <a href="pixel.html"
+          class="cute-btn px-2.5 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-pink-400 border border-pink-500/30 shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-gamepad"></i>
+          <span class="hidden sm:inline">8-Bit Pixel 👾</span>
+        </a>
 
         <!-- OBS Overlay Mode Toggle Button -->
-        <button onclick="toggleObsMode()" class="cute-btn px-3 py-1.5 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold flex items-center gap-1.5 shadow-md">
+        <button onclick="toggleObsMode()"
+          class="cute-btn px-3 py-1.5 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold flex items-center gap-1.5 shadow-md">
           <i class="fa-solid fa-video"></i>
           <span id="obs-btn-text">OBS Mode</span>
         </button>
 
         <!-- Audio Mute/Unmute -->
-        <button onclick="toggleAudio()" class="w-8 h-8 rounded-xl bg-slate-800 text-pink-400 flex items-center justify-center text-xs shadow-sm">
+        <button onclick="toggleAudio()"
+          class="w-8 h-8 rounded-xl bg-slate-800 text-pink-400 flex items-center justify-center text-xs shadow-sm">
           <i id="audio-icon" class="fa-solid fa-volume-high"></i>
         </button>
       </div>
@@ -177,14 +232,16 @@
       <!-- Player Tickets & Level -->
       <div class="chibi-glass px-4 py-2.5 rounded-2xl flex items-center gap-4">
         <div class="flex items-center gap-2">
-          <span class="w-8 h-8 rounded-xl bg-amber-400/20 text-amber-300 flex items-center justify-center text-sm shadow-inner">
+          <span
+            class="w-8 h-8 rounded-xl bg-amber-400/20 text-amber-300 flex items-center justify-center text-sm shadow-inner">
             <i class="fa-solid fa-ticket"></i>
           </span>
           <div>
             <div class="text-[10px] font-mono text-slate-400 uppercase">Gacha Tickets</div>
             <div class="flex items-center gap-1">
               <span id="ticket-count" class="font-gaming font-extrabold text-amber-300 text-base sm:text-lg">10</span>
-              <button onclick="addFreeTickets()" class="text-[10px] text-pink-300 hover:text-white underline ml-1 font-cute">+ รับฟรี</button>
+              <button onclick="addFreeTickets()"
+                class="text-[10px] text-pink-300 hover:text-white underline ml-1 font-cute">+ รับฟรี</button>
             </div>
           </div>
         </div>
@@ -192,31 +249,37 @@
         <div class="w-px h-6 bg-slate-700"></div>
 
         <div class="flex items-center gap-2">
-          <span class="w-8 h-8 rounded-xl bg-pink-400/20 text-pink-300 flex items-center justify-center text-sm shadow-inner">
+          <span
+            class="w-8 h-8 rounded-xl bg-pink-400/20 text-pink-300 flex items-center justify-center text-sm shadow-inner">
             <i class="fa-solid fa-book-bookmark"></i>
           </span>
           <div>
             <div class="text-[10px] font-mono text-slate-400 uppercase">Collection</div>
-            <span id="collection-count" class="font-gaming font-extrabold text-pink-300 text-base sm:text-lg">0 / 12</span>
+            <span id="collection-count" class="font-gaming font-extrabold text-pink-300 text-base sm:text-lg">0 /
+              12</span>
           </div>
         </div>
       </div>
 
       <!-- Main Navigation Tabs -->
       <div class="flex items-center gap-1.5 chibi-glass p-1.5 rounded-2xl">
-        <button onclick="switchSection('gacha')" id="sec-btn-gacha" class="cute-btn px-4 py-2 rounded-xl bg-pink-600 text-white font-bold text-xs flex items-center gap-2 shadow-md">
+        <button onclick="switchSection('gacha')" id="sec-btn-gacha"
+          class="cute-btn px-4 py-2 rounded-xl bg-pink-600 text-white font-bold text-xs flex items-center gap-2 shadow-md">
           <i class="fa-solid fa-sparkles"></i>
           <span>Chibi Gacha</span>
         </button>
-        <button onclick="switchSection('wheel')" id="sec-btn-wheel" class="cute-btn px-4 py-2 rounded-xl text-slate-300 hover:text-white font-medium text-xs flex items-center gap-2">
+        <button onclick="switchSection('wheel')" id="sec-btn-wheel"
+          class="cute-btn px-4 py-2 rounded-xl text-slate-300 hover:text-white font-medium text-xs flex items-center gap-2">
           <i class="fa-solid fa-dharmachakra"></i>
           <span>Wheel of Fate</span>
         </button>
-        <button onclick="switchSection('binder')" id="sec-btn-binder" class="cute-btn px-4 py-2 rounded-xl text-slate-300 hover:text-white font-medium text-xs flex items-center gap-2">
+        <button onclick="switchSection('binder')" id="sec-btn-binder"
+          class="cute-btn px-4 py-2 rounded-xl text-slate-300 hover:text-white font-medium text-xs flex items-center gap-2">
           <i class="fa-solid fa-book-open"></i>
           <span>Card Binder</span>
         </button>
-        <button onclick="switchSection('duel')" id="sec-btn-duel" class="cute-btn px-4 py-2 rounded-xl text-slate-300 hover:text-white font-medium text-xs flex items-center gap-2">
+        <button onclick="switchSection('duel')" id="sec-btn-duel"
+          class="cute-btn px-4 py-2 rounded-xl text-slate-300 hover:text-white font-medium text-xs flex items-center gap-2">
           <i class="fa-solid fa-hand-fist"></i>
           <span>Chibi Duel</span>
         </button>
@@ -227,14 +290,18 @@
     <section id="section-gacha" class="space-y-6">
 
       <!-- Gacha Summon Banner -->
-      <div class="relative overflow-hidden rounded-3xl p-6 sm:p-8 chibi-glass border-2 border-pink-500/40 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+      <div
+        class="relative overflow-hidden rounded-3xl p-6 sm:p-8 chibi-glass border-2 border-pink-500/40 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
         <!-- Floating Stars Background -->
-        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -left-10 -top-10 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl pointer-events-none">
+        </div>
+        <div class="absolute -left-10 -top-10 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none">
+        </div>
 
         <!-- Banner Info -->
         <div class="space-y-2 text-center md:text-left z-10">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/40 text-xs font-cute">
+          <div
+            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/40 text-xs font-cute">
             <span>✨ LIMITED EDITION</span>
             <span>•</span>
             <span>DaLines Anime Series Vol. 1</span>
@@ -248,20 +315,29 @@
 
           <!-- Rates pill -->
           <div class="flex items-center justify-center md:justify-start gap-2 pt-2 text-[11px] font-mono">
-            <span class="px-2 py-0.5 rounded-md bg-yellow-400/20 text-yellow-300 font-bold border border-yellow-400/30">UR 1%</span>
-            <span class="px-2 py-0.5 rounded-md bg-pink-400/20 text-pink-300 font-bold border border-pink-400/30">SSR 9%</span>
-            <span class="px-2 py-0.5 rounded-md bg-emerald-400/20 text-emerald-300 font-bold border border-emerald-400/30">SR 30%</span>
-            <span class="px-2 py-0.5 rounded-md bg-slate-400/20 text-slate-300 font-bold border border-slate-400/30">R 60%</span>
+            <span
+              class="px-2 py-0.5 rounded-md bg-yellow-400/20 text-yellow-300 font-bold border border-yellow-400/30">UR
+              1%</span>
+            <span class="px-2 py-0.5 rounded-md bg-pink-400/20 text-pink-300 font-bold border border-pink-400/30">SSR
+              9%</span>
+            <span
+              class="px-2 py-0.5 rounded-md bg-emerald-400/20 text-emerald-300 font-bold border border-emerald-400/30">SR
+              30%</span>
+            <span class="px-2 py-0.5 rounded-md bg-slate-400/20 text-slate-300 font-bold border border-slate-400/30">R
+              60%</span>
           </div>
         </div>
 
         <!-- Card Pack Display & Pull Buttons -->
         <div class="flex flex-col items-center gap-3 z-10 shrink-0">
           <!-- 3D Card Pack Illustration -->
-          <div id="gacha-pack" class="w-36 h-48 sm:w-44 sm:h-56 rounded-2xl bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-700 p-1 shadow-2xl relative cursor-pointer group card-3d">
-            <div class="w-full h-full rounded-xl bg-slate-950/80 border border-white/30 p-3 flex flex-col items-center justify-between text-center relative overflow-hidden">
+          <div id="gacha-pack"
+            class="w-36 h-48 sm:w-44 sm:h-56 rounded-2xl bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-700 p-1 shadow-2xl relative cursor-pointer group card-3d">
+            <div
+              class="w-full h-full rounded-xl bg-slate-950/80 border border-white/30 p-3 flex flex-col items-center justify-between text-center relative overflow-hidden">
               <div class="text-[9px] font-mono tracking-widest text-pink-300 font-bold uppercase">DALINES BOOSTER</div>
-              <img src="Logo.png" alt="DaLines Logo" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border border-pink-400 shadow-md group-hover:scale-110 transition duration-300" />
+              <img src="Logo.png" alt="DaLines Logo"
+                class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border border-pink-400 shadow-md group-hover:scale-110 transition duration-300" />
               <div class="space-y-0.5">
                 <div class="text-[11px] font-bold text-white font-gaming">CHIBI CARDS</div>
                 <div class="text-[9px] text-amber-300 font-mono">★ HOLO EDITION ★</div>
@@ -271,11 +347,13 @@
 
           <!-- Pull Buttons -->
           <div class="flex items-center gap-2">
-            <button onclick="pullGacha(1)" class="cute-btn px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-pink-500/40 flex items-center gap-1.5 shadow-md">
+            <button onclick="pullGacha(1)"
+              class="cute-btn px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-pink-500/40 flex items-center gap-1.5 shadow-md">
               <i class="fa-solid fa-ticket text-amber-400"></i>
               <span>สุ่ม 1 ใบ (1 ใบ)</span>
             </button>
-            <button onclick="pullGacha(5)" class="cute-btn px-5 py-2.5 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-lg">
+            <button onclick="pullGacha(5)"
+              class="cute-btn px-5 py-2.5 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-lg">
               <i class="fa-solid fa-wand-magic-sparkles text-yellow-300"></i>
               <span>สุ่ม 5 ใบ (5 ใบ)</span>
             </button>
@@ -291,7 +369,8 @@
             <i class="fa-solid fa-gift text-pink-400"></i>
             <span>ผลการสุ่มการ์ด (NEW CARDS)</span>
           </h3>
-          <button onclick="clearPulledResults()" class="text-xs text-slate-400 hover:text-white underline">ปิดการแสดงผล</button>
+          <button onclick="clearPulledResults()"
+            class="text-xs text-slate-400 hover:text-white underline">ปิดการแสดงผล</button>
         </div>
         <div id="pulled-cards-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4"></div>
       </div>
@@ -301,7 +380,8 @@
     <!-- SECTION 2: WHEEL OF FATE (วงล้อบทลงโทษสตรีมเมอร์ & ท้าทาย) -->
     <section id="section-wheel" class="hidden space-y-6">
 
-      <div class="chibi-glass rounded-3xl p-6 sm:p-8 border-2 border-purple-500/40 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-8">
+      <div
+        class="chibi-glass rounded-3xl p-6 sm:p-8 border-2 border-purple-500/40 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-8">
 
         <!-- Wheel Canvas Container -->
         <div class="flex flex-col items-center gap-4 relative">
@@ -312,15 +392,18 @@
 
           <!-- Wheel Canvas -->
           <div class="relative p-2 rounded-full border-4 border-pink-400/50 shadow-[0_0_35px_rgba(236,72,153,0.4)]">
-            <canvas id="wheel-canvas" width="360" height="360" class="max-w-[85vw] max-h-[85vw] sm:w-[360px] sm:h-[360px] rounded-full"></canvas>
+            <canvas id="wheel-canvas" width="360" height="360"
+              class="max-w-[85vw] max-h-[85vw] sm:w-[360px] sm:h-[360px] rounded-full"></canvas>
             <!-- Center Spin Button -->
-            <button onclick="spinWheel()" id="spin-btn" class="absolute inset-0 m-auto w-16 h-16 rounded-full bg-gradient-to-tr from-pink-600 to-purple-600 text-white font-gaming font-extrabold text-sm shadow-xl flex items-center justify-center border-2 border-white cute-btn">
+            <button onclick="spinWheel()" id="spin-btn"
+              class="absolute inset-0 m-auto w-16 h-16 rounded-full bg-gradient-to-tr from-pink-600 to-purple-600 text-white font-gaming font-extrabold text-sm shadow-xl flex items-center justify-center border-2 border-white cute-btn">
               SPIN!
             </button>
           </div>
 
           <!-- Result Banner -->
-          <div id="wheel-result-box" class="hidden text-center p-3 rounded-2xl bg-black/60 border border-pink-400 text-sm font-bold text-yellow-300 max-w-sm animate-bounce">
+          <div id="wheel-result-box"
+            class="hidden text-center p-3 rounded-2xl bg-black/60 border border-pink-400 text-sm font-bold text-yellow-300 max-w-sm animate-bounce">
             🎉 ผลลัพธ์: <span id="wheel-result-text"></span>
           </div>
         </div>
@@ -329,7 +412,9 @@
         <div class="non-obs space-y-4 w-full max-w-md">
           <div>
             <div class="flex items-center gap-2">
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">STREAM TOOL</span>
+              <span
+                class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">STREAM
+                TOOL</span>
               <h3 class="text-lg font-bold font-gaming text-white">Wheel of Fate Options</h3>
             </div>
             <p class="text-xs text-slate-300 mt-1 font-cute">
@@ -339,18 +424,22 @@
 
           <!-- Category Presets -->
           <div class="flex items-center gap-2 text-xs">
-            <button onclick="loadWheelPreset('punish')" class="cute-btn px-3 py-1.5 rounded-xl bg-pink-500/20 text-pink-300 hover:bg-pink-500/30 border border-pink-500/40 font-bold">
+            <button onclick="loadWheelPreset('punish')"
+              class="cute-btn px-3 py-1.5 rounded-xl bg-pink-500/20 text-pink-300 hover:bg-pink-500/30 border border-pink-500/40 font-bold">
               😂 บทลงโทษสตรีม
             </button>
-            <button onclick="loadWheelPreset('valo')" class="cute-btn px-3 py-1.5 rounded-xl bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 border border-cyan-500/40 font-bold">
+            <button onclick="loadWheelPreset('valo')"
+              class="cute-btn px-3 py-1.5 rounded-xl bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 border border-cyan-500/40 font-bold">
               🎯 โจทย์ท้าทายเกม
             </button>
           </div>
 
           <!-- Add Item Form -->
           <div class="flex items-center gap-2">
-            <input type="text" id="new-slice-input" placeholder="พิมพ์โจทย์ใหม่..." class="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white focus:outline-none focus:border-pink-500" />
-            <button onclick="addWheelSlice()" class="cute-btn px-4 py-2 rounded-xl bg-pink-600 text-white font-bold text-xs shadow-md">
+            <input type="text" id="new-slice-input" placeholder="พิมพ์โจทย์ใหม่..."
+              class="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white focus:outline-none focus:border-pink-500" />
+            <button onclick="addWheelSlice()"
+              class="cute-btn px-4 py-2 rounded-xl bg-pink-600 text-white font-bold text-xs shadow-md">
               + เพิ่ม
             </button>
           </div>
@@ -373,17 +462,21 @@
           </h3>
           <p class="text-xs text-slate-400 font-cute">การ์ดทั้งหมดที่ปลดล็อกได้จะถูกบันทึกไว้ในเบราว์เซอร์นี้</p>
         </div>
-        <button onclick="resetBinderCollection()" class="text-xs text-slate-400 hover:text-red-400 underline">รีเซ็ตสมุดสะสม</button>
+        <button onclick="resetBinderCollection()"
+          class="text-xs text-slate-400 hover:text-red-400 underline">รีเซ็ตสมุดสะสม</button>
       </div>
 
       <!-- 12 Cards Grid -->
-      <div id="binder-cards-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4"></div>
+      <div id="binder-cards-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+      </div>
     </section>
 
     <!-- SECTION 4: CHIBI DUEL (มินิเกมเป่ายิ้งฉุบกับสตรีมเมอร์) -->
     <section id="section-duel" class="hidden space-y-6">
-      <div class="chibi-glass rounded-3xl p-6 sm:p-8 border-2 border-emerald-500/40 shadow-2xl max-w-xl mx-auto text-center space-y-4">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-cute">
+      <div
+        class="chibi-glass rounded-3xl p-6 sm:p-8 border-2 border-emerald-500/40 shadow-2xl max-w-xl mx-auto text-center space-y-4">
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-cute">
           <span>⚔️ CHIBI MINI-GAME</span>
           <span>•</span>
           <span>ชนะเพื่อรับตั๋วกาชาฟรี!</span>
@@ -397,14 +490,16 @@
         <div class="flex items-center justify-center gap-8 py-4">
           <div class="flex flex-col items-center gap-2">
             <span class="text-xs text-slate-400 font-mono">YOU</span>
-            <div id="player-choice-icon" class="w-20 h-20 rounded-2xl bg-slate-900 border border-pink-400 flex items-center justify-center text-3xl text-pink-300 shadow-md">
+            <div id="player-choice-icon"
+              class="w-20 h-20 rounded-2xl bg-slate-900 border border-pink-400 flex items-center justify-center text-3xl text-pink-300 shadow-md">
               ❓
             </div>
           </div>
           <div class="font-gaming font-extrabold text-2xl text-amber-400">VS</div>
           <div class="flex flex-col items-center gap-2">
             <span class="text-xs text-slate-400 font-mono">DALINES</span>
-            <div id="bot-choice-icon" class="w-20 h-20 rounded-2xl bg-slate-900 border border-purple-400 flex items-center justify-center text-3xl text-purple-300 shadow-md">
+            <div id="bot-choice-icon"
+              class="w-20 h-20 rounded-2xl bg-slate-900 border border-purple-400 flex items-center justify-center text-3xl text-purple-300 shadow-md">
               🤖
             </div>
           </div>
@@ -415,15 +510,18 @@
 
         <!-- Choice buttons -->
         <div class="flex items-center justify-center gap-3 pt-2">
-          <button onclick="playDuel('rock')" class="cute-btn px-4 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm border border-slate-700 flex flex-col items-center gap-1 shadow-md">
+          <button onclick="playDuel('rock')"
+            class="cute-btn px-4 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm border border-slate-700 flex flex-col items-center gap-1 shadow-md">
             <span class="text-2xl">✊</span>
             <span>ค้อน (Rock)</span>
           </button>
-          <button onclick="playDuel('paper')" class="cute-btn px-4 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm border border-slate-700 flex flex-col items-center gap-1 shadow-md">
+          <button onclick="playDuel('paper')"
+            class="cute-btn px-4 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm border border-slate-700 flex flex-col items-center gap-1 shadow-md">
             <span class="text-2xl">✋</span>
             <span>กระดาษ (Paper)</span>
           </button>
-          <button onclick="playDuel('scissors')" class="cute-btn px-4 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm border border-slate-700 flex flex-col items-center gap-1 shadow-md">
+          <button onclick="playDuel('scissors')"
+            class="cute-btn px-4 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm border border-slate-700 flex flex-col items-center gap-1 shadow-md">
             <span class="text-2xl">✌️</span>
             <span>กรรไกร (Scissors)</span>
           </button>
@@ -434,7 +532,8 @@
   </main>
 
   <!-- CARD DETAIL MODAL (Inspect any card) -->
-  <div id="card-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+  <div id="card-modal"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
     <div class="chibi-glass w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4 text-center border-2 border-pink-400">
       <div id="modal-card-render" class="flex justify-center"></div>
       <div class="space-y-1">
@@ -442,7 +541,8 @@
         <div id="modal-card-rarity" class="text-xs font-mono font-bold"></div>
         <p id="modal-card-desc" class="text-xs text-slate-300 font-cute leading-relaxed pt-1"></p>
       </div>
-      <button onclick="closeCardModal()" class="w-full py-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs cute-btn">
+      <button onclick="closeCardModal()"
+        class="w-full py-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs cute-btn">
         ปิดหน้าต่าง
       </button>
     </div>
@@ -458,8 +558,8 @@
 
       // SSR (Super Rare)
       { id: 'ssr-1', name: 'Cyber Panda Mascot', rarity: 'SSR', icon: '🐼', color: 'holo-ssr', desc: 'แพนด้าไซเบอร์ผู้พิทักษ์ช่อง DaLines ตาสองสีม่วง/ส้ม พร้อมพุ่งชนทุกแมตช์', stat: 'DEF: 8800 • CUTENESS: 100' },
-      { id: 'ssr-2', name: 'The 240Hz Speed Demon', rarity: 'SSR', icon: '🏎️', color: 'holo-ssr', desc: 'ความไวเฟรมเรต 165Hz มองเห็นศัตรูเร็วกว่าคนทั่วไป 0.001 วินาที', stat: 'SPD: 240 FPS • REACTION: S+' },
-      { id: 'ssr-3', name: 'Arctic Rig Powerhouse', rarity: 'SSR', icon: '🖥️', color: 'holo-ssr', desc: 'ขุมพลัง Ryzen 5 5600 + RTX 5060 ti เย็นยะเยือกสไตล์น้ำแข็ง อัปเกรดทุกความแรง', stat: 'TECH: 4060 • COLD: -50°C' },
+      { id: 'ssr-2', name: 'The 165Hz Speed Demon', rarity: 'SSR', icon: '🏎️', color: 'holo-ssr', desc: 'ความไวเฟรมเรต 165Hz ', stat: 'SPD: 165 FPS • REACTION: S+' },
+      { id: 'ssr-3', name: 'Arctic Rig Powerhouse', rarity: 'SSR', icon: '🖥️', color: 'holo-ssr', desc: 'ขุมพลัง Ryzen 5 5600 + RTX 5060 ti เย็นยะเยือกสไตล์น้ำแข็ง อัปเกรดทุกความแรง', stat: 'TECH: 5060 ti • COLD: -50°C' },
 
       // SR (Super Rare)
       { id: 'sr-1', name: 'สตรีมเมอร์สายยิงเน้นโยน', rarity: 'SR', icon: '🎯', color: 'holo-sr', desc: 'จริงจังมาเยอะแล้วครับ! ยิงไม่เข้าก็โยนไว้ก่อน บันเทิงแน่นอน', stat: 'HUMOR: 999 • YON: 100%' },
@@ -945,4 +1045,5 @@
     renderWheelItemsList();
   </script>
 </body>
+
 </html>

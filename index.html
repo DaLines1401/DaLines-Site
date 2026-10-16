@@ -154,12 +154,23 @@
       --ambient-blob-2: rgba(192, 132, 252, 0.2);
     }
 
+    :root {
+      --banner-height: 45px;
+    }
+
     body {
       font-family: 'Kanit', sans-serif;
       background-color: #06080c;
       padding-bottom: max(5rem, var(--sab));
       -webkit-tap-highlight-color: transparent;
-      perspective: 1000px;
+      overflow-x: clip;
+    }
+
+    #main-nav {
+      position: sticky;
+      top: calc(var(--banner-height, 45px) + 6px);
+      z-index: 30;
+      transition: top 0.2s ease;
     }
 
     .font-gaming {
@@ -168,6 +179,7 @@
 
     /* 3D Tilt Card */
     .tilt-card {
+      perspective: 1000px;
       transform-style: preserve-3d;
       will-change: transform;
       transition: transform 0.15s ease-out, box-shadow 0.25s ease, border-color 0.25s ease;
@@ -479,11 +491,44 @@
     .wheel-pointer.kick {
       transform: translateY(-4px) rotate(-14deg);
     }
+
+    /* Mobile Touch Target Optimizations (min 38-44px for accessibility & easier tapping) */
+    @media (max-width: 640px) {
+      .clip-filter-btn,
+      .wheel-mode-btn,
+      .cmd-cat-btn,
+      .emote-cat-btn,
+      .quick-dpi-btn,
+      .schedule-day-btn {
+        min-height: 40px;
+        min-width: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .clip-filter-btn {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+        font-size: 11px;
+      }
+
+      .wheel-mode-btn {
+        min-height: 38px;
+        font-size: 11px;
+      }
+
+      .cmd-badge-btn {
+        min-height: 38px;
+        display: inline-flex;
+        align-items: center;
+      }
+    }
   </style>
 </head>
 
 <body
-  class="text-slate-100 min-h-screen relative selection:bg-emerald-500 selection:text-black antialiased overflow-x-hidden">
+  class="text-slate-100 min-h-screen relative selection:bg-emerald-500 selection:text-black antialiased">
 
   <!-- REAL-TIME LIVE INDICATOR BANNER (TWITCH) -->
   <aside id="sticky-live-banner"
@@ -678,9 +723,10 @@
       </div>
     </header>
 
-    <!-- Navigation Tabs (5 แท็บหลัก) -->
-    <nav
-      class="grid grid-cols-5 p-1 sm:p-1.5 rounded-2xl bg-slate-900/80 border border-slate-800 backdrop-blur-md mb-5 sm:mb-6 gap-1 shadow-xl"
+    <!-- Navigation Tabs (5 แท็บหลัก: Sticky Navigation เกาะติดใต้ Live Banner) -->
+    <nav id="main-nav"
+      class="sticky z-30 grid grid-cols-5 p-1 sm:p-1.5 rounded-2xl bg-slate-900/90 border border-slate-800/90 backdrop-blur-lg mb-5 sm:mb-6 gap-1 shadow-2xl"
+      style="top: calc(var(--banner-height, 45px) + 6px);"
       aria-label="Main Navigation">
       <button type="button" data-tab="links"
         class="tab-btn theme-active-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs rounded-xl transition-all duration-200 cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5">
@@ -894,7 +940,65 @@
             </div>
           </div>
         </div>
+
+        <!-- Bank Account Direct Transfer Box -->
+        <div
+          class="mt-3 p-3 sm:p-3.5 rounded-xl bg-slate-950/70 border border-emerald-500/30 backdrop-blur-md flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shadow-inner">
+          <div class="flex items-center gap-3 min-w-0">
+            <!-- KBank Badge / Icon -->
+            <div
+              class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-emerald-600/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-lg sm:text-xl shrink-0 shadow-sm">
+              <i class="fa-solid fa-building-columns"></i>
+            </div>
+            <!-- Bank Details -->
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-[#137E3D]"></span>
+                  <span data-i18n="bank_name">ธนาคารกสิกรไทย</span>
+                  <span class="text-[10px] text-emerald-400 font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-950/60 border border-emerald-500/30">KBank</span>
+                </span>
+                <span class="text-[11px] sm:text-xs text-slate-300 font-medium">ดนัย วงศ์วิเชียร</span>
+              </div>
+              <div class="flex items-center gap-2 mt-0.5">
+                <span class="text-[11px] sm:text-xs text-slate-400 font-medium" data-i18n="bank_account_label">เลขที่บัญชี:</span>
+                <span class="font-mono font-bold text-sm sm:text-base text-emerald-400 tracking-wider select-all">632-2-17076-7</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Copy Account Number Button -->
+          <button id="btn-copy-bank" onclick="copyBankAccount()" type="button"
+            class="px-3.5 py-2 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 active:scale-95 text-emerald-300 hover:text-white border border-emerald-500/40 font-semibold text-xs transition-all flex items-center justify-center gap-1.5 shrink-0 cursor-pointer shadow-sm min-h-[40px]"
+            title="คลิกเพื่อคัดลอกเฉพาะตัวเลข 6322170767">
+            <i class="fa-solid fa-copy text-xs"></i>
+            <span data-i18n="copy_bank_btn">คัดลอกเลขบัญชี</span>
+          </button>
+        </div>
       </div>
+
+      <!-- 🎉 INTERACTIVE PARTY LOUNGE SHOWCASE (party.html) -->
+      <a href="party.html"
+        class="tilt-card group relative block overflow-hidden rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-pink-950/40 via-purple-950/30 to-slate-900/90 border border-pink-500/40 hover:border-pink-400 backdrop-blur-md transition-all duration-300 shadow-[0_0_25px_rgba(244,114,182,0.15)] hover:shadow-[0_0_35px_rgba(244,114,182,0.3)]">
+        <div class="flex items-center justify-between gap-4">
+          <div class="space-y-1.5 min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[9px] font-mono font-bold bg-pink-500/20 text-pink-300 border border-pink-500/40 animate-pulse">🎉 NEW INTERACTIVE</span>
+              <span class="text-[11px] text-pink-300 font-medium">Chibi Party Lounge &amp; Stream Arcade</span>
+            </div>
+            <h3 class="text-sm sm:text-base font-bold text-white group-hover:text-pink-300 transition truncate flex items-center gap-2">
+              <span>DaLines Cozy Party Lounge</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-xs text-pink-400 opacity-80 group-hover:opacity-100 transition"></i>
+            </h3>
+            <p class="text-[11px] sm:text-xs text-slate-300 line-clamp-1">
+              ตู้สุ่มการ์ดมีม Gacha Chibi 12 แบบ • วงล้อบทลงโทษสตรีม Wheel of Fate • มินิเกมเป่ายิ้งฉุบ • รองรับ OBS Studio Overlay
+            </p>
+          </div>
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500/20 to-purple-500/20 border border-pink-500/40 flex items-center justify-center text-pink-400 group-hover:scale-110 group-hover:bg-pink-500 group-hover:text-white transition-all duration-300 shrink-0 shadow-lg">
+            <i class="fa-solid fa-wand-magic-sparkles text-xl"></i>
+          </div>
+        </div>
+      </a>
 
       <!-- 🛠️ CREATOR TOOLS / DEV PROJECTS SECTION -->
       <div class="pt-2 pb-0.5 flex items-center justify-between">
@@ -1105,7 +1209,49 @@
       <div
         class="tilt-card p-2 sm:p-3 rounded-2xl bg-slate-900/80 border backdrop-blur-md shadow-2xl flex flex-col items-center"
         style="border-color: var(--primary-border);">
-        <div class="video-responsive w-full shadow-inner bg-black">
+        <div class="video-responsive w-full shadow-inner bg-black relative">
+          <!-- Facade Overlay (Click to Load Player) -->
+          <div id="twitch-player-facade"
+            onclick="loadTwitchPlayer()"
+            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();loadTwitchPlayer();}"
+            class="absolute inset-0 z-20 flex flex-col items-center justify-center cursor-pointer bg-slate-950/85 hover:bg-slate-950/75 transition-all duration-300 group overflow-hidden"
+            role="button"
+            aria-label="คลิกเพื่อโหลดเครื่องเล่นสตรีมสด"
+            tabindex="0">
+            <!-- Background Cover Image (banner-480.png) -->
+            <img src="banner-480.png" alt="DaLines Stream Player Cover"
+              class="absolute inset-0 w-full h-full object-cover opacity-35 group-hover:opacity-50 group-hover:scale-105 transition-all duration-700 pointer-events-none select-none" />
+            
+            <!-- Vignette & Gradient Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-slate-950/70 pointer-events-none"></div>
+
+            <!-- Content Container -->
+            <div class="relative z-10 flex flex-col items-center gap-2.5 sm:gap-3 text-center px-4">
+              <!-- Play Button -->
+              <div
+                class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#9146FF] hover:bg-[#772ce8] text-white flex items-center justify-center text-xl sm:text-2xl shadow-[0_0_30px_rgba(145,70,255,0.7)] group-hover:scale-110 active:scale-95 transition-transform duration-300">
+                <i class="fa-solid fa-play ml-1"></i>
+              </div>
+
+              <!-- Main Call to Action -->
+              <div class="space-y-1">
+                <div class="text-xs sm:text-sm font-bold text-white tracking-wide group-hover:text-purple-300 transition">
+                  คลิกเพื่อโหลดเครื่องเล่นสตรีมสด
+                </div>
+                <div class="text-[10px] sm:text-[11px] text-purple-300 font-mono flex items-center justify-center gap-1">
+                  <i class="fa-brands fa-twitch text-[#9146FF]"></i>
+                  <span>twitch.tv/dalines (Twitch Embed Player)</span>
+                </div>
+              </div>
+
+              <!-- Bandwidth & Performance Badge -->
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-mono text-emerald-300 bg-emerald-950/60 border border-emerald-500/30 backdrop-blur-md">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>ประหยัด CPU &amp; แบนด์วิดท์</span>
+              </div>
+            </div>
+          </div>
+
           <iframe id="twitch-main-player" src="about:blank" frameborder="0" allowfullscreen="true" scrolling="no">
           </iframe>
         </div>
@@ -1187,7 +1333,7 @@
               <span id="countdown-label">NEXT LIVE MISSION IN:</span>
             </div>
             <div class="text-xs text-slate-300 mt-0.5">
-              รอบไลฟ์ถัดไป: <strong id="next-stream-time-text" class="text-white">วันนี้เวลา 19:30 น.
+              รอบไลฟ์ถัดไป: <strong id="next-stream-time-text" class="text-white">วันนี้เวลา 20:00 น.
                 (Valorant)</strong>
             </div>
           </div>
@@ -1264,15 +1410,15 @@
                   <span id="sched-detail-day" class="text-xs font-bold text-white">วันจันทร์ (Monday)</span>
                   <span id="sched-detail-badge"
                     class="px-2 py-0.2 rounded text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">LIVE
-                    19:30</span>
+                    20:00</span>
                 </div>
                 <div id="sched-detail-game" class="text-[11px] text-slate-300 truncate font-medium">🎯 Valorant
                   ไต่แรงค์กับตวง • สายยิงเน้นโยน</div>
               </div>
             </div>
             <div class="text-right shrink-0">
-              <span id="sched-detail-time" class="text-xs font-mono font-bold text-emerald-400 block">19:30 -
-                23:30</span>
+              <span id="sched-detail-time" class="text-xs font-mono font-bold text-emerald-400 block">20:00 -
+                เที่ยงคืน</span>
               <span class="text-[9px] text-slate-500">Twitch / YT</span>
             </div>
           </div>
@@ -1540,31 +1686,6 @@
       <div class="text-xs text-slate-400 flex items-center justify-between px-1 mb-1">
         <span data-i18n="hw_conf">Hardware Configuration</span>
         <span class="font-medium" style="color: var(--primary-color);">DaLines Battle Station</span>
-      </div>
-
-      <!-- INTERACTIVE PARTY LOUNGE SHOWCASE -->
-      <div class="mb-3">
-        <a href="party.html"
-          class="tilt-card group relative block overflow-hidden rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-pink-950/40 via-purple-950/30 to-slate-900/90 border border-pink-500/40 hover:border-pink-400 backdrop-blur-md transition-all duration-300 shadow-[0_0_25px_rgba(244,114,182,0.15)] hover:shadow-[0_0_35px_rgba(244,114,182,0.3)]">
-          <div class="flex items-center justify-between gap-4">
-            <div class="space-y-1.5 min-w-0">
-              <div class="flex items-center gap-2">
-                <span class="px-2.5 py-0.5 rounded-full text-[9px] font-mono font-bold bg-pink-500/20 text-pink-300 border border-pink-500/40 animate-pulse">🎉 NEW INTERACTIVE</span>
-                <span class="text-[11px] text-pink-300 font-medium">Chibi Party Lounge &amp; Stream Arcade</span>
-              </div>
-              <h3 class="text-sm sm:text-base font-bold text-white group-hover:text-pink-300 transition truncate flex items-center gap-2">
-                <span>DaLines Cozy Party Lounge</span>
-                <i class="fa-solid fa-arrow-up-right-from-square text-xs text-pink-400 opacity-80 group-hover:opacity-100 transition"></i>
-              </h3>
-              <p class="text-[11px] sm:text-xs text-slate-300 line-clamp-1">
-                ตู้สุ่มการ์ดมีม Gacha Chibi 12 แบบ • วงล้อบทลงโทษสตรีม Wheel of Fate • มินิเกมเป่ายิ้งฉุบ • รองรับ OBS Studio Overlay
-              </p>
-            </div>
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500/20 to-purple-500/20 border border-pink-500/40 flex items-center justify-center text-pink-400 group-hover:scale-110 group-hover:bg-pink-500 group-hover:text-white transition-all duration-300 shrink-0 shadow-lg">
-              <i class="fa-solid fa-wand-magic-sparkles text-xl"></i>
-            </div>
-          </div>
-        </a>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
@@ -2936,12 +3057,30 @@
     // -----------------------------------------------------------------
     let currentPlayerMode = 'trailer'; // Default to trailer (channel offline by default)
     let isChatOpen = false;
+    let isTwitchPlayerLoaded = false;
 
     function getTwitchParentsQuery() {
       const host = window.location.hostname;
       const parents = new Set(['localhost', '127.0.0.1', 'dalines-site.dalines.workers.dev', 'pages.dalines.workers.dev', 'dalines.tv']);
       if (host) parents.add(host);
       return Array.from(parents).filter(Boolean).map(p => `parent=${encodeURIComponent(p)}`).join('&');
+    }
+
+    function loadTwitchPlayer(mode) {
+      if (mode) currentPlayerMode = mode;
+      isTwitchPlayerLoaded = true;
+
+      const facade = document.getElementById('twitch-player-facade');
+      if (facade) {
+        facade.style.transition = 'opacity 0.3s ease';
+        facade.style.opacity = '0';
+        facade.style.pointerEvents = 'none';
+        setTimeout(() => {
+          if (facade) facade.style.display = 'none';
+        }, 300);
+      }
+
+      updateTwitchPlayer(currentPlayerMode);
     }
 
     function updateTwitchPlayer(mode) {
@@ -2956,7 +3095,10 @@
 
       if (mode === 'live') {
         currentPlayerMode = 'live';
-        iframe.src = `https://player.twitch.tv/?channel=dalines&${parentQuery}&autoplay=true&muted=false`;
+        if (isTwitchPlayerLoaded) {
+          const targetSrc = `https://player.twitch.tv/?channel=dalines&${parentQuery}&autoplay=true&muted=false`;
+          if (iframe.src !== targetSrc) iframe.src = targetSrc;
+        }
 
         if (badge) {
           badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-gaming font-bold bg-red-500/20 text-red-400 border border-red-500/30 flex items-center gap-1';
@@ -2964,11 +3106,14 @@
         }
         if (title) title.innerText = 'Twitch: dalines (Live Stream)';
 
-        btnLive.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-red-600 text-white shadow-lg cursor-pointer';
-        btnTrailer.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 hover:bg-slate-800 cursor-pointer';
+        if (btnLive) btnLive.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-red-600 text-white shadow-lg cursor-pointer';
+        if (btnTrailer) btnTrailer.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 hover:bg-slate-800 cursor-pointer';
       } else {
         currentPlayerMode = 'trailer';
-        iframe.src = `https://player.twitch.tv/?video=1475544386&${parentQuery}&autoplay=true`;
+        if (isTwitchPlayerLoaded) {
+          const targetSrc = `https://player.twitch.tv/?video=1475544386&${parentQuery}&autoplay=true`;
+          if (iframe.src !== targetSrc) iframe.src = targetSrc;
+        }
 
         if (badge) {
           badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-gaming font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1';
@@ -2976,14 +3121,14 @@
         }
         if (title) title.innerText = 'Twitch VOD: 1475544386 (Trailer)';
 
-        btnTrailer.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-emerald-600 text-white shadow-lg cursor-pointer';
-        btnLive.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 hover:bg-slate-800 cursor-pointer';
+        if (btnTrailer) btnTrailer.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-emerald-600 text-white shadow-lg cursor-pointer';
+        if (btnLive) btnLive.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 hover:bg-slate-800 cursor-pointer';
       }
     }
 
     function setPlayerMode(mode) {
       playSound('tab');
-      updateTwitchPlayer(mode);
+      loadTwitchPlayer(mode);
     }
 
     function toggleTwitchChat() {
@@ -3006,9 +3151,7 @@
     }
 
     function switchToStreamTab(mode) {
-      playSound('tab');
-      const streamBtn = document.querySelector('[data-tab="stream"]');
-      if (streamBtn) streamBtn.click();
+      switchTab('stream', true, true);
       setPlayerMode(mode);
     }
 
@@ -3093,6 +3236,10 @@
         toast_copy_crosshair: "คัดลอกโค้ดเป้า Valorant เรียบร้อย! 🎯",
         toast_copy_link: "คัดลอกลิงก์โปรไฟล์ DaLines แล้วครับ! 🔗",
         toast_copy_ign: "คัดลอก IGN: DaLines#TTV เรียบร้อย! 🎮",
+        bank_name: "ธนาคารกสิกรไทย",
+        bank_account_label: "เลขที่บัญชี:",
+        copy_bank_btn: "คัดลอกเลขบัญชี",
+        toast_copy_bank: "คัดลอกเลขบัญชี 6322170767 เรียบร้อย! 🏦",
         toast_sound_on: "เปิดเสียงเอฟเฟกต์แล้ว 🔊",
         toast_sound_off: "ปิดเสียงเอฟเฟกต์แล้ว 🔇",
         clips_desc: "คลังคลิปไฮไลท์ยอดนิยมตลอดกาลจาก twitch.tv/dalines เรียงตามยอดเข้าชมสูงสุด"
@@ -3163,6 +3310,10 @@
         toast_copy_crosshair: "Valorant Crosshair code copied! 🎯",
         toast_copy_link: "DaLines Profile link copied! 🔗",
         toast_copy_ign: "IGN: DaLines#TTV copied to clipboard! 🎮",
+        bank_name: "Kasikornbank (KBank)",
+        bank_account_label: "Account No:",
+        copy_bank_btn: "Copy Account No.",
+        toast_copy_bank: "Account number 6322170767 copied! 🏦",
         toast_sound_on: "Sound FX Enabled 🔊",
         toast_sound_off: "Sound FX Muted 🔇",
         clips_desc: "All-time top clips and highlights from twitch.tv/dalines sorted by view count!"
@@ -3205,6 +3356,16 @@
     // -----------------------------------------------------------------
     let audioCtx = null;
     let isSoundEnabled = localStorage.getItem('dalines_sound') !== 'false';
+
+    function triggerHaptic(duration = 15) {
+      try {
+        if (typeof navigator !== 'undefined' && 'vibrate' in navigator && typeof navigator.vibrate === 'function') {
+          navigator.vibrate(duration);
+        }
+      } catch (err) {
+        // Fallback gracefully if vibration is blocked or unsupported
+      }
+    }
 
     function initAudio() {
       if (!audioCtx) {
@@ -3570,12 +3731,24 @@
     const savedTheme = localStorage.getItem('dalines_theme') || 'emerald';
     setTheme(savedTheme);
 
+    function updateBannerHeight() {
+      const banner = document.getElementById('sticky-live-banner');
+      const h = (banner && banner.isConnected && banner.offsetHeight > 0 && window.getComputedStyle(banner).display !== 'none')
+        ? `${banner.offsetHeight}px`
+        : '0px';
+      document.documentElement.style.setProperty('--banner-height', h);
+    }
+
     function dismissLiveBanner() {
       const banner = document.getElementById('sticky-live-banner');
       if (banner) {
         banner.style.transform = 'translateY(-100%)';
         banner.style.opacity = '0';
-        setTimeout(() => banner.remove(), 300);
+        document.documentElement.style.setProperty('--banner-height', '0px');
+        setTimeout(() => {
+          banner.remove();
+          updateBannerHeight();
+        }, 300);
       }
       playSound('pop');
     }
@@ -3596,6 +3769,76 @@
         btn.classList.remove('opacity-100');
       }
     });
+
+    const VALID_TABS = ['links', 'stream', 'pc', 'gear', 'rules'];
+
+    function animateCounters(container) {
+      if (!container) return;
+      const counters = container.querySelectorAll('.counter-number');
+      counters.forEach(counter => {
+        const target = +counter.getAttribute('data-target');
+        const duration = 600;
+        const start = 0;
+        const startTime = performance.now();
+
+        function updateCount(currentTime) {
+          const progress = Math.min((currentTime - startTime) / duration, 1);
+          const currentVal = Math.floor(progress * (target - start) + start);
+          counter.innerText = currentVal;
+          if (progress < 1) {
+            requestAnimationFrame(updateCount);
+          } else {
+            counter.innerText = target;
+          }
+        }
+        requestAnimationFrame(updateCount);
+      });
+    }
+
+    function switchTab(tabId, updateUrl = true, playSoundEffect = true) {
+      const targetTab = VALID_TABS.includes(tabId) ? tabId : 'links';
+
+      if (playSoundEffect) {
+        playSound('tab');
+      }
+
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabContents.forEach(content => {
+        if (content.id === `tab-${targetTab}`) {
+          content.classList.add('active');
+          if (targetTab === 'pc') {
+            animateCounters(content);
+          }
+          if (targetTab === 'stream') {
+            if (playSoundEffect || isTwitchPlayerLoaded) {
+              loadTwitchPlayer(currentPlayerMode);
+            }
+          }
+        } else {
+          content.classList.remove('active');
+        }
+      });
+
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      tabButtons.forEach(btn => {
+        if (btn.getAttribute('data-tab') === targetTab) {
+          btn.className = 'tab-btn theme-active-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs rounded-xl transition-all duration-200 cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5';
+        } else {
+          btn.className = 'tab-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-white cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5';
+        }
+      });
+
+      if (updateUrl) {
+        const newHash = `#${targetTab}`;
+        if (window.location.hash !== newHash) {
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, '', newHash);
+          } else {
+            window.location.hash = newHash;
+          }
+        }
+      }
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
       setLanguage(currentLang);
@@ -3647,12 +3890,24 @@
         });
       }
 
-      // Sparkles Effect
-      document.addEventListener('pointerdown', (e) => {
+      // Sparkles Effect (Only on Interactive Elements: button, a, .tilt-card, .sound-card)
+      // Listen to 'click' (instead of pointerdown) so scrolling/swiping on mobile never triggers unwanted sparkles
+      document.addEventListener('click', (e) => {
+        const interactiveTarget = e.target && e.target.closest('button, a, .tilt-card, .sound-card, [role="button"]');
+        if (!interactiveTarget) return;
+
         playSound('sparkle');
 
         const themeCol = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim() || '#10b981';
         const colors = [themeCol, '#ffffff', '#a855f7', '#38bdf8', '#fbbf24'];
+
+        const rect = interactiveTarget.getBoundingClientRect();
+        const x = (typeof e.clientX === 'number' && e.clientX > 0)
+          ? e.clientX
+          : (rect.left + rect.width / 2);
+        const y = (typeof e.clientY === 'number' && e.clientY > 0)
+          ? e.clientY
+          : (rect.top + rect.height / 2);
 
         for (let i = 0; i < 6; i++) {
           const sparkle = document.createElement('div');
@@ -3662,8 +3917,8 @@
           sparkle.style.height = `${size}px`;
           sparkle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
           sparkle.style.boxShadow = `0 0 8px ${sparkle.style.backgroundColor}`;
-          sparkle.style.left = `${e.clientX}px`;
-          sparkle.style.top = `${e.clientY}px`;
+          sparkle.style.left = `${x}px`;
+          sparkle.style.top = `${y}px`;
 
           const angle = Math.random() * Math.PI * 2;
           const distance = Math.random() * 45 + 18;
@@ -3673,64 +3928,35 @@
           document.body.appendChild(sparkle);
           setTimeout(() => sparkle.remove(), 650);
         }
-      });
+      }, true);
 
-      // Number Counter
-      function animateCounters(container) {
-        const counters = container.querySelectorAll('.counter-number');
-        counters.forEach(counter => {
-          const target = +counter.getAttribute('data-target');
-          const duration = 600;
-          const start = 0;
-          const startTime = performance.now();
-
-          function updateCount(currentTime) {
-            const progress = Math.min((currentTime - startTime) / duration, 1);
-            const currentVal = Math.floor(progress * (target - start) + start);
-            counter.innerText = currentVal;
-            if (progress < 1) {
-              requestAnimationFrame(updateCount);
-            } else {
-              counter.innerText = target;
-            }
-          }
-          requestAnimationFrame(updateCount);
-        });
-      }
-
-      // Tab Switching
+      // Tab Switching & URL Hash Sync
       const tabButtons = document.querySelectorAll('.tab-btn');
-      const tabContents = document.querySelectorAll('.tab-content');
-
       tabButtons.forEach(button => {
         button.addEventListener('click', (e) => {
           e.preventDefault();
-          playSound('tab');
           const targetTab = button.getAttribute('data-tab');
-
-          tabContents.forEach(content => {
-            if (content.id === `tab-${targetTab}`) {
-              content.classList.add('active');
-              if (targetTab === 'pc') {
-                animateCounters(content);
-              }
-              if (targetTab === 'stream') {
-                updateTwitchPlayer(currentPlayerMode);
-              }
-            } else {
-              content.classList.remove('active');
-            }
-          });
-
-          tabButtons.forEach(btn => {
-            if (btn === button) {
-              btn.className = 'tab-btn theme-active-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs rounded-xl transition-all duration-200 cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5';
-            } else {
-              btn.className = 'tab-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-white cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5';
-            }
-          });
+          switchTab(targetTab, true, true);
         });
       });
+
+      // Restore Tab from URL Hash on Initial Load & Refresh
+      const initialTabHash = window.location.hash.replace('#', '').toLowerCase();
+      if (VALID_TABS.includes(initialTabHash)) {
+        switchTab(initialTabHash, false, false);
+      }
+
+      // Sync Tab when Browser Back/Forward or Hash Changes
+      window.addEventListener('hashchange', () => {
+        const hash = window.location.hash.replace('#', '').toLowerCase();
+        if (VALID_TABS.includes(hash)) {
+          switchTab(hash, false, true);
+        }
+      });
+
+      // Sticky Nav Banner Height Sync
+      updateBannerHeight();
+      window.addEventListener('resize', updateBannerHeight);
 
       // Share Button
       const shareBtn = document.getElementById('btn-share');
@@ -3802,7 +4028,9 @@
           }
           const streamTab = document.getElementById('tab-stream');
           if (streamTab && streamTab.classList.contains('active')) {
-            updateTwitchPlayer('live');
+            if (isTwitchPlayerLoaded) {
+              updateTwitchPlayer('live');
+            }
           }
         } else {
           currentPlayerMode = 'trailer';
@@ -3822,6 +4050,7 @@
             streamBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>TRAILER VOD';
           }
         }
+        updateBannerHeight();
       } catch (err) {
         // Fallback gracefully
       }
@@ -3831,11 +4060,13 @@
 
     function copyValorantCrosshair() {
       playSound('pop');
+      triggerHaptic(20);
       navigator.clipboard.writeText(VALORANT_CROSSHAIR);
       showToast(translations[currentLang].toast_copy_crosshair || 'คัดลอกโค้ดเป้า Valorant เรียบร้อย! 🎯');
     }
 
     function showToast(msg) {
+      triggerHaptic(15);
       const toast = document.getElementById('toast');
       if (!toast) return;
       toast.innerText = msg;
@@ -3847,12 +4078,55 @@
 
     function copyIGN() {
       playSound('pop');
+      triggerHaptic(20);
       navigator.clipboard.writeText('DaLines#TTV');
       showToast(translations[currentLang].toast_copy_ign);
     }
 
+    function copyBankAccount() {
+      playSound('pop');
+      triggerHaptic(20);
+      const accNumber = '6322170767';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(accNumber).catch(() => {
+          fallbackCopyText(accNumber);
+        });
+      } else {
+        fallbackCopyText(accNumber);
+      }
+
+      const btn = document.getElementById('btn-copy-bank');
+      if (btn) {
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check text-emerald-300"></i><span>คัดลอกแล้ว!</span>';
+        btn.classList.add('bg-emerald-600', 'text-white');
+        setTimeout(() => {
+          btn.innerHTML = originalHtml;
+          btn.classList.remove('bg-emerald-600', 'text-white');
+        }, 1800);
+      }
+
+      showToast(translations[currentLang]?.toast_copy_bank || 'คัดลอกเลขบัญชี 6322170767 เรียบร้อย! 🏦');
+    }
+
+    function fallbackCopyText(text) {
+      try {
+        const temp = document.createElement('textarea');
+        temp.value = text;
+        temp.style.position = 'fixed';
+        temp.style.opacity = '0';
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+      } catch (err) {
+        console.error('Fallback copy error:', err);
+      }
+    }
+
     function copyProSettingsSummary() {
       playSound('pop');
+      triggerHaptic(20);
       const text = `DaLines Pro Settings (Valorant):
 Mouse: ATK Ghost Ultimate
 DPI: 800
@@ -4068,6 +4342,8 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
     function hitChallengeTarget(e) {
       e.stopPropagation();
       if (!isChallengeRunning) return;
+
+      triggerHaptic(30);
 
       challengeScore++;
       challengeTotalShots++;
@@ -4587,6 +4863,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
     // DALINES SOUNDBOARD CONTROLLER & VOICE FX
     // -----------------------------------------------------------------
     function playMemeSound(type, phrase, btnEl) {
+      triggerHaptic(20);
       if (!isSoundEnabled) {
         isSoundEnabled = true;
         localStorage.setItem('dalines_sound', true);
@@ -4679,8 +4956,10 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
         title: "นัวอะไรขนาดนั้น (Valorant Clutch Moment)",
         category: "valorant",
         duration: "0:26",
+        views: 216,
         initialLikes: 216,
         videoUrl: "https://www.twitch.tv/dalines/clip/ElegantEagerGoldfishAMPEnergyCherry-9uGytF396fyRA5xc",
+        clipUrl: "https://www.twitch.tv/dalines/clip/ElegantEagerGoldfishAMPEnergyCherry-9uGytF396fyRA5xc",
         embedUrl: "https://clips.twitch.tv/embed?clip=ElegantEagerGoldfishAMPEnergyCherry-9uGytF396fyRA5xc",
         youtubeUrl: "",
         slug: "ElegantEagerGoldfishAMPEnergyCherry-9uGytF396fyRA5xc",
@@ -4695,9 +4974,11 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
         title: "Dancing : รถซื้อแกง",
         category: "other",
         duration: "0:24",
+        views: 192,
         initialLikes: 192,
         videoUrl: "https://www.twitch.tv/dalines/clip/DifficultNiceGarageUncleNox",
-        embedUrl: "https://clips.twitch.tv/embed?clip=DifficultNiceGarageUncleNox",
+        clipUrl: "https://www.twitch.tv/dalines/clip/DifficultNiceGarageUncleNox",
+        embedUrl: "https://clips.twitch.tv/embed?clip/DifficultNiceGarageUncleNox",
         youtubeUrl: "",
         slug: "DifficultNiceGarageUncleNox",
         curator: "feixian1412",
@@ -4711,8 +4992,10 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
         title: "A clear? then go B (จังหวะอ่านเกมขาด)",
         category: "valorant",
         duration: "0:30",
+        views: 172,
         initialLikes: 172,
         videoUrl: "https://www.twitch.tv/dalines/clip/RealChillyPancakeKeepo-XUD53z3NRrGzcqkB",
+        clipUrl: "https://www.twitch.tv/dalines/clip/RealChillyPancakeKeepo-XUD53z3NRrGzcqkB",
         embedUrl: "https://clips.twitch.tv/embed?clip=RealChillyPancakeKeepo-XUD53z3NRrGzcqkB",
         youtubeUrl: "",
         slug: "RealChillyPancakeKeepo-XUD53z3NRrGzcqkB",
@@ -4727,8 +5010,10 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
         title: "โนเอลร้องเพลง (GTA V RP Moment)",
         category: "other",
         duration: "0:26",
+        views: 145,
         initialLikes: 145,
         videoUrl: "https://www.twitch.tv/dalines/clip/BitterBraveTomatoEleGiggle-LCD4OrW4n4OP0N5Z",
+        clipUrl: "https://www.twitch.tv/dalines/clip/BitterBraveTomatoEleGiggle-LCD4OrW4n4OP0N5Z",
         embedUrl: "https://clips.twitch.tv/embed?clip=BitterBraveTomatoEleGiggle-LCD4OrW4n4OP0N5Z",
         youtubeUrl: "",
         slug: "BitterBraveTomatoEleGiggle-LCD4OrW4n4OP0N5Z",
@@ -4743,8 +5028,10 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
         title: "Skip Valorant battle pass 50 tiers",
         category: "valorant",
         duration: "0:59",
+        views: 119,
         initialLikes: 119,
         videoUrl: "https://www.twitch.tv/dalines/clip/EnchantingLaconicSparrowTheTarFu",
+        clipUrl: "https://www.twitch.tv/dalines/clip/EnchantingLaconicSparrowTheTarFu",
         embedUrl: "https://clips.twitch.tv/embed?clip=EnchantingLaconicSparrowTheTarFu",
         youtubeUrl: "",
         slug: "EnchantingLaconicSparrowTheTarFu",
@@ -4759,8 +5046,10 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
         title: "360 stinger สะบัดยิงอย่างตึง",
         category: "valorant",
         duration: "0:28",
+        views: 111,
         initialLikes: 111,
         videoUrl: "https://www.twitch.tv/dalines/clip/KnottyCuriousCattleHoneyBadger",
+        clipUrl: "https://www.twitch.tv/dalines/clip/KnottyCuriousCattleHoneyBadger",
         embedUrl: "https://clips.twitch.tv/embed?clip=KnottyCuriousCattleHoneyBadger",
         youtubeUrl: "",
         slug: "KnottyCuriousCattleHoneyBadger",
@@ -4791,6 +5080,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
         const isLiked = !!likedMap[clip.id];
         const baseLikes = typeof clip.initialLikes === "number" ? clip.initialLikes : (clip.views || 100);
         const likes = baseLikes + (isLiked ? 1 : 0);
+        const viewsCount = typeof clip.views === "number" ? clip.views : (clip.initialLikes || 0);
         return `
           <div class="tilt-card rounded-xl bg-slate-900/90 border border-slate-800 hover:border-purple-500/50 transition-all duration-300 flex flex-col justify-between shadow-lg relative group overflow-hidden">
             <!-- Video Thumbnail with 16:9 aspect ratio and hover overlay -->
@@ -4810,7 +5100,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
               <!-- Views Badge -->
               <div class="absolute top-2 right-2 px-1.5 py-0.5 rounded-md bg-black/75 border border-white/10 text-[9px] font-mono text-purple-300 backdrop-blur-md flex items-center gap-1 shadow">
                 <i class="fa-solid fa-eye text-[8px]"></i>
-                <span>${clip.views} views</span>
+                <span>${viewsCount} views</span>
               </div>
 
               <!-- Center Play Icon -->
@@ -4853,7 +5143,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
                   </button>
 
                   <!-- Direct Link on Twitch -->
-                  <a href="${clip.clipUrl}" target="_blank" rel="noopener noreferrer" class="p-1.5 rounded-lg bg-slate-800 hover:bg-[#9146FF]/40 text-slate-400 hover:text-white text-[10px] transition cursor-pointer" title="เปิดดูบน Twitch">
+                  <a href="${clip.videoUrl || clip.clipUrl || '#'}" target="_blank" rel="noopener noreferrer" class="p-1.5 rounded-lg bg-slate-800 hover:bg-[#9146FF]/40 text-slate-400 hover:text-white text-[10px] transition cursor-pointer" title="เปิดดูบน Twitch">
                     <i class="fa-brands fa-twitch"></i>
                   </a>
 
@@ -5264,7 +5554,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
       if (gameSelect) gameSelect.value = gameKey;
 
       const config = SENS_GAMES[gameKey];
-      currentBaseSens = (gameKey === 'valorant') ? 0.3 : 1.8;
+      currentBaseSens = (gameKey === 'valorant') ? 0.45 : 1.8;
 
       const sensInput = document.getElementById('sens-input-value');
       if (sensInput) sensInput.value = currentBaseSens;
@@ -5412,15 +5702,15 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
         name: "!specs",
         cat: "gear",
         desc: "สเปกคอมพิวเตอร์สตรีมเมอร์ PC",
-        response: "CPU: Ryzen 5 5600 | GPU: GTX 5060 ti | RAM: 16GB | Monitor: Xiaomi Mi 2K 27\" (165Hz) + Dell 144Hz",
+        response: "CPU: Ryzen 5 5600 | GPU: RTX 5060 Ti | RAM: 16GB | Monitor: Xiaomi Mi 2K 27\" (165Hz) + Dell 144Hz",
         tags: ["spec", "specs", "สเปก", "คอม", "cpu", "gpu", "จอ"]
       },
       {
         name: "!mouse",
         cat: "gear",
         desc: "เมาส์เกมมิ่งประจำกาย",
-        response: "Loga Garuda Wireless",
-        tags: ["mouse", "เมาส์", "loga", "garuda"]
+        response: "ATK Ghost Ultimate",
+        tags: ["mouse", "เมาส์", "atk", "ghost"]
       },
       {
         name: "!headset",
@@ -5450,7 +5740,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
         name: "!discord",
         cat: "social",
         desc: "ดิสคอร์ดคอมมูนิตี้ DaLines",
-        response: "https://discord.gg/62uf9BE",
+        response: "https://discord.gg/3m9x688YCG",
         isLink: true,
         tags: ["discord", "ดิส", "dc"]
       },
@@ -5628,6 +5918,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
 
     function copyBotCommand(cmd, btn) {
       playSound('pop');
+      triggerHaptic(20);
       navigator.clipboard.writeText(cmd);
       showToast(`คัดลอกคำสั่ง ${cmd} แล้ว! วางในแชทได้เลย 🤖`);
 
@@ -5642,6 +5933,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
 
     function copyBotResponse(text, btn) {
       playSound('pop');
+      triggerHaptic(20);
       navigator.clipboard.writeText(text);
       showToast('คัดลอกข้อความเรียบร้อย! 📋');
 
@@ -6199,6 +6491,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
     let visualizerTimer = null;
 
     function playCyberSound(soundId) {
+      triggerHaptic(20);
       if (!isSoundEnabled) {
         showToast('เปิดเสียงเอฟเฟกต์ที่ปุ่มลำโพงมุมขวาบนก่อนนะครับ 🔊');
         return;
