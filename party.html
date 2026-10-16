@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <title>DaLines Cozy Party Lounge | Chibi Gacha & Wheel of Fate 🎉🎴</title>
+  <meta name="description" content="ห้องปาร์ตี้มินิเกม DaLines Cozy Party Lounge สุ่มการ์ดมีม Chibi Gacha และหมุนวงล้อบทลงโทษสตรีมเมอร์ Wheel of Fate รองรับ OBS Overlay สด" />
+  <link rel="icon" type="image/png" sizes="32x32" href="Logo.png" />
+  <meta name="theme-color" content="#f472b6" />
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Mali:wght@400;600;700&family=Orbitron:wght@600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            kanit: ['Kanit', 'sans-serif'],
+            cute: ['Mali', 'cursive'],
+            gaming: ['Orbitron', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            pastel: {
+              pink: '#fbcfe8',
+              purple: '#e9d5ff',
+              mint: '#a7f3d0',
+              peach: '#fed7aa',
+              sky: '#bae6fd',
+              yellow: '#fef08a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Kanit', sans-serif;
+      background: radial-gradient(circle at 50% 10%, #2e1065 0%, #0f172a 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* OBS Transparent Mode */
+    body.obs-mode {
+      background: transparent !important;
+    }
+    body.obs-mode .non-obs {
+      display: none !important;
+    }
+
+    .chibi-glass {
+      background: rgba(30, 27, 75, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1.5px solid rgba(244, 114, 182, 0.3);
+      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Card Glow & 3D Shimmer */
+    .card-3d {
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+      transform-style: preserve-3d;
+    }
+    .card-3d:hover {
+      transform: translateY(-8px) scale(1.03);
+    }
+    .holo-ur {
+      background: linear-gradient(135deg, #fbbf24 0%, #f43f5e 35%, #8b5cf6 70%, #06b6d4 100%);
+      box-shadow: 0 0 25px rgba(251, 191, 36, 0.6);
+      animation: holoShift 4s infinite alternate;
+    }
+    .holo-ssr {
+      background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #3b82f6 100%);
+      box-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
+    }
+    .holo-sr {
+      background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+    }
+    .holo-r {
+      background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+      box-shadow: 0 0 10px rgba(100, 116, 139, 0.3);
+    }
+    @keyframes holoShift {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(45deg); }
+    }
+
+    /* Cute Bouncy Buttons */
+    .cute-btn {
+      transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .cute-btn:hover {
+      transform: translateY(-3px) scale(1.02);
+    }
+    .cute-btn:active {
+      transform: translateY(2px) scale(0.97);
+    }
+
+    /* Pack Tear Animation */
+    @keyframes packBurst {
+      0% { transform: scale(1); filter: brightness(1); }
+      50% { transform: scale(1.15) rotate(3deg); filter: brightness(1.8); }
+      100% { transform: scale(0); opacity: 0; }
+    }
+    .pack-bursting {
+      animation: packBurst 0.6s forwards;
+    }
+  </style>
+</head>
+<body id="page-body">
+
+  <!-- TOP NAVIGATION BAR (Non-OBS) -->
+  <header class="non-obs sticky top-0 z-40 p-3 sm:p-4 chibi-glass border-b border-pink-500/20">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3 flex-wrap">
+
+      <!-- Left: Logo & Title -->
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center gap-2.5 group">
+          <img src="Logo.png" alt="DaLines Logo" class="w-9 h-9 rounded-xl border border-pink-400 shadow-md group-hover:scale-105 transition" />
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs sm:text-sm font-bold font-gaming text-white tracking-wide">DaLines Party Lounge</span>
+              <span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-pink-500/20 text-pink-300 border border-pink-500/30">CHIBI ARCADE</span>
+            </div>
+            <div class="text-[10px] sm:text-[11px] text-pink-300/80 font-cute">มินิเกมเปิดการ์ด &amp; วงล้อชาเลนจ์สตรีมสด 🎉</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Navigation Cross-links -->
+      <div class="flex items-center gap-2 flex-wrap text-xs">
+        <a href="index.html" class="cute-btn px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-arrow-left text-pink-400"></i>
+          <span>Hub</span>
+        </a>
+        <a href="pc-3d.html" class="cute-btn px-2.5 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-city"></i>
+          <span class="hidden sm:inline">Metropolis 3D</span>
+        </a>
+        <a href="snow.html" class="cute-btn px-2.5 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-sky-400 border border-sky-500/30 shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-snowplow"></i>
+          <span class="hidden sm:inline">Snow Plow ❄️</span>
+        </a>
+        <a href="pixel.html" class="cute-btn px-2.5 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-pink-400 border border-pink-500/30 shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-gamepad"></i>
+          <span class="hidden sm:inline">8-Bit Pixel 👾</span>
+        </a>
+
+        <!-- OBS Overlay Mode Toggle Button -->
+        <button onclick="toggleObsMode()" class="cute-btn px-3 py-1.5 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold flex items-center gap-1.5 shadow-md">
+          <i class="fa-solid fa-video"></i>
+          <span id="obs-btn-text">OBS Mode</span>
+        </button>
+
+        <!-- Audio Mute/Unmute -->
+        <button onclick="toggleAudio()" class="w-8 h-8 rounded-xl bg-slate-800 text-pink-400 flex items-center justify-center text-xs shadow-sm">
+          <i id="audio-icon" class="fa-solid fa-volume-high"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-6xl mx-auto p-4 sm:p-6 space-y-6">
+
+    <!-- SUB HEADER: GACHA TICKETS HUD & SECTION SWITCHER (Non-OBS) -->
+    <div class="non-obs flex items-center justify-between flex-wrap gap-3">
+      <!-- Player Tickets & Level -->
+      <div class="chibi-glass px-4 py-2.5 rounded-2xl flex items-center gap-4">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-xl bg-amber-400/20 text-amber-300 flex items-center justify-center text-sm shadow-inner">
+            <i class="fa-solid fa-ticket"></i>
+          </span>
+          <div>
+            <div class="text-[10px] font-mono text-slate-400 uppercase">Gacha Tickets</div>
+            <div class="flex items-center gap-1">
+              <span id="ticket-count" class="font-gaming font-extrabold text-amber-300 text-base sm:text-lg">10</span>
+              <button onclick="addFreeTickets()" class="text-[10px] text-pink-300 hover:text-white underline ml-1 font-cute">+ รับฟรี</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-px h-6 bg-slate-700"></div>
+
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-xl bg-pink-400/20 text-pink-300 flex items-center justify-center text-sm shadow-inner">
+            <i class="fa-solid fa-book-bookmark"></i>
+          </span>
+          <div>
+            <div class="text-[10px] font-mono text-slate-400 uppercase">Collection</div>
+            <span id="collection-count" class="font-gaming font-extrabold text-pink-300 text-base sm:text-lg">0 / 12</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Navigation Tabs -->
+      <div class="flex items-center gap-1.5 chibi-glass p-1.5 rounded-2xl">
+        <button onclick="switchSection('gacha')" id="sec-btn-gacha" class="cute-btn px-4 py-2 rounded-xl bg-pink-600 text-white font-bold text-xs flex items-center gap-2 shadow-md">
+          <i class="fa-solid fa-sparkles"></i>
+          <span>Chibi Gacha</span>
+        </button>
+        <button onclick="switchSection('wheel')" id="sec-btn-wheel" class="cute-btn px-4 py-2 rounded-xl text-slate-300 hover:text-white font-medium text-xs flex items-center gap-2">
+          <i class="fa-solid fa-dharmachakra"></i>
+          <span>Wheel of Fate</span>
+        </button>
+        <button onclick="switchSection('binder')" id="sec-btn-binder" class="cute-btn px-4 py-2 rounded-xl text-slate-300 hover:text-white font-medium text-xs flex items-center gap-2">
+          <i class="fa-solid fa-book-open"></i>
+          <span>Card Binder</span>
+        </button>
+        <button onclick="switchSection('duel')" id="sec-btn-duel" class="cute-btn px-4 py-2 rounded-xl text-slate-300 hover:text-white font-medium text-xs flex items-center gap-2">
+          <i class="fa-solid fa-hand-fist"></i>
+          <span>Chibi Duel</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- SECTION 1: CHIBI MEME CARD GACHA -->
+    <section id="section-gacha" class="space-y-6">
+
+      <!-- Gacha Summon Banner -->
+      <div class="relative overflow-hidden rounded-3xl p-6 sm:p-8 chibi-glass border-2 border-pink-500/40 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+        <!-- Floating Stars Background -->
+        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-10 -top-10 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Banner Info -->
+        <div class="space-y-2 text-center md:text-left z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/40 text-xs font-cute">
+            <span>✨ LIMITED EDITION</span>
+            <span>•</span>
+            <span>DaLines Anime Series Vol. 1</span>
+          </div>
+          <h2 class="text-xl sm:text-3xl font-extrabold font-gaming text-white tracking-wide">
+            Chibi Meme Card Gacha
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-300 max-w-lg leading-relaxed font-cute">
+            สุ่มการ์ดพลังสตรีมเมอร์ DaLines รวบรวมโมเมนต์ระดับ UR, SSR, SR, R ให้ครบ 12 ใบ สะสมลงสมุดการ์ดส่วนตัวของคุณ!
+          </p>
+
+          <!-- Rates pill -->
+          <div class="flex items-center justify-center md:justify-start gap-2 pt-2 text-[11px] font-mono">
+            <span class="px-2 py-0.5 rounded-md bg-yellow-400/20 text-yellow-300 font-bold border border-yellow-400/30">UR 1%</span>
+            <span class="px-2 py-0.5 rounded-md bg-pink-400/20 text-pink-300 font-bold border border-pink-400/30">SSR 9%</span>
+            <span class="px-2 py-0.5 rounded-md bg-emerald-400/20 text-emerald-300 font-bold border border-emerald-400/30">SR 30%</span>
+            <span class="px-2 py-0.5 rounded-md bg-slate-400/20 text-slate-300 font-bold border border-slate-400/30">R 60%</span>
+          </div>
+        </div>
+
+        <!-- Card Pack Display & Pull Buttons -->
+        <div class="flex flex-col items-center gap-3 z-10 shrink-0">
+          <!-- 3D Card Pack Illustration -->
+          <div id="gacha-pack" class="w-36 h-48 sm:w-44 sm:h-56 rounded-2xl bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-700 p-1 shadow-2xl relative cursor-pointer group card-3d">
+            <div class="w-full h-full rounded-xl bg-slate-950/80 border border-white/30 p-3 flex flex-col items-center justify-between text-center relative overflow-hidden">
+              <div class="text-[9px] font-mono tracking-widest text-pink-300 font-bold uppercase">DALINES BOOSTER</div>
+              <img src="Logo.png" alt="DaLines Logo" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border border-pink-400 shadow-md group-hover:scale-110 transition duration-300" />
+              <div class="space-y-0.5">
+                <div class="text-[11px] font-bold text-white font-gaming">CHIBI CARDS</div>
+                <div class="text-[9px] text-amber-300 font-mono">★ HOLO EDITION ★</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pull Buttons -->
+          <div class="flex items-center gap-2">
+            <button onclick="pullGacha(1)" class="cute-btn px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-pink-500/40 flex items-center gap-1.5 shadow-md">
+              <i class="fa-solid fa-ticket text-amber-400"></i>
+              <span>สุ่ม 1 ใบ (1 ใบ)</span>
+            </button>
+            <button onclick="pullGacha(5)" class="cute-btn px-5 py-2.5 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-lg">
+              <i class="fa-solid fa-wand-magic-sparkles text-yellow-300"></i>
+              <span>สุ่ม 5 ใบ (5 ใบ)</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RECENTLY PULLED CARDS SHOWCASE -->
+      <div id="pulled-results-container" class="hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm sm:text-base font-bold text-white flex items-center gap-2 font-gaming">
+            <i class="fa-solid fa-gift text-pink-400"></i>
+            <span>ผลการสุ่มการ์ด (NEW CARDS)</span>
+          </h3>
+          <button onclick="clearPulledResults()" class="text-xs text-slate-400 hover:text-white underline">ปิดการแสดงผล</button>
+        </div>
+        <div id="pulled-cards-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4"></div>
+      </div>
+
+    </section>
+
+    <!-- SECTION 2: WHEEL OF FATE (วงล้อบทลงโทษสตรีมเมอร์ & ท้าทาย) -->
+    <section id="section-wheel" class="hidden space-y-6">
+
+      <div class="chibi-glass rounded-3xl p-6 sm:p-8 border-2 border-purple-500/40 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-8">
+
+        <!-- Wheel Canvas Container -->
+        <div class="flex flex-col items-center gap-4 relative">
+          <!-- Wheel Pointer Indicator (Arrow pointing down) -->
+          <div class="w-8 h-8 -mb-4 z-20 text-pink-500 drop-shadow-[0_2px_8px_rgba(236,72,153,0.9)] animate-pulse">
+            <i class="fa-solid fa-location-pin fa-rotate-180 text-3xl"></i>
+          </div>
+
+          <!-- Wheel Canvas -->
+          <div class="relative p-2 rounded-full border-4 border-pink-400/50 shadow-[0_0_35px_rgba(236,72,153,0.4)]">
+            <canvas id="wheel-canvas" width="360" height="360" class="max-w-[85vw] max-h-[85vw] sm:w-[360px] sm:h-[360px] rounded-full"></canvas>
+            <!-- Center Spin Button -->
+            <button onclick="spinWheel()" id="spin-btn" class="absolute inset-0 m-auto w-16 h-16 rounded-full bg-gradient-to-tr from-pink-600 to-purple-600 text-white font-gaming font-extrabold text-sm shadow-xl flex items-center justify-center border-2 border-white cute-btn">
+              SPIN!
+            </button>
+          </div>
+
+          <!-- Result Banner -->
+          <div id="wheel-result-box" class="hidden text-center p-3 rounded-2xl bg-black/60 border border-pink-400 text-sm font-bold text-yellow-300 max-w-sm animate-bounce">
+            🎉 ผลลัพธ์: <span id="wheel-result-text"></span>
+          </div>
+        </div>
+
+        <!-- Wheel Settings & Preset Editor (Non-OBS) -->
+        <div class="non-obs space-y-4 w-full max-w-md">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">STREAM TOOL</span>
+              <h3 class="text-lg font-bold font-gaming text-white">Wheel of Fate Options</h3>
+            </div>
+            <p class="text-xs text-slate-300 mt-1 font-cute">
+              หมุนวงล้อสุ่มบทลงโทษหรือโจทย์ท้าทายในสตรีม สามารถเพิ่ม ลบ หรือแก้ไขข้อความได้ตามใจชอบ
+            </p>
+          </div>
+
+          <!-- Category Presets -->
+          <div class="flex items-center gap-2 text-xs">
+            <button onclick="loadWheelPreset('punish')" class="cute-btn px-3 py-1.5 rounded-xl bg-pink-500/20 text-pink-300 hover:bg-pink-500/30 border border-pink-500/40 font-bold">
+              😂 บทลงโทษสตรีม
+            </button>
+            <button onclick="loadWheelPreset('valo')" class="cute-btn px-3 py-1.5 rounded-xl bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 border border-cyan-500/40 font-bold">
+              🎯 โจทย์ท้าทายเกม
+            </button>
+          </div>
+
+          <!-- Add Item Form -->
+          <div class="flex items-center gap-2">
+            <input type="text" id="new-slice-input" placeholder="พิมพ์โจทย์ใหม่..." class="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white focus:outline-none focus:border-pink-500" />
+            <button onclick="addWheelSlice()" class="cute-btn px-4 py-2 rounded-xl bg-pink-600 text-white font-bold text-xs shadow-md">
+              + เพิ่ม
+            </button>
+          </div>
+
+          <!-- List of current options -->
+          <div id="wheel-items-list" class="max-h-48 overflow-y-auto space-y-1.5 pr-1"></div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- SECTION 3: CARD BINDER (สมุดสะสมการ์ด) -->
+    <section id="section-binder" class="hidden space-y-4">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <div>
+          <h3 class="text-lg font-bold font-gaming text-white flex items-center gap-2">
+            <i class="fa-solid fa-book-bookmark text-pink-400"></i>
+            <span>DaLines Card Binder (สมุดสะสมการ์ด)</span>
+          </h3>
+          <p class="text-xs text-slate-400 font-cute">การ์ดทั้งหมดที่ปลดล็อกได้จะถูกบันทึกไว้ในเบราว์เซอร์นี้</p>
+        </div>
+        <button onclick="resetBinderCollection()" class="text-xs text-slate-400 hover:text-red-400 underline">รีเซ็ตสมุดสะสม</button>
+      </div>
+
+      <!-- 12 Cards Grid -->
+      <div id="binder-cards-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4"></div>
+    </section>
+
+    <!-- SECTION 4: CHIBI DUEL (มินิเกมเป่ายิ้งฉุบกับสตรีมเมอร์) -->
+    <section id="section-duel" class="hidden space-y-6">
+      <div class="chibi-glass rounded-3xl p-6 sm:p-8 border-2 border-emerald-500/40 shadow-2xl max-w-xl mx-auto text-center space-y-4">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-cute">
+          <span>⚔️ CHIBI MINI-GAME</span>
+          <span>•</span>
+          <span>ชนะเพื่อรับตั๋วกาชาฟรี!</span>
+        </div>
+        <h3 class="text-xl font-bold font-gaming text-white">เป่ายิ้งฉุบดวลกับ DaLines</h3>
+        <p class="text-xs text-slate-300 font-cute">
+          เลือก ค้อน กรรไกร หรือกระดาษ เพื่อประลองกับสตรีมเมอร์ตัวจิ๋ว ชนะรับตั๋วสุ่มการ์ด 2 ใบ!
+        </p>
+
+        <!-- Duel Arena Visual -->
+        <div class="flex items-center justify-center gap-8 py-4">
+          <div class="flex flex-col items-center gap-2">
+            <span class="text-xs text-slate-400 font-mono">YOU</span>
+            <div id="player-choice-icon" class="w-20 h-20 rounded-2xl bg-slate-900 border border-pink-400 flex items-center justify-center text-3xl text-pink-300 shadow-md">
+              ❓
+            </div>
+          </div>
+          <div class="font-gaming font-extrabold text-2xl text-amber-400">VS</div>
+          <div class="flex flex-col items-center gap-2">
+            <span class="text-xs text-slate-400 font-mono">DALINES</span>
+            <div id="bot-choice-icon" class="w-20 h-20 rounded-2xl bg-slate-900 border border-purple-400 flex items-center justify-center text-3xl text-purple-300 shadow-md">
+              🤖
+            </div>
+          </div>
+        </div>
+
+        <!-- Result message -->
+        <div id="duel-result" class="text-sm font-bold text-yellow-300 min-h-[24px]"></div>
+
+        <!-- Choice buttons -->
+        <div class="flex items-center justify-center gap-3 pt-2">
+          <button onclick="playDuel('rock')" class="cute-btn px-4 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm border border-slate-700 flex flex-col items-center gap-1 shadow-md">
+            <span class="text-2xl">✊</span>
+            <span>ค้อน (Rock)</span>
+          </button>
+          <button onclick="playDuel('paper')" class="cute-btn px-4 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm border border-slate-700 flex flex-col items-center gap-1 shadow-md">
+            <span class="text-2xl">✋</span>
+            <span>กระดาษ (Paper)</span>
+          </button>
+          <button onclick="playDuel('scissors')" class="cute-btn px-4 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm border border-slate-700 flex flex-col items-center gap-1 shadow-md">
+            <span class="text-2xl">✌️</span>
+            <span>กรรไกร (Scissors)</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- CARD DETAIL MODAL (Inspect any card) -->
+  <div id="card-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+    <div class="chibi-glass w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4 text-center border-2 border-pink-400">
+      <div id="modal-card-render" class="flex justify-center"></div>
+      <div class="space-y-1">
+        <h4 id="modal-card-name" class="text-base font-bold text-white font-gaming"></h4>
+        <div id="modal-card-rarity" class="text-xs font-mono font-bold"></div>
+        <p id="modal-card-desc" class="text-xs text-slate-300 font-cute leading-relaxed pt-1"></p>
+      </div>
+      <button onclick="closeCardModal()" class="w-full py-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs cute-btn">
+        ปิดหน้าต่าง
+      </button>
+    </div>
+  </div>
+
+  <!-- APPLICATION LOGIC -->
+  <script>
+    // --- 1. STATE & GACHA CARDS DATABASE (12 CARDS) ---
+    const CARDS_DB = [
+      // UR (Ultra Rare)
+      { id: 'ur-1', name: 'Golden Radiant Clutch', rarity: 'UR', icon: '🏆', color: 'holo-ur', desc: 'ช็อตคลัตช์ 1v5 ระดับตำนาน รัศมีทองเปล่งประกาย สยบคู่ต่อสู้ทั้งเซิร์ฟเวอร์', stat: 'ATK: 9999 • LUCK: MAX' },
+      { id: 'ur-2', name: 'Ascended Kraber God', rarity: 'UR', icon: '⚡', color: 'holo-ur', desc: 'สไนเปอร์ Kraber กลางเวหา สอยแชมป์ Apex Legends แบบเหนือเมฆ ไร้เทียมทาน', stat: 'RANGE: ∞ • AIM: 100%' },
+
+      // SSR (Super Rare)
+      { id: 'ssr-1', name: 'Cyber Panda Mascot', rarity: 'SSR', icon: '🐼', color: 'holo-ssr', desc: 'แพนด้าไซเบอร์ผู้พิทักษ์ช่อง DaLines ตาสองสีม่วง/ส้ม พร้อมพุ่งชนทุกแมตช์', stat: 'DEF: 8800 • CUTENESS: 100' },
+      { id: 'ssr-2', name: 'The 240Hz Speed Demon', rarity: 'SSR', icon: '🏎️', color: 'holo-ssr', desc: 'ความไวเฟรมเรต 240Hz มองเห็นศัตรูเร็วกว่าคนทั่วไป 0.001 วินาที', stat: 'SPD: 240 FPS • REACTION: S+' },
+      { id: 'ssr-3', name: 'Arctic Rig Powerhouse', rarity: 'SSR', icon: '🖥️', color: 'holo-ssr', desc: 'ขุมพลัง Ryzen 5 5600 + RTX 4060 เย็นยะเยือกสไตล์น้ำแข็ง อัปเกรดทุกความแรง', stat: 'TECH: 4060 • COLD: -50°C' },
+
+      // SR (Super Rare)
+      { id: 'sr-1', name: 'สตรีมเมอร์สายยิงเน้นโยน', rarity: 'SR', icon: '🎯', color: 'holo-sr', desc: 'จริงจังมาเยอะแล้วครับ! ยิงไม่เข้าก็โยนไว้ก่อน บันเทิงแน่นอน', stat: 'HUMOR: 999 • YON: 100%' },
+      { id: 'sr-2', name: 'กาแฟดริปเพิ่มพลัง', rarity: 'SR', icon: '☕', color: 'holo-sr', desc: 'กาแฟคั่วบดสดใหม่ จิบเดียวตาสว่าง สตรีมยาวข้ามเที่ยงคืน', stat: 'ENERGY: +150 • SLEEP: 0' },
+      { id: 'sr-3', name: 'เป้ากากบาทมหาเทพ', rarity: 'SR', icon: '✨', color: 'holo-sr', desc: 'โค้ดเป้า Valorant คัดลอกปุ๊บ ความแม่นยำพุ่งปั๊บ หัวแตกทุกรอบ', stat: 'PRECISION: 95% • DPI: 800' },
+
+      // R (Rare)
+      { id: 'r-1', name: 'ตวงหัวร้อน', rarity: 'R', icon: '🔥', color: 'holo-r', desc: 'จังหวะโดนยิงทะลุควัน ฟีลลิ่งมาเต็ม เสียงร้องตกใจดังลั่นสตูดิโอ', stat: 'PASSION: +50' },
+      { id: 'r-2', name: 'ข้าวมันไก่ยามดึก', rarity: 'R', icon: '🍗', color: 'holo-r', desc: 'เมนูเยียวยาจิตใจหลังจบแมตช์แรงค์อันดุเดือด ฟินทุกคำ', stat: 'HP: +200' },
+      { id: 'r-3', name: 'ไม้กวาดหิมะคู่ใจ', rarity: 'R', icon: '🚜', color: 'holo-r', desc: 'รถกวาดหิมะสีส้มคันจิ๋ว เคลียร์หิมะทั่วเกาะลอยฟ้า DaLines', stat: 'CLEAN: 100%' },
+      { id: 'r-4', name: 'ลูกเต๋าชาเลนจ์', rarity: 'R', icon: '🎲', color: 'holo-r', desc: 'ลูกเต๋าสุ่มโจทย์ในสตรีม ใครท้ามาตวงรับหมด!', stat: 'CHANCE: 50/50' }
+    ];
+
+    let userTickets = parseInt(localStorage.getItem('dalines_gacha_tickets') || '10');
+    let userBinder = JSON.parse(localStorage.getItem('dalines_card_binder') || '{}');
+    let audioMuted = false;
+
+    // --- 2. WEB AUDIO CHIME & FANFARE SYNTHESIZER ---
+    let audioCtx = null;
+    function getAudioCtx() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playSound(type) {
+      if (audioMuted) return;
+      try {
+        const ctx = getAudioCtx();
+        const now = ctx.currentTime;
+
+        if (type === 'tick') {
+          // Wheel tick
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(800, now);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        } else if (type === 'sparkle') {
+          // Gacha sparkle / star burst
+          const freqs = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+          freqs.forEach((f, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(f, now + i * 0.05);
+            gain.gain.setValueAtTime(0.2, now + i * 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.3);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + i * 0.05);
+            osc.stop(now + i * 0.05 + 0.35);
+          });
+        } else if (type === 'fanfare') {
+          // Win fanfare
+          const notes = [440, 554.37, 659.25, 880];
+          notes.forEach((f, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(f, now + i * 0.1);
+            gain.gain.setValueAtTime(0.25, now + i * 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.4);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + i * 0.1);
+            osc.stop(now + i * 0.1 + 0.45);
+          });
+        }
+      } catch (e) {
+        console.warn('Audio not available', e);
+      }
+    }
+
+    function toggleAudio() {
+      audioMuted = !audioMuted;
+      const icon = document.getElementById('audio-icon');
+      if (audioMuted) icon.className = 'fa-solid fa-volume-xmark text-slate-500';
+      else {
+        icon.className = 'fa-solid fa-volume-high text-pink-400';
+        playSound('sparkle');
+      }
+    }
+
+    // --- 3. GACHA LOGIC & CARD RENDERING ---
+    function updateHUD() {
+      document.getElementById('ticket-count').textContent = userTickets;
+      const collectedCount = Object.keys(userBinder).length;
+      document.getElementById('collection-count').textContent = `${collectedCount} / ${CARDS_DB.length}`;
+      localStorage.setItem('dalines_gacha_tickets', userTickets.toString());
+      localStorage.setItem('dalines_card_binder', JSON.stringify(userBinder));
+    }
+
+    function addFreeTickets() {
+      userTickets += 5;
+      playSound('sparkle');
+      updateHUD();
+      alert('🎁 ได้รับตั๋วกาชาฟรี +5 ใบเรียบร้อย!');
+    }
+
+    function getRandomCard() {
+      const roll = Math.random() * 100;
+      let targetRarity = 'R';
+      if (roll <= 1) targetRarity = 'UR';
+      else if (roll <= 10) targetRarity = 'SSR';
+      else if (roll <= 40) targetRarity = 'SR';
+      else targetRarity = 'R';
+
+      const pool = CARDS_DB.filter(c => c.rarity === targetRarity);
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    function pullGacha(count) {
+      if (userTickets < count) {
+        alert('ตั๋วกาชาไม่พอ! คลิก "+ รับฟรี" เพื่อรับตั๋วเพิ่มได้เลยครับ');
+        return;
+      }
+
+      userTickets -= count;
+      updateHUD();
+      playSound('sparkle');
+
+      // Pack burst animation
+      const pack = document.getElementById('gacha-pack');
+      pack.classList.add('pack-bursting');
+      setTimeout(() => pack.classList.remove('pack-bursting'), 600);
+
+      const pulledCards = [];
+      let hasUR = false;
+      for (let i = 0; i < count; i++) {
+        const card = getRandomCard();
+        pulledCards.push(card);
+        userBinder[card.id] = (userBinder[card.id] || 0) + 1;
+        if (card.rarity === 'UR') hasUR = true;
+      }
+      updateHUD();
+
+      // Confetti celebration if UR or SSR pulled
+      if (hasUR || pulledCards.some(c => c.rarity === 'SSR')) {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+        playSound('fanfare');
+      }
+
+      displayPulledCards(pulledCards);
+      renderBinderGrid();
+    }
+
+    function createCardElement(card, isOwned = true, count = 1) {
+      const div = document.createElement('div');
+      div.className = `rounded-2xl p-3 flex flex-col items-center justify-between text-center relative overflow-hidden card-3d cursor-pointer ${card.color} ${!isOwned ? 'opacity-35 grayscale' : ''}`;
+      div.onclick = () => openCardModal(card);
+
+      const rarityBadgeColor = {
+        UR: 'bg-yellow-400 text-black',
+        SSR: 'bg-pink-500 text-white',
+        SR: 'bg-cyan-500 text-black',
+        R: 'bg-slate-700 text-white'
+      }[card.rarity];
+
+      div.innerHTML = `
+        <div class="w-full flex items-center justify-between text-[10px] font-mono font-bold">
+          <span class="px-2 py-0.5 rounded-full ${rarityBadgeColor}">${card.rarity}</span>
+          ${isOwned && count > 1 ? `<span class="bg-black/60 px-1.5 py-0.5 rounded text-white">x${count}</span>` : ''}
+        </div>
+        <div class="my-3 text-4xl sm:text-5xl drop-shadow-md">${card.icon}</div>
+        <div class="space-y-0.5 w-full">
+          <div class="text-[11px] sm:text-xs font-bold text-white font-gaming truncate">${card.name}</div>
+          <div class="text-[9px] text-white/80 font-mono truncate">${card.stat}</div>
+        </div>
+      `;
+      return div;
+    }
+
+    function displayPulledCards(cards) {
+      const container = document.getElementById('pulled-results-container');
+      const grid = document.getElementById('pulled-cards-grid');
+      grid.innerHTML = '';
+
+      cards.forEach(card => {
+        const el = createCardElement(card, true, 1);
+        grid.appendChild(el);
+      });
+
+      container.classList.remove('hidden');
+      container.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function clearPulledResults() {
+      document.getElementById('pulled-results-container').classList.add('hidden');
+    }
+
+    function renderBinderGrid() {
+      const grid = document.getElementById('binder-cards-grid');
+      grid.innerHTML = '';
+
+      CARDS_DB.forEach(card => {
+        const isOwned = Boolean(userBinder[card.id]);
+        const count = userBinder[card.id] || 0;
+        const el = createCardElement(card, isOwned, count);
+        grid.appendChild(el);
+      });
+    }
+
+    function openCardModal(card) {
+      playSound('sparkle');
+      document.getElementById('modal-card-render').innerHTML = '';
+      const cardEl = createCardElement(card, true, userBinder[card.id] || 1);
+      cardEl.classList.add('w-44', 'h-64');
+      document.getElementById('modal-card-render').appendChild(cardEl);
+
+      document.getElementById('modal-card-name').textContent = card.name;
+      document.getElementById('modal-card-rarity').textContent = `RARITY: ${card.rarity} • ${card.stat}`;
+      document.getElementById('modal-card-desc').textContent = card.desc;
+
+      document.getElementById('card-modal').classList.remove('hidden');
+    }
+
+    function closeCardModal() {
+      document.getElementById('card-modal').classList.add('hidden');
+    }
+
+    function resetBinderCollection() {
+      if (confirm('คุณต้องการรีเซ็ตสมุดสะสมการ์ดทั้งหมดหรือไม่?')) {
+        userBinder = {};
+        updateHUD();
+        renderBinderGrid();
+      }
+    }
+
+    // --- 4. WHEEL OF FATE ENGINE ---
+    const wheelCanvas = document.getElementById('wheel-canvas');
+    const wheelCtx = wheelCanvas.getContext('2d');
+
+    let wheelSlices = [
+      { text: 'เล่นปืนพก Classic ทั้งแมตช์', color: '#f43f5e' },
+      { text: 'วิดพื้น 10 ครั้งทันที!', color: '#ec4899' },
+      { text: 'ห้ามใช้สกิล 1 เกม', color: '#8b5cf6' },
+      { text: 'พูดลงท้ายด้วย "งับ" 1 แมตช์', color: '#06b6d4' },
+      { text: 'ร้องเพลง 1 ท่อนให้คนดูฟัง', color: '#10b981' },
+      { text: 'ดื่มน้ำ 1 แก้วใหญ่', color: '#eab308' },
+      { text: 'เล่นเอเจนต์ที่ไม่ถนัด', color: '#f97316' },
+      { text: 'แจก Sub ให้คนดู 1 ea', color: '#a855f7' }
+    ];
+
+    let currentAngle = 0;
+    let isSpinning = false;
+
+    function drawWheel() {
+      const W = wheelCanvas.width;
+      const H = wheelCanvas.height;
+      const cx = W / 2;
+      const cy = H / 2;
+      const radius = W / 2 - 8;
+      const numSlices = wheelSlices.length;
+      const arc = (Math.PI * 2) / numSlices;
+
+      wheelCtx.clearRect(0, 0, W, H);
+
+      wheelSlices.forEach((slice, i) => {
+        const start = currentAngle + i * arc;
+        const end = start + arc;
+
+        // Draw Slice
+        wheelCtx.beginPath();
+        wheelCtx.moveTo(cx, cy);
+        wheelCtx.arc(cx, cy, radius, start, end);
+        wheelCtx.fillStyle = slice.color;
+        wheelCtx.fill();
+        wheelCtx.lineWidth = 2;
+        wheelCtx.strokeStyle = '#ffffff';
+        wheelCtx.stroke();
+
+        // Draw Text inside slice
+        wheelCtx.save();
+        wheelCtx.translate(cx, cy);
+        wheelCtx.rotate(start + arc / 2);
+        wheelCtx.textAlign = 'right';
+        wheelCtx.fillStyle = '#ffffff';
+        wheelCtx.font = 'bold 12px "Kanit", sans-serif';
+        wheelCtx.shadowColor = 'rgba(0,0,0,0.8)';
+        wheelCtx.shadowBlur = 4;
+        wheelCtx.fillText(slice.text, radius - 18, 4);
+        wheelCtx.restore();
+      });
+    }
+
+    function spinWheel() {
+      if (isSpinning) return;
+      isSpinning = true;
+      document.getElementById('wheel-result-box').classList.add('hidden');
+
+      const spinRounds = 5 + Math.random() * 5;
+      const targetDelta = spinRounds * Math.PI * 2 + Math.random() * Math.PI * 2;
+      const duration = 4000;
+      const startTime = performance.now();
+      const startAngle = currentAngle;
+
+      let lastTickAngle = startAngle;
+
+      function animateSpin(now) {
+        const elapsed = now - startTime;
+        const t = Math.min(1, elapsed / duration);
+        // Ease Out Cubic
+        const ease = 1 - Math.pow(1 - t, 3);
+        currentAngle = startAngle + targetDelta * ease;
+
+        // Sound tick on passing each slice
+        const arc = (Math.PI * 2) / wheelSlices.length;
+        if (Math.abs(currentAngle - lastTickAngle) >= arc) {
+          playSound('tick');
+          lastTickAngle = currentAngle;
+        }
+
+        drawWheel();
+
+        if (t < 1) {
+          requestAnimationFrame(animateSpin);
+        } else {
+          isSpinning = false;
+          // Determine winning slice at the top pointer (3 * PI / 2 or 270 deg)
+          const normalizedAngle = (currentAngle % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+          const pointerAngle = (Math.PI * 1.5 - normalizedAngle + Math.PI * 2) % (Math.PI * 2);
+          const winningIndex = Math.floor(pointerAngle / arc) % wheelSlices.length;
+          const winner = wheelSlices[winningIndex];
+
+          confetti({
+            particleCount: 80,
+            spread: 60,
+            origin: { y: 0.6 }
+          });
+          playSound('fanfare');
+
+          document.getElementById('wheel-result-text').textContent = winner.text;
+          document.getElementById('wheel-result-box').classList.remove('hidden');
+        }
+      }
+      requestAnimationFrame(animateSpin);
+    }
+
+    function renderWheelItemsList() {
+      const container = document.getElementById('wheel-items-list');
+      container.innerHTML = '';
+
+      wheelSlices.forEach((s, idx) => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center justify-between p-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white';
+        row.innerHTML = `
+          <div class="flex items-center gap-2 truncate">
+            <span class="w-3 h-3 rounded-full shrink-0" style="background-color: ${s.color};"></span>
+            <span class="truncate">${s.text}</span>
+          </div>
+          <button onclick="removeWheelSlice(${idx})" class="text-slate-400 hover:text-red-400 text-xs px-2 py-0.5">✕</button>
+        `;
+        container.appendChild(row);
+      });
+      drawWheel();
+    }
+
+    function addWheelSlice() {
+      const input = document.getElementById('new-slice-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const colors = ['#f43f5e', '#ec4899', '#8b5cf6', '#06b6d4', '#10b981', '#eab308', '#f97316', '#a855f7'];
+      const color = colors[wheelSlices.length % colors.length];
+
+      wheelSlices.push({ text, color });
+      input.value = '';
+      renderWheelItemsList();
+    }
+
+    function removeWheelSlice(idx) {
+      if (wheelSlices.length <= 2) {
+        alert('วงล้อต้องมีตัวเลือกอย่างน้อย 2 ช่องครับ');
+        return;
+      }
+      wheelSlices.splice(idx, 1);
+      renderWheelItemsList();
+    }
+
+    function loadWheelPreset(type) {
+      if (type === 'punish') {
+        wheelSlices = [
+          { text: 'วิดพื้น 10 ครั้งทันที!', color: '#f43f5e' },
+          { text: 'พูดลงท้ายด้วย "งับ" 1 แมตช์', color: '#ec4899' },
+          { text: 'ร้องเพลง 1 ท่อนให้คนดูฟัง', color: '#8b5cf6' },
+          { text: 'ดื่มน้ำ 1 แก้วใหญ่', color: '#06b6d4' },
+          { text: 'แจก Sub ให้คนดู 1 ea', color: '#10b981' },
+          { text: 'เปิดกล้องทำหน้าทะเล้น 5 วิ', color: '#eab308' }
+        ];
+      } else {
+        wheelSlices = [
+          { text: 'เล่นปืนพก Classic ทั้งแมตช์', color: '#f43f5e' },
+          { text: 'ห้ามใช้สกิล 1 เกม', color: '#06b6d4' },
+          { text: 'ต้องบุก Site เดียวกันทุกรอบ', color: '#10b981' },
+          { text: 'เล่นเอเจนต์ที่ไม่ถนัด', color: '#eab308' },
+          { text: 'ห้ามซื้อเกราะทั้งครึ่งแรก', color: '#f97316' },
+          { text: 'ใช้ Sensitivity เมาส์ x2 เท่า', color: '#a855f7' }
+        ];
+      }
+      renderWheelItemsList();
+      playSound('sparkle');
+    }
+
+    // --- 5. CHIBI MINI-DUEL (ROCK-PAPER-SCISSORS) ---
+    function playDuel(playerChoice) {
+      playSound('tick');
+      const icons = { rock: '✊', paper: '✋', scissors: '✌️' };
+      const choices = ['rock', 'paper', 'scissors'];
+      const botChoice = choices[Math.floor(Math.random() * choices.length)];
+
+      document.getElementById('player-choice-icon').textContent = icons[playerChoice];
+      document.getElementById('bot-choice-icon').textContent = icons[botChoice];
+
+      const resultEl = document.getElementById('duel-result');
+
+      if (playerChoice === botChoice) {
+        resultEl.textContent = '🤝 เสมอกัน! ลองใหม่อีกรอบนะ';
+        resultEl.className = 'text-sm font-bold text-slate-300';
+      } else if (
+        (playerChoice === 'rock' && botChoice === 'scissors') ||
+        (playerChoice === 'paper' && botChoice === 'rock') ||
+        (playerChoice === 'scissors' && botChoice === 'paper')
+      ) {
+        resultEl.textContent = '🎉 คุณชนะ DaLines! รับตั๋วกาชาฟรี +2 ใบ!';
+        resultEl.className = 'text-sm font-bold text-emerald-400 animate-pulse';
+        userTickets += 2;
+        updateHUD();
+        playSound('fanfare');
+      } else {
+        resultEl.textContent = '😂 DaLines ชนะ! สู้ใหม่อีกรอบนะคนเก่ง';
+        resultEl.className = 'text-sm font-bold text-pink-400';
+      }
+    }
+
+    // --- 6. NAVIGATION & OBS MODE ---
+    function switchSection(secId) {
+      playSound('tick');
+      ['gacha', 'wheel', 'binder', 'duel'].forEach(s => {
+        const btn = document.getElementById(`sec-btn-${s}`);
+        const sec = document.getElementById(`section-${s}`);
+        if (s === secId) {
+          btn.className = 'cute-btn px-4 py-2 rounded-xl bg-pink-600 text-white font-bold text-xs flex items-center gap-2 shadow-md';
+          sec.classList.remove('hidden');
+        } else {
+          btn.className = 'cute-btn px-4 py-2 rounded-xl text-slate-300 hover:text-white font-medium text-xs flex items-center gap-2';
+          sec.classList.add('hidden');
+        }
+      });
+      if (secId === 'wheel') drawWheel();
+    }
+
+    function toggleObsMode() {
+      const isObs = document.body.classList.toggle('obs-mode');
+      const btnText = document.getElementById('obs-btn-text');
+      if (isObs) {
+        btnText.textContent = 'Exit OBS';
+        // Auto-switch to wheel for broadcast
+        switchSection('wheel');
+      } else {
+        btnText.textContent = 'OBS Mode';
+      }
+    }
+
+    // Auto-enable OBS mode if ?obs=true is in URL
+    if (new URLSearchParams(window.location.search).get('obs') === 'true') {
+      document.body.classList.add('obs-mode');
+      switchSection('wheel');
+    }
+
+    // Initialize
+    updateHUD();
+    renderBinderGrid();
+    renderWheelItemsList();
+  </script>
+</body>
+</html>
