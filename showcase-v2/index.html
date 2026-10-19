@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DaLines // 15s Brutalist Motion Showcase V2 (1080p 60fps)</title>
+
+  <!-- Typography: Space Grotesk (Swiss/Minimal Tech), Orbitron (Kinetic Gaming), JetBrains Mono (Brutalist Data) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Orbitron:wght@600;800;900&family=Space+Grotesk:wght@500;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- CDNs: Three.js & GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <style>
+    :root {
+      --bg-obsidian: #0b0c10;
+      --accent-cyan: #66fcf1;
+      --accent-lime: #45f32b;
+      --text-white: #ffffff;
+      --text-muted: #c5c6c7;
+      --tech-slate: #1f2833;
+      --tech-cyan-dim: #45a29e;
+      --border-cyan: rgba(102, 252, 241, 0.35);
+      --border-lime: rgba(69, 243, 43, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      color: var(--text-white);
+      font-family: 'Space Grotesk', sans-serif;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 1920x1080 Stage Viewport */
+    #viewport-root {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    #stage {
+      width: 1920px;
+      height: 1080px;
+      background: var(--bg-obsidian);
+      position: absolute;
+      overflow: hidden;
+      transform-origin: center center;
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.95);
+    }
+
+    /* WebGL Background Canvas */
+    #webgl-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 1080px;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Halftone Matrix & Scanline Overlay */
+    .halftone-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background-image: 
+        radial-gradient(rgba(102, 252, 241, 0.12) 1.5px, transparent 1.5px),
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.45) 50%);
+      background-size: 16px 16px, 100% 4px;
+      opacity: 0.75;
+    }
+
+    /* Brutalist Technical HUD Layer */
+    .hud-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      padding: 35px 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Corner Reticle Brackets */
+    .corner-bracket {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      border: 2px solid var(--accent-cyan);
+    }
+
+    .corner-tl { top: 25px; left: 25px; border-right: none; border-bottom: none; }
+    .corner-tr { top: 25px; right: 25px; border-left: none; border-bottom: none; }
+    .corner-bl { bottom: 25px; left: 25px; border-right: none; border-top: none; }
+    .corner-br { bottom: 25px; right: 25px; border-left: none; border-top: none; }
+
+    /* Top HUD Header */
+    .hud-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-cyan);
+      padding-bottom: 14px;
+    }
+
+    .hud-brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-tag {
+      background: var(--accent-cyan);
+      color: #000;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 4px 10px;
+      letter-spacing: 1.5px;
+    }
+
+    .hud-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: #fff;
+    }
+
+    .hud-telemetry {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .hud-telemetry span.active-node {
+      color: var(--accent-lime);
+      font-weight: 700;
+    }
+
+    /* Bottom HUD Footer */
+    .hud-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-top: 1px solid var(--border-cyan);
+      padding-top: 14px;
+    }
+
+    .hud-timeline-status {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+    }
+
+    .status-pill {
+      border: 1px solid var(--border-cyan);
+      padding: 4px 12px;
+      color: var(--text-muted);
+      font-size: 11px;
+      letter-spacing: 1px;
+      transition: all 0.2s ease;
+    }
+
+    .status-pill.active {
+      border-color: var(--accent-lime);
+      background: rgba(69, 243, 43, 0.15);
+      color: var(--accent-lime);
+      font-weight: 700;
+    }
+
+    .timecode-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--accent-cyan);
+      letter-spacing: 2px;
+    }
+
+    /* Audio Visualizer Bars in HUD */
+    .hud-audio-meter {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 24px;
+    }
+
+    .meter-bar {
+      width: 4px;
+      background: var(--accent-cyan);
+      height: 20%;
+      transition: height 0.05s ease;
+    }
+
+    /* ========================================================
+       CONTENT SCENES (1920x1080 Centered Stages)
+    ======================================================== */
+    .scene-container {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* ----------------------------------------------------
+       SCENE 1: HERO (0.0s - 3.0s)
+    ---------------------------------------------------- */
+    #scene-hero {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .hero-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      letter-spacing: 8px;
+      color: var(--accent-lime);
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .hero-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 170px;
+      font-weight: 900;
+      line-height: 0.9;
+      letter-spacing: -2px;
+      color: #ffffff;
+      text-shadow: 0 0 50px rgba(102, 252, 241, 0.4);
+      position: relative;
+    }
+
+    .hero-title-stroke {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 170px;
+      font-weight: 900;
+      line-height: 0.9;
+      letter-spacing: -2px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      color: transparent;
+      -webkit-text-stroke: 2px var(--accent-cyan);
+      z-index: -1;
+      opacity: 0.6;
+    }
+
+    .hero-subtext {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 12px;
+      color: var(--accent-cyan);
+      margin-top: 25px;
+    }
+
+    .hero-meta-grid {
+      display: flex;
+      gap: 30px;
+      margin-top: 45px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+    }
+
+    .hero-meta-item {
+      border-left: 2px solid var(--accent-lime);
+      padding-left: 10px;
+      text-align: left;
+    }
+
+    /* ----------------------------------------------------
+       SCENE 2: BATTLESTATION RIG (3.0s - 7.0s)
+    ---------------------------------------------------- */
+    #scene-rig {
+      padding: 100px 120px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .rig-left {
+      width: 500px;
+    }
+
+    .rig-section-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--accent-lime);
+      letter-spacing: 4px;
+      margin-bottom: 8px;
+    }
+
+    .rig-heading {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 64px;
+      font-weight: 900;
+      line-height: 1.0;
+      color: #fff;
+      letter-spacing: 2px;
+    }
+
+    .rig-sub {
+      font-size: 17px;
+      color: var(--text-muted);
+      margin-top: 15px;
+      line-height: 1.5;
+    }
+
+    .rig-specs-list {
+      width: 820px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .brutalist-card {
+      background: rgba(15, 20, 30, 0.85);
+      border: 1px solid var(--border-cyan);
+      border-left: 5px solid var(--accent-cyan);
+      padding: 18px 24px;
+      backdrop-filter: blur(10px);
+      position: relative;
+    }
+
+    .brutalist-card.lime-edge {
+      border-left-color: var(--accent-lime);
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent-cyan);
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+    }
+
+    .card-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .card-desc {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .card-progress-bar {
+      margin-top: 8px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.1);
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .card-progress-fill {
+      height: 100%;
+      background: var(--accent-cyan);
+      width: 90%;
+    }
+
+    /* ----------------------------------------------------
+       SCENE 3: TACTICAL REALMS (7.0s - 11.0s)
+    ---------------------------------------------------- */
+    #scene-tactical {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .tactical-header-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      color: var(--accent-cyan);
+      letter-spacing: 5px;
+      margin-bottom: 25px;
+    }
+
+    .tactical-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 1150px;
+    }
+
+    .game-kinetic-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 2px solid var(--border-cyan);
+      background: rgba(11, 12, 16, 0.85);
+      padding: 16px 35px;
+      transition: all 0.3s ease;
+    }
+
+    .game-kinetic-row.active-row {
+      border-color: var(--accent-lime);
+      background: rgba(69, 243, 43, 0.12);
+      transform: scale(1.02);
+    }
+
+    .game-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--accent-lime);
+      margin-right: 25px;
+    }
+
+    .game-title-text {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 44px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      color: #fff;
+    }
+
+    .game-meta-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      padding: 6px 14px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--border-cyan);
+      color: var(--accent-cyan);
+      letter-spacing: 1px;
+    }
+
+    /* ----------------------------------------------------
+       SCENE 4: OUTRO & LINK (11.0s - 15.0s)
+    ---------------------------------------------------- */
+    #scene-outro {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .outro-super-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      letter-spacing: 8px;
+      color: var(--accent-lime);
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .outro-main-brand {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 130px;
+      font-weight: 900;
+      letter-spacing: 8px;
+      color: #ffffff;
+      text-shadow: 0 0 60px rgba(102, 252, 241, 0.5);
+      margin-bottom: 30px;
+    }
+
+    .outro-socials-grid {
+      display: flex;
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .outro-social-card {
+      width: 280px;
+      background: rgba(15, 20, 30, 0.85);
+      border: 1px solid var(--border-cyan);
+      padding: 20px;
+      text-align: left;
+      border-top: 4px solid var(--accent-cyan);
+    }
+
+    .outro-social-card.lime {
+      border-top-color: var(--accent-lime);
+    }
+
+    .social-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+    }
+
+    .social-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 4px;
+    }
+
+    .social-handle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--accent-cyan);
+      margin-top: 6px;
+    }
+
+    /* Giant URL Monolith */
+    .outro-url-box {
+      border: 2px solid var(--accent-cyan);
+      background: rgba(102, 252, 241, 0.1);
+      padding: 16px 45px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent-cyan);
+      letter-spacing: 3px;
+      box-shadow: 0 0 35px rgba(102, 252, 241, 0.3);
+    }
+
+    /* ========================================================
+       PREVIEW CONTROLLER (Bottom Control Bar for Browser Testing)
+    ======================================================== */
+    #preview-controller {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      background: rgba(11, 15, 25, 0.94);
+      border: 1px solid var(--border-cyan);
+      backdrop-filter: blur(15px);
+      padding: 8px 18px;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+    }
+
+    #preview-controller.recording-mode {
+      display: none !important;
+    }
+
+    .ctrl-btn {
+      background: var(--tech-slate);
+      border: 1px solid var(--border-cyan);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ctrl-btn:hover {
+      background: var(--accent-cyan);
+      color: #000;
+    }
+
+    #time-slider {
+      width: 280px;
+      accent-color: var(--accent-cyan);
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="viewport-root">
+    <div id="stage">
+
+      <!-- Three.js Canvas -->
+      <canvas id="webgl-canvas"></canvas>
+
+      <!-- Halftone Dot Grid & Scanline Overlay -->
+      <div class="halftone-overlay"></div>
+
+      <!-- Reticle Framing Corners -->
+      <div class="corner-bracket corner-tl"></div>
+      <div class="corner-bracket corner-tr"></div>
+      <div class="corner-bracket corner-bl"></div>
+      <div class="corner-bracket corner-br"></div>
+
+      <!-- Brutalist Technical HUD Layer -->
+      <div class="hud-layer">
+        <!-- Top HUD -->
+        <div class="hud-top">
+          <div class="hud-brand">
+            <span class="brand-tag">DALINES V2</span>
+            <span class="hud-title">BRUTALIST MOTION SHOWCASE</span>
+          </div>
+          <div class="hud-telemetry">
+            <span>RES: <strong class="active-node">1920x1080</strong></span>
+            <span>FPS: <strong class="active-node">60.0</strong></span>
+            <span>SYSTEM: <strong class="active-node">STANDBY</strong></span>
+          </div>
+        </div>
+
+        <!-- Bottom HUD -->
+        <div class="hud-bottom">
+          <div class="hud-timeline-status">
+            <div class="status-pill" id="pill-s1">01 // HERO</div>
+            <div class="status-pill" id="pill-s2">02 // RIG</div>
+            <div class="status-pill" id="pill-s3">03 // TITLES</div>
+            <div class="status-pill" id="pill-s4">04 // OUTRO</div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 24px;">
+            <div class="hud-audio-meter">
+              <div class="meter-bar" style="height: 40%;"></div>
+              <div class="meter-bar" style="height: 80%;"></div>
+              <div class="meter-bar" style="height: 60%;"></div>
+              <div class="meter-bar" style="height: 95%;"></div>
+              <div class="meter-bar" style="height: 70%;"></div>
+              <div class="meter-bar" style="height: 85%;"></div>
+            </div>
+            <div class="timecode-display" id="hud-timecode">00:00:00</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== SCENES ==================== -->
+
+      <!-- SCENE 1: HERO (0.0s - 3.0s) -->
+      <div class="scene-container" id="scene-hero">
+        <div class="hero-eyebrow" id="s1-eyebrow">[ SYSTEM ONLINE // DALINES NEURAL CORE ]</div>
+        <div style="position: relative;">
+          <h1 class="hero-title" id="s1-title">DALINES</h1>
+          <div class="hero-title-stroke" id="s1-stroke">DALINES</div>
+        </div>
+        <div class="hero-subtext" id="s1-subtext">GAMER • CONTENT CREATOR • TECH</div>
+        <div class="hero-meta-grid" id="s1-meta">
+          <div class="hero-meta-item">
+            <div style="color: var(--text-muted); font-size: 11px;">CALLSIGN</div>
+            <div style="color: #fff; font-weight: 700;">DaLines #TTV</div>
+          </div>
+          <div class="hero-meta-item">
+            <div style="color: var(--text-muted); font-size: 11px;">REGION</div>
+            <div style="color: #fff; font-weight: 700;">APAC / THAILAND</div>
+          </div>
+          <div class="hero-meta-item">
+            <div style="color: var(--text-muted); font-size: 11px;">SPECIALTY</div>
+            <div style="color: #fff; font-weight: 700;">TACTICAL FPS & ARPG</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 2: BATTLESTATION RIG (3.0s - 7.0s) -->
+      <div class="scene-container" id="scene-rig">
+        <div class="rig-left" id="s2-heading-group">
+          <div class="rig-section-badge">// CHAPTER 02</div>
+          <h2 class="rig-heading">BATTLE<br>STATION<br>RIG</h2>
+          <p class="rig-sub">
+            ขุมพลังฮาร์ดแวร์สำหรับเรนเดอร์สตรีมมิ่ง 60 FPS คมกริบ และตอบสนองระดับ Sub-millisecond ในทุกแมตช์
+          </p>
+        </div>
+
+        <div class="rig-specs-list" id="s2-cards">
+          <!-- CPU Card -->
+          <div class="brutalist-card lime-edge" id="card-cpu">
+            <div class="card-meta">
+              <span>CENTRAL PROCESSING UNIT</span>
+              <span>4.4 GHz CLOCK</span>
+            </div>
+            <div class="card-title">AMD RYZEN 5 5600</div>
+            <div class="card-desc">6 CORES • 12 THREADS // ZERO BOTTLENECK ESPORTS PERFORMANCE</div>
+            <div class="card-progress-bar"><div class="card-progress-fill" style="width: 88%;"></div></div>
+          </div>
+
+          <!-- GPU Card -->
+          <div class="brutalist-card" id="card-gpu">
+            <div class="card-meta">
+              <span>GRAPHICS PROCESSING CORE</span>
+              <span>360+ FPS PEAK</span>
+            </div>
+            <div class="card-title">GEFORCE RTX 5060 Ti</div>
+            <div class="card-desc">NEXT-GEN ARCHITECTURE // DLSS 4.0 // ULTRA LOW LATENCY REFLEX</div>
+            <div class="card-progress-bar"><div class="card-progress-fill" style="width: 96%; background: var(--accent-lime);"></div></div>
+          </div>
+
+          <!-- MOUSE Card -->
+          <div class="brutalist-card" id="card-mouse">
+            <div class="card-meta">
+              <span>TACTICAL AIM SENSOR</span>
+              <span>8000Hz POLLING</span>
+            </div>
+            <div class="card-title">ATK GHOST ULTIMATE</div>
+            <div class="card-desc">PAW3950 FLAGSHIP SENSOR // 800 DPI // SUB-PIXEL PRECISION</div>
+            <div class="card-progress-bar"><div class="card-progress-fill" style="width: 92%;"></div></div>
+          </div>
+
+          <!-- PAD Card -->
+          <div class="brutalist-card lime-edge" id="card-pad">
+            <div class="card-meta">
+              <span>SURFACE CONTROL</span>
+              <span>DYNAMIC STOPPING</span>
+            </div>
+            <div class="card-title">LOGA X CARNIVAL</div>
+            <div class="card-desc">HYBRID BALANCED GLIDE // ESPORTS EDITION // MICRO-ADJUSTMENT</div>
+            <div class="card-progress-bar"><div class="card-progress-fill" style="width: 85%;"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 3: TACTICAL REALMS (7.0s - 11.0s) -->
+      <div class="scene-container" id="scene-tactical">
+        <div class="tactical-header-badge" id="s3-badge">[ PROTOCOL 03 // ACTIVE COMBAT TITLES ]</div>
+        <div class="tactical-rows">
+          <!-- Game 1: POE 2 -->
+          <div class="game-kinetic-row" id="row-poe2">
+            <div style="display: flex; align-items: center;">
+              <span class="game-num">01</span>
+              <span class="game-title-text">PATH OF EXILE 2</span>
+            </div>
+            <span class="game-meta-badge">HARDCORE ARPG • THEORYCRAFTING</span>
+          </div>
+
+          <!-- Game 2: VALORANT -->
+          <div class="game-kinetic-row active-row" id="row-val">
+            <div style="display: flex; align-items: center;">
+              <span class="game-num">02</span>
+              <span class="game-title-text">VALORANT</span>
+            </div>
+            <span class="game-meta-badge">TACTICAL FPS • 0.35 SENS (800 DPI)</span>
+          </div>
+
+          <!-- Game 3: APEX LEGENDS -->
+          <div class="game-kinetic-row" id="row-apex">
+            <div style="display: flex; align-items: center;">
+              <span class="game-num">03</span>
+              <span class="game-title-text">APEX LEGENDS</span>
+            </div>
+            <span class="game-meta-badge">HIGH-SPEED BATTLE ROYALE</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 4: OUTRO & LINK (11.0s - 15.0s) -->
+      <div class="scene-container" id="scene-outro">
+        <div class="outro-super-title" id="s4-eyebrow">BROADCAST EVERYWHERE // ALL PLATFORMS</div>
+        <h1 class="outro-main-brand" id="s4-brand">DALINES</h1>
+
+        <div class="outro-socials-grid" id="s4-socials">
+          <div class="outro-social-card">
+            <div class="social-tag">PRIMARY STREAM</div>
+            <div class="social-name">TWITCH</div>
+            <div class="social-handle">twitch.tv/dalines</div>
+          </div>
+
+          <div class="outro-social-card lime">
+            <div class="social-tag">HIGHLIGHT CLIPS</div>
+            <div class="social-name">TIKTOK</div>
+            <div class="social-handle">@dalinestuang</div>
+          </div>
+
+          <div class="outro-social-card">
+            <div class="social-tag">LIVE SQUAD</div>
+            <div class="social-name">KICK</div>
+            <div class="social-handle">kick.com/dalinesth</div>
+          </div>
+        </div>
+
+        <div class="outro-url-box" id="s4-url">
+          dalines-site.dalines.workers.dev
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Audio Element for Browser Live Preview -->
+  <audio id="bg-audio" src="audio.wav" preload="auto"></audio>
+
+  <!-- Interactive Preview Controller (For Browser Preview Only) -->
+  <div id="preview-controller">
+    <button class="ctrl-btn" id="btn-play-pause" onclick="togglePlay()">
+      <i class="fa-solid fa-play" id="play-icon"></i>
+      <span id="play-text">PLAY</span>
+    </button>
+    <input type="range" id="time-slider" min="0" max="15.0" step="0.0166" value="0" oninput="onSliderScrub(this.value)">
+    <span id="slider-time-text" style="color: var(--accent-cyan); font-weight: 700; width: 60px;">0.00s</span>
+    <button class="ctrl-btn" onclick="toggleFit()">FIT 100%</button>
+    <a href="../index.html" class="ctrl-btn" style="text-decoration: none; color: #fff;">
+      <i class="fa-solid fa-house text-xs"></i>
+      <span>HUB</span>
+    </a>
+  </div>
+
+  <!-- ==================== LOGIC & TIMELINE SCRIPT ==================== -->
+  <script>
+    const DURATION = 15.0; // 15 seconds strictly
+    const FPS = 60;
+    const TOTAL_FRAMES = 900;
+
+    /* ----------------------------------------------------
+       1. RESPONSIVE FIT
+    ---------------------------------------------------- */
+    let isFitMode = true;
+    function resizeStage() {
+      const stage = document.getElementById('stage');
+      if (!isFitMode) {
+        stage.style.transform = 'scale(1)';
+        return;
+      }
+      const scaleX = window.innerWidth / 1920;
+      const scaleY = window.innerHeight / 1080;
+      const scale = Math.min(scaleX, scaleY);
+      stage.style.transform = `scale(${scale})`;
+    }
+    window.addEventListener('resize', resizeStage);
+    resizeStage();
+
+    function toggleFit() {
+      isFitMode = !isFitMode;
+      resizeStage();
+    }
+
+    /* ----------------------------------------------------
+       2. THREE.JS 3D WIREFRAME SCENE
+    ---------------------------------------------------- */
+    const canvas = document.getElementById('webgl-canvas');
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x0b0c10, 0.012);
+
+    const camera = new THREE.PerspectiveCamera(55, 1920 / 1080, 0.1, 1000);
+    camera.position.set(0, 0, 16);
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance'
+    });
+    renderer.setSize(1920, 1080);
+    renderer.setPixelRatio(1);
+
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
+
+    const cyanLight = new THREE.PointLight(0x66fcf1, 3.5, 60);
+    cyanLight.position.set(12, 12, 12);
+    scene.add(cyanLight);
+
+    const limeLight = new THREE.PointLight(0x45f32b, 2.8, 60);
+    limeLight.position.set(-12, -8, 10);
+    scene.add(limeLight);
+
+    // Object 1: Hero Icosahedron & Dodecahedron Cage
+    const heroGroup = new THREE.Group();
+    const icoGeo = new THREE.IcosahedronGeometry(4.2, 1);
+    const icoMat = new THREE.MeshStandardMaterial({
+      color: 0x66fcf1,
+      wireframe: true,
+      emissive: 0x1f2833,
+      emissiveIntensity: 0.6
+    });
+    const icoMesh = new THREE.Mesh(icoGeo, icoMat);
+    heroGroup.add(icoMesh);
+
+    const dodecaGeo = new THREE.DodecahedronGeometry(2.6, 0);
+    const dodecaMat = new THREE.MeshBasicMaterial({ color: 0x45f32b, wireframe: true });
+    const dodecaMesh = new THREE.Mesh(dodecaGeo, dodecaMat);
+    heroGroup.add(dodecaMesh);
+
+    // Orbit Ring
+    const ringGeo = new THREE.TorusGeometry(5.8, 0.04, 16, 100);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0x66fcf1 });
+    const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+    ringMesh.rotation.x = Math.PI / 3;
+    heroGroup.add(ringMesh);
+
+    scene.add(heroGroup);
+
+    // Object 2: Rig Geometric Torus Knot & Chassis
+    const rigGroup = new THREE.Group();
+    rigGroup.position.set(15, 0, -5);
+    const knotGeo = new THREE.TorusKnotGeometry(2.8, 0.65, 120, 16);
+    const knotMat = new THREE.MeshStandardMaterial({
+      color: 0x45f32b,
+      wireframe: true,
+      emissive: 0x0f2f0f,
+      emissiveIntensity: 0.8
+    });
+    const knotMesh = new THREE.Mesh(knotGeo, knotMat);
+    rigGroup.add(knotMesh);
+
+    const boxGeo = new THREE.BoxGeometry(7, 7, 7);
+    const boxMat = new THREE.MeshBasicMaterial({ color: 0x66fcf1, wireframe: true });
+    const boxMesh = new THREE.Mesh(boxGeo, boxMat);
+    rigGroup.add(boxMesh);
+
+    scene.add(rigGroup);
+
+    // Object 3: Tactical Multi-Axis Gyroscope
+    const tacticalGroup = new THREE.Group();
+    tacticalGroup.position.set(0, -25, -5);
+
+    const g1 = new THREE.Mesh(new THREE.TorusGeometry(4.8, 0.08, 16, 80), new THREE.MeshBasicMaterial({ color: 0x66fcf1 }));
+    const g2 = new THREE.Mesh(new THREE.TorusGeometry(3.8, 0.08, 16, 80), new THREE.MeshBasicMaterial({ color: 0x45f32b }));
+    const g3 = new THREE.Mesh(new THREE.TorusGeometry(2.8, 0.08, 16, 80), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+    g2.rotation.x = Math.PI / 2;
+    g3.rotation.y = Math.PI / 2;
+    tacticalGroup.add(g1);
+    tacticalGroup.add(g2);
+    tacticalGroup.add(g3);
+    scene.add(tacticalGroup);
+
+    // Object 4: Outro Monolithic Horizon Gateway
+    const outroGroup = new THREE.Group();
+    outroGroup.position.set(0, 0, -35);
+    const archGeo = new THREE.TorusGeometry(8.5, 0.3, 16, 100);
+    const archMat = new THREE.MeshStandardMaterial({ color: 0x66fcf1, wireframe: true, emissive: 0x66fcf1 });
+    const archMesh = new THREE.Mesh(archGeo, archMat);
+    outroGroup.add(archMesh);
+    scene.add(outroGroup);
+
+    // Perspective Antigravity Wave Grid
+    const grid = new THREE.GridHelper(100, 50, 0x66fcf1, 0x1f2833);
+    grid.position.y = -6.5;
+    scene.add(grid);
+
+    /* ----------------------------------------------------
+       3. GSAP MASTER TIMELINE (15.0 SECONDS EXACT)
+    ---------------------------------------------------- */
+    const masterTL = gsap.timeline({ paused: true });
+
+    const s1 = document.getElementById('scene-hero');
+    const s2 = document.getElementById('scene-rig');
+    const s3 = document.getElementById('scene-tactical');
+    const s4 = document.getElementById('scene-outro');
+
+    const pill1 = document.getElementById('pill-s1');
+    const pill2 = document.getElementById('pill-s2');
+    const pill3 = document.getElementById('pill-s3');
+    const pill4 = document.getElementById('pill-s4');
+
+    // ==========================================
+    // SCENE 1: HERO (0.0s - 3.0s)
+    // ==========================================
+    masterTL.set([s1, s2, s3, s4], { autoAlpha: 0 });
+    masterTL.to(s1, { autoAlpha: 1, duration: 0.01 }, 0.0);
+    masterTL.add(() => pill1.classList.add('active'), 0.0);
+
+    masterTL.fromTo('#s1-title',
+      { scale: 1.18, filter: 'blur(10px)', opacity: 0 },
+      { scale: 1.0, filter: 'blur(0px)', opacity: 1, duration: 0.7, ease: 'power3.out' },
+      0.15
+    );
+    masterTL.fromTo('#s1-stroke',
+      { scale: 0.9, opacity: 0 },
+      { scale: 1.05, opacity: 0.6, duration: 0.8, ease: 'power2.out' },
+      0.25
+    );
+    masterTL.fromTo('#s1-eyebrow',
+      { y: -20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
+      0.2
+    );
+    masterTL.fromTo('#s1-subtext',
+      { letterSpacing: '2px', opacity: 0 },
+      { letterSpacing: '12px', opacity: 1, duration: 0.8, ease: 'power3.out' },
+      0.4
+    );
+    masterTL.fromTo('#s1-meta',
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' },
+      0.6
+    );
+
+    // Transition S1 -> S2 (2.65s - 3.0s)
+    masterTL.to(s1, {
+      x: -150,
+      opacity: 0,
+      filter: 'blur(8px)',
+      duration: 0.35,
+      ease: 'power2.in'
+    }, 2.65);
+    masterTL.add(() => pill1.classList.remove('active'), 3.0);
+
+    // ==========================================
+    // SCENE 2: BATTLESTATION RIG (3.0s - 7.0s)
+    // ==========================================
+    masterTL.to(s2, { autoAlpha: 1, duration: 0.01 }, 3.0);
+    masterTL.add(() => pill2.classList.add('active'), 3.0);
+
+    masterTL.fromTo('#s2-heading-group',
+      { x: -80, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.6, ease: 'power3.out' },
+      3.05
+    );
+
+    // Staggered Spec Cards Reveal
+    const specCards = ['#card-cpu', '#card-gpu', '#card-mouse', '#card-pad'];
+    specCards.forEach((card, idx) => {
+      masterTL.fromTo(card,
+        { x: 120, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.45, ease: 'power3.out' },
+        3.15 + idx * 0.18
+      );
+    });
+
+    // Transition S2 -> S3 (6.65s - 7.0s)
+    masterTL.to(s2, {
+      y: -80,
+      opacity: 0,
+      filter: 'blur(10px)',
+      duration: 0.35,
+      ease: 'power3.in'
+    }, 6.65);
+    masterTL.add(() => pill2.classList.remove('active'), 7.0);
+
+    // ==========================================
+    // SCENE 3: TACTICAL REALMS (7.0s - 11.0s)
+    // ==========================================
+    masterTL.to(s3, { autoAlpha: 1, duration: 0.01 }, 7.0);
+    masterTL.add(() => pill3.classList.add('active'), 7.0);
+
+    masterTL.fromTo('#s3-badge',
+      { scale: 0.8, opacity: 0 },
+      { scale: 1.0, opacity: 1, duration: 0.4, ease: 'power2.out' },
+      7.05
+    );
+
+    // Game Rows Stagger
+    masterTL.fromTo('#row-poe2',
+      { x: -160, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.5, ease: 'power3.out' },
+      7.2
+    );
+    masterTL.fromTo('#row-val',
+      { x: 160, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.5, ease: 'power3.out' },
+      7.55
+    );
+    masterTL.fromTo('#row-apex',
+      { x: -160, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.5, ease: 'power3.out' },
+      7.9
+    );
+
+    // Transition S3 -> S4 (10.65s - 11.0s)
+    masterTL.to(s3, {
+      scale: 1.12,
+      opacity: 0,
+      filter: 'blur(12px)',
+      duration: 0.35,
+      ease: 'power2.in'
+    }, 10.65);
+    masterTL.add(() => pill3.classList.remove('active'), 11.0);
+
+    // ==========================================
+    // SCENE 4: OUTRO & LINK (11.0s - 15.0s)
+    // ==========================================
+    masterTL.to(s4, { autoAlpha: 1, duration: 0.01 }, 11.0);
+    masterTL.add(() => pill4.classList.add('active'), 11.0);
+
+    masterTL.fromTo('#s4-eyebrow',
+      { y: -20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.4, ease: 'power2.out' },
+      11.05
+    );
+    masterTL.fromTo('#s4-brand',
+      { scale: 1.25, opacity: 0 },
+      { scale: 1.0, opacity: 1, duration: 0.7, ease: 'power3.out' },
+      11.15
+    );
+    masterTL.fromTo('#s4-socials',
+      { y: 40, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' },
+      11.45
+    );
+    masterTL.fromTo('#s4-url',
+      { scale: 0.9, opacity: 0 },
+      { scale: 1.0, opacity: 1, duration: 0.5, ease: 'back.out(1.4)' },
+      11.8
+    );
+
+    /* ----------------------------------------------------
+       4. DETERMINISTIC RENDERING API
+    ---------------------------------------------------- */
+    const timecodeEl = document.getElementById('hud-timecode');
+    const audioBars = document.querySelectorAll('.meter-bar');
+
+    window.renderFrame = function (timeInSeconds) {
+      // Strictly clamp between [0.000, 15.000]
+      const t = Math.max(0, Math.min(DURATION, Number(timeInSeconds)));
+      const frameNum = Math.floor(t * FPS);
+
+      // 1. Sync GSAP Master Timeline
+      masterTL.seek(t, false);
+
+      // 2. Format Timecode
+      const sec = Math.floor(t);
+      const ms = Math.floor((t - sec) * 100);
+      const frameStr = String(frameNum % FPS).padStart(2, '0');
+      timecodeEl.innerText = `00:${String(sec).padStart(2, '0')}:${frameStr}`;
+
+      // 3. Audio Meter Bar Animation
+      audioBars.forEach((bar, idx) => {
+        const h = 20 + Math.sin(t * 18 + idx * 1.5) * 35 + Math.cos(t * 9 + idx) * 20;
+        bar.style.height = `${Math.max(10, Math.min(100, h))}%`;
+      });
+
+      // 4. Update Three.js 3D Camera & Objects Deterministically
+      if (t < 3.0) {
+        // Scene 1: Hero
+        camera.position.set(0, 0, 16);
+        heroGroup.position.set(0, 0, 0);
+        heroGroup.rotation.x = t * 0.45;
+        heroGroup.rotation.y = t * 0.75;
+        dodecaMesh.rotation.y = -t * 1.2;
+        ringMesh.rotation.z = t * 0.8;
+        grid.position.z = (t * 6) % 2;
+      } else if (t < 7.0) {
+        // Scene 2: Rig
+        const p = (t - 3.0) / 4.0;
+        camera.position.x = 4 + Math.sin(p * Math.PI) * 1.5;
+        camera.position.y = -0.5;
+        rigGroup.position.set(5.5, 0, 2);
+        knotMesh.rotation.x = t * 0.8;
+        knotMesh.rotation.y = t * 1.1;
+        boxMesh.rotation.z = t * 0.5;
+        grid.position.z = (t * 12) % 2;
+      } else if (t < 11.0) {
+        // Scene 3: Tactical
+        const p = (t - 7.0) / 4.0;
+        camera.position.set(0, 0, 14);
+        tacticalGroup.position.set(0, 0, 2);
+        g1.rotation.x = t * 1.5;
+        g2.rotation.y = t * 2.0;
+        g3.rotation.z = t * 1.2;
+        grid.position.z = (t * 20) % 2;
+      } else {
+        // Scene 4: Outro
+        const p = (t - 11.0) / 4.0;
+        camera.position.set(0, 0, 16 - p * 2);
+        outroGroup.position.set(0, 0, -15 + p * 5);
+        archMesh.rotation.z = t * 0.4;
+        grid.position.z = (t * 8) % 2;
+      }
+
+      renderer.render(scene, camera);
+    };
+
+    /* ----------------------------------------------------
+       5. BROWSER PREVIEW PLAYBACK LOOP
+    ---------------------------------------------------- */
+    let isPlaying = false;
+    let animId = null;
+    let playbackStartTime = 0;
+    let currentPlayTime = 0;
+    const bgAudio = document.getElementById('bg-audio');
+
+    function togglePlay() {
+      if (isPlaying) {
+        pause();
+      } else {
+        play();
+      }
+    }
+
+    function play() {
+      if (currentPlayTime >= DURATION) currentPlayTime = 0;
+      isPlaying = true;
+      document.getElementById('play-icon').className = 'fa-solid fa-pause';
+      document.getElementById('play-text').innerText = 'PAUSE';
+
+      try {
+        bgAudio.currentTime = currentPlayTime;
+        bgAudio.play();
+      } catch (e) { }
+
+      playbackStartTime = performance.now() - (currentPlayTime * 1000);
+      tick();
+    }
+
+    function pause() {
+      isPlaying = false;
+      document.getElementById('play-icon').className = 'fa-solid fa-play';
+      document.getElementById('play-text').innerText = 'PLAY';
+      try { bgAudio.pause(); } catch (e) { }
+      if (animId) cancelAnimationFrame(animId);
+    }
+
+    function tick() {
+      if (!isPlaying) return;
+      const now = performance.now();
+      currentPlayTime = (now - playbackStartTime) / 1000;
+
+      if (currentPlayTime >= DURATION) {
+        currentPlayTime = DURATION;
+        window.renderFrame(DURATION);
+        document.getElementById('time-slider').value = DURATION;
+        document.getElementById('slider-time-text').innerText = `${DURATION.toFixed(2)}s`;
+        pause();
+        return;
+      }
+
+      window.renderFrame(currentPlayTime);
+      document.getElementById('time-slider').value = currentPlayTime;
+      document.getElementById('slider-time-text').innerText = `${currentPlayTime.toFixed(2)}s`;
+
+      animId = requestAnimationFrame(tick);
+    }
+
+    function onSliderScrub(val) {
+      pause();
+      currentPlayTime = Number(val);
+      window.renderFrame(currentPlayTime);
+      document.getElementById('slider-time-text').innerText = `${currentPlayTime.toFixed(2)}s`;
+      try { bgAudio.currentTime = currentPlayTime; } catch (e) { }
+    }
+
+    // Spacebar to Play/Pause
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        togglePlay();
+      }
+    });
+
+    // Initial render at t = 0
+    window.renderFrame(0);
+
+    // Ready signal for Puppeteer renderer
+    window.__READY__ = true;
+  </script>
+</body>
+
+</html>

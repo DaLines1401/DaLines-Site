@@ -1,0 +1,25 @@
+{
+  "name": "dalines-showcase-v2",
+  "version": "2.0.0",
+  "description": "15s Brutalist Motion Graphics Video Showcase (1920x1080 @ 60 FPS) with Synthesized Cyber Soundtrack for DaLines",
+  "main": "render.js",
+  "scripts": {
+    "synth": "node synth_audio.js",
+    "render": "node render.js",
+    "render:test": "node render.js --test",
+    "render:quick": "node render.js --skip-frames",
+    "build": "node synth_audio.js && node render.js"
+  },
+  "keywords": [
+    "threejs",
+    "gsap",
+    "webgl",
+    "brutalist",
+    "motion-graphics",
+    "puppeteer",
+    "dalines",
+    "audio-synthesizer"
+  ],
+  "author": "DaLines",
+  "license": "MIT"
+}
