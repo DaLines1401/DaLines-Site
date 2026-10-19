@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DaLines Showcase // Brutalist WebGL Motion Graphic</title>
-  
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700;800&family=Orbitron:wght@500;700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700;800&family=Orbitron:wght@500;700;800;900&family=Space+Grotesk:wght@600;700&display=swap"
+    rel="stylesheet">
+
   <!-- CDNs: Three.js & GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -36,7 +39,8 @@
       user-select: none;
     }
 
-    html, body {
+    html,
+    body {
       width: 100%;
       height: 100%;
       background: #050608;
@@ -85,8 +89,8 @@
       inset: 0;
       z-index: 2;
       pointer-events: none;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), 
-                  radial-gradient(circle at center, transparent 60%, rgba(11, 12, 16, 0.85) 100%);
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%),
+        radial-gradient(circle at center, transparent 60%, rgba(11, 12, 16, 0.85) 100%);
       background-size: 100% 4px, 100% 100%;
       opacity: 0.65;
     }
@@ -119,10 +123,34 @@
       height: 32px;
       border: 2px solid var(--accent-cyan);
     }
-    .corner-tl { top: 30px; left: 30px; border-right: none; border-bottom: none; }
-    .corner-tr { top: 30px; right: 30px; border-left: none; border-bottom: none; }
-    .corner-bl { bottom: 30px; left: 30px; border-right: none; border-top: none; }
-    .corner-br { bottom: 30px; right: 30px; border-left: none; border-top: none; }
+
+    .corner-tl {
+      top: 30px;
+      left: 30px;
+      border-right: none;
+      border-bottom: none;
+    }
+
+    .corner-tr {
+      top: 30px;
+      right: 30px;
+      border-left: none;
+      border-bottom: none;
+    }
+
+    .corner-bl {
+      bottom: 30px;
+      left: 30px;
+      border-right: none;
+      border-top: none;
+    }
+
+    .corner-br {
+      bottom: 30px;
+      right: 30px;
+      border-left: none;
+      border-top: none;
+    }
 
     /* Top Header Bar */
     .hud-top {
@@ -648,12 +676,13 @@
     }
   </style>
 </head>
+
 <body>
 
   <div id="viewport-root">
     <!-- 1920x1080 Showcase Stage Container -->
     <div id="stage">
-      
+
       <!-- Three.js Canvas -->
       <canvas id="webgl-canvas"></canvas>
 
@@ -663,7 +692,7 @@
 
       <!-- Brutalist Technical HUD Framing -->
       <div class="hud-layer">
-        
+
         <!-- Reticle Corners -->
         <div class="corner-bracket corner-tl"></div>
         <div class="corner-bracket corner-tr"></div>
@@ -749,7 +778,7 @@
             </div>
           </div>
           <div class="specs-grid">
-            
+
             <!-- CPU -->
             <div class="spec-card" id="card-cpu">
               <div class="spec-category">PROCESSING UNIT // CENTRAL CORE</div>
@@ -757,7 +786,9 @@
               <div class="spec-details">6 CORES • 12 THREADS // 4.4 GHz CLOCK BOOST</div>
               <div class="spec-telemetry">
                 <span>LOAD: 98% // 65°C STABLE</span>
-                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 90%;"></div></div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" style="width: 90%;"></div>
+                </div>
               </div>
             </div>
 
@@ -767,8 +798,10 @@
               <div class="spec-name">GEFORCE RTX 5060 Ti</div>
               <div class="spec-details">NEXT-GEN ARCH // DLSS 4.0 // ULTRA LOW LATENCY</div>
               <div class="spec-telemetry">
-                <span>VRAM: 16GB // 4K 144HZ SYNC</span>
-                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 95%;"></div></div>
+                <span>VRAM: 8GB // 2K 165HZ SYNC</span>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" style="width: 95%;"></div>
+                </div>
               </div>
             </div>
 
@@ -779,7 +812,9 @@
               <div class="spec-details">FLAGSHIP PAW3950 SENSOR // 8000Hz POLLING RATE</div>
               <div class="spec-telemetry">
                 <span>RESPONSE: 0.125ms // SUB-PIXEL</span>
-                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 98%;"></div></div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" style="width: 98%;"></div>
+                </div>
               </div>
             </div>
 
@@ -790,7 +825,9 @@
               <div class="spec-details">HYBRID CONTROL FABRIC // ESPORTS EDITION</div>
               <div class="spec-telemetry">
                 <span>FRICTION: DYNAMIC OPTIMIZED</span>
-                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 88%;"></div></div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" style="width: 88%;"></div>
+                </div>
               </div>
             </div>
 
@@ -803,7 +840,7 @@
             <span>[ PROTOCOL: 03 // ACTIVE COMBAT TITLES ]</span>
           </div>
           <div class="titles-wrapper">
-            
+
             <div class="title-row" id="title-poe2">
               <div class="title-idx">01</div>
               <div class="title-name">PATH OF EXILE 2</div>
@@ -834,7 +871,7 @@
             BROADCAST MATRIX // LIVE EVERY DAY
           </div>
           <h1 class="outro-logo-text" id="s4-logo">DALINES</h1>
-          
+
           <div class="outro-links-grid" id="s4-links">
             <div class="channel-box">
               <div class="channel-platform">TWITCH LIVESTREAM</div>
@@ -1172,9 +1209,9 @@
     masterTL.to(s1, { autoAlpha: 1, duration: 0.01 }, 0.0);
     masterTL.add(() => pill1.classList.add('active'), 0.0);
 
-    masterTL.fromTo('#s1-title', 
+    masterTL.fromTo('#s1-title',
       { scale: 1.15, filter: 'blur(10px)', x: -30, opacity: 0 },
-      { scale: 1.0, filter: 'blur(0px)', x: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }, 
+      { scale: 1.0, filter: 'blur(0px)', x: 0, opacity: 1, duration: 0.8, ease: 'power3.out' },
       0.15
     );
     masterTL.fromTo('#s1-stroke',
@@ -1194,12 +1231,12 @@
     );
 
     // Transition S1 -> S2 (2.7s - 3.0s)
-    masterTL.to(s1, { 
-      x: -120, 
-      opacity: 0, 
-      filter: 'blur(8px)', 
-      duration: 0.35, 
-      ease: 'power2.in' 
+    masterTL.to(s1, {
+      x: -120,
+      opacity: 0,
+      filter: 'blur(8px)',
+      duration: 0.35,
+      ease: 'power2.in'
     }, 2.65);
     masterTL.add(() => pill1.classList.remove('active'), 3.0);
 
@@ -1224,12 +1261,12 @@
     });
 
     // Transition S2 -> S3 (6.2s - 6.5s)
-    masterTL.to(s2, { 
-      y: -60, 
-      opacity: 0, 
-      filter: 'blur(10px)', 
-      duration: 0.35, 
-      ease: 'power3.in' 
+    masterTL.to(s2, {
+      y: -60,
+      opacity: 0,
+      filter: 'blur(10px)',
+      duration: 0.35,
+      ease: 'power3.in'
     }, 6.15);
     masterTL.add(() => pill2.classList.remove('active'), 6.5);
 
@@ -1260,12 +1297,12 @@
     });
 
     // Transition S3 -> S4 (9.2s - 9.5s)
-    masterTL.to(s3, { 
-      scale: 1.1, 
-      opacity: 0, 
-      filter: 'blur(12px)', 
-      duration: 0.35, 
-      ease: 'power2.in' 
+    masterTL.to(s3, {
+      scale: 1.1,
+      opacity: 0,
+      filter: 'blur(12px)',
+      duration: 0.35,
+      ease: 'power2.in'
     }, 9.15);
     masterTL.add(() => pill3.classList.remove('active'), 9.5);
 
@@ -1303,7 +1340,7 @@
     const hudFrame = document.getElementById('hud-frame');
     const audioBars = document.querySelectorAll('.audio-bar');
 
-    window.renderFrame = function(timeInSeconds) {
+    window.renderFrame = function (timeInSeconds) {
       // Clamp time strictly [0.000, 12.000]
       const t = Math.max(0, Math.min(DURATION, Number(timeInSeconds)));
       const frameNum = Math.floor(t * FPS);
@@ -1403,4 +1440,5 @@
     window.renderFrame(0);
   </script>
 </body>
+
 </html>
