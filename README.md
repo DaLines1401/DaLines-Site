@@ -21,6 +21,7 @@ Official Profile Hub & Battle Station for **DaLines** — Streamer, Gamer, and F
 - 🎯 **Valorant Crosshair & 10s Aim Challenge:** จำลองเป้าเล็ง Valorant พร้อมมินิเกมวัดความไวการยิง 10 วินาที
 - 🎬 **DaLines Hall of Fame (Twitch Clips):** คลังคลิปไฮไลท์ยอดนิยมตลอดกาลจาก [twitch.tv/dalines/clips?range=all](https://www.twitch.tv/dalines/clips?range=all) แสดงปก Thumbnail คมชัด, ตัวกรองแยกตามเกม (VALORANT, Apex Legends, GTA V & อื่นๆ), ระบบเล่นคลิปผ่าน Twitch Embed Player ใน Modal, ปุ่มกด Like และปุ่มแชร์
 - 🎮 **FPS E-DPI Calculator & Sensitivity Converter:** เครื่องคำนวณ E-DPI และแปลงค่าความไวเมาส์ข้ามเกม 8 เกมดัง (Valorant, Apex Legends, Fortnite, Delta Force, CS2, Overwatch 2, CoD/Warzone, PUBG) แม่นยำ 100% ตามระยะทางจริง (cm/360°) พร้อมแถบวิเคราะห์สไตล์การเล็ง (Arm/Wrist Aim), แนะนำขนาดแผ่นรองเมาส์, ปุ่มลัดโหลดค่าโปรเพลเยอร์ DaLines (800 DPI), และปุ่มคัดลอกค่าแต่ละเกมในคลิกเดียว
+- 🌌 **DaLines Scrollytelling Battlestation & Story (`/story`):** หน้าเว็บย่อย 3D WebGL (Three.js + GSAP ScrollTrigger) ถ่ายทอดการเดินทาง, เจาะลึกมุมโต๊ะคอม Battlestation (Ryzen 5 5600, RTX 5060 Ti, ATK Ghost Mouse 800 DPI, Loga Pad), สถิติเกม FPS (Valorant, Apex, PoE2), และระบบเสียงสังเคราะห์ Cyber Web Audio FX พร้อม Chapter Navigator
 - 🏎️ **Optimized Performance:** Preconnect, Zero Cumulative Layout Shift (CLS), และ SEO / Open Graph Image Preview ขนาดเต็ม
 
 ---
@@ -30,9 +31,14 @@ Official Profile Hub & Battle Station for **DaLines** — Streamer, Gamer, and F
 ```text
 DaLines-Hub/
 ├── index.html         # โค้ดหน้าเว็บหลัก (HTML + Tailwind + JS)
+├── party.html         # DaLines Cozy Party Lounge (มินิเกม Chibi Gacha & Wheel of Fate)
+├── story/             # 🌌 หน้าเว็บย่อย 3D Scrollytelling Battlestation & Story
+│   └── index.html     # โค้ด Three.js + GSAP ScrollTrigger + Web Audio FX
+├── showcase/          # Brutalist WebGL 12s Motion Graphic Video Showcase
 ├── Logo.png           # โลโก้และรูปโปรไฟล์ DaLines (300x300)
 ├── banner-480.png     # รูปแบนเนอร์หลักประจำช่อง (853x480)
 ├── manifest.json      # ไฟล์ Web App Manifest (PWA)
+├── sitemap.xml        # ไฟล์แผนผังเว็บไซต์ (Sitemap SEO)
 ├── auto-deploy.bat    # ⚡ ดับเบิลคลิกเพื่อ Auto Deploy ทันทีใน 1 วินาที
 ├── auto-watch.bat     # 👁️ เปิดทิ้งไว้เพื่อ Auto Deploy อัตโนมัติทุกครั้งที่กด Save (Ctrl+S)
 ├── wrangler.jsonc     # ไฟล์คอนฟิก Cloudflare Workers Static Assets

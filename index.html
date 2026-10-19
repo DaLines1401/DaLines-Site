@@ -681,12 +681,23 @@
         </button>
       </div>
 
-      <!-- Share Button -->
-      <button id="btn-share" aria-label="Share Profile"
-        class="flex items-center gap-1.5 text-xs text-slate-300 hover:text-white bg-slate-900/80 border border-slate-800 hover:border-emerald-500/40 px-3.5 py-1.5 rounded-full transition backdrop-blur-md cursor-pointer active:scale-95 shadow-lg">
-        <i class="fa-solid fa-share-nodes" style="color: var(--primary-color);"></i>
-        <span data-i18n="share_btn">แชร์</span>
-      </button>
+      <div class="flex items-center gap-2">
+        <!-- Story Mode 3D Scrollytelling Link -->
+        <a href="story/"
+          class="flex items-center gap-1.5 text-xs font-gaming font-bold text-cyan-300 hover:text-white bg-cyan-950/60 border border-cyan-500/50 hover:border-cyan-400 px-3 py-1.5 rounded-full transition-all backdrop-blur-md shadow-[0_0_12px_rgba(0,240,255,0.25)] hover:shadow-[0_0_20px_rgba(0,240,255,0.5)] active:scale-95 group"
+          title="เข้าสู่โหมด Scrollytelling 3D Journey">
+          <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+          <i class="fa-solid fa-cube text-[11px] text-cyan-400 group-hover:rotate-45 transition-transform"></i>
+          <span>STORY MODE</span>
+        </a>
+
+        <!-- Share Button -->
+        <button id="btn-share" aria-label="Share Profile"
+          class="flex items-center gap-1.5 text-xs text-slate-300 hover:text-white bg-slate-900/80 border border-slate-800 hover:border-emerald-500/40 px-3.5 py-1.5 rounded-full transition backdrop-blur-md cursor-pointer active:scale-95 shadow-lg">
+          <i class="fa-solid fa-share-nodes" style="color: var(--primary-color);"></i>
+          <span data-i18n="share_btn">แชร์</span>
+        </button>
+      </div>
     </div>
 
     <!-- HERO BANNER SECTION (banner-480.png) -->
@@ -794,6 +805,38 @@
         </a>
       </div>
     </header>
+
+    <!-- 🌌 BATTLESTATION 3D SCROLLYTELLING SPOTLIGHT BANNER -->
+    <a href="story/"
+      class="tilt-card block p-3.5 mb-5 rounded-2xl bg-gradient-to-r from-cyan-950/70 via-slate-900/90 to-purple-950/60 border border-cyan-500/40 hover:border-cyan-400 transition-all duration-300 shadow-[0_0_20px_rgba(0,240,255,0.15)] hover:shadow-[0_0_25px_rgba(0,240,255,0.35)] group">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-400/50 flex items-center justify-center text-cyan-400 text-lg group-hover:scale-110 group-hover:rotate-12 transition-transform shadow-md">
+            <i class="fa-solid fa-cube"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs sm:text-sm font-bold font-gaming text-white group-hover:text-cyan-300 transition-colors">
+                BATTLESTATION &amp; STORY
+              </span>
+              <span
+                class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 animate-pulse">
+                3D SCROLL
+              </span>
+            </div>
+            <p class="text-[11px] text-slate-300 mt-0.5 font-light">
+              สัมผัสประสบการณ์ Scrollytelling 3D เจาะลึกมุมโต๊ะคอม ฮาร์ดแวร์ และเส้นทางสตรีมเมอร์
+            </p>
+          </div>
+        </div>
+        <div
+          class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 text-xs font-mono group-hover:bg-cyan-500 group-hover:text-black transition-all">
+          <span>ENTER</span>
+          <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+        </div>
+      </div>
+    </a>
 
     <!-- Navigation Tabs (5 แท็บหลัก: Sticky Navigation เกาะติดใต้ Live Banner) -->
     <nav id="main-nav"

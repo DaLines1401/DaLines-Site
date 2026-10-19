@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DaLines Showcase // Brutalist WebGL Motion Graphic</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700;800&family=Orbitron:wght@500;700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  
+  <!-- CDNs: Three.js & GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #0b0c10;
+      --bg-surface: #12151b;
+      --accent-cyan: #66fcf1;
+      --accent-teal: #45a29e;
+      --text-white: #ffffff;
+      --text-muted: #c5c6c7;
+      --border-cyan: rgba(102, 252, 241, 0.35);
+      --border-dim: rgba(255, 255, 255, 0.12);
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-title: 'Orbitron', sans-serif;
+      --font-grotesk: 'Space Grotesk', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #050608;
+      overflow: hidden;
+      font-family: var(--font-mono);
+      color: var(--text-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Fixed 1920x1080 Stage */
+    #viewport-root {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #stage {
+      width: 1920px;
+      height: 1080px;
+      position: absolute;
+      background: var(--bg-dark);
+      overflow: hidden;
+      transform-origin: center center;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 100px rgba(102, 252, 241, 0.05);
+    }
+
+    /* WebGL Canvas */
+    #webgl-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 1080px;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Scanline & Vignette Overlay */
+    .crt-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), 
+                  radial-gradient(circle at center, transparent 60%, rgba(11, 12, 16, 0.85) 100%);
+      background-size: 100% 4px, 100% 100%;
+      opacity: 0.65;
+    }
+
+    .noise-grid {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background-image: radial-gradient(rgba(102, 252, 241, 0.08) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    /* Brutalist HUD Framing */
+    .hud-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      padding: 40px 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Corner Reticles */
+    .corner-bracket {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--accent-cyan);
+    }
+    .corner-tl { top: 30px; left: 30px; border-right: none; border-bottom: none; }
+    .corner-tr { top: 30px; right: 30px; border-left: none; border-bottom: none; }
+    .corner-bl { bottom: 30px; left: 30px; border-right: none; border-top: none; }
+    .corner-br { bottom: 30px; right: 30px; border-left: none; border-top: none; }
+
+    /* Top Header Bar */
+    .hud-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-cyan);
+      padding-bottom: 16px;
+      font-size: 14px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, rgba(102, 252, 241, 0.08) 0%, transparent 60%);
+    }
+
+    .hud-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+
+    .brand-cube {
+      width: 14px;
+      height: 14px;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 12px var(--accent-cyan);
+    }
+
+    .hud-metrics {
+      display: flex;
+      gap: 36px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .metric-item span {
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+
+    .rec-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 60, 60, 0.15);
+      border: 1px solid rgba(255, 60, 60, 0.6);
+      padding: 4px 12px;
+      color: #ff4a4a;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 2px;
+    }
+
+    .rec-dot {
+      width: 8px;
+      height: 8px;
+      background: #ff3333;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #ff3333;
+    }
+
+    /* Bottom HUD Bar */
+    .hud-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-top: 1px solid var(--border-cyan);
+      padding-top: 18px;
+      font-size: 13px;
+      letter-spacing: 1.5px;
+    }
+
+    .scene-breadcrumbs {
+      display: flex;
+      gap: 16px;
+    }
+
+    .scene-pill {
+      padding: 6px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-dim);
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      transition: all 0.3s ease;
+    }
+
+    .scene-pill.active {
+      background: rgba(102, 252, 241, 0.15);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+      font-weight: 700;
+      box-shadow: 0 0 15px rgba(102, 252, 241, 0.2);
+    }
+
+    .hud-url-stamp {
+      color: var(--accent-teal);
+      font-family: var(--font-title);
+      font-weight: 700;
+      letter-spacing: 3px;
+      font-size: 12px;
+    }
+
+    /* Lateral HUD Coordinates */
+    .lateral-telemetry-left {
+      position: absolute;
+      left: 60px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.4);
+      letter-spacing: 1.5px;
+    }
+
+    .audio-meter {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 48px;
+    }
+
+    .audio-bar {
+      width: 4px;
+      background: var(--accent-cyan);
+      opacity: 0.6;
+      height: 20%;
+    }
+
+    /* Motion Content Container */
+    .motion-container {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 120px;
+      pointer-events: none;
+    }
+
+    .scene-view {
+      position: absolute;
+      inset: 100px 120px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      will-change: transform, opacity;
+    }
+
+    /* SCENE 1: HERO IDENTITY */
+    #scene-1 {
+      align-items: flex-start;
+    }
+
+    .scene-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--accent-cyan);
+      background: rgba(102, 252, 241, 0.08);
+      border-left: 4px solid var(--accent-cyan);
+      padding: 6px 16px;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+    }
+
+    .hero-title-box {
+      position: relative;
+    }
+
+    .hero-title {
+      font-family: var(--font-title);
+      font-size: 142px;
+      font-weight: 900;
+      letter-spacing: 12px;
+      line-height: 0.95;
+      text-transform: uppercase;
+      color: #ffffff;
+      text-shadow: 0 0 30px rgba(102, 252, 241, 0.45);
+      position: relative;
+    }
+
+    .hero-title-stroke {
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: transparent;
+      -webkit-text-stroke: 2px var(--accent-cyan);
+      opacity: 0.7;
+      transform: translate(6px, 6px);
+      z-index: -1;
+    }
+
+    .hero-subtitle {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 10px;
+      color: var(--accent-teal);
+      margin-top: 32px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .hero-subtitle span.dot {
+      color: var(--accent-cyan);
+      font-size: 16px;
+    }
+
+    .hero-protocol {
+      margin-top: 24px;
+      font-size: 13px;
+      letter-spacing: 3px;
+      color: var(--text-muted);
+      border: 1px dashed var(--border-cyan);
+      padding: 8px 18px;
+      display: inline-block;
+      background: rgba(11, 12, 16, 0.6);
+    }
+
+    /* SCENE 2: BATTLESTATION HARDWARE */
+    #scene-2 {
+      justify-content: center;
+    }
+
+    .specs-header {
+      margin-bottom: 36px;
+    }
+
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 600px);
+      gap: 24px;
+    }
+
+    .spec-card {
+      background: rgba(18, 21, 27, 0.85);
+      border: 1px solid var(--border-dim);
+      border-left: 4px solid var(--accent-cyan);
+      padding: 26px 32px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .spec-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, transparent 50%, rgba(102, 252, 241, 0.25) 50%);
+    }
+
+    .spec-category {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--accent-teal);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .spec-name {
+      font-family: var(--font-title);
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    .spec-details {
+      font-size: 14px;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .spec-telemetry {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 12px;
+      font-size: 12px;
+      color: var(--accent-cyan);
+      letter-spacing: 1.5px;
+    }
+
+    .progress-bar-bg {
+      width: 140px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 10px var(--accent-cyan);
+      width: 85%;
+    }
+
+    /* SCENE 3: ACTIVE COMBAT TITLES */
+    #scene-3 {
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .titles-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      background: rgba(18, 21, 27, 0.85);
+      border: 1px solid var(--border-cyan);
+      padding: 24px 40px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .title-row.featured {
+      background: linear-gradient(90deg, rgba(102, 252, 241, 0.18) 0%, rgba(18, 21, 27, 0.9) 100%);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 40px rgba(102, 252, 241, 0.15);
+    }
+
+    .title-idx {
+      font-family: var(--font-title);
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--accent-cyan);
+      width: 80px;
+      letter-spacing: 2px;
+    }
+
+    .title-name {
+      font-family: var(--font-title);
+      font-size: 50px;
+      font-weight: 900;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: #ffffff;
+      flex: 1;
+    }
+
+    .title-badge {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 8px 20px;
+      border: 1px solid var(--border-cyan);
+      background: rgba(102, 252, 241, 0.1);
+      color: var(--accent-cyan);
+    }
+
+    .glitch-flash {
+      position: absolute;
+      inset: 0;
+      background: var(--accent-cyan);
+      opacity: 0;
+      pointer-events: none;
+      mix-blend-mode: overlay;
+    }
+
+    /* SCENE 4: BROADCAST NETWORK & OUTRO */
+    #scene-4 {
+      align-items: center;
+      text-align: center;
+    }
+
+    .outro-badge {
+      font-size: 14px;
+      letter-spacing: 4px;
+      color: var(--accent-cyan);
+      border: 1px solid var(--border-cyan);
+      padding: 8px 24px;
+      margin-bottom: 28px;
+      background: rgba(102, 252, 241, 0.05);
+    }
+
+    .outro-logo-text {
+      font-family: var(--font-title);
+      font-size: 96px;
+      font-weight: 900;
+      letter-spacing: 10px;
+      color: #ffffff;
+      margin-bottom: 10px;
+      text-shadow: 0 0 40px rgba(102, 252, 241, 0.5);
+    }
+
+    .outro-links-grid {
+      display: flex;
+      gap: 32px;
+      margin: 36px 0;
+    }
+
+    .channel-box {
+      background: rgba(18, 21, 27, 0.9);
+      border: 1px solid var(--border-dim);
+      padding: 20px 36px;
+      min-width: 260px;
+      border-top: 3px solid var(--accent-cyan);
+    }
+
+    .channel-platform {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--accent-cyan);
+      margin-bottom: 8px;
+    }
+
+    .channel-handle {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 1px;
+    }
+
+    .domain-billboard {
+      margin-top: 24px;
+      padding: 24px 64px;
+      background: rgba(102, 252, 241, 0.08);
+      border: 2px solid var(--accent-cyan);
+      box-shadow: 0 0 50px rgba(102, 252, 241, 0.25);
+      position: relative;
+    }
+
+    .domain-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: var(--accent-teal);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .domain-address {
+      font-family: var(--font-title);
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: var(--accent-cyan);
+    }
+
+    /* Live Preview Controls Bar (Bottom overlay for interactive testing) */
+    #preview-controller {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      background: rgba(11, 12, 16, 0.92);
+      border: 1px solid var(--border-cyan);
+      border-radius: 8px;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    #preview-controller.recording-mode {
+      display: none !important;
+    }
+
+    .ctrl-btn {
+      background: rgba(102, 252, 241, 0.1);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      padding: 8px 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .ctrl-btn:hover {
+      background: var(--accent-cyan);
+      color: #0b0c10;
+      box-shadow: 0 0 15px var(--accent-cyan);
+    }
+
+    #time-slider {
+      width: 320px;
+      cursor: pointer;
+      accent-color: var(--accent-cyan);
+    }
+
+    .ctrl-readout {
+      font-size: 13px;
+      color: var(--text-white);
+      font-variant-numeric: tabular-nums;
+      min-width: 170px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="viewport-root">
+    <!-- 1920x1080 Showcase Stage Container -->
+    <div id="stage">
+      
+      <!-- Three.js Canvas -->
+      <canvas id="webgl-canvas"></canvas>
+
+      <!-- Background Grids & Post Effects -->
+      <div class="crt-overlay"></div>
+      <div class="noise-grid"></div>
+
+      <!-- Brutalist Technical HUD Framing -->
+      <div class="hud-layer">
+        
+        <!-- Reticle Corners -->
+        <div class="corner-bracket corner-tl"></div>
+        <div class="corner-bracket corner-tr"></div>
+        <div class="corner-bracket corner-bl"></div>
+        <div class="corner-bracket corner-br"></div>
+
+        <!-- Lateral Telemetry Left -->
+        <div class="lateral-telemetry-left">
+          <div>SYS.FREQ // 60HZ</div>
+          <div class="audio-meter" id="audio-meter">
+            <div class="audio-bar" style="height: 30%;"></div>
+            <div class="audio-bar" style="height: 60%;"></div>
+            <div class="audio-bar" style="height: 90%;"></div>
+            <div class="audio-bar" style="height: 45%;"></div>
+            <div class="audio-bar" style="height: 75%;"></div>
+            <div class="audio-bar" style="height: 50%;"></div>
+          </div>
+          <div>MEM: 84.2%</div>
+          <div>CORE: ONLINE</div>
+        </div>
+
+        <!-- Top HUD Header -->
+        <div class="hud-top">
+          <div class="hud-brand">
+            <div class="brand-cube"></div>
+            <span>DALINES // MOTION PROTOCOL V4</span>
+          </div>
+          <div class="hud-metrics">
+            <div class="metric-item">TIME: <span id="hud-time">00:00.00</span></div>
+            <div class="metric-item">FRAME: <span id="hud-frame">000/720</span></div>
+            <div class="metric-item">CANVAS: <span>1920x1080 @ 60FPS</span></div>
+          </div>
+          <div class="rec-badge">
+            <div class="rec-dot"></div>
+            <span>MASTER REC</span>
+          </div>
+        </div>
+
+        <!-- Bottom HUD Footer -->
+        <div class="hud-bottom">
+          <div class="scene-breadcrumbs">
+            <div class="scene-pill" id="pill-1">01 // IDENTITY</div>
+            <div class="scene-pill" id="pill-2">02 // HARDWARE</div>
+            <div class="scene-pill" id="pill-3">03 // ACTIVE TITLES</div>
+            <div class="scene-pill" id="pill-4">04 // NETWORK</div>
+          </div>
+          <div class="hud-url-stamp">
+            DALINES-SITE.DALINES.WORKERS.DEV
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Dynamic Motion Graphic Content Scenes -->
+      <div class="motion-container">
+
+        <!-- SCENE 1: HERO IDENTITY (0.0s - 3.0s) -->
+        <div class="scene-view" id="scene-1">
+          <div class="scene-tag">
+            <span>[ PROTOCOL: 01 // IDENTITY ]</span>
+          </div>
+          <div class="hero-title-box">
+            <h1 class="hero-title" id="s1-title">DALINES</h1>
+            <div class="hero-title hero-title-stroke" id="s1-stroke">DALINES</div>
+          </div>
+          <div class="hero-subtitle" id="s1-sub">
+            <span>GAMER</span>
+            <span class="dot">■</span>
+            <span>CONTENT CREATOR</span>
+            <span class="dot">■</span>
+            <span>TECH</span>
+          </div>
+          <div class="hero-protocol" id="s1-desc">
+            INITIALIZING SYSTEM KERNEL // STREAMER & ARCHITECT // THAILAND
+          </div>
+        </div>
+
+        <!-- SCENE 2: BATTLESTATION HARDWARE (3.0s - 6.5s) -->
+        <div class="scene-view" id="scene-2">
+          <div class="specs-header">
+            <div class="scene-tag">
+              <span>[ PROTOCOL: 02 // BATTLESTATION RIG ]</span>
+            </div>
+          </div>
+          <div class="specs-grid">
+            
+            <!-- CPU -->
+            <div class="spec-card" id="card-cpu">
+              <div class="spec-category">PROCESSING UNIT // CENTRAL CORE</div>
+              <div class="spec-name">AMD RYZEN 5 5600</div>
+              <div class="spec-details">6 CORES • 12 THREADS // 4.4 GHz CLOCK BOOST</div>
+              <div class="spec-telemetry">
+                <span>LOAD: 98% // 65°C STABLE</span>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 90%;"></div></div>
+              </div>
+            </div>
+
+            <!-- GPU -->
+            <div class="spec-card" id="card-gpu">
+              <div class="spec-category">GRAPHICS MATRIX // ACCELERATOR</div>
+              <div class="spec-name">GEFORCE RTX 5060 Ti</div>
+              <div class="spec-details">NEXT-GEN ARCH // DLSS 4.0 // ULTRA LOW LATENCY</div>
+              <div class="spec-telemetry">
+                <span>VRAM: 16GB // 4K 144HZ SYNC</span>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 95%;"></div></div>
+              </div>
+            </div>
+
+            <!-- MOUSE -->
+            <div class="spec-card" id="card-mouse">
+              <div class="spec-category">KINETIC INPUT // POINTER</div>
+              <div class="spec-name">ATK GHOST ULTIMATE</div>
+              <div class="spec-details">FLAGSHIP PAW3950 SENSOR // 8000Hz POLLING RATE</div>
+              <div class="spec-telemetry">
+                <span>RESPONSE: 0.125ms // SUB-PIXEL</span>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 98%;"></div></div>
+              </div>
+            </div>
+
+            <!-- MOUSEPAD -->
+            <div class="spec-card" id="card-pad">
+              <div class="spec-category">SURFACE COUPLING // PRECISION</div>
+              <div class="spec-name">LOGA X CARNIVAL</div>
+              <div class="spec-details">HYBRID CONTROL FABRIC // ESPORTS EDITION</div>
+              <div class="spec-telemetry">
+                <span>FRICTION: DYNAMIC OPTIMIZED</span>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 88%;"></div></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SCENE 3: ACTIVE TITLES (6.5s - 9.5s) -->
+        <div class="scene-view" id="scene-3">
+          <div class="scene-tag">
+            <span>[ PROTOCOL: 03 // ACTIVE COMBAT TITLES ]</span>
+          </div>
+          <div class="titles-wrapper">
+            
+            <div class="title-row" id="title-poe2">
+              <div class="title-idx">01</div>
+              <div class="title-name">PATH OF EXILE 2</div>
+              <div class="title-badge">ARPG HARDCORE</div>
+              <div class="glitch-flash"></div>
+            </div>
+
+            <div class="title-row featured" id="title-val">
+              <div class="title-idx">02</div>
+              <div class="title-name">VALORANT</div>
+              <div class="title-badge">TACTICAL FPS 5V5</div>
+              <div class="glitch-flash"></div>
+            </div>
+
+            <div class="title-row" id="title-apex">
+              <div class="title-idx">03</div>
+              <div class="title-name">APEX LEGENDS</div>
+              <div class="title-badge">HIGH VELOCITY BR</div>
+              <div class="glitch-flash"></div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SCENE 4: NETWORK & OUTRO (9.5s - 12.0s) -->
+        <div class="scene-view" id="scene-4">
+          <div class="outro-badge">
+            BROADCAST MATRIX // LIVE EVERY DAY
+          </div>
+          <h1 class="outro-logo-text" id="s4-logo">DALINES</h1>
+          
+          <div class="outro-links-grid" id="s4-links">
+            <div class="channel-box">
+              <div class="channel-platform">TWITCH LIVESTREAM</div>
+              <div class="channel-handle">twitch.tv/dalines</div>
+            </div>
+            <div class="channel-box">
+              <div class="channel-platform">TIKTOK CREATOR</div>
+              <div class="channel-handle">@dalinestuang</div>
+            </div>
+            <div class="channel-box">
+              <div class="channel-platform">KICK BROADCAST</div>
+              <div class="channel-handle">kick.com/dalinesth</div>
+            </div>
+          </div>
+
+          <div class="domain-billboard" id="s4-domain">
+            <div class="domain-label">OFFICIAL PORTFOLIO & BATTLESTATION HUB</div>
+            <div class="domain-address">dalines-site.dalines.workers.dev</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Interactive Preview Controller Bar -->
+  <div id="preview-controller">
+    <button class="ctrl-btn" id="btn-play">Pause</button>
+    <button class="ctrl-btn" id="btn-restart">Restart</button>
+    <input type="range" id="time-slider" min="0" max="12" step="0.016666" value="0">
+    <div class="ctrl-readout" id="ctrl-time-text">00:00.00 (F000/720)</div>
+    <button class="ctrl-btn" id="btn-scale">Fit Screen</button>
+  </div>
+
+  <script>
+    /**
+     * DaLines Showcase - Brutalist WebGL Motion Graphic
+     * Target: 1920x1080 @ 60 FPS (12.0 seconds = 720 frames)
+     */
+
+    const DURATION = 12.0;
+    const FPS = 60;
+    const TOTAL_FRAMES = 720;
+
+    // --- Responsive Stage Scaler for Preview ---
+    const stage = document.getElementById('stage');
+    let isFitScreen = true;
+
+    function adjustStageScale() {
+      if (window.__IS_RECORDING__) {
+        stage.style.transform = 'none';
+        stage.style.top = '0';
+        stage.style.left = '0';
+        return;
+      }
+      if (isFitScreen) {
+        const scaleX = window.innerWidth / 1920;
+        const scaleY = window.innerHeight / 1080;
+        const scale = Math.min(scaleX, scaleY) * 0.96;
+        stage.style.transform = `scale(${scale})`;
+      } else {
+        stage.style.transform = 'scale(1)';
+      }
+    }
+    window.addEventListener('resize', adjustStageScale);
+    adjustStageScale();
+
+    // --- Three.js Setup (Antigravity Perspective Grid + Geometric Wireframe) ---
+    const canvas = document.getElementById('webgl-canvas');
+    const renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      antialias: true,
+      powerPreference: 'high-performance',
+      preserveDrawingBuffer: true
+    });
+    renderer.setSize(1920, 1080);
+    renderer.setPixelRatio(1);
+    renderer.setClearColor(0x0b0c10, 1);
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x0b0c10, 0.035);
+
+    const camera = new THREE.PerspectiveCamera(58, 1920 / 1080, 0.1, 100);
+    camera.position.set(0, 0, 12);
+
+    // Ambient & Directional Lights
+    const ambientLight = new THREE.AmbientLight(0x1f2833, 1.2);
+    scene.add(ambientLight);
+
+    const cyanLight = new THREE.DirectionalLight(0x66fcf1, 2.5);
+    cyanLight.position.set(5, 8, 10);
+    scene.add(cyanLight);
+
+    const tealLight = new THREE.DirectionalLight(0x45a29e, 1.8);
+    tealLight.position.set(-6, -5, -4);
+    scene.add(tealLight);
+
+    // 1. Antigravity Dynamic Wave Grid
+    const GRID_SIZE = 80;
+    const GRID_DIVISIONS = 40;
+    const gridPlaneGeom = new THREE.PlaneGeometry(GRID_SIZE, GRID_SIZE, GRID_DIVISIONS, GRID_DIVISIONS);
+    gridPlaneGeom.rotateX(-Math.PI / 2);
+    const gridPositions = gridPlaneGeom.attributes.position.array;
+    const originalYCoords = new Float32Array(gridPositions.length);
+    for (let i = 0; i < gridPositions.length; i++) {
+      originalYCoords[i] = gridPositions[i];
+    }
+
+    const gridMaterial = new THREE.MeshBasicMaterial({
+      color: 0x45a29e,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.38
+    });
+    const waveGridMesh = new THREE.Mesh(gridPlaneGeom, gridMaterial);
+    waveGridMesh.position.y = -4.5;
+    scene.add(waveGridMesh);
+
+    // Ceiling Inverted Grid (subtle depth)
+    const ceilingGrid = new THREE.Mesh(gridPlaneGeom, new THREE.MeshBasicMaterial({
+      color: 0x1f2833,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.18
+    }));
+    ceilingGrid.position.y = 8.5;
+    scene.add(ceilingGrid);
+
+    // 2. Geometric Centerpiece Meshes
+    // A: Icosahedron with inner Core
+    const icoGroup = new THREE.Group();
+    const icoGeom = new THREE.IcosahedronGeometry(3.2, 1);
+    const icoMat = new THREE.MeshStandardMaterial({
+      color: 0x66fcf1,
+      wireframe: true,
+      emissive: 0x66fcf1,
+      emissiveIntensity: 0.35,
+      roughness: 0.1,
+      metalness: 0.9
+    });
+    const icoMesh = new THREE.Mesh(icoGeom, icoMat);
+    icoGroup.add(icoMesh);
+
+    const innerCoreGeom = new THREE.OctahedronGeometry(1.6, 0);
+    const innerCoreMat = new THREE.MeshStandardMaterial({
+      color: 0x45a29e,
+      wireframe: false,
+      roughness: 0.2,
+      metalness: 0.8
+    });
+    const innerCore = new THREE.Mesh(innerCoreGeom, innerCoreMat);
+    icoGroup.add(innerCore);
+    scene.add(icoGroup);
+
+    // B: Torus Knot (Battlestation Scene)
+    const knotGeom = new THREE.TorusKnotGeometry(2.3, 0.55, 120, 24, 2, 3);
+    const knotMat = new THREE.MeshStandardMaterial({
+      color: 0x66fcf1,
+      wireframe: true,
+      emissive: 0x66fcf1,
+      emissiveIntensity: 0.4
+    });
+    const knotMesh = new THREE.Mesh(knotGeom, knotMat);
+    knotMesh.position.set(4.8, 0, 0);
+    knotMesh.visible = false;
+    scene.add(knotMesh);
+
+    // C: Kinetic Rings & Gyroscope (Active Titles Scene)
+    const ringsGroup = new THREE.Group();
+    for (let r = 0; r < 3; r++) {
+      const ringGeom = new THREE.TorusGeometry(2.2 + r * 1.1, 0.04, 16, 80);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: r === 1 ? 0xffffff : 0x66fcf1,
+        transparent: true,
+        opacity: 0.75 - r * 0.15
+      });
+      const ring = new THREE.Mesh(ringGeom, ringMat);
+      ringsGroup.add(ring);
+    }
+    ringsGroup.position.set(0, 0, -2);
+    ringsGroup.visible = false;
+    scene.add(ringsGroup);
+
+    // 3. Floating Cyber Particle Field (Deterministic)
+    const PARTICLE_COUNT = 550;
+    const particleGeom = new THREE.BufferGeometry();
+    const particlePositions = new Float32Array(PARTICLE_COUNT * 3);
+    const particleBase = [];
+
+    // Pseudo-random deterministic generator
+    let seed = 1401;
+    function deterministicRandom() {
+      seed = (seed * 9301 + 49297) % 233280;
+      return seed / 233280;
+    }
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const x = (deterministicRandom() - 0.5) * 40;
+      const y = (deterministicRandom() - 0.5) * 24;
+      const z = (deterministicRandom() - 0.5) * 30;
+      particlePositions[i * 3] = x;
+      particlePositions[i * 3 + 1] = y;
+      particlePositions[i * 3 + 2] = z;
+      particleBase.push({ x, y, z, speed: 0.4 + deterministicRandom() * 0.8 });
+    }
+    particleGeom.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+
+    const particleMat = new THREE.PointsMaterial({
+      color: 0x66fcf1,
+      size: 0.18,
+      transparent: true,
+      opacity: 0.65,
+      blending: THREE.AdditiveBlending
+    });
+    const particleSystem = new THREE.Points(particleGeom, particleMat);
+    scene.add(particleSystem);
+
+    // --- Deterministic 3D Updater (Pure function of time t) ---
+    function updateThreeScene(t) {
+      // 1. Antigravity Wavy Grid vertex displacement
+      const pos = waveGridMesh.geometry.attributes.position.array;
+      const count = pos.length / 3;
+      for (let i = 0; i < count; i++) {
+        const x = pos[i * 3];
+        const z = pos[i * 3 + 2];
+        const wave = Math.sin(x * 0.22 + t * 2.8) * Math.cos(z * 0.22 + t * 2.2) * 0.85;
+        pos[i * 3 + 1] = originalYCoords[i * 3 + 1] + wave;
+      }
+      waveGridMesh.geometry.attributes.position.needsUpdate = true;
+      waveGridMesh.position.z = (t * 2.2) % 2.0;
+
+      // 2. Centerpiece Rotations & Transitions
+      // Scene 1: 0.0s - 3.0s (Ico front and center)
+      if (t < 3.2) {
+        icoGroup.visible = true;
+        knotMesh.visible = false;
+        ringsGroup.visible = false;
+
+        icoGroup.position.set(3.2, 0, 1.5);
+        icoGroup.scale.setScalar(1);
+        icoGroup.rotation.x = t * 0.8;
+        icoGroup.rotation.y = t * 1.2;
+        innerCore.rotation.y = -t * 1.8;
+        innerCore.rotation.z = t * 1.1;
+
+        camera.position.set(0, 0, 12 - t * 0.6);
+        camera.lookAt(0, 0, 0);
+      }
+      // Scene 2: 3.0s - 6.5s (Torus Knot on the right side)
+      else if (t < 6.5) {
+        icoGroup.visible = false;
+        knotMesh.visible = true;
+        ringsGroup.visible = false;
+
+        const s2t = t - 3.0;
+        knotMesh.position.set(4.8, Math.sin(s2t * 1.5) * 0.35, 1.2);
+        knotMesh.rotation.x = s2t * 0.9;
+        knotMesh.rotation.y = s2t * 1.4;
+        knotMesh.rotation.z = s2t * 0.5;
+
+        camera.position.set(-0.8, 0.4, 10.5);
+        camera.lookAt(0.5, 0, 0);
+      }
+      // Scene 3: 6.5s - 9.5s (Kinetic Rings Spinning & Pulsing)
+      else if (t < 9.5) {
+        icoGroup.visible = false;
+        knotMesh.visible = false;
+        ringsGroup.visible = true;
+
+        const s3t = t - 6.5;
+        ringsGroup.position.set(3.5, 0, 0);
+        ringsGroup.children[0].rotation.x = s3t * 3.2;
+        ringsGroup.children[0].rotation.y = s3t * 1.8;
+        ringsGroup.children[1].rotation.y = -s3t * 2.6;
+        ringsGroup.children[1].rotation.z = s3t * 2.1;
+        ringsGroup.children[2].rotation.x = -s3t * 1.9;
+        ringsGroup.children[2].rotation.z = -s3t * 3.0;
+
+        camera.position.set(-0.5, -0.3 + Math.sin(s3t * 3) * 0.1, 9.8);
+        camera.lookAt(0.2, 0, 0);
+      }
+      // Scene 4: 9.5s - 12.0s (Dual Ico & Knot framed wide)
+      else {
+        const s4t = t - 9.5;
+        icoGroup.visible = true;
+        knotMesh.visible = true;
+        ringsGroup.visible = false;
+
+        icoGroup.position.set(-5.5, 0, -1);
+        icoGroup.scale.setScalar(0.75);
+        icoGroup.rotation.x = s4t * 0.7;
+        icoGroup.rotation.y = s4t * 1.0;
+
+        knotMesh.position.set(5.5, 0, -1);
+        knotMesh.scale.setScalar(0.7);
+        knotMesh.rotation.y = -s4t * 1.1;
+
+        camera.position.set(0, 0, 11);
+        camera.lookAt(0, 0, 0);
+      }
+
+      // 3. Floating particles update
+      const pArray = particleSystem.geometry.attributes.position.array;
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const b = particleBase[i];
+        pArray[i * 3 + 1] = b.y + Math.sin(t * b.speed + b.x) * 1.2;
+        pArray[i * 3] = b.x + Math.cos(t * 0.5 + b.z) * 0.6;
+      }
+      particleSystem.geometry.attributes.position.needsUpdate = true;
+
+      // Render Three.js frame
+      renderer.render(scene, camera);
+    }
+
+    // --- Master GSAP Timeline (Deterministic DOM Orchestration) ---
+    const masterTL = gsap.timeline({ paused: true });
+
+    // Scene Element References
+    const s1 = document.getElementById('scene-1');
+    const s2 = document.getElementById('scene-2');
+    const s3 = document.getElementById('scene-3');
+    const s4 = document.getElementById('scene-4');
+
+    const pill1 = document.getElementById('pill-1');
+    const pill2 = document.getElementById('pill-2');
+    const pill3 = document.getElementById('pill-3');
+    const pill4 = document.getElementById('pill-4');
+
+    // SCENE 1 (0.0s - 3.0s): Hero Identity
+    masterTL.addLabel('scene1', 0.0);
+    masterTL.set([s1, s2, s3, s4], { autoAlpha: 0 });
+    masterTL.set([pill1, pill2, pill3, pill4], { className: 'scene-pill' });
+
+    masterTL.to(s1, { autoAlpha: 1, duration: 0.01 }, 0.0);
+    masterTL.add(() => pill1.classList.add('active'), 0.0);
+
+    masterTL.fromTo('#s1-title', 
+      { scale: 1.15, filter: 'blur(10px)', x: -30, opacity: 0 },
+      { scale: 1.0, filter: 'blur(0px)', x: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }, 
+      0.15
+    );
+    masterTL.fromTo('#s1-stroke',
+      { x: 30, opacity: 0 },
+      { x: 6, opacity: 0.7, duration: 0.8, ease: 'power3.out' },
+      0.25
+    );
+    masterTL.fromTo('#s1-sub span',
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, stagger: 0.12, duration: 0.6, ease: 'back.out(1.7)' },
+      0.65
+    );
+    masterTL.fromTo('#s1-desc',
+      { opacity: 0, width: '0%' },
+      { opacity: 1, width: 'auto', duration: 0.8, ease: 'power2.out' },
+      1.1
+    );
+
+    // Transition S1 -> S2 (2.7s - 3.0s)
+    masterTL.to(s1, { 
+      x: -120, 
+      opacity: 0, 
+      filter: 'blur(8px)', 
+      duration: 0.35, 
+      ease: 'power2.in' 
+    }, 2.65);
+    masterTL.add(() => pill1.classList.remove('active'), 3.0);
+
+    // SCENE 2 (3.0s - 6.5s): Battlestation Hardware
+    masterTL.addLabel('scene2', 3.0);
+    masterTL.to(s2, { autoAlpha: 1, duration: 0.01 }, 3.0);
+    masterTL.add(() => pill2.classList.add('active'), 3.0);
+
+    masterTL.fromTo('#scene-2 .scene-tag',
+      { x: -50, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.4, ease: 'power2.out' },
+      3.05
+    );
+
+    const cards = ['#card-cpu', '#card-gpu', '#card-mouse', '#card-pad'];
+    cards.forEach((card, idx) => {
+      masterTL.fromTo(card,
+        { x: -80, opacity: 0, scale: 0.95 },
+        { x: 0, opacity: 1, scale: 1.0, duration: 0.55, ease: 'power3.out' },
+        3.2 + idx * 0.18
+      );
+    });
+
+    // Transition S2 -> S3 (6.2s - 6.5s)
+    masterTL.to(s2, { 
+      y: -60, 
+      opacity: 0, 
+      filter: 'blur(10px)', 
+      duration: 0.35, 
+      ease: 'power3.in' 
+    }, 6.15);
+    masterTL.add(() => pill2.classList.remove('active'), 6.5);
+
+    // SCENE 3 (6.5s - 9.5s): Active Titles
+    masterTL.addLabel('scene3', 6.5);
+    masterTL.to(s3, { autoAlpha: 1, duration: 0.01 }, 6.5);
+    masterTL.add(() => pill3.classList.add('active'), 6.5);
+
+    masterTL.fromTo('#scene-3 .scene-tag',
+      { opacity: 0, scale: 0.9 },
+      { opacity: 1, scale: 1, duration: 0.3, ease: 'power2.out' },
+      6.55
+    );
+
+    const titleRows = ['#title-poe2', '#title-val', '#title-apex'];
+    titleRows.forEach((row, idx) => {
+      masterTL.fromTo(row,
+        { x: 120, opacity: 0, skewX: -12 },
+        { x: 0, opacity: 1, skewX: 0, duration: 0.45, ease: 'power4.out' },
+        6.7 + idx * 0.28
+      );
+      // Kinetic glitch flash
+      masterTL.fromTo(`${row} .glitch-flash`,
+        { opacity: 0.8 },
+        { opacity: 0, duration: 0.35, ease: 'power2.out' },
+        6.7 + idx * 0.28
+      );
+    });
+
+    // Transition S3 -> S4 (9.2s - 9.5s)
+    masterTL.to(s3, { 
+      scale: 1.1, 
+      opacity: 0, 
+      filter: 'blur(12px)', 
+      duration: 0.35, 
+      ease: 'power2.in' 
+    }, 9.15);
+    masterTL.add(() => pill3.classList.remove('active'), 9.5);
+
+    // SCENE 4 (9.5s - 12.0s): Channels & Outro
+    masterTL.addLabel('scene4', 9.5);
+    masterTL.to(s4, { autoAlpha: 1, duration: 0.01 }, 9.5);
+    masterTL.add(() => pill4.classList.add('active'), 9.5);
+
+    masterTL.fromTo('.outro-badge',
+      { y: -20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.4, ease: 'power2.out' },
+      9.55
+    );
+    masterTL.fromTo('#s4-logo',
+      { scale: 0.85, opacity: 0, filter: 'blur(8px)' },
+      { scale: 1.0, opacity: 1, filter: 'blur(0px)', duration: 0.7, ease: 'back.out(1.5)' },
+      9.7
+    );
+    masterTL.fromTo('.channel-box',
+      { y: 40, opacity: 0 },
+      { y: 0, opacity: 1, stagger: 0.12, duration: 0.5, ease: 'power3.out' },
+      10.0
+    );
+    masterTL.fromTo('#s4-domain',
+      { scale: 0.9, opacity: 0, boxShadow: '0 0 0px rgba(102, 252, 241, 0)' },
+      { scale: 1.0, opacity: 1, boxShadow: '0 0 60px rgba(102, 252, 241, 0.4)', duration: 0.6, ease: 'power2.out' },
+      10.35
+    );
+
+    // Outro hold to 12.0s
+    masterTL.to({}, { duration: 0.1 }, 12.0);
+
+    // --- Deterministic Render Frame API for Puppeteer & Live Scrubber ---
+    const hudTime = document.getElementById('hud-time');
+    const hudFrame = document.getElementById('hud-frame');
+    const audioBars = document.querySelectorAll('.audio-bar');
+
+    window.renderFrame = function(timeInSeconds) {
+      // Clamp time strictly [0.000, 12.000]
+      const t = Math.max(0, Math.min(DURATION, Number(timeInSeconds)));
+      const frameNum = Math.floor(t * FPS);
+
+      // 1. GSAP Seek
+      masterTL.seek(t, false);
+
+      // 2. Three.js Deterministic Update & Render
+      updateThreeScene(t);
+
+      // 3. Update HUD Readouts
+      const mins = Math.floor(t / 60);
+      const secs = (t % 60).toFixed(2).padStart(5, '0');
+      const timeStr = `${String(mins).padStart(2, '0')}:${secs}`;
+      hudTime.textContent = timeStr;
+      hudFrame.textContent = `${String(frameNum).padStart(3, '0')}/${TOTAL_FRAMES}`;
+
+      // Update Audio Spectrum Bar Simulation
+      audioBars.forEach((bar, idx) => {
+        const h = 25 + Math.sin(t * 12 + idx * 1.5) * 20 + Math.cos(t * 8 + idx) * 15;
+        bar.style.height = `${Math.max(10, Math.min(100, h))}%`;
+      });
+
+      // Update Active Breadcrumb Pills deterministically
+      pill1.className = (t < 3.0) ? 'scene-pill active' : 'scene-pill';
+      pill2.className = (t >= 3.0 && t < 6.5) ? 'scene-pill active' : 'scene-pill';
+      pill3.className = (t >= 6.5 && t < 9.5) ? 'scene-pill active' : 'scene-pill';
+      pill4.className = (t >= 9.5) ? 'scene-pill active' : 'scene-pill';
+
+      return true;
+    };
+
+    // Flag ready for Puppeteer
+    window.__READY__ = true;
+
+    // --- Interactive Live Player for Normal Browser Testing ---
+    let isPlaying = true;
+    let playbackTime = 0;
+    let lastPerfTime = performance.now();
+
+    const btnPlay = document.getElementById('btn-play');
+    const btnRestart = document.getElementById('btn-restart');
+    const timeSlider = document.getElementById('time-slider');
+    const ctrlTimeText = document.getElementById('ctrl-time-text');
+    const btnScale = document.getElementById('btn-scale');
+
+    function animationLoop(now) {
+      if (isPlaying && !window.__IS_RECORDING__) {
+        const delta = (now - lastPerfTime) / 1000;
+        playbackTime += delta;
+        if (playbackTime > DURATION) {
+          playbackTime = 0; // Loop seamlessly
+        }
+        window.renderFrame(playbackTime);
+        timeSlider.value = playbackTime;
+        ctrlTimeText.textContent = `${playbackTime.toFixed(2)}s (F${String(Math.floor(playbackTime * FPS)).padStart(3, '0')}/${TOTAL_FRAMES})`;
+      }
+      lastPerfTime = now;
+      requestAnimationFrame(animationLoop);
+    }
+    requestAnimationFrame(animationLoop);
+
+    // Controls
+    btnPlay.addEventListener('click', () => {
+      isPlaying = !isPlaying;
+      btnPlay.textContent = isPlaying ? 'Pause' : 'Play';
+    });
+
+    btnRestart.addEventListener('click', () => {
+      playbackTime = 0;
+      window.renderFrame(0);
+      timeSlider.value = 0;
+    });
+
+    timeSlider.addEventListener('input', (e) => {
+      isPlaying = false;
+      btnPlay.textContent = 'Play';
+      playbackTime = parseFloat(e.target.value);
+      window.renderFrame(playbackTime);
+      ctrlTimeText.textContent = `${playbackTime.toFixed(2)}s (F${String(Math.floor(playbackTime * FPS)).padStart(3, '0')}/${TOTAL_FRAMES})`;
+    });
+
+    btnScale.addEventListener('click', () => {
+      isFitScreen = !isFitScreen;
+      btnScale.textContent = isFitScreen ? 'Fit Screen' : '100% 1080p';
+      adjustStageScale();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        isPlaying = !isPlaying;
+        btnPlay.textContent = isPlaying ? 'Pause' : 'Play';
+      }
+    });
+
+    // Initial render at frame 0
+    window.renderFrame(0);
+  </script>
+</body>
+</html>

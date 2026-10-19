@@ -1,0 +1,26 @@
+{
+  "name": "dalines-motion-showcase",
+  "version": "1.0.0",
+  "description": "12s Brutalist WebGL Motion Graphic Showcase (1920x1080 @ 60 FPS) for DaLines",
+  "main": "render.js",
+  "scripts": {
+    "render": "node render.js",
+    "render:test": "node render.js --test",
+    "video": "ffmpeg -r 60 -i frames/frame_%04d.png -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p dalines_showcase.mp4",
+    "build": "node render.js && npm run video"
+  },
+  "keywords": [
+    "threejs",
+    "gsap",
+    "webgl",
+    "brutalist",
+    "motion-graphics",
+    "puppeteer",
+    "dalines"
+  ],
+  "author": "DaLines",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^23.6.0"
+  }
+}
