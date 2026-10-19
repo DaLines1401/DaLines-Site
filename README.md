@@ -21,7 +21,7 @@ Official Profile Hub & Battle Station for **DaLines** — Streamer, Gamer, and F
 - 🎯 **Valorant Crosshair & 10s Aim Challenge:** จำลองเป้าเล็ง Valorant พร้อมมินิเกมวัดความไวการยิง 10 วินาที
 - 🎬 **DaLines Hall of Fame (Twitch Clips):** คลังคลิปไฮไลท์ยอดนิยมตลอดกาลจาก [twitch.tv/dalines/clips?range=all](https://www.twitch.tv/dalines/clips?range=all) แสดงปก Thumbnail คมชัด, ตัวกรองแยกตามเกม (VALORANT, Apex Legends, GTA V & อื่นๆ), ระบบเล่นคลิปผ่าน Twitch Embed Player ใน Modal, ปุ่มกด Like และปุ่มแชร์
 - 🎮 **FPS E-DPI Calculator & Sensitivity Converter:** เครื่องคำนวณ E-DPI และแปลงค่าความไวเมาส์ข้ามเกม 8 เกมดัง (Valorant, Apex Legends, Fortnite, Delta Force, CS2, Overwatch 2, CoD/Warzone, PUBG) แม่นยำ 100% ตามระยะทางจริง (cm/360°) พร้อมแถบวิเคราะห์สไตล์การเล็ง (Arm/Wrist Aim), แนะนำขนาดแผ่นรองเมาส์, ปุ่มลัดโหลดค่าโปรเพลเยอร์ DaLines (800 DPI), และปุ่มคัดลอกค่าแต่ละเกมในคลิกเดียว
-- 🏆 **Valorant Esports Career & Live Match Tracker:** ศูนย์รวมสถิติแรงก์สด Valorant ประจำช่อง DaLines#TTV (เซิร์ฟเวอร์ APAC) แสดงตราสัญลักษณ์แรงก์ (Ascendant/Immortal), หลอดคะแนน RR Progress Bar, สถิติ Career หลัก (K/D 1.24, HS 31.5%, Winrate 58.2%, ACS 248.6), 3 เอเจนท์ตัวเมน (Jett, Reyna, Omen), ประวัติผลการแข่ง 5 แมตช์ล่าสุดพร้อมคะแนนรอบ/KDA/RR Delta, ปุ่มคัดลอก Riot ID ในคลิกเดียว, ปุ่มซิงค์สด Smart Hybrid Sync และลิงก์ตรงไปยัง Tracker.gg
+- 🏆 **Valorant Esports Career & Live Match Tracker:** ศูนย์รวมสถิติแรงก์สด Valorant ประจำช่อง DaLines#TTV (เซิร์ฟเวอร์ APAC) ซิงค์ตรงจากเกมและ Cloudflare Worker API แสดงตราสัญลักษณ์แรงก์ Diamond 1, หลอดคะแนน RR Progress Bar, สถิติ Career & Last 20 Matches (K/D 1.08, 148 ADR, Winrate 55% 11W-9L), Peak Rank: Immortal 1 34RR (Ep 7: Act III), 3 เอเจนท์ตัวเมนตามชั่วโมงเล่นจริง (Sova 769 hrs, Jett 399 hrs, Killjoy 308 hrs), ไทม์ไลน์ผลการแข่งล่าสุดพร้อม K/D และแต้ม RR, ปุ่มคัดลอก Riot ID, ปุ่มซิงค์สด, **ระบบค้นหาแรงก์ผู้เล่นสด (Live Player Lookup)** ค้นหา Riot ID ของผู้ชมหรือเพื่อนในตี้ได้ทุกเซิร์ฟเวอร์ (AP, NA, EU, KR, LATAM, BR) พร้อมระบบเปรียบเทียบแรงก์กับ DaLines และเปลี่ยนสกินตราสัญลักษณ์ตามแรงก์ที่ค้นพบ (Iron ถึง Radiant) อัตโนมัติ!
 - 🌌 **DaLines Scrollytelling Battlestation & Story (`/story`):** หน้าเว็บย่อย 3D WebGL (Three.js + GSAP ScrollTrigger) ถ่ายทอดการเดินทาง, เจาะลึกมุมโต๊ะคอม Battlestation (Ryzen 5 5600, RTX 5060 Ti, ATK Ghost Mouse 800 DPI, Loga Pad), สถิติเกม FPS (Valorant, Apex, PoE2), และระบบเสียงสังเคราะห์ Cyber Web Audio FX พร้อม Chapter Navigator
 - 🏎️ **Optimized Performance:** Preconnect, Zero Cumulative Layout Shift (CLS), และ SEO / Open Graph Image Preview ขนาดเต็ม
 
@@ -42,10 +42,27 @@ DaLines-Hub/
 ├── sitemap.xml        # ไฟล์แผนผังเว็บไซต์ (Sitemap SEO)
 ├── auto-deploy.bat    # ⚡ ดับเบิลคลิกเพื่อ Auto Deploy ทันทีใน 1 วินาที
 ├── auto-watch.bat     # 👁️ เปิดทิ้งไว้เพื่อ Auto Deploy อัตโนมัติทุกครั้งที่กด Save (Ctrl+S)
-├── wrangler.jsonc     # ไฟล์คอนฟิก Cloudflare Workers Static Assets
+├── val-sync.bat       # 🎮 ดับเบิลคลิกเพื่อซิงค์แรงก์ & สถิติ Valorant สดจากเครื่องขึ้นเว็บทันที
+├── worker.js          # ⚡ Cloudflare Worker API (/api/valorant & Static Assets)
+├── tools/             # 🛠️ สคริปต์เครื่องมือเสริม (val-sync.ps1 Direct Daemon)
+├── wrangler.jsonc     # ไฟล์คอนฟิก Cloudflare Workers
 ├── .gitignore         # ไฟล์ละเว้นที่ไม่ต้อง push ขึ้น Git
 └── README.md          # เอกสารแนะนำโปรเจกต์
 ```
+
+---
+
+## 🎮 วิธีการใช้งาน Valorant Direct Live Sync (สำหรับสตรีมเมอร์)
+
+ระบบ Valorant Career & Match Tracker มี API ภายในเชื่อมต่อตรงระหว่างคอมพิวเตอร์ของสตรีมเมอร์กับ Cloudflare Worker โดยไม่ต้องพึ่งพาบริการภายนอก:
+
+1. **⚡ ซิงค์แบบ 1 คลิก (One-Click Sync):**
+   - ดับเบิลคลิกที่ไฟล์ `val-sync.bat` บนเครื่องคอมพิวเตอร์
+   - เลือกเมนู **[1]** เพื่อส่งค่าสถิติล่าสุด (Diamond 1, 50 RR, 1.08 KD, 148 ADR) ขึ้นเว็บทันที
+2. **⚙️ กรอกแก้ไขตัวเลขสด (Manual Quick Edit):**
+   - เลือกเมนู **[2]** ในหน้าต่างเพื่อพิมพ์แรงก์, คะแนน RR, หรือ K/D ใหม่ แล้วระบบจะอัปเดตหน้าเว็บทันทีแบบเรียลไทม์
+3. **👁️ โหมดตรวจจับขณะสตรีม (Auto-Watch Mode):**
+   - เลือกเมนู **[3]** เพื่อให้สคริปต์ตรวจจับโปรเซสตัวเกม Valorant บนเครื่องขณะกำลังสตรีม
 
 ---
 

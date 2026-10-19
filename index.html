@@ -2557,6 +2557,78 @@
           </div>
         </div>
 
+        <!-- 🔍 Live Player Rank Lookup HUD (ระบบค้นหาแรงก์ผู้เล่นสด) -->
+        <div class="p-3 sm:p-3.5 rounded-xl bg-black/60 border border-slate-800/90 shadow-inner flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-red-600/30 to-purple-600/30 border border-red-500/30 flex items-center justify-center text-red-400 text-sm shrink-0">
+              <i class="fa-solid fa-user-tag"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-[11px] font-bold text-white" data-i18n="tracker_search_title">ค้นหาแรงก์ผู้เล่นสด (Live Player Lookup)</span>
+                <span class="px-1.5 py-0.2 rounded text-[8px] font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">ALL PLAYERS</span>
+              </div>
+              <div class="text-[9px] text-slate-400" data-i18n="tracker_search_desc">ค้นหาได้ทุกไอดี (เช่น ตัวคุณเอง หรือเพื่อนในตี้)</div>
+            </div>
+          </div>
+
+          <!-- Search Form -->
+          <form id="val-player-search-form" onsubmit="searchValorantPlayer(event)" class="flex items-center gap-1.5 flex-1 max-w-xl">
+            <!-- Region Selector -->
+            <select id="val-search-region"
+              class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] font-mono text-cyan-300 outline-none focus:border-red-500 cursor-pointer shrink-0">
+              <option value="ap" selected>AP (Asia)</option>
+              <option value="na">NA (North America)</option>
+              <option value="eu">EU (Europe)</option>
+              <option value="kr">KR (Korea)</option>
+              <option value="latam">LATAM</option>
+              <option value="br">BR (Brazil)</option>
+            </select>
+
+            <!-- Riot ID Input -->
+            <div class="relative flex-1">
+              <input type="text" id="val-search-input" placeholder="พิมพ์ชื่อ#TAG เช่น DaLines#TTV, TenZ#0001"
+                class="w-full bg-slate-900/90 border border-slate-700 focus:border-red-500 focus:ring-1 focus:ring-red-500 rounded-lg pl-2.5 pr-7 py-1.5 text-xs text-white placeholder-slate-500 font-mono outline-none transition" />
+              <button type="button" onclick="clearValSearchInput()" id="btn-val-clear-search"
+                class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white text-xs cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="btn-val-search"
+              class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-red-600 to-rose-600 hover:brightness-110 text-white text-xs font-bold font-gaming transition active:scale-95 shadow-[0_0_12px_rgba(239,68,68,0.4)] flex items-center gap-1.5 shrink-0 cursor-pointer">
+              <i id="val-search-icon" class="fa-solid fa-magnifying-glass text-xs"></i>
+              <span id="val-search-btn-text" data-i18n="tracker_search_btn">ค้นหา</span>
+            </button>
+
+            <!-- Reset to Streamer Profile Button -->
+            <button type="button" onclick="resetToStreamerProfile()" id="btn-val-reset-streamer"
+              title="กลับสู่โปรไฟล์ DaLines#TTV"
+              class="hidden px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs font-semibold transition active:scale-95 flex items-center gap-1 shrink-0 cursor-pointer shadow">
+              <i class="fa-solid fa-rotate-left text-[10px] text-amber-400"></i>
+              <span class="text-[11px] font-mono font-bold text-amber-300">DaLines</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Dynamic Search Result Alert / Notification Banner (Hidden by default, shown when viewing another player) -->
+        <div id="val-viewer-banner" class="hidden p-2.5 rounded-xl bg-purple-950/40 border border-purple-500/40 flex items-center justify-between flex-wrap gap-2 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="text-base animate-pulse">🎮</span>
+            <div class="text-[11px] text-slate-300">
+              <span>กำลังแสดงผลแรงก์ของผู้เล่น:</span>
+              <strong id="val-viewer-name" class="font-mono text-purple-300 font-bold ml-1">Player#0000</strong>
+              <span id="val-viewer-region-badge" class="ml-1.5 px-1.5 py-0.2 rounded text-[9px] font-mono font-semibold bg-purple-500/20 text-purple-200 border border-purple-500/30">AP</span>
+              <span id="val-viewer-compare-badge" class="ml-1.5 px-2 py-0.5 rounded text-[9px] font-sans font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">เทียบกับ DaLines</span>
+            </div>
+          </div>
+          <button type="button" onclick="resetToStreamerProfile()"
+            class="px-2.5 py-1 rounded-lg bg-red-600/30 hover:bg-red-600 text-red-200 hover:text-white border border-red-500/40 text-[10px] font-bold transition active:scale-95 cursor-pointer">
+            <i class="fa-solid fa-arrow-left mr-1"></i> กลับสู่สตรีมเมอร์ DaLines
+          </button>
+        </div>
+
         <!-- Career Rank & Core Performance Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4">
           <!-- Rank Card (Col 1-5) -->
@@ -2567,39 +2639,43 @@
             <div>
               <div class="flex items-center justify-between text-xs mb-2">
                 <span class="text-[10px] font-mono text-slate-400 tracking-wider flex items-center gap-1">
-                  <i class="fa-solid fa-medal text-red-400"></i>
-                  <span data-i18n="tracker_rank_label">COMPETITIVE RANK</span>
+                  <i class="fa-solid fa-medal text-purple-400"></i>
+                  <span id="tracker-rank-label-sub" data-i18n="tracker_rank_label">COMPETITIVE RANK</span>
                 </span>
-                <span class="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
+                <span class="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-purple-500/15 text-purple-300 border border-purple-500/30"
                   data-i18n="tracker_streak_label">
-                  🔥 3 Win Streak
+                  🔥 11W - 9L (55%)
                 </span>
               </div>
 
               <!-- Rank Display Hero -->
               <div class="flex items-center gap-3 my-2">
-                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-emerald-500/20 via-slate-900 to-red-500/20 border border-emerald-400/50 flex items-center justify-center p-1.5 shadow-[0_0_20px_rgba(16,185,129,0.3)] shrink-0 transform group-hover:scale-105 transition-transform duration-300">
-                  <!-- Ascendant / Immortal Vector Badge -->
-                  <svg id="tracker-rank-svg" viewBox="0 0 100 100" class="w-full h-full drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]">
-                    <polygon points="50,5 92,28 92,72 50,95 8,72 8,28" fill="url(#rankGrad)" stroke="#34d399" stroke-width="3" />
-                    <polygon points="50,18 80,35 80,65 50,82 20,65 20,35" fill="#042f2e" stroke="#10b981" stroke-width="2" />
-                    <polygon points="50,28 70,42 70,58 50,72 30,58 30,42" fill="#059669" />
-                    <polygon points="50,38 60,48 50,58 40,48" fill="#a7f3d0" />
+                <div id="tracker-rank-badge-box" class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-purple-500/20 via-slate-900 to-indigo-500/20 border border-purple-400/50 flex items-center justify-center p-1.5 shadow-[0_0_20px_rgba(168,85,247,0.35)] shrink-0 transform group-hover:scale-105 transition-transform duration-300">
+                  <!-- Dynamic Vector Rank Badge -->
+                  <svg id="tracker-rank-svg" viewBox="0 0 100 100" class="w-full h-full drop-shadow-[0_0_10px_rgba(168,85,247,0.85)]">
+                    <polygon id="tracker-poly-outer" points="50,6 94,50 50,94 6,50" fill="url(#rankGradDynamic)" stroke="#c084fc" stroke-width="2.5" />
+                    <polygon id="tracker-poly-mid" points="50,18 82,50 50,82 18,50" fill="#2e1065" stroke="#a855f7" stroke-width="2" />
+                    <polygon id="tracker-poly-inner" points="50,28 72,50 50,72 28,50" fill="url(#rankInnerDynamic)" />
+                    <polygon id="tracker-poly-core" points="50,38 62,50 50,62 38,50" fill="#f5d0fe" />
                     <defs>
-                      <linearGradient id="rankGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#059669" />
-                        <stop offset="50%" stop-color="#047857" />
-                        <stop offset="100%" stop-color="#064e3b" />
+                      <linearGradient id="rankGradDynamic" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop id="rankGradStop0" offset="0%" stop-color="#c084fc" />
+                        <stop id="rankGradStop50" offset="50%" stop-color="#7c3aed" />
+                        <stop id="rankGradStop100" offset="100%" stop-color="#4c1d95" />
+                      </linearGradient>
+                      <linearGradient id="rankInnerDynamic" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop id="rankInnerStop0" offset="0%" stop-color="#a855f7" />
+                        <stop id="rankInnerStop100" offset="100%" stop-color="#581c87" />
                       </linearGradient>
                     </defs>
                   </svg>
                 </div>
                 <div class="min-w-0">
-                  <div id="tracker-rank-title" class="text-base sm:text-lg font-black font-gaming tracking-wider text-emerald-400">
-                    ASCENDANT 2
+                  <div id="tracker-rank-title" class="text-base sm:text-lg font-black font-gaming tracking-wider text-purple-300">
+                    DIAMOND 1
                   </div>
                   <div class="flex items-center gap-1.5 text-xs text-slate-300 font-mono mt-0.5">
-                    <span id="tracker-rr-current" class="font-bold text-white text-sm">78</span>
+                    <span id="tracker-rr-current" class="font-bold text-white text-sm">31</span>
                     <span class="text-slate-500">/ 100 RR</span>
                   </div>
                 </div>
@@ -2609,12 +2685,12 @@
               <div class="mt-2.5 space-y-1">
                 <div class="flex justify-between text-[10px] font-mono text-slate-400">
                   <span>Rating Progress</span>
-                  <span id="tracker-rr-percent" class="text-emerald-400 font-bold">78%</span>
+                  <span id="tracker-rr-percent" class="text-purple-300 font-bold">31%</span>
                 </div>
                 <div class="w-full h-2 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
                   <div id="tracker-rr-bar"
-                    class="h-full rounded-full bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 transition-all duration-700 shadow-[0_0_10px_rgba(16,185,129,0.7)]"
-                    style="width: 78%;"></div>
+                    class="h-full rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-cyan-400 transition-all duration-700 shadow-[0_0_10px_rgba(168,85,247,0.7)]"
+                    style="width: 31%;"></div>
                 </div>
               </div>
             </div>
@@ -2624,7 +2700,7 @@
                 <i class="fa-solid fa-crown text-amber-400"></i>
                 <span data-i18n="tracker_peak_label">Career Peak:</span>
               </span>
-              <span id="tracker-peak-val" class="font-bold font-mono text-amber-300">Immortal 1 (Ep 8: Act 3)</span>
+              <span id="tracker-peak-val" class="font-bold font-mono text-amber-300">Immortal 1 34RR (Ep 7: Act III)</span>
             </div>
           </div>
 
@@ -2635,8 +2711,8 @@
               <span class="text-[10px] text-slate-400 font-sans flex items-center gap-1">
                 <i class="fa-solid fa-crosshairs text-red-400 text-[10px]"></i> K/D RATIO
               </span>
-              <div id="tracker-stat-kd" class="mt-1 font-bold font-mono text-red-400 text-base sm:text-xl">1.24</div>
-              <span class="text-[9px] text-slate-500 font-sans mt-0.5">Top 12% APAC</span>
+              <div id="tracker-stat-kd" class="mt-1 font-bold font-mono text-red-400 text-base sm:text-xl">1.08</div>
+              <span class="text-[9px] text-slate-500 font-sans mt-0.5">Last 20 Matches</span>
             </div>
 
             <!-- Headshot % -->
@@ -2644,7 +2720,7 @@
               <span class="text-[10px] text-slate-400 font-sans flex items-center gap-1">
                 <i class="fa-solid fa-bullseye text-cyan-400 text-[10px]"></i> HEADSHOT %
               </span>
-              <div id="tracker-stat-hs" class="mt-1 font-bold font-mono text-cyan-400 text-base sm:text-xl">31.5%</div>
+              <div id="tracker-stat-hs" class="mt-1 font-bold font-mono text-cyan-400 text-base sm:text-xl">26.4%</div>
               <span class="text-[9px] text-emerald-400 font-sans mt-0.5">Crisp Aim ⚡</span>
             </div>
 
@@ -2653,8 +2729,17 @@
               <span class="text-[10px] text-slate-400 font-sans flex items-center gap-1">
                 <i class="fa-solid fa-trophy text-amber-400 text-[10px]"></i> WIN RATE
               </span>
-              <div id="tracker-stat-winrate" class="mt-1 font-bold font-mono text-amber-300 text-base sm:text-xl">58.2%</div>
-              <span class="text-[9px] text-slate-400 font-sans mt-0.5">57W - 41L</span>
+              <div id="tracker-stat-winrate" class="mt-1 font-bold font-mono text-amber-300 text-base sm:text-xl">55.0%</div>
+              <span class="text-[9px] text-slate-400 font-sans mt-0.5">11W - 9L (20M)</span>
+            </div>
+
+            <!-- ADR -->
+            <div class="p-3 rounded-xl bg-black/60 border border-slate-800 flex flex-col justify-between">
+              <span class="text-[10px] text-slate-400 font-sans flex items-center gap-1">
+                <i class="fa-solid fa-fire text-orange-400 text-[10px]"></i> DAMAGE / RND
+              </span>
+              <div id="tracker-stat-adr" class="mt-1 font-bold font-mono text-orange-300 text-base sm:text-xl">148.0</div>
+              <span class="text-[9px] text-orange-400/80 font-sans mt-0.5">ADR Average</span>
             </div>
 
             <!-- ACS -->
@@ -2662,17 +2747,8 @@
               <span class="text-[10px] text-slate-400 font-sans flex items-center gap-1">
                 <i class="fa-solid fa-bolt text-purple-400 text-[10px]"></i> AVG COMBAT (ACS)
               </span>
-              <div id="tracker-stat-acs" class="mt-1 font-bold font-mono text-purple-300 text-base sm:text-xl">248.6</div>
-              <span class="text-[9px] text-purple-400/80 font-sans mt-0.5">High Impact</span>
-            </div>
-
-            <!-- Damage / Round -->
-            <div class="p-3 rounded-xl bg-black/60 border border-slate-800 flex flex-col justify-between">
-              <span class="text-[10px] text-slate-400 font-sans flex items-center gap-1">
-                <i class="fa-solid fa-fire text-orange-400 text-[10px]"></i> DAMAGE / RND
-              </span>
-              <div id="tracker-stat-adr" class="mt-1 font-bold font-mono text-orange-300 text-sm sm:text-base">162.4</div>
-              <span class="text-[9px] text-slate-500 font-sans mt-0.5">ADR</span>
+              <div id="tracker-stat-acs" class="mt-1 font-bold font-mono text-purple-300 text-sm sm:text-base">218.5</div>
+              <span class="text-[9px] text-purple-400/80 font-sans mt-0.5">Combat Score</span>
             </div>
 
             <!-- Kills / Round -->
@@ -2680,8 +2756,8 @@
               <span class="text-[10px] text-slate-400 font-sans flex items-center gap-1">
                 <i class="fa-solid fa-skull text-rose-400 text-[10px]"></i> KILLS / RND
               </span>
-              <div id="tracker-stat-kpr" class="mt-1 font-bold font-mono text-rose-300 text-sm sm:text-base">0.86</div>
-              <span class="text-[9px] text-slate-500 font-sans mt-0.5">KPR</span>
+              <div id="tracker-stat-kpr" class="mt-1 font-bold font-mono text-rose-300 text-sm sm:text-base">0.78</div>
+              <span class="text-[9px] text-slate-500 font-sans mt-0.5">KPR Average</span>
             </div>
 
             <!-- First Bloods -->
@@ -2689,8 +2765,8 @@
               <span class="text-[10px] text-slate-400 font-sans flex items-center gap-1">
                 <i class="fa-solid fa-person-burst text-indigo-400 text-[10px]"></i> FIRST BLOODS
               </span>
-              <div id="tracker-stat-fb" class="mt-1 font-bold font-mono text-indigo-300 text-sm sm:text-base">64</div>
-              <span class="text-[9px] text-indigo-400/80 font-sans mt-0.5">Entry Frag</span>
+              <div id="tracker-stat-fb" class="mt-1 font-bold font-mono text-indigo-300 text-sm sm:text-base">48</div>
+              <span class="text-[9px] text-indigo-400/80 font-sans mt-0.5">Opening Frags</span>
             </div>
 
             <!-- Clutch Rate -->
@@ -2698,7 +2774,7 @@
               <span class="text-[10px] text-slate-400 font-sans flex items-center gap-1">
                 <i class="fa-solid fa-shield-cat text-teal-400 text-[10px]"></i> CLUTCH RATE
               </span>
-              <div id="tracker-stat-clutch" class="mt-1 font-bold font-mono text-teal-300 text-sm sm:text-base">18.5%</div>
+              <div id="tracker-stat-clutch" class="mt-1 font-bold font-mono text-teal-300 text-sm sm:text-base">16.5%</div>
               <span class="text-[9px] text-teal-400/80 font-sans mt-0.5">1vX Wins</span>
             </div>
           </div>
@@ -2712,10 +2788,29 @@
               <i class="fa-solid fa-mask text-rose-400"></i>
               เอเจนท์ที่เล่นบ่อยที่สุด (Most Played Agents)
             </span>
-            <span class="text-[10px] font-mono text-slate-400">SIGNATURE ROSTER</span>
+            <span class="text-[10px] font-mono text-slate-400">ALL-TIME CAREER HOURS</span>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3" id="tracker-agents-container">
+            <!-- Sova -->
+            <div class="p-3 rounded-xl bg-black/60 border border-sky-500/40 hover:border-sky-400/60 transition-all flex items-center justify-between gap-2 shadow-sm">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-10 h-10 rounded-xl bg-sky-950/60 border border-sky-500/40 flex items-center justify-center text-sky-300 font-gaming font-bold text-base shrink-0 shadow-[0_0_10px_rgba(56,189,248,0.3)]">
+                  S
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-xs font-bold text-white truncate">Sova</span>
+                    <span class="px-1.5 py-0.2 rounded text-[8px] font-mono font-semibold bg-sky-500/20 text-sky-300 border border-sky-500/30">Initiator</span>
+                  </div>
+                  <div class="text-[10px] text-slate-400 font-mono mt-0.5">
+                    KD <strong class="text-emerald-400">1.03</strong> • Recent <strong class="text-white">8W - 7L (53%)</strong>
+                  </div>
+                </div>
+              </div>
+              <span class="px-2 py-1 rounded-lg bg-sky-500/15 text-sky-300 text-[10px] font-mono font-bold shrink-0">769 hrs</span>
+            </div>
+
             <!-- Jett -->
             <div class="p-3 rounded-xl bg-black/60 border border-slate-800/90 hover:border-cyan-500/50 transition-all flex items-center justify-between gap-2 shadow-sm">
               <div class="flex items-center gap-2.5 min-w-0">
@@ -2728,49 +2823,30 @@
                     <span class="px-1.5 py-0.2 rounded text-[8px] font-mono font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">Duelist</span>
                   </div>
                   <div class="text-[10px] text-slate-400 font-mono mt-0.5">
-                    KD <strong class="text-emerald-400">1.28</strong> • Win <strong class="text-white">61%</strong>
+                    Role <strong class="text-slate-300">Duelist Main</strong> • Agility
                   </div>
                 </div>
               </div>
-              <span class="px-2 py-1 rounded-lg bg-cyan-500/10 text-cyan-300 text-[10px] font-mono font-bold shrink-0">42% Pick</span>
+              <span class="px-2 py-1 rounded-lg bg-cyan-500/10 text-cyan-300 text-[10px] font-mono font-bold shrink-0">399 hrs</span>
             </div>
 
-            <!-- Reyna -->
-            <div class="p-3 rounded-xl bg-black/60 border border-slate-800/90 hover:border-purple-500/50 transition-all flex items-center justify-between gap-2 shadow-sm">
+            <!-- Killjoy -->
+            <div class="p-3 rounded-xl bg-black/60 border border-slate-800/90 hover:border-amber-500/50 transition-all flex items-center justify-between gap-2 shadow-sm">
               <div class="flex items-center gap-2.5 min-w-0">
-                <div class="w-10 h-10 rounded-xl bg-purple-950/60 border border-purple-500/40 flex items-center justify-center text-purple-300 font-gaming font-bold text-base shrink-0 shadow-[0_0_10px_rgba(168,85,247,0.3)]">
-                  R
+                <div class="w-10 h-10 rounded-xl bg-amber-950/60 border border-amber-500/40 flex items-center justify-center text-amber-300 font-gaming font-bold text-base shrink-0 shadow-[0_0_10px_rgba(245,158,11,0.3)]">
+                  K
                 </div>
                 <div class="min-w-0">
                   <div class="flex items-center gap-1.5">
-                    <span class="text-xs font-bold text-white truncate">Reyna</span>
-                    <span class="px-1.5 py-0.2 rounded text-[8px] font-mono font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">Duelist</span>
+                    <span class="text-xs font-bold text-white truncate">Killjoy</span>
+                    <span class="px-1.5 py-0.2 rounded text-[8px] font-mono font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">Sentinel</span>
                   </div>
                   <div class="text-[10px] text-slate-400 font-mono mt-0.5">
-                    KD <strong class="text-emerald-400">1.35</strong> • Win <strong class="text-white">59%</strong>
+                    Role <strong class="text-slate-300">Lockdown Tech</strong> • Defense
                   </div>
                 </div>
               </div>
-              <span class="px-2 py-1 rounded-lg bg-purple-500/10 text-purple-300 text-[10px] font-mono font-bold shrink-0">34% Pick</span>
-            </div>
-
-            <!-- Omen -->
-            <div class="p-3 rounded-xl bg-black/60 border border-slate-800/90 hover:border-indigo-500/50 transition-all flex items-center justify-between gap-2 shadow-sm">
-              <div class="flex items-center gap-2.5 min-w-0">
-                <div class="w-10 h-10 rounded-xl bg-indigo-950/60 border border-indigo-500/40 flex items-center justify-center text-indigo-300 font-gaming font-bold text-base shrink-0 shadow-[0_0_10px_rgba(99,102,241,0.3)]">
-                  O
-                </div>
-                <div class="min-w-0">
-                  <div class="flex items-center gap-1.5">
-                    <span class="text-xs font-bold text-white truncate">Omen</span>
-                    <span class="px-1.5 py-0.2 rounded text-[8px] font-mono font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">Controller</span>
-                  </div>
-                  <div class="text-[10px] text-slate-400 font-mono mt-0.5">
-                    KD <strong class="text-slate-300">1.12</strong> • Win <strong class="text-white">55%</strong>
-                  </div>
-                </div>
-              </div>
-              <span class="px-2 py-1 rounded-lg bg-indigo-500/10 text-indigo-300 text-[10px] font-mono font-bold shrink-0">24% Pick</span>
+              <span class="px-2 py-1 rounded-lg bg-amber-500/10 text-amber-300 text-[10px] font-mono font-bold shrink-0">308 hrs</span>
             </div>
           </div>
         </div>
@@ -2781,93 +2857,69 @@
             <span class="text-[11px] font-semibold text-white flex items-center gap-1.5"
               data-i18n="tracker_matches_title">
               <i class="fa-solid fa-clock-rotate-left text-amber-400"></i>
-              ผลการแข่ง 5 แมตช์ล่าสุด (Recent Competitive Matches)
+              ผลการแข่งล่าสุด (Recent Matches • Tracker.gg History)
             </span>
-            <span class="text-[10px] font-mono text-slate-400">MODE: COMPETITIVE</span>
+            <span class="text-[10px] font-mono text-slate-400">LAST 20: 11W - 9L (55%)</span>
           </div>
 
           <div class="space-y-2" id="tracker-matches-list">
-            <!-- Match 1: Ascent VICTORY -->
+            <!-- Match 1: 5h ago VICTORY 13:11 (KD 1.8) -->
             <div class="p-2.5 sm:p-3 rounded-xl bg-black/60 border border-emerald-500/30 hover:border-emerald-400/60 transition-all flex items-center justify-between gap-2 shadow-sm group">
               <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
                 <div class="w-10 h-10 rounded-lg bg-emerald-950/70 border border-emerald-500/40 flex flex-col items-center justify-center shrink-0">
-                  <span class="text-[9px] font-mono font-bold text-emerald-400">ASCENT</span>
+                  <span class="text-[9px] font-mono font-bold text-emerald-400">5h ago</span>
                   <span class="text-[8px] font-mono text-emerald-300/80">COMP</span>
                 </div>
                 <div class="min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
                     <span class="px-1.5 py-0.2 rounded text-[8px] font-bold font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">VICTORY</span>
-                    <span class="text-xs font-black font-mono text-white">13 - 7</span>
-                    <span class="px-1.5 py-0.2 rounded text-[8px] font-bold font-mono bg-amber-500/20 text-amber-300 border border-amber-500/30">MVP 👑</span>
+                    <span class="text-xs font-black font-mono text-white">13 - 11</span>
+                    <span class="px-1.5 py-0.2 rounded text-[8px] font-bold font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">KD 1.8 🎯</span>
                   </div>
                   <div class="text-[10px] text-slate-400 font-mono mt-0.5 flex items-center gap-2 flex-wrap">
-                    <span>Agent: <strong class="text-cyan-300">Jett</strong></span>
-                    <span>KDA: <strong class="text-white">22/11/4</strong> (<span class="text-emerald-400 font-bold">2.00 KD</span>)</span>
-                    <span class="hidden sm:inline">ACS: <strong class="text-purple-300">285</strong></span>
-                  </div>
-                </div>
-              </div>
-              <div class="text-right shrink-0">
-                <div class="text-xs sm:text-sm font-black font-mono text-emerald-400">+22 RR</div>
-                <div class="text-[9px] text-slate-500 font-mono">Rating Delta</div>
-              </div>
-            </div>
-
-            <!-- Match 2: Bind VICTORY -->
-            <div class="p-2.5 sm:p-3 rounded-xl bg-black/60 border border-emerald-500/30 hover:border-emerald-400/60 transition-all flex items-center justify-between gap-2 shadow-sm group">
-              <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                <div class="w-10 h-10 rounded-lg bg-emerald-950/70 border border-emerald-500/40 flex flex-col items-center justify-center shrink-0">
-                  <span class="text-[9px] font-mono font-bold text-emerald-400">BIND</span>
-                  <span class="text-[8px] font-mono text-emerald-300/80">COMP</span>
-                </div>
-                <div class="min-w-0">
-                  <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="px-1.5 py-0.2 rounded text-[8px] font-bold font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">VICTORY</span>
-                    <span class="text-xs font-black font-mono text-white">13 - 10</span>
-                  </div>
-                  <div class="text-[10px] text-slate-400 font-mono mt-0.5 flex items-center gap-2 flex-wrap">
-                    <span>Agent: <strong class="text-purple-300">Reyna</strong></span>
-                    <span>KDA: <strong class="text-white">24/15/3</strong> (<span class="text-emerald-400 font-bold">1.60 KD</span>)</span>
-                    <span class="hidden sm:inline">ACS: <strong class="text-purple-300">264</strong></span>
+                    <span>Agent: <strong class="text-sky-300">Sova</strong></span>
+                    <span>Performance: <strong class="text-emerald-400 font-bold">1.80 K/D</strong></span>
+                    <span class="hidden sm:inline text-slate-500">• 5 hours ago</span>
                   </div>
                 </div>
               </div>
               <div class="text-right shrink-0">
                 <div class="text-xs sm:text-sm font-black font-mono text-emerald-400">+19 RR</div>
-                <div class="text-[9px] text-slate-500 font-mono">Rating Delta</div>
+                <div class="text-[9px] text-slate-500 font-mono">Rating Gain</div>
               </div>
             </div>
 
-            <!-- Match 3: Sunset DEFEAT -->
+            <!-- Match 2: 6h ago DEFEAT 10:13 (KD 1.2) -->
             <div class="p-2.5 sm:p-3 rounded-xl bg-black/60 border border-rose-500/30 hover:border-rose-400/60 transition-all flex items-center justify-between gap-2 shadow-sm group">
               <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
                 <div class="w-10 h-10 rounded-lg bg-rose-950/70 border border-rose-500/40 flex flex-col items-center justify-center shrink-0">
-                  <span class="text-[9px] font-mono font-bold text-rose-400">SUNSET</span>
+                  <span class="text-[9px] font-mono font-bold text-rose-400">6h ago</span>
                   <span class="text-[8px] font-mono text-rose-300/80">COMP</span>
                 </div>
                 <div class="min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
                     <span class="px-1.5 py-0.2 rounded text-[8px] font-bold font-mono bg-rose-500/20 text-rose-300 border border-rose-500/40">DEFEAT</span>
-                    <span class="text-xs font-black font-mono text-white">11 - 13</span>
+                    <span class="text-xs font-black font-mono text-white">10 - 13</span>
+                    <span class="px-1.5 py-0.2 rounded text-[8px] font-bold font-mono bg-slate-800 text-slate-300 border border-slate-700">KD 1.2</span>
                   </div>
                   <div class="text-[10px] text-slate-400 font-mono mt-0.5 flex items-center gap-2 flex-wrap">
-                    <span>Agent: <strong class="text-indigo-300">Omen</strong></span>
-                    <span>KDA: <strong class="text-white">17/14/8</strong> (<span class="text-slate-300 font-bold">1.21 KD</span>)</span>
-                    <span class="hidden sm:inline">ACS: <strong class="text-purple-300">210</strong></span>
+                    <span>Agent: <strong class="text-sky-300">Sova</strong></span>
+                    <span>Performance: <strong class="text-slate-200 font-bold">1.20 K/D</strong></span>
+                    <span class="hidden sm:inline text-slate-500">• 6 hours ago</span>
                   </div>
                 </div>
               </div>
               <div class="text-right shrink-0">
-                <div class="text-xs sm:text-sm font-black font-mono text-rose-400">-15 RR</div>
-                <div class="text-[9px] text-slate-500 font-mono">Rating Delta</div>
+                <div class="text-xs sm:text-sm font-black font-mono text-rose-400">-14 RR</div>
+                <div class="text-[9px] text-slate-500 font-mono">Rating Loss</div>
               </div>
             </div>
 
-            <!-- Match 4: Haven VICTORY -->
+            <!-- Match 3: 7h ago VICTORY 13:8 (KD 0.7) -->
             <div class="p-2.5 sm:p-3 rounded-xl bg-black/60 border border-emerald-500/30 hover:border-emerald-400/60 transition-all flex items-center justify-between gap-2 shadow-sm group">
               <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
                 <div class="w-10 h-10 rounded-lg bg-emerald-950/70 border border-emerald-500/40 flex flex-col items-center justify-center shrink-0">
-                  <span class="text-[9px] font-mono font-bold text-emerald-400">HAVEN</span>
+                  <span class="text-[9px] font-mono font-bold text-emerald-400">7h ago</span>
                   <span class="text-[8px] font-mono text-emerald-300/80">COMP</span>
                 </div>
                 <div class="min-w-0">
@@ -2876,42 +2928,70 @@
                     <span class="text-xs font-black font-mono text-white">13 - 8</span>
                   </div>
                   <div class="text-[10px] text-slate-400 font-mono mt-0.5 flex items-center gap-2 flex-wrap">
-                    <span>Agent: <strong class="text-cyan-300">Jett</strong></span>
-                    <span>KDA: <strong class="text-white">20/12/5</strong> (<span class="text-emerald-400 font-bold">1.67 KD</span>)</span>
-                    <span class="hidden sm:inline">ACS: <strong class="text-purple-300">252</strong></span>
+                    <span>Agent: <strong class="text-sky-300">Sova</strong></span>
+                    <span>Performance: <strong class="text-slate-300 font-bold">0.70 K/D</strong></span>
+                    <span class="hidden sm:inline text-slate-500">• 7 hours ago</span>
                   </div>
                 </div>
               </div>
               <div class="text-right shrink-0">
-                <div class="text-xs sm:text-sm font-black font-mono text-emerald-400">+21 RR</div>
-                <div class="text-[9px] text-slate-500 font-mono">Rating Delta</div>
+                <div class="text-xs sm:text-sm font-black font-mono text-emerald-400">+18 RR</div>
+                <div class="text-[9px] text-slate-500 font-mono">Rating Gain</div>
               </div>
             </div>
 
-            <!-- Match 5: Lotus VICTORY -->
+            <!-- Match 4: 7h ago VICTORY 13:3 (KD 1.7) -->
             <div class="p-2.5 sm:p-3 rounded-xl bg-black/60 border border-emerald-500/30 hover:border-emerald-400/60 transition-all flex items-center justify-between gap-2 shadow-sm group">
               <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
                 <div class="w-10 h-10 rounded-lg bg-emerald-950/70 border border-emerald-500/40 flex flex-col items-center justify-center shrink-0">
-                  <span class="text-[9px] font-mono font-bold text-emerald-400">LOTUS</span>
+                  <span class="text-[9px] font-mono font-bold text-emerald-400">7h ago</span>
                   <span class="text-[8px] font-mono text-emerald-300/80">COMP</span>
                 </div>
                 <div class="min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
                     <span class="px-1.5 py-0.2 rounded text-[8px] font-bold font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">VICTORY</span>
-                    <span class="text-xs font-black font-mono text-white">13 - 9</span>
+                    <span class="text-xs font-black font-mono text-white">13 - 3</span>
+                    <span class="px-1.5 py-0.2 rounded text-[8px] font-bold font-mono bg-amber-500/20 text-amber-300 border border-amber-500/30">DOMINANT ⚡</span>
                   </div>
                   <div class="text-[10px] text-slate-400 font-mono mt-0.5 flex items-center gap-2 flex-wrap">
-                    <span>Agent: <strong class="text-purple-300">Reyna</strong></span>
-                    <span>KDA: <strong class="text-white">21/13/4</strong> (<span class="text-emerald-400 font-bold">1.62 KD</span>)</span>
-                    <span class="hidden sm:inline">ACS: <strong class="text-purple-300">240</strong></span>
+                    <span>Agent: <strong class="text-sky-300">Sova</strong></span>
+                    <span>Performance: <strong class="text-emerald-400 font-bold">1.70 K/D</strong></span>
+                    <span class="hidden sm:inline text-slate-500">• 7 hours ago</span>
                   </div>
                 </div>
               </div>
               <div class="text-right shrink-0">
-                <div class="text-xs sm:text-sm font-black font-mono text-emerald-400">+20 RR</div>
-                <div class="text-[9px] text-slate-500 font-mono">Rating Delta</div>
+                <div class="text-xs sm:text-sm font-black font-mono text-emerald-400">+24 RR</div>
+                <div class="text-[9px] text-slate-500 font-mono">Rating Gain</div>
               </div>
             </div>
+
+            <!-- Match 5: 11h ago DEFEAT 2:13 (KD 1.1) -->
+            <div class="p-2.5 sm:p-3 rounded-xl bg-black/60 border border-rose-500/30 hover:border-rose-400/60 transition-all flex items-center justify-between gap-2 shadow-sm group">
+              <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                <div class="w-10 h-10 rounded-lg bg-rose-950/70 border border-rose-500/40 flex flex-col items-center justify-center shrink-0">
+                  <span class="text-[9px] font-mono font-bold text-rose-400">11h ago</span>
+                  <span class="text-[8px] font-mono text-rose-300/80">COMP</span>
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="px-1.5 py-0.2 rounded text-[8px] font-bold font-mono bg-rose-500/20 text-rose-300 border border-rose-500/40">DEFEAT</span>
+                    <span class="text-xs font-black font-mono text-white">2 - 13</span>
+                  </div>
+                  <div class="text-[10px] text-slate-400 font-mono mt-0.5 flex items-center gap-2 flex-wrap">
+                    <span>Agent: <strong class="text-amber-300">Chamber</strong></span>
+                    <span>Performance: <strong class="text-slate-300 font-bold">1.10 K/D</strong></span>
+                    <span class="hidden sm:inline text-slate-500">• 11 hours ago</span>
+                  </div>
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <div class="text-xs sm:text-sm font-black font-mono text-rose-400">-16 RR</div>
+                <div class="text-[9px] text-slate-500 font-mono">Rating Loss</div>
+              </div>
+            </div>
+          </div>
+        </div>
           </div>
         </div>
 
@@ -3822,6 +3902,9 @@
         tracker_streak_label: "🔥 3 Win Streak",
         tracker_agents_title: "เอเจนท์ที่เล่นบ่อยที่สุด (Most Played Agents)",
         tracker_matches_title: "ผลการแข่ง 5 แมตช์ล่าสุด (Recent Competitive Matches)",
+        tracker_search_title: "ค้นหาแรงก์ผู้เล่นสด (Live Player Lookup)",
+        tracker_search_desc: "ค้นหาได้ทุกไอดี (เช่น ตัวคุณเอง หรือเพื่อนในตี้)",
+        tracker_search_btn: "ค้นหา",
         toast_tracker_synced: "ซิงค์สถิติ Valorant สำเร็จแล้ว! 🎯",
         toast_copy_riot_id: "คัดลอก Riot ID: DaLines#TTV เรียบร้อย! 🎮"
       },
@@ -3908,6 +3991,9 @@
         tracker_streak_label: "🔥 3 Win Streak",
         tracker_agents_title: "Most Played Agents (Signature Roster)",
         tracker_matches_title: "Recent Competitive Matches (Last 5)",
+        tracker_search_title: "Live Player Rank Lookup",
+        tracker_search_desc: "Look up any Riot ID & region in real-time",
+        tracker_search_btn: "Lookup",
         toast_tracker_synced: "Valorant stats synced successfully! 🎯",
         toast_copy_riot_id: "Riot ID: DaLines#TTV copied to clipboard! 🎮"
       }
@@ -6538,32 +6624,32 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
     const DALINES_VALORANT_BASELINE = {
       riotId: "DaLines#TTV",
       region: "ap",
-      currentTier: "Ascendant 2",
-      tierColor: "#34d399",
-      currentRR: 78,
-      peakRank: "Immortal 1 (Ep 8: Act 3)",
-      streak: "🔥 3 Win Streak",
+      currentTier: "Diamond 1",
+      tierColor: "#a855f7",
+      currentRR: 31,
+      peakRank: "Immortal 1 34RR (Ep 7: Act III)",
+      streak: "🔥 11W - 9L (55%)",
       stats: {
-        kd: "1.24",
-        hs: "31.5%",
-        winrate: "58.2%",
-        acs: "248.6",
-        adr: "162.4",
-        kpr: "0.86",
-        firstBloods: "64",
-        clutchRate: "18.5%"
+        kd: "1.08",
+        hs: "26.4%",
+        winrate: "55.0%",
+        acs: "218.5",
+        adr: "148.0",
+        kpr: "0.78",
+        firstBloods: "48",
+        clutchRate: "16.5%"
       },
       agents: [
-        { name: "Jett", role: "Duelist", pickRate: "42%", kd: "1.28", winRate: "61%", initial: "J", color: "cyan" },
-        { name: "Reyna", role: "Duelist", pickRate: "34%", kd: "1.35", winRate: "59%", initial: "R", color: "purple" },
-        { name: "Omen", role: "Controller", pickRate: "24%", kd: "1.12", winRate: "55%", initial: "O", color: "indigo" }
+        { name: "Sova", role: "Initiator", pickRate: "769 hrs", kd: "1.03", winRate: "53%", initial: "S", color: "sky" },
+        { name: "Jett", role: "Duelist", pickRate: "399 hrs", kd: "1.15", winRate: "52%", initial: "J", color: "cyan" },
+        { name: "Killjoy", role: "Sentinel", pickRate: "308 hrs", kd: "1.10", winRate: "54%", initial: "K", color: "amber" }
       ],
       recentMatches: [
-        { map: "Ascent", result: "VICTORY", score: "13 - 7", agent: "Jett", role: "Duelist", kda: "22/11/4", kd: "2.00", acs: 285, rrChange: "+22", mvp: true },
-        { map: "Bind", result: "VICTORY", score: "13 - 10", agent: "Reyna", role: "Duelist", kda: "24/15/3", kd: "1.60", acs: 264, rrChange: "+19", mvp: false },
-        { map: "Sunset", result: "DEFEAT", score: "11 - 13", agent: "Omen", role: "Controller", kda: "17/14/8", kd: "1.21", acs: 210, rrChange: "-15", mvp: false },
-        { map: "Haven", result: "VICTORY", score: "13 - 8", agent: "Jett", role: "Duelist", kda: "20/12/5", kd: "1.67", acs: 252, rrChange: "+21", mvp: false },
-        { map: "Lotus", result: "VICTORY", score: "13 - 9", agent: "Reyna", role: "Duelist", kda: "21/13/4", kd: "1.62", acs: 240, rrChange: "+20", mvp: false }
+        { map: "5h ago", result: "VICTORY", score: "13 - 11", agent: "Sova", role: "Initiator", kda: "KD 1.8", kd: "1.80", acs: 235, rrChange: "+19", mvp: false },
+        { map: "6h ago", result: "DEFEAT", score: "10 - 13", agent: "Sova", role: "Initiator", kda: "KD 1.2", kd: "1.20", acs: 215, rrChange: "-14", mvp: false },
+        { map: "7h ago", result: "VICTORY", score: "13 - 8", agent: "Sova", role: "Initiator", kda: "KD 0.7", kd: "0.70", acs: 180, rrChange: "+18", mvp: false },
+        { map: "7h ago", result: "VICTORY", score: "13 - 3", agent: "Sova", role: "Initiator", kda: "KD 1.7", kd: "1.70", acs: 260, rrChange: "+24", mvp: true },
+        { map: "11h ago", result: "DEFEAT", score: "2 - 13", agent: "Chamber", role: "Sentinel", kda: "KD 1.1", kd: "1.10", acs: 195, rrChange: "-16", mvp: false }
       ]
     };
 
@@ -6571,7 +6657,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
 
     function initValorantTracker() {
       try {
-        const cachedStr = localStorage.getItem('dalines_val_tracker_cache');
+        const cachedStr = localStorage.getItem('dalines_val_tracker_cache_v2');
         if (cachedStr) {
           const parsed = JSON.parse(cachedStr);
           if (parsed && parsed.timestamp && (Date.now() - parsed.timestamp < 1000 * 60 * 15)) {
@@ -6610,8 +6696,13 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
 
     function updateValorantTrackerDOM(data) {
       if (!data) return;
+
+      if (data.currentTier) {
+        applyValorantTierTheme(data.currentTier);
+      }
+
       const rankTitle = document.getElementById('tracker-rank-title');
-      if (rankTitle && data.currentTier) rankTitle.innerText = data.currentTier;
+      if (rankTitle && data.currentTier) rankTitle.innerText = data.currentTier.toUpperCase();
 
       const rrCur = document.getElementById('tracker-rr-current');
       if (rrCur && data.currentRR !== undefined) rrCur.innerText = data.currentRR;
@@ -6662,38 +6753,57 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
       if (icon) icon.classList.add('animate-spin');
 
       let liveSuccess = false;
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3500);
+      const apiEndpoints = [
+        '/api/valorant',
+        'https://dalines-site.dalines.workers.dev/api/valorant'
+      ];
 
-        // Fetch Valorant MMR via HenrikDev public proxy API
-        const res = await fetch('https://api.henrikdev.xyz/valorant/v1/mmr/ap/DaLines/TTV', {
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
+      for (const endpoint of apiEndpoints) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3500);
 
-        if (res.ok) {
-          const json = await res.json();
-          if (json && json.data && json.data.currenttierpatched) {
-            valTrackerData.currentTier = json.data.currenttierpatched;
-            valTrackerData.currentRR = json.data.ranking_in_tier ?? valTrackerData.currentRR;
-            liveSuccess = true;
+          const res = await fetch(endpoint, {
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+
+          if (res.ok) {
+            const json = await res.json();
+            const payload = json && (json.data || json);
+            if (payload && (payload.currentTier || payload.stats)) {
+              if (payload.currentTier) valTrackerData.currentTier = payload.currentTier;
+              if (payload.currentRR !== undefined) valTrackerData.currentRR = payload.currentRR;
+              if (payload.peakRank) valTrackerData.peakRank = payload.peakRank;
+              if (payload.streak) valTrackerData.streak = payload.streak;
+              if (payload.stats) {
+                valTrackerData.stats = { ...valTrackerData.stats, ...payload.stats };
+              }
+              if (payload.agents && Array.isArray(payload.agents)) {
+                valTrackerData.agents = payload.agents;
+              }
+              if (payload.recentMatches && Array.isArray(payload.recentMatches)) {
+                valTrackerData.recentMatches = payload.recentMatches;
+              }
+              liveSuccess = true;
+              break;
+            }
           }
+        } catch (err) {
+          // Continue to next endpoint or graceful fallback
         }
-      } catch (err) {
-        // Fallback gracefully without throwing
       }
 
       // Update LocalStorage cache
       try {
-        localStorage.setItem('dalines_val_tracker_cache', JSON.stringify({
+        localStorage.setItem('dalines_val_tracker_cache_v2', JSON.stringify({
           timestamp: Date.now(),
           data: valTrackerData
         }));
       } catch (e) { }
 
       updateValorantTrackerDOM(valTrackerData);
-      setTrackerSyncStatus(liveSuccess, liveSuccess ? 'LIVE SYNC' : 'OFFICIAL CACHE');
+      setTrackerSyncStatus(liveSuccess, liveSuccess ? 'DIRECT API LIVE' : 'OFFICIAL CACHE');
 
       setTimeout(() => {
         if (icon) icon.classList.remove('animate-spin');
@@ -6706,6 +6816,7 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
       }, 500);
     }
 
+
     function copyTrackerRiotId() {
       playSound('pop');
       triggerHaptic(20);
@@ -6713,6 +6824,337 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
         navigator.clipboard.writeText('DaLines#TTV');
       }
       showToast(translations[currentLang].toast_copy_riot_id || 'คัดลอก Riot ID: DaLines#TTV เรียบร้อย! 🎮');
+    }
+
+    // -----------------------------------------------------------------
+    // 🔍 VALORANT LIVE PLAYER SEARCH & RANK THEME ENGINE
+    // -----------------------------------------------------------------
+    function applyValorantTierTheme(tierName) {
+      const t = (tierName || '').toLowerCase();
+      let theme = {
+        titleClass: 'text-purple-300',
+        boxBorder: 'border-purple-400/50',
+        boxShadow: '0 0 20px rgba(168,85,247,0.35)',
+        grad0: '#c084fc', grad50: '#7c3aed', grad100: '#4c1d95',
+        strokeOuter: '#c084fc', strokeMid: '#a855f7', fillMid: '#2e1065',
+        inner0: '#a855f7', inner100: '#581c87', core: '#f5d0fe',
+        barGrad: 'from-purple-500 via-indigo-500 to-cyan-400',
+        rankValue: 6
+      };
+
+      if (t.includes('radiant')) {
+        theme = {
+          titleClass: 'text-amber-300',
+          boxBorder: 'border-amber-400/70',
+          boxShadow: '0 0 25px rgba(251,191,36,0.6)',
+          grad0: '#fef08a', grad50: '#f59e0b', grad100: '#b45309',
+          strokeOuter: '#fbbf24', strokeMid: '#f59e0b', fillMid: '#451a03',
+          inner0: '#fbbf24', inner100: '#78350f', core: '#ffffff',
+          barGrad: 'from-amber-400 via-yellow-400 to-orange-500',
+          rankValue: 9
+        };
+      } else if (t.includes('immortal')) {
+        theme = {
+          titleClass: 'text-rose-400',
+          boxBorder: 'border-rose-400/60',
+          boxShadow: '0 0 25px rgba(244,63,94,0.5)',
+          grad0: '#fda4af', grad50: '#e11d48', grad100: '#881337',
+          strokeOuter: '#f43f5e', strokeMid: '#e11d48', fillMid: '#4c0519',
+          inner0: '#f43f5e', inner100: '#881337', core: '#ffe4e6',
+          barGrad: 'from-rose-500 via-red-500 to-amber-400',
+          rankValue: 8
+        };
+      } else if (t.includes('ascendant')) {
+        theme = {
+          titleClass: 'text-emerald-300',
+          boxBorder: 'border-emerald-400/50',
+          boxShadow: '0 0 20px rgba(16,185,129,0.4)',
+          grad0: '#6ee7b7', grad50: '#059669', grad100: '#064e3b',
+          strokeOuter: '#10b981', strokeMid: '#059669', fillMid: '#022c22',
+          inner0: '#10b981', inner100: '#064e3b', core: '#a7f3d0',
+          barGrad: 'from-emerald-500 via-teal-500 to-cyan-400',
+          rankValue: 7
+        };
+      } else if (t.includes('diamond')) {
+        theme = {
+          titleClass: 'text-purple-300',
+          boxBorder: 'border-purple-400/50',
+          boxShadow: '0 0 20px rgba(168,85,247,0.4)',
+          grad0: '#c084fc', grad50: '#7c3aed', grad100: '#4c1d95',
+          strokeOuter: '#c084fc', strokeMid: '#a855f7', fillMid: '#2e1065',
+          inner0: '#a855f7', inner100: '#581c87', core: '#f5d0fe',
+          barGrad: 'from-purple-500 via-indigo-500 to-cyan-400',
+          rankValue: 6
+        };
+      } else if (t.includes('platinum')) {
+        theme = {
+          titleClass: 'text-cyan-300',
+          boxBorder: 'border-cyan-400/50',
+          boxShadow: '0 0 20px rgba(6,182,212,0.4)',
+          grad0: '#67e8f9', grad50: '#0891b2', grad100: '#164e63',
+          strokeOuter: '#06b6d4', strokeMid: '#0891b2', fillMid: '#083344',
+          inner0: '#06b6d4', inner100: '#164e63', core: '#cffafe',
+          barGrad: 'from-cyan-500 via-sky-500 to-teal-400',
+          rankValue: 5
+        };
+      } else if (t.includes('gold')) {
+        theme = {
+          titleClass: 'text-yellow-300',
+          boxBorder: 'border-yellow-400/50',
+          boxShadow: '0 0 20px rgba(234,179,8,0.4)',
+          grad0: '#fde047', grad50: '#ca8a04', grad100: '#713f12',
+          strokeOuter: '#eab308', strokeMid: '#ca8a04', fillMid: '#422006',
+          inner0: '#eab308', inner100: '#713f12', core: '#fef08a',
+          barGrad: 'from-yellow-500 via-amber-500 to-orange-400',
+          rankValue: 4
+        };
+      } else if (t.includes('silver')) {
+        theme = {
+          titleClass: 'text-slate-200',
+          boxBorder: 'border-slate-400/50',
+          boxShadow: '0 0 18px rgba(203,213,225,0.3)',
+          grad0: '#f1f5f9', grad50: '#94a3b8', grad100: '#475569',
+          strokeOuter: '#cbd5e1', strokeMid: '#94a3b8', fillMid: '#1e293b',
+          inner0: '#cbd5e1', inner100: '#475569', core: '#f8fafc',
+          barGrad: 'from-slate-400 via-gray-400 to-zinc-300',
+          rankValue: 3
+        };
+      } else if (t.includes('bronze')) {
+        theme = {
+          titleClass: 'text-amber-500',
+          boxBorder: 'border-amber-600/50',
+          boxShadow: '0 0 18px rgba(180,83,9,0.3)',
+          grad0: '#f59e0b', grad50: '#b45309', grad100: '#78350f',
+          strokeOuter: '#d97706', strokeMid: '#b45309', fillMid: '#451a03',
+          inner0: '#d97706', inner100: '#78350f', core: '#fed7aa',
+          barGrad: 'from-amber-600 via-orange-600 to-amber-700',
+          rankValue: 2
+        };
+      } else if (t.includes('iron')) {
+        theme = {
+          titleClass: 'text-slate-400',
+          boxBorder: 'border-slate-600/50',
+          boxShadow: '0 0 15px rgba(148,163,184,0.25)',
+          grad0: '#cbd5e1', grad50: '#64748b', grad100: '#334155',
+          strokeOuter: '#94a3b8', strokeMid: '#64748b', fillMid: '#0f172a',
+          inner0: '#94a3b8', inner100: '#334155', core: '#e2e8f0',
+          barGrad: 'from-slate-600 via-gray-600 to-zinc-500',
+          rankValue: 1
+        };
+      }
+
+      // Update SVG Stops
+      const s0 = document.getElementById('rankGradStop0');
+      if (s0) s0.setAttribute('stop-color', theme.grad0);
+      const s50 = document.getElementById('rankGradStop50');
+      if (s50) s50.setAttribute('stop-color', theme.grad50);
+      const s100 = document.getElementById('rankGradStop100');
+      if (s100) s100.setAttribute('stop-color', theme.grad100);
+
+      const is0 = document.getElementById('rankInnerStop0');
+      if (is0) is0.setAttribute('stop-color', theme.inner0);
+      const is100 = document.getElementById('rankInnerStop100');
+      if (is100) is100.setAttribute('stop-color', theme.inner100);
+
+      const polyOuter = document.getElementById('tracker-poly-outer');
+      if (polyOuter) polyOuter.setAttribute('stroke', theme.strokeOuter);
+      const polyMid = document.getElementById('tracker-poly-mid');
+      if (polyMid) {
+        polyMid.setAttribute('stroke', theme.strokeMid);
+        polyMid.setAttribute('fill', theme.fillMid);
+      }
+      const polyCore = document.getElementById('tracker-poly-core');
+      if (polyCore) polyCore.setAttribute('fill', theme.core);
+
+      const box = document.getElementById('tracker-rank-badge-box');
+      if (box) box.style.boxShadow = theme.boxShadow;
+
+      const titleEl = document.getElementById('tracker-rank-title');
+      if (titleEl) {
+        titleEl.className = `text-base sm:text-lg font-black font-gaming tracking-wider ${theme.titleClass}`;
+      }
+
+      const bar = document.getElementById('tracker-rr-bar');
+      if (bar) {
+        bar.className = `h-full rounded-full bg-gradient-to-r ${theme.barGrad} transition-all duration-700 shadow-md`;
+      }
+
+      return theme;
+    }
+
+    async function searchValorantPlayer(e) {
+      if (e && e.preventDefault) e.preventDefault();
+
+      const input = document.getElementById('val-search-input');
+      const regionSelect = document.getElementById('val-search-region');
+      const btn = document.getElementById('btn-val-search');
+      const icon = document.getElementById('val-search-icon');
+      const btnText = document.getElementById('val-search-btn-text');
+
+      if (!input) return;
+      const rawQuery = input.value.trim();
+      if (!rawQuery) {
+        showToast('กรุณากรอก Riot ID เช่น YourName#TAG 🎯');
+        input.focus();
+        return;
+      }
+
+      const parts = rawQuery.split('#');
+      if (parts.length < 2 || !parts[0].trim() || !parts[1].trim()) {
+        showToast('กรุณาระบุ Tag ด้วยครับ เช่น ' + rawQuery + '#1234 ⚠️');
+        input.focus();
+        return;
+      }
+
+      const playerName = parts[0].trim();
+      const playerTag = parts.slice(1).join('#').trim();
+      const region = regionSelect ? regionSelect.value : 'ap';
+
+      playSound('pop');
+      triggerHaptic(20);
+      if (btn) btn.disabled = true;
+      if (icon) icon.className = 'fa-solid fa-spinner animate-spin text-xs';
+      if (btnText) btnText.innerText = 'กำลังค้นหา...';
+
+      try {
+        let result = null;
+        const searchEndpoints = [
+          `/api/valorant?name=${encodeURIComponent(playerName)}&tag=${encodeURIComponent(playerTag)}&region=${region}`,
+          `https://dalines-site.dalines.workers.dev/api/valorant?name=${encodeURIComponent(playerName)}&tag=${encodeURIComponent(playerTag)}&region=${region}`,
+          `https://api.kyroskoh.xyz/valorant/v1/mmr/${region}/${encodeURIComponent(playerName)}/${encodeURIComponent(playerTag)}?show=all&display=0`
+        ];
+
+        for (const ep of searchEndpoints) {
+          try {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 6500);
+            const res = await fetch(ep, { signal: controller.signal });
+            clearTimeout(timeout);
+
+            if (res.ok) {
+              const contentType = res.headers.get('content-type') || '';
+              if (contentType.includes('application/json')) {
+                const json = await res.json();
+                if (json && json.status === 'success' && json.data) {
+                  result = json.data;
+                  break;
+                }
+              } else {
+                const text = (await res.text()).trim();
+                const match = text.match(/^([A-Za-z0-9 ]+?)\s*-\s*(\d+)\s*RR(?:\s+MMR Elo:\s*(\d+))?/i);
+                if (match) {
+                  result = {
+                    riotId: `${playerName}#${playerTag}`,
+                    region: region,
+                    currentTier: match[1].trim(),
+                    currentRR: parseInt(match[2], 10),
+                    elo: match[3] ? parseInt(match[3], 10) : null
+                  };
+                  break;
+                }
+              }
+            }
+          } catch (err) {
+            // Try next endpoint
+          }
+        }
+
+        if (result && result.currentTier) {
+          playSound('sparkle');
+          triggerHaptic(35);
+          renderViewerRank(result);
+          showToast(`🎯 พบข้อมูล ${result.riotId}: ${result.currentTier} (${result.currentRR} RR)!`);
+        } else {
+          playSound('pop');
+          showToast(`⚠️ ไม่พบข้อมูลแรงก์ของ ${playerName}#${playerTag} หรือยังไม่ได้เล่นโหมด Competitive ใน Act ปัจจุบัน`);
+        }
+      } catch (err) {
+        showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง');
+      } finally {
+        if (btn) btn.disabled = false;
+        if (icon) icon.className = 'fa-solid fa-magnifying-glass text-xs';
+        if (btnText) btnText.innerText = translations[currentLang].tracker_search_btn || 'ค้นหา';
+      }
+    }
+
+    function renderViewerRank(playerData) {
+      const banner = document.getElementById('val-viewer-banner');
+      const viewerName = document.getElementById('val-viewer-name');
+      const regionBadge = document.getElementById('val-viewer-region-badge');
+      const compareBadge = document.getElementById('val-viewer-compare-badge');
+      const resetBtn = document.getElementById('btn-val-reset-streamer');
+      const clearBtn = document.getElementById('btn-val-clear-search');
+
+      if (banner) banner.classList.remove('hidden');
+      if (resetBtn) resetBtn.classList.remove('hidden');
+      if (clearBtn) clearBtn.classList.remove('hidden');
+      if (viewerName) viewerName.innerText = playerData.riotId;
+      if (regionBadge) regionBadge.innerText = (playerData.region || 'AP').toUpperCase();
+
+      const viewerTheme = applyValorantTierTheme(playerData.currentTier);
+      const dalinesTierRank = 6; // Diamond 1
+      if (compareBadge) {
+        if (viewerTheme.rankValue > dalinesTierRank) {
+          compareBadge.className = 'ml-1.5 px-2 py-0.5 rounded text-[9px] font-sans font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40';
+          compareBadge.innerText = '👑 สูงกว่า DaLines! คมจัดดด 🔥';
+        } else if (viewerTheme.rankValue === dalinesTierRank) {
+          compareBadge.className = 'ml-1.5 px-2 py-0.5 rounded text-[9px] font-sans font-bold bg-purple-500/20 text-purple-200 border border-purple-500/40';
+          compareBadge.innerText = '🎯 แรงก์ระดับเดียวกับ DaLines! ตี้กันได้ ⚡';
+        } else {
+          compareBadge.className = 'ml-1.5 px-2 py-0.5 rounded text-[9px] font-sans font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40';
+          compareBadge.innerText = '💪 กำลังไต่ตาม DaLines มาติดๆ สู้ๆ! 🚀';
+        }
+      }
+
+      const rankTitle = document.getElementById('tracker-rank-title');
+      if (rankTitle) rankTitle.innerText = playerData.currentTier.toUpperCase();
+
+      const rrCur = document.getElementById('tracker-rr-current');
+      if (rrCur) rrCur.innerText = playerData.currentRR;
+
+      const rrPercent = document.getElementById('tracker-rr-percent');
+      if (rrPercent) rrPercent.innerText = `${playerData.currentRR}%`;
+
+      const rrBar = document.getElementById('tracker-rr-bar');
+      if (rrBar) rrBar.style.width = `${Math.min(100, Math.max(0, playerData.currentRR))}%`;
+
+      const rankLabel = document.getElementById('tracker-rank-label-sub');
+      if (rankLabel) rankLabel.innerText = `RATING: ${playerData.riotId}`;
+
+      const trackerSection = document.getElementById('valorant-tracker-section');
+      if (trackerSection) {
+        trackerSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    function resetToStreamerProfile() {
+      playSound('sparkle');
+      triggerHaptic(20);
+
+      const banner = document.getElementById('val-viewer-banner');
+      const resetBtn = document.getElementById('btn-val-reset-streamer');
+      const clearBtn = document.getElementById('btn-val-clear-search');
+      const input = document.getElementById('val-search-input');
+      const rankLabel = document.getElementById('tracker-rank-label-sub');
+
+      if (banner) banner.classList.add('hidden');
+      if (resetBtn) resetBtn.classList.add('hidden');
+      if (clearBtn) clearBtn.classList.add('hidden');
+      if (input) input.value = '';
+      if (rankLabel) rankLabel.innerText = translations[currentLang].tracker_rank_label || 'COMPETITIVE RANK';
+
+      updateValorantTrackerDOM(valTrackerData);
+      showToast('🔄 กลับสู่ข้อมูลสตรีมเมอร์ DaLines#TTV เรียบร้อย 🎯');
+    }
+
+    function clearValSearchInput() {
+      const input = document.getElementById('val-search-input');
+      const clearBtn = document.getElementById('btn-val-clear-search');
+      if (input) {
+        input.value = '';
+        input.focus();
+      }
+      if (clearBtn) clearBtn.classList.add('hidden');
     }
 
     // -----------------------------------------------------------------
@@ -6724,8 +7166,15 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
         name: "!rank",
         cat: "aim",
         desc: "แรงก์ Valorant ปัจจุบัน & สถิติ",
-        response: "แรงก์ปัจจุบัน: Ascendant 2 (Peak: Immortal 1) • K/D 1.24 | ตรวจสอบสถิติสดและผลการแข่งได้ที่หน้าเว็บ DaLines Hub ส่วน Valorant Tracker ครับ! 🎯",
+        response: "แรงก์ปัจจุบัน: Diamond 1 31RR (Peak: Immortal 1 34RR Ep 7: Act III) • K/D 1.08 | 148 ADR | Sova Main 769 hrs | ดูสถิติสดและประวัติแมตช์ได้ที่หน้าเว็บ DaLines Hub ครับ! 🎯",
         tags: ["rank", "valorant", "แรงก์", "stats", "tracker"]
+      },
+      {
+        name: "!ranklive",
+        cat: "aim",
+        desc: "คำสั่ง Nightbot ดึงแรงก์สด Valorant อัตโนมัติ (Custom API)",
+        response: "$(urlfetch https://api.kyroskoh.xyz/valorant/v1/mmr/ap/DaLines/TTV?show=combo&display=1)",
+        tags: ["rank", "live", "api", "valorant", "nightbot"]
       },
       // 🎯 เป้า & ความไวเมาส์ (Aim & Sens)
       {
