@@ -23,6 +23,7 @@ Official Profile Hub & Battle Station for **DaLines** — Streamer, Gamer, and F
 - 🎮 **FPS E-DPI Calculator & Sensitivity Converter:** เครื่องคำนวณ E-DPI และแปลงค่าความไวเมาส์ข้ามเกม 8 เกมดัง (Valorant, Apex Legends, Fortnite, Delta Force, CS2, Overwatch 2, CoD/Warzone, PUBG) แม่นยำ 100% ตามระยะทางจริง (cm/360°) พร้อมแถบวิเคราะห์สไตล์การเล็ง (Arm/Wrist Aim), แนะนำขนาดแผ่นรองเมาส์, ปุ่มลัดโหลดค่าโปรเพลเยอร์ DaLines (800 DPI), และปุ่มคัดลอกค่าแต่ละเกมในคลิกเดียว
 - 🏆 **Valorant Esports Career & Live Match Tracker:** ศูนย์รวมสถิติแรงก์สด Valorant ประจำช่อง DaLines#TTV (เซิร์ฟเวอร์ APAC) ซิงค์ตรงจากเกมและ Cloudflare Worker API แสดงตราสัญลักษณ์แรงก์ Diamond 1, หลอดคะแนน RR Progress Bar, สถิติ Career & Last 20 Matches (K/D 1.08, 148 ADR, Winrate 55% 11W-9L), Peak Rank: Immortal 1 34RR (Ep 7: Act III), 3 เอเจนท์ตัวเมนตามชั่วโมงเล่นจริง (Sova 769 hrs, Jett 399 hrs, Killjoy 308 hrs), ไทม์ไลน์ผลการแข่งล่าสุดพร้อม K/D และแต้ม RR, ปุ่มคัดลอก Riot ID, ปุ่มซิงค์สด, **ระบบค้นหาแรงก์ผู้เล่นสด (Live Player Lookup)** ค้นหา Riot ID ของผู้ชมหรือเพื่อนในตี้ได้ทุกเซิร์ฟเวอร์ (AP, NA, EU, KR, LATAM, BR) พร้อมระบบเปรียบเทียบแรงก์กับ DaLines และเปลี่ยนสกินตราสัญลักษณ์ตามแรงก์ที่ค้นพบ (Iron ถึง Radiant) อัตโนมัติ!
 - 🌌 **DaLines Scrollytelling Battlestation & Story (`/story`):** หน้าเว็บย่อย 3D WebGL (Three.js + GSAP ScrollTrigger) ถ่ายทอดการเดินทาง, เจาะลึกมุมโต๊ะคอม Battlestation (Ryzen 5 5600, RTX 5060 Ti, ATK Ghost Mouse 800 DPI, Loga Pad), สถิติเกม FPS (Valorant, Apex, PoE2), และระบบเสียงสังเคราะห์ Cyber Web Audio FX พร้อม Chapter Navigator
+- 🎬 **DaLines Brutalist Motion Showcase V2 (`/showcase-v2`):** วิดีโอ Motion Graphics 15 วินาที (1920x1080 @ 60 FPS, 900 เฟรม) สไตล์ Swiss / Minimal Tech พร้อมดนตรีอิเล็กทรอนิกส์สังเคราะห์ขึ้นจากโค้ดล้วน 100% (Node.js Math Sound Synth) เรนเดอร์เป็นไฟล์ `dalines_showcase_15s.mp4` ด้วย FFmpeg
 - 🏎️ **Optimized Performance:** Preconnect, Zero Cumulative Layout Shift (CLS), และ SEO / Open Graph Image Preview ขนาดเต็ม
 
 ---
@@ -35,7 +36,13 @@ DaLines-Hub/
 ├── party.html         # DaLines Cozy Party Lounge (มินิเกม Chibi Gacha & Wheel of Fate)
 ├── story/             # 🌌 หน้าเว็บย่อย 3D Scrollytelling Battlestation & Story
 │   └── index.html     # โค้ด Three.js + GSAP ScrollTrigger + Web Audio FX
-├── showcase/          # Brutalist WebGL 12s Motion Graphic Video Showcase
+├── showcase/          # Brutalist WebGL 12s Motion Graphic Video Showcase (Version 1)
+├── showcase-v2/       # 🎬 Brutalist Motion Graphics 15s + Pure Code Audio Synth (Version 2)
+│   ├── index.html     # หน้าเว็บพรีวิว 15s Interactive Player
+│   ├── synth_audio.js # สคริปต์สังเคราะห์ดนตรี Stereo WAV 15 วินาที
+│   ├── render.js      # เรนเดอร์ 900 เฟรมด้วย Puppeteer + รวมวิดีโอด้วย FFmpeg
+│   ├── export-video.bat # ดับเบิลคลิกเพื่อเรนเดอร์วิดีโอ 15s MP4 บน Windows
+│   └── dalines_showcase_15s.mp4 # ไฟล์วิดีโอผลลัพธ์คุณภาพสูง
 ├── Logo.png           # โลโก้และรูปโปรไฟล์ DaLines (300x300)
 ├── banner-480.png     # รูปแบนเนอร์หลักประจำช่อง (853x480)
 ├── manifest.json      # ไฟล์ Web App Manifest (PWA)

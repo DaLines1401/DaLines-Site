@@ -822,10 +822,38 @@
     <input type="range" id="time-slider" min="0" max="15.0" step="0.0166" value="0" oninput="onSliderScrub(this.value)">
     <span id="slider-time-text" style="color: var(--accent-cyan); font-weight: 700; width: 60px;">0.00s</span>
     <button class="ctrl-btn" onclick="toggleFit()">FIT 100%</button>
+    <button class="ctrl-btn" onclick="openVideoModal()" title="ชมวิดีโอ MP4 60FPS ตัวเต็ม">
+      <i class="fa-solid fa-circle-play" style="color: var(--accent-lime);"></i>
+      <span>WATCH MP4</span>
+    </button>
     <a href="../index.html" class="ctrl-btn" style="text-decoration: none; color: #fff;">
       <i class="fa-solid fa-house text-xs"></i>
       <span>HUB</span>
     </a>
+  </div>
+
+  <!-- Modal for Exported MP4 Video -->
+  <div id="video-modal"
+    style="display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,0.92); backdrop-filter: blur(20px); align-items: center; justify-content: center; flex-direction: column;">
+    <div
+      style="position: relative; width: 92vw; max-width: 1280px; aspect-ratio: 16/9; background: #000; border: 2px solid var(--accent-cyan); box-shadow: 0 0 50px rgba(102,252,241,0.3); border-radius: 8px; overflow: hidden;">
+      <video id="mp4-video-player" src="dalines_showcase_15s.mp4" controls
+        style="width: 100%; height: 100%; object-fit: contain;"></video>
+      <button onclick="closeVideoModal()"
+        style="position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.8); border: 1px solid var(--border-cyan); color: #fff; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div style="margin-top: 18px; display: flex; gap: 15px; align-items: center;">
+      <a href="dalines_showcase_15s.mp4" download="dalines_showcase_15s.mp4" class="ctrl-btn"
+        style="text-decoration: none; padding: 8px 20px; font-size: 13px;">
+        <i class="fa-solid fa-download"></i>
+        <span>DOWNLOAD MP4 (46.8 MB)</span>
+      </a>
+      <button onclick="closeVideoModal()" class="ctrl-btn" style="padding: 8px 20px; font-size: 13px;">
+        <span>CLOSE</span>
+      </button>
+    </div>
   </div>
 
   <!-- ==================== LOGIC & TIMELINE SCRIPT ==================== -->
@@ -1264,6 +1292,24 @@
 
     // Initial render at t = 0
     window.renderFrame(0);
+
+    function openVideoModal() {
+      pause();
+      const modal = document.getElementById('video-modal');
+      const player = document.getElementById('mp4-video-player');
+      if (modal) modal.style.display = 'flex';
+      if (player) {
+        player.currentTime = 0;
+        player.play().catch(() => {});
+      }
+    }
+
+    function closeVideoModal() {
+      const modal = document.getElementById('video-modal');
+      const player = document.getElementById('mp4-video-player');
+      if (player) player.pause();
+      if (modal) modal.style.display = 'none';
+    }
 
     // Ready signal for Puppeteer renderer
     window.__READY__ = true;
