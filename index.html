@@ -2587,56 +2587,63 @@
         </div>
 
         <!-- 🔍 Live Player Rank Lookup HUD (ระบบค้นหาแรงก์ผู้เล่นสด) -->
-        <div class="p-3 sm:p-3.5 rounded-xl bg-black/60 border border-slate-800/90 shadow-inner flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5">
-          <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-red-600/30 to-purple-600/30 border border-red-500/30 flex items-center justify-center text-red-400 text-sm shrink-0">
-              <i class="fa-solid fa-user-tag"></i>
-            </div>
-            <div>
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="text-[11px] font-bold text-white" data-i18n="tracker_search_title">ค้นหาแรงก์ผู้เล่นสด (Live Player Lookup)</span>
-                <span class="px-1.5 py-0.2 rounded text-[8px] font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">ALL PLAYERS</span>
+        <div class="p-3 sm:p-4 rounded-xl bg-black/60 border border-slate-800/90 shadow-inner space-y-2.5">
+          <!-- Top Row: Icon, Title, and Reset Button -->
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-red-600/30 to-purple-600/30 border border-red-500/30 flex items-center justify-center text-red-400 text-sm shrink-0 shadow-sm">
+                <i class="fa-solid fa-user-tag"></i>
               </div>
-              <div class="text-[9px] text-slate-400" data-i18n="tracker_search_desc">ค้นหาได้ทุกไอดี (เช่น ตัวคุณเอง หรือเพื่อนในตี้)</div>
+              <div>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="text-xs sm:text-sm font-bold text-white tracking-wide" data-i18n="tracker_search_title">ค้นหาแรงก์ผู้เล่นสด (Live Player Lookup)</span>
+                  <span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">ALL PLAYERS</span>
+                </div>
+                <div class="text-[10px] text-slate-400" data-i18n="tracker_search_desc">ค้นหาได้ทุกไอดี ทุกเซิร์ฟเวอร์ (เช่น ตัวคุณเอง หรือเพื่อนในตี้)</div>
+              </div>
             </div>
+
+            <!-- Reset to Streamer Profile Button (top right when searching) -->
+            <button type="button" onclick="resetToStreamerProfile()" id="btn-val-reset-streamer"
+              title="กลับสู่โปรไฟล์ DaLines#TTV"
+              class="hidden px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs font-semibold transition active:scale-95 flex items-center gap-1.5 shrink-0 cursor-pointer shadow">
+              <i class="fa-solid fa-rotate-left text-[10px] text-amber-400"></i>
+              <span class="text-[11px] font-mono font-bold text-amber-300">DaLines#TTV</span>
+            </button>
           </div>
 
-          <!-- Search Form -->
-          <form id="val-player-search-form" onsubmit="searchValorantPlayer(event)" class="flex items-center gap-1.5 flex-1 max-w-xl">
+          <!-- Bottom Row: Search Form (Full Width, Spacious) -->
+          <form id="val-player-search-form" onsubmit="searchValorantPlayer(event)" class="flex items-center gap-2 w-full">
             <!-- Region Selector -->
-            <select id="val-search-region"
-              class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] font-mono text-cyan-300 outline-none focus:border-red-500 cursor-pointer shrink-0">
-              <option value="ap" selected>AP (Asia)</option>
-              <option value="na">NA (North America)</option>
-              <option value="eu">EU (Europe)</option>
-              <option value="kr">KR (Korea)</option>
-              <option value="latam">LATAM</option>
-              <option value="br">BR (Brazil)</option>
-            </select>
+            <div class="relative shrink-0">
+              <select id="val-search-region"
+                class="bg-slate-900 border border-slate-700 hover:border-slate-600 rounded-xl px-2.5 sm:px-3 py-2 text-xs font-mono font-bold text-cyan-300 outline-none focus:border-red-500 cursor-pointer shadow-inner">
+                <option value="ap" selected>AP (Asia)</option>
+                <option value="na">NA (North America)</option>
+                <option value="eu">EU (Europe)</option>
+                <option value="kr">KR (Korea)</option>
+                <option value="latam">LATAM</option>
+                <option value="br">BR (Brazil)</option>
+              </select>
+            </div>
 
             <!-- Riot ID Input -->
-            <div class="relative flex-1">
-              <input type="text" id="val-search-input" placeholder="พิมพ์ชื่อ#TAG เช่น DaLines#TTV, TenZ#0001"
-                class="w-full bg-slate-900/90 border border-slate-700 focus:border-red-500 focus:ring-1 focus:ring-red-500 rounded-lg pl-2.5 pr-7 py-1.5 text-xs text-white placeholder-slate-500 font-mono outline-none transition" />
+            <div class="relative flex-1 min-w-0">
+              <i class="fa-solid fa-crosshairs absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs pointer-events-none"></i>
+              <input type="text" id="val-search-input" placeholder="พิมพ์ชื่อ#TAG เช่น DaLines#TTV, TenZ#0001, YourName#TAG"
+                oninput="document.getElementById('btn-val-clear-search').classList.toggle('hidden', !this.value.trim())"
+                class="w-full bg-slate-900/90 border border-slate-700 hover:border-slate-600 focus:border-red-500 focus:ring-1 focus:ring-red-500 rounded-xl pl-8 sm:pl-9 pr-8 py-2 text-xs sm:text-sm text-white placeholder-slate-500 font-mono outline-none transition shadow-inner" />
               <button type="button" onclick="clearValSearchInput()" id="btn-val-clear-search"
-                class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white text-xs cursor-pointer">
+                class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white text-xs cursor-pointer p-1">
                 <i class="fa-solid fa-xmark"></i>
               </button>
             </div>
 
             <!-- Submit Button -->
             <button type="submit" id="btn-val-search"
-              class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-red-600 to-rose-600 hover:brightness-110 text-white text-xs font-bold font-gaming transition active:scale-95 shadow-[0_0_12px_rgba(239,68,68,0.4)] flex items-center gap-1.5 shrink-0 cursor-pointer">
+              class="px-4 sm:px-5 py-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-xs sm:text-sm font-bold font-gaming transition active:scale-95 shadow-[0_0_15px_rgba(239,68,68,0.4)] flex items-center gap-1.5 shrink-0 cursor-pointer">
               <i id="val-search-icon" class="fa-solid fa-magnifying-glass text-xs"></i>
               <span id="val-search-btn-text" data-i18n="tracker_search_btn">ค้นหา</span>
-            </button>
-
-            <!-- Reset to Streamer Profile Button -->
-            <button type="button" onclick="resetToStreamerProfile()" id="btn-val-reset-streamer"
-              title="กลับสู่โปรไฟล์ DaLines#TTV"
-              class="hidden px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs font-semibold transition active:scale-95 flex items-center gap-1 shrink-0 cursor-pointer shadow">
-              <i class="fa-solid fa-rotate-left text-[10px] text-amber-400"></i>
-              <span class="text-[11px] font-mono font-bold text-amber-300">DaLines</span>
             </button>
           </form>
         </div>
@@ -3019,8 +3026,6 @@
                 <div class="text-[9px] text-slate-500 font-mono">Rating Loss</div>
               </div>
             </div>
-          </div>
-        </div>
           </div>
         </div>
 
