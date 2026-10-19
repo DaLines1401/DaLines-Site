@@ -6,12 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DaLines Showcase // Brutalist WebGL Motion Graphic</title>
 
-  <!-- Fonts -->
+  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700;800&family=Orbitron:wght@500;700;800;900&family=Space+Grotesk:wght@600;700&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <!-- CDNs: Three.js & GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -905,6 +906,14 @@
     <input type="range" id="time-slider" min="0" max="12" step="0.016666" value="0">
     <div class="ctrl-readout" id="ctrl-time-text">00:00.00 (F000/720)</div>
     <button class="ctrl-btn" id="btn-scale">Fit Screen</button>
+    <a href="../showcase-v2/" class="ctrl-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px; border-color: rgba(69, 243, 43, 0.6); color: #45f32b;" title="สลับไปดู Showcase V2 (15s พร้อมดนตรีสังเคราะห์)">
+      <span>V2</span>
+      <i class="fa-solid fa-arrow-right text-[10px]"></i>
+    </a>
+    <a href="../" class="ctrl-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px; color: #fff;" title="กลับหน้าแรก DaLines Hub">
+      <i class="fa-solid fa-house text-xs"></i>
+      <span>HUB</span>
+    </a>
   </div>
 
   <script>

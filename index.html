@@ -806,8 +806,9 @@
       </div>
     </header>
 
-    <!-- 🌌 BATTLESTATION 3D SCROLLYTELLING & 15S MOTION SHOWCASE V2 CARDS -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+    <!-- 🌌 BATTLESTATION 3D SCROLLYTELLING & DUAL MOTION SHOWCASE (V1 & V2) CARDS -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 sm:gap-3 mb-5">
+      <!-- 1. STORY MODE (3D Scrollytelling) -->
       <a href="story/"
         class="tilt-card block p-3.5 rounded-2xl bg-gradient-to-r from-cyan-950/70 via-slate-900/90 to-purple-950/60 border border-cyan-500/40 hover:border-cyan-400 transition-all duration-300 shadow-[0_0_20px_rgba(0,240,255,0.15)] hover:shadow-[0_0_25px_rgba(0,240,255,0.35)] group">
         <div class="flex items-center justify-between gap-2.5">
@@ -837,6 +838,37 @@
         </div>
       </a>
 
+      <!-- 2. SHOWCASE V1 (12s WebGL Three.js Motion Graphic) -->
+      <a href="showcase/"
+        class="tilt-card block p-3.5 rounded-2xl bg-gradient-to-r from-sky-950/70 via-slate-900/90 to-blue-950/60 border border-sky-500/40 hover:border-sky-400 transition-all duration-300 shadow-[0_0_20px_rgba(14,165,233,0.15)] hover:shadow-[0_0_25px_rgba(14,165,233,0.35)] group">
+        <div class="flex items-center justify-between gap-2.5">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div
+              class="w-9 h-9 rounded-xl bg-sky-500/20 border border-sky-400/50 flex items-center justify-center text-sky-400 text-base group-hover:scale-110 group-hover:rotate-12 transition-transform shadow-md shrink-0">
+              <i class="fa-solid fa-cubes"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5">
+                <span
+                  class="text-xs font-bold font-gaming text-white group-hover:text-sky-300 transition-colors truncate">
+                  SHOWCASE V1
+                </span>
+                <span
+                  class="px-1.5 py-0.2 rounded text-[8px] font-mono font-bold bg-sky-500/20 text-sky-300 border border-sky-400/40 shrink-0">
+                  12S WEBGL
+                </span>
+              </div>
+              <p class="text-[10px] text-slate-300 mt-0.5 font-light truncate">
+                Three.js + GSAP 3D Brutalist Motion
+              </p>
+            </div>
+          </div>
+          <i
+            class="fa-solid fa-arrow-right text-[11px] text-sky-400 group-hover:translate-x-1 transition-transform shrink-0"></i>
+        </div>
+      </a>
+
+      <!-- 3. SHOWCASE V2 (15s 60fps Motion Graphic + Sound Synth) -->
       <a href="showcase-v2/"
         class="tilt-card block p-3.5 rounded-2xl bg-gradient-to-r from-lime-950/70 via-slate-900/90 to-emerald-950/60 border border-lime-500/40 hover:border-lime-400 transition-all duration-300 shadow-[0_0_20px_rgba(69,243,43,0.15)] hover:shadow-[0_0_25px_rgba(69,243,43,0.35)] group">
         <div class="flex items-center justify-between gap-2.5">
