@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <title>DaLines TTS Station | Discord & Twitch Voice Control Hub 🎙️⚡</title>
+  <meta name="description"
+    content="แผงควบคุมระบบเสียงบอทอ่านแชต DaLines Discord & Multi-channel Twitch TTS สตรีมเมอร์สเตชัน 24/7 บน Google Cloud" />
+  <link rel="icon" type="image/png" sizes="32x32" href="Logo.png" />
+  <meta name="theme-color" content="#10b981" />
+
+  <!-- Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Orbitron:wght@600;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            kanit: ['Kanit', 'sans-serif'],
+            gaming: ['Orbitron', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              emerald: '#10b981',
+              cyan: '#06b6d4',
+              purple: '#9146FF',
+              dark: '#080c14',
+              surface: 'rgba(15, 23, 42, 0.75)',
+              border: 'rgba(16, 185, 129, 0.25)'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Kanit', sans-serif;
+      background: radial-gradient(circle at 50% 0%, #064e3b 0%, #080c14 60%, #030712 100%);
+      color: #f1f5f9;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Cyber Glassmorphism Box */
+    .cyber-card {
+      background: rgba(13, 19, 33, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 1.25rem;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .cyber-card:hover {
+      border-color: rgba(16, 185, 129, 0.45);
+      box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.2);
+    }
+
+    .cyber-input {
+      background: rgba(8, 12, 20, 0.85);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #fff;
+      transition: all 0.2s ease;
+    }
+
+    .cyber-input:focus {
+      border-color: #10b981;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.35);
+      outline: none;
+    }
+
+    .pulse-glow {
+      animation: pulseGlow 2s infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% {
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+      }
+      50% {
+        box-shadow: 0 0 25px rgba(16, 185, 129, 0.8);
+      }
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(8, 12, 20, 0.8);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(16, 185, 129, 0.4);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(16, 185, 129, 0.7);
+    }
+  </style>
+</head>
+
+<body class="selection:bg-emerald-500 selection:text-black">
+  <!-- 🛰️ TOP NAVBAR -->
+  <header class="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-md border-b border-emerald-500/20 px-4 py-3 sm:px-6">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2 group">
+          <img src="Logo.png" alt="DaLines Logo" class="w-9 h-9 rounded-xl border border-emerald-500/40 group-hover:scale-105 transition-transform" />
+          <div class="leading-tight">
+            <div class="text-xs font-mono font-bold text-emerald-400 tracking-wider">DALINES HUB</div>
+            <div class="text-sm sm:text-base font-extrabold font-gaming text-white group-hover:text-emerald-300 transition-colors">
+              TTS STATION 🎙️
+            </div>
+          </div>
+        </a>
+        <span class="hidden sm:inline-block px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+          GCP 24/7 LIVE
+        </span>
+      </div>
+
+      <!-- Right Action Items -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Live Status Badge -->
+        <div id="statusBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-700 text-xs font-mono">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+          <span id="statusText" class="text-amber-300 font-bold">CONNECTING...</span>
+        </div>
+
+        <!-- PIN Settings Trigger -->
+        <button onclick="openPinModal()" class="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-600 text-xs font-medium text-slate-200 flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-key text-emerald-400"></i>
+          <span id="pinBtnText">ตั้ง PIN</span>
+        </button>
+
+        <!-- Back to Hub -->
+        <a href="/" class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-xs font-bold text-emerald-300 transition">
+          <i class="fa-solid fa-house"></i>
+          <span>หน้าหลัก</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 🌟 HERO / TELEMETRY STATUS BAR -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+    <!-- Telemetry Cards Grid -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <!-- 1. Voice Channel -->
+      <div class="cyber-card p-4">
+        <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+          <span class="font-mono">DISCORD ROOM</span>
+          <i class="fa-brands fa-discord text-indigo-400 text-sm"></i>
+        </div>
+        <div id="voiceChannel" class="text-base sm:text-lg font-bold text-white truncate">
+          ยังไม่ได้เชื่อมต่อ
+        </div>
+        <div class="text-[11px] text-slate-400 mt-1 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-slate-600" id="voiceDot"></span>
+          <span id="voiceGuild">ใช้ /join ในดิสคอร์ด</span>
+        </div>
+      </div>
+
+      <!-- 2. Voice Ping -->
+      <div class="cyber-card p-4">
+        <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+          <span class="font-mono">VOICE LATENCY</span>
+          <i class="fa-solid fa-wifi text-emerald-400 text-sm"></i>
+        </div>
+        <div id="voicePing" class="text-base sm:text-lg font-bold font-gaming text-emerald-400">
+          -- ms
+        </div>
+        <div class="text-[11px] text-slate-400 mt-1">Google Cloud Singapore</div>
+      </div>
+
+      <!-- 3. Audio Queue -->
+      <div class="cyber-card p-4">
+        <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+          <span class="font-mono">AUDIO QUEUE</span>
+          <i class="fa-solid fa-layer-group text-cyan-400 text-sm"></i>
+        </div>
+        <div id="queueCount" class="text-base sm:text-lg font-bold font-gaming text-cyan-400">
+          0 ข้อความ
+        </div>
+        <div class="text-[11px] text-slate-400 mt-1" id="playingState">ว่าง (Idle)</div>
+      </div>
+
+      <!-- 4. Twitch TTS Status -->
+      <div class="cyber-card p-4">
+        <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+          <span class="font-mono">TWITCH TTS</span>
+          <i class="fa-brands fa-twitch text-purple-400 text-sm"></i>
+        </div>
+        <div id="twitchStatusDisplay" class="text-base sm:text-lg font-bold text-purple-400">
+          กำลังตรวจสอบ...
+        </div>
+        <div class="text-[11px] text-slate-400 mt-1" id="twitchChannelsCount">
+          0 ช่องที่ติดตาม
+        </div>
+      </div>
+    </div>
+
+    <!-- 🎛️ MAIN WORKSPACE (2 Columns on large screens) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- LEFT COLUMN: TTS Say + Queue Control (7 Cols) -->
+      <div class="lg:col-span-7 space-y-6">
+        <!-- 🎙️ 1. DIRECT TTS BROADCAST CARD -->
+        <div class="cyber-card p-5 sm:p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                <i class="fa-solid fa-bullhorn text-sm"></i>
+              </div>
+              <div>
+                <h2 class="text-base sm:text-lg font-bold text-white leading-tight">สั่งอ่านข้อความออกเสียง (Broadcast)</h2>
+                <p class="text-xs text-slate-400">พิมพ์ข้อความเพื่อให้บอทอ่านเสียงในห้องดิสคอร์ดทันที</p>
+              </div>
+            </div>
+            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-md border border-emerald-500/30">
+              FAST-TTS
+            </span>
+          </div>
+
+          <!-- Text Input -->
+          <div class="space-y-2">
+            <textarea id="ttsTextInput" rows="3" placeholder="พิมพ์ข้อความที่นี่ เช่น 'GG ทุกคน เล่นดีมาก', 'ยินดีต้อนรับเข้าสู่สตรีม'..."
+              class="w-full cyber-input rounded-xl p-3 text-sm placeholder:text-slate-500 resize-none"></textarea>
+
+            <!-- Quick Template Chips -->
+            <div class="flex flex-wrap gap-1.5 pt-1">
+              <span class="text-[11px] text-slate-400 flex items-center mr-1">คำลัด:</span>
+              <button onclick="insertTemplate('สวัสดีทุกคนครับ ยินดีต้อนรับเข้าสู่สตรีม DaLines!')"
+                class="px-2 py-0.5 rounded-md bg-slate-800/80 hover:bg-slate-700 text-[11px] text-slate-300 border border-slate-700 transition">
+                👋 ทักทาย
+              </button>
+              <button onclick="insertTemplate('GG NT เล่นดีมากทุกคน!')"
+                class="px-2 py-0.5 rounded-md bg-slate-800/80 hover:bg-slate-700 text-[11px] text-slate-300 border border-slate-700 transition">
+                🏆 GG NT
+              </button>
+              <button onclick="insertTemplate('555+ ขำจัดๆ')"
+                class="px-2 py-0.5 rounded-md bg-slate-800/80 hover:bg-slate-700 text-[11px] text-slate-300 border border-slate-700 transition">
+                🤣 555+
+              </button>
+              <button onclick="insertTemplate('Clutch 1v3 สวยจัดดด!')"
+                class="px-2 py-0.5 rounded-md bg-slate-800/80 hover:bg-slate-700 text-[11px] text-slate-300 border border-slate-700 transition">
+                🔥 Clutch
+              </button>
+              <button onclick="insertTemplate('ขอบคุณสำหรับการกดติดตามและโดเนทนะครับ!')"
+                class="px-2 py-0.5 rounded-md bg-slate-800/80 hover:bg-slate-700 text-[11px] text-slate-300 border border-slate-700 transition">
+                💖 ขอบคุณ
+              </button>
+            </div>
+          </div>
+
+          <!-- Voice & Speed Settings -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <!-- Voice Selector -->
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">เลือกเสียงอ่าน (Voice)</label>
+              <select id="voiceSelect" class="w-full cyber-input rounded-xl p-2.5 text-xs">
+                <option value="th-TH-PremwadeeNeural" selected>เปรมวดี (หญิงไทย - นุ่มนวลสมจริง)</option>
+                <option value="th-TH-NiwatNeural">นิวัฒน์ (ชายไทย - เสียงเข้มชัด)</option>
+                <option value="google-th">Google แปลภาษา (เร็วสุดทันใจ ~0.3s)</option>
+                <option value="en-US-AvaNeural">Ava (หญิงอังกฤษ / US)</option>
+                <option value="en-US-GuyNeural">Guy (ชายอังกฤษ / US)</option>
+              </select>
+            </div>
+
+            <!-- Rate Selector -->
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">ความเร็วเสียง (Speed)</label>
+              <select id="rateSelect" class="w-full cyber-input rounded-xl p-2.5 text-xs">
+                <option value="-20%">ช้า (-20%)</option>
+                <option value="+0%">ปกติ (+0%)</option>
+                <option value="+20%" selected>เร็ว (+20% แนะนำสำหรับสตรีม)</option>
+                <option value="+40%">เร็วมาก (+40%)</option>
+                <option value="+60%">ติดสปีด (+60%)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Speak Button -->
+          <button id="sendTtsBtn" onclick="handleSendTTS()"
+            class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold font-gaming tracking-wide text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 transition-all transform active:scale-[0.98]">
+            <i class="fa-solid fa-volume-high"></i>
+            <span>SPEAK TO DISCORD (ส่งเสียงทันที)</span>
+          </button>
+        </div>
+
+        <!-- ⏯️ 2. AUDIO PLAYBACK & QUEUE MANAGEMENT -->
+        <div class="cyber-card p-5 sm:p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+                <i class="fa-solid fa-sliders text-sm"></i>
+              </div>
+              <div>
+                <h2 class="text-base sm:text-lg font-bold text-white leading-tight">ควบคุมคิวและระบบเสียง</h2>
+                <p class="text-xs text-slate-400">จัดการข้อความที่กำลังเล่นและโหมดเร่งสปีดอัจฉริยะ</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Current Playing Marquee -->
+          <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center gap-3">
+            <span class="w-3 h-3 rounded-full bg-cyan-400 animate-pulse shrink-0"></span>
+            <div class="min-w-0 flex-1">
+              <div class="text-[10px] font-mono text-cyan-400 font-bold uppercase">Now Speaking</div>
+              <div id="currentSpeechText" class="text-xs sm:text-sm text-slate-200 truncate font-medium">
+                ไม่มีเสียงกำลังเล่นอยู่ในขณะนี้
+              </div>
+            </div>
+            <button onclick="handleSkip()" title="ข้ามข้อความนี้"
+              class="px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-bold flex items-center gap-1.5 transition shrink-0">
+              <i class="fa-solid fa-forward-step"></i>
+              <span>ข้าม</span>
+            </button>
+          </div>
+
+          <!-- Fast Controls Buttons -->
+          <div class="grid grid-cols-2 gap-3">
+            <button onclick="handleClearQueue()"
+              class="py-2.5 px-3 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-xs font-bold flex items-center justify-center gap-2 transition">
+              <i class="fa-solid fa-trash-can"></i>
+              <span>ล้างคิวทั้งหมด (Clear)</span>
+            </button>
+            <button onclick="handleToggleName()"
+              class="py-2.5 px-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold flex items-center justify-center gap-2 transition">
+              <i class="fa-solid fa-id-badge text-indigo-400"></i>
+              <span id="nameToggleText">สลับอ่านชื่อคนพิมพ์</span>
+            </button>
+          </div>
+
+          <!-- Streamer Smart Modes Badges -->
+          <div class="pt-2 border-t border-slate-800/80 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            <div class="p-2.5 rounded-xl bg-slate-900/50 border border-slate-800 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-bolt text-amber-400"></i>
+                <span class="text-slate-300">Dynamic Speedup</span>
+              </div>
+              <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                ACTIVE
+              </span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-900/50 border border-slate-800 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+                <span class="text-slate-300">Anti-Spam Slowmode</span>
+              </div>
+              <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                ACTIVE
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: Twitch Channels & Live Logs (5 Cols) -->
+      <div class="lg:col-span-5 space-y-6">
+
+        <!-- 💜 3. MULTI-CHANNEL TWITCH CHAT READER -->
+        <div class="cyber-card p-5 sm:p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400">
+                <i class="fa-brands fa-twitch text-sm"></i>
+              </div>
+              <div>
+                <h2 class="text-base sm:text-lg font-bold text-white leading-tight">Twitch Chat Reader</h2>
+                <p class="text-xs text-slate-400">ดึงแชตจาก Twitch มาอ่านในห้องเสียงดิสคอร์ด</p>
+              </div>
+            </div>
+            <!-- Toggle Twitch Master Switch -->
+            <button id="twitchMasterToggleBtn" onclick="handleToggleTwitchTTS()"
+              class="px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 bg-purple-500/20 text-purple-300 border border-purple-500/40">
+              <i class="fa-solid fa-power-off"></i>
+              <span id="twitchMasterState">ON</span>
+            </button>
+          </div>
+
+          <!-- Active Channels Container -->
+          <div class="space-y-2">
+            <div class="text-xs font-medium text-slate-400 flex items-center justify-between">
+              <span>ช่องที่กำลังเชื่อมต่อ:</span>
+              <span id="channelCountBadge" class="text-[10px] font-mono text-purple-400">0 Channels</span>
+            </div>
+            <div id="twitchChannelsList" class="flex flex-wrap gap-2 min-h-[42px] p-2 rounded-xl bg-slate-900/80 border border-slate-800">
+              <!-- Rendered via JS -->
+              <span class="text-xs text-slate-500 self-center">กำลังโหลดช่อง...</span>
+            </div>
+          </div>
+
+          <!-- Quick Channel Presets -->
+          <div class="space-y-1.5">
+            <div class="text-[11px] text-slate-400">กดเพิ่มช่องด่วน (Presets):</div>
+            <div class="flex flex-wrap gap-1.5">
+              <button onclick="addPresetChannel('dalines')"
+                class="px-2.5 py-1 rounded-lg bg-purple-900/30 hover:bg-purple-900/50 border border-purple-500/40 text-purple-300 text-xs font-mono font-bold transition flex items-center gap-1">
+                <span>+</span> dalines
+              </button>
+              <button onclick="addPresetChannel('jxoexe')"
+                class="px-2.5 py-1 rounded-lg bg-purple-900/30 hover:bg-purple-900/50 border border-purple-500/40 text-purple-300 text-xs font-mono font-bold transition flex items-center gap-1">
+                <span>+</span> jxoexe
+              </button>
+              <button onclick="addPresetChannel('pauljaw')"
+                class="px-2.5 py-1 rounded-lg bg-purple-900/30 hover:bg-purple-900/50 border border-purple-500/40 text-purple-300 text-xs font-mono font-bold transition flex items-center gap-1">
+                <span>+</span> pauljaw
+              </button>
+            </div>
+          </div>
+
+          <!-- Custom Channel Input Form -->
+          <div class="flex gap-2">
+            <div class="relative flex-1">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 text-xs">
+                <i class="fa-solid fa-at"></i>
+              </span>
+              <input id="customTwitchChannelInput" type="text" placeholder="ชื่อช่อง twitch เช่น shroud"
+                class="w-full cyber-input pl-8 pr-3 py-2 rounded-xl text-xs" />
+            </div>
+            <button onclick="handleAddCustomChannel()"
+              class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition flex items-center gap-1.5 shrink-0">
+              <i class="fa-solid fa-plus"></i>
+              <span>เพิ่ม</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 📜 4. RECENT ACTIVITY LOGS -->
+        <div class="cyber-card p-5 sm:p-6 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-clock-rotate-left text-emerald-400 text-sm"></i>
+              <h3 class="text-sm font-bold text-white uppercase tracking-wider font-mono">Live Activity Logs</h3>
+            </div>
+            <button onclick="refreshData()" class="text-xs text-slate-400 hover:text-emerald-400 transition" title="รีเฟรชประวัติ">
+              <i class="fa-solid fa-arrows-rotate"></i>
+            </button>
+          </div>
+
+          <div id="logsFeed" class="space-y-2 max-h-64 overflow-y-auto pr-1">
+            <div class="text-xs text-slate-500 text-center py-6">
+              กำลังดึงประวัติการอ่านเสียง...
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 🔐 PIN SECURITY MODAL -->
+  <div id="pinModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="cyber-card max-w-sm w-full p-6 space-y-4 border border-emerald-500/40 shadow-2xl relative">
+      <div class="text-center space-y-1">
+        <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 mx-auto flex items-center justify-center text-emerald-400 text-xl mb-2">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">ยืนยันรหัส PIN ควบคุมบอท</h3>
+        <p class="text-xs text-slate-400">ใส่รหัส PIN เพื่อเปิดใช้งานปุ่มคำสั่งควบคุมเสียง (ค่าเริ่มต้น: 1234)</p>
+      </div>
+
+      <div class="space-y-2">
+        <input id="pinInput" type="password" maxlength="10" placeholder="••••"
+          class="w-full text-center tracking-[0.5em] font-mono text-xl py-3 cyber-input rounded-xl text-emerald-300 font-bold" />
+      </div>
+
+      <div class="flex gap-2 pt-2">
+        <button onclick="closePinModal()" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 transition">
+          ยกเลิก
+        </button>
+        <button onclick="savePin()" class="flex-1 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-xs font-bold text-slate-950 transition">
+          บันทึกรหัส
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔔 FLOATING TOAST -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="px-4 py-3 rounded-xl bg-slate-900 border border-emerald-500/50 shadow-xl flex items-center gap-3">
+      <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
+      <span id="toastMsg" class="text-xs text-slate-200 font-medium">ข้อความแจ้งเตือน</span>
+    </div>
+  </div>
+
+  <!-- ⚙️ SCRIPT ENGINE -->
+  <script>
+    // State
+    const API_BASE = '/api/tts';
+    let currentPin = localStorage.getItem('dalines_tts_pin') || '1234';
+    let botState = {};
+    let isConnected = false;
+
+    // Toast Helper
+    function showToast(msg, type = 'success') {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      const toastIcon = document.getElementById('toastIcon');
+
+      toastMsg.innerText = msg;
+      if (type === 'error') {
+        toastIcon.className = 'fa-solid fa-circle-exclamation text-rose-400';
+      } else {
+        toastIcon.className = 'fa-solid fa-circle-check text-emerald-400';
+      }
+
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0');
+      }, 3500);
+    }
+
+    // Modal Helpers
+    function openPinModal() {
+      document.getElementById('pinInput').value = currentPin;
+      document.getElementById('pinModal').classList.remove('hidden');
+    }
+
+    function closePinModal() {
+      document.getElementById('pinModal').classList.add('hidden');
+    }
+
+    function savePin() {
+      const pin = document.getElementById('pinInput').value.trim();
+      if (!pin) {
+        showToast('กรุณากรอกรหัส PIN', 'error');
+        return;
+      }
+      currentPin = pin;
+      localStorage.setItem('dalines_tts_pin', pin);
+      closePinModal();
+      showToast('บันทึก PIN เรียบร้อยแล้ว!');
+      refreshData();
+    }
+
+    function insertTemplate(text) {
+      const input = document.getElementById('ttsTextInput');
+      input.value = text;
+      input.focus();
+    }
+
+    // Fetch API with Auth
+    async function apiFetch(endpoint, method = 'GET', body = null) {
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentPin}`
+      };
+      const options = { method, headers };
+      if (body) {
+        options.body = JSON.stringify(body);
+      }
+      const res = await fetch(`${API_BASE}${endpoint}`, options);
+      if (!res.ok && res.status === 401) {
+        showToast('รหัส PIN ไม่ถูกต้อง กรุณากดปุ่มตั้ง PIN ใหม่', 'error');
+        throw new Error('Unauthorized');
+      }
+      return await res.json();
+    }
+
+    // Refresh telemetry & update UI
+    async function refreshData() {
+      try {
+        const data = await apiFetch('/status');
+        botState = data;
+        isConnected = true;
+
+        // Status Badge
+        const statusBadge = document.getElementById('statusBadge');
+        const statusText = document.getElementById('statusText');
+        statusBadge.className = 'flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-xs font-mono';
+        statusText.className = 'text-emerald-400 font-bold';
+        statusText.innerText = 'ONLINE (24/7)';
+
+        // Voice Channel
+        const voiceChannel = document.getElementById('voiceChannel');
+        const voiceDot = document.getElementById('voiceDot');
+        const voiceGuild = document.getElementById('voiceGuild');
+        if (data.voice_channel) {
+          voiceChannel.innerText = `🔊 ${data.voice_channel}`;
+          voiceDot.className = 'w-2 h-2 rounded-full bg-emerald-400 pulse-glow';
+          voiceGuild.innerText = data.guild_name || 'Connected';
+        } else {
+          voiceChannel.innerText = 'ไม่ได้อยู่ในห้องเสียง';
+          voiceDot.className = 'w-2 h-2 rounded-full bg-slate-600';
+          voiceGuild.innerText = 'ใช้คำสั่ง /join ใน Discord';
+        }
+
+        // Voice Ping
+        document.getElementById('voicePing').innerText = `${data.voice_ping || 0} ms`;
+
+        // Queue
+        document.getElementById('queueCount').innerText = `${data.queue_size || 0} ข้อความ`;
+        document.getElementById('playingState').innerText = data.is_playing ? '🔊 กำลังอ่านเสียงอยู่' : 'ว่าง (Idle)';
+
+        // Twitch TTS Status
+        const twitchDisplay = document.getElementById('twitchStatusDisplay');
+        const twitchMasterState = document.getElementById('twitchMasterState');
+        const twitchMasterBtn = document.getElementById('twitchMasterToggleBtn');
+        const isTwitchActive = data.twitch && data.twitch.active;
+        if (isTwitchActive) {
+          twitchDisplay.innerText = 'เปิดใช้งาน (Active)';
+          twitchDisplay.className = 'text-base sm:text-lg font-bold text-emerald-400';
+          twitchMasterState.innerText = 'ON';
+          twitchMasterBtn.className = 'px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+        } else {
+          twitchDisplay.innerText = 'ปิดเสียงอยู่ (Muted)';
+          twitchDisplay.className = 'text-base sm:text-lg font-bold text-rose-400';
+          twitchMasterState.innerText = 'OFF';
+          twitchMasterBtn.className = 'px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 bg-rose-500/20 text-rose-300 border border-rose-500/40';
+        }
+
+        // Twitch Channels List
+        const channels = (data.twitch && data.twitch.channels) || [];
+        document.getElementById('twitchChannelsCount').innerText = `${channels.length} ช่องที่ติดตาม`;
+        document.getElementById('channelCountBadge').innerText = `${channels.length} Channels`;
+        renderTwitchChannels(channels);
+
+        // Current Speech
+        document.getElementById('currentSpeechText').innerText = data.current_text || 'ไม่มีเสียงกำลังเล่นอยู่ในขณะนี้';
+
+        // Load Recent Logs
+        loadRecentLogs();
+      } catch (err) {
+        if (err.message !== 'Unauthorized') {
+          isConnected = false;
+          const statusBadge = document.getElementById('statusBadge');
+          const statusText = document.getElementById('statusText');
+          statusBadge.className = 'flex items-center gap-2 px-3 py-1.5 rounded-xl bg-rose-950/80 border border-rose-500/40 text-xs font-mono';
+          statusText.className = 'text-rose-400 font-bold';
+          statusText.innerText = 'DISCONNECTED';
+        }
+      }
+    }
+
+    function renderTwitchChannels(channels) {
+      const container = document.getElementById('twitchChannelsList');
+      if (!channels || channels.length === 0) {
+        container.innerHTML = '<span class="text-xs text-slate-500 self-center">ยังไม่มีช่องที่ติดตาม (กดเพิ่มด้านล่าง)</span>';
+        return;
+      }
+      container.innerHTML = channels.map(ch => `
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-mono font-bold bg-purple-500/15 border border-purple-500/30 text-purple-200">
+          <i class="fa-brands fa-twitch text-purple-400 text-[11px]"></i>
+          <span>${ch}</span>
+          <button onclick="handleRemoveChannel('${ch}')" title="ลบช่องนี้" class="hover:text-rose-400 transition ml-1">
+            <i class="fa-solid fa-xmark text-[10px]"></i>
+          </button>
+        </span>
+      `).join('');
+    }
+
+    async function loadRecentLogs() {
+      try {
+        const logs = await apiFetch('/recent');
+        const container = document.getElementById('logsFeed');
+        if (!logs || logs.length === 0) {
+          container.innerHTML = '<div class="text-xs text-slate-500 text-center py-4">ยังไม่มีประวัติการอ่านข้อความ</div>';
+          return;
+        }
+        container.innerHTML = logs.map(item => {
+          const isTwitch = item.platform === 'twitch';
+          return `
+            <div class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/80 flex items-start justify-between gap-3 text-xs">
+              <div class="space-y-0.5 min-w-0">
+                <div class="flex items-center gap-2">
+                  <span class="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold ${isTwitch ? 'bg-purple-500/20 text-purple-300' : 'bg-indigo-500/20 text-indigo-300'}">
+                    ${isTwitch ? 'TWITCH' : 'DISCORD'}
+                  </span>
+                  <span class="font-bold text-white truncate">${item.author || 'User'}</span>
+                  <span class="text-[10px] text-slate-500">${item.time || ''}</span>
+                </div>
+                <div class="text-slate-300 break-words leading-relaxed">${item.text}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {}
+    }
+
+    // Action Handlers
+    async function handleSendTTS() {
+      const input = document.getElementById('ttsTextInput');
+      const text = input.value.trim();
+      if (!text) {
+        showToast('กรุณาพิมพ์ข้อความก่อนส่ง', 'error');
+        return;
+      }
+
+      const voice = document.getElementById('voiceSelect').value;
+      const rate = document.getElementById('rateSelect').value;
+      const btn = document.getElementById('sendTtsBtn');
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>กำลังส่งข้อความ...</span>';
+
+      try {
+        const res = await apiFetch('/say', 'POST', { text, voice, rate });
+        showToast(res.message || 'ส่งข้อความไปที่ดิสคอร์ดเรียบร้อยแล้ว!');
+        input.value = '';
+        refreshData();
+      } catch (err) {
+        showToast('ส่งไม่สำเร็จ: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-volume-high"></i><span>SPEAK TO DISCORD (ส่งเสียงทันที)</span>';
+      }
+    }
+
+    async function handleSkip() {
+      try {
+        const res = await apiFetch('/skip', 'POST');
+        showToast(res.message || 'ข้ามข้อความปัจจุบันเรียบร้อย');
+        refreshData();
+      } catch (err) {
+        showToast('ไม่สามารถข้ามได้: ' + err.message, 'error');
+      }
+    }
+
+    async function handleClearQueue() {
+      if (!confirm('คุณต้องการล้างคิวข้อความทั้งหมดใช่หรือไม่?')) return;
+      try {
+        const res = await apiFetch('/clear', 'POST');
+        showToast(res.message || 'ล้างคิวเรียบร้อย');
+        refreshData();
+      } catch (err) {
+        showToast('ล้างคิวไม่สำเร็จ: ' + err.message, 'error');
+      }
+    }
+
+    async function handleToggleName() {
+      try {
+        const res = await apiFetch('/toggle_name', 'POST');
+        showToast(res.message || 'สลับการอ่านชื่อคนพิมพ์แล้ว');
+        refreshData();
+      } catch (err) {
+        showToast('ดำเนินการไม่สำเร็จ: ' + err.message, 'error');
+      }
+    }
+
+    async function handleToggleTwitchTTS() {
+      try {
+        const res = await apiFetch('/twitch/toggle', 'POST');
+        showToast(res.message || 'สลับสถานะ Twitch TTS สำเร็จ');
+        refreshData();
+      } catch (err) {
+        showToast('สลับสถานะไม่สำเร็จ: ' + err.message, 'error');
+      }
+    }
+
+    async function addPresetChannel(channel) {
+      try {
+        const res = await apiFetch('/twitch/channel', 'POST', { channel });
+        showToast(res.message || `เพิ่มช่อง ${channel} แล้ว`);
+        refreshData();
+      } catch (err) {
+        showToast('เพิ่มช่องไม่สำเร็จ: ' + err.message, 'error');
+      }
+    }
+
+    async function handleAddCustomChannel() {
+      const input = document.getElementById('customTwitchChannelInput');
+      const channel = input.value.trim().toLowerCase();
+      if (!channel) {
+        showToast('กรุณาพิมพ์ชื่อช่อง Twitch', 'error');
+        return;
+      }
+      await addPresetChannel(channel);
+      input.value = '';
+    }
+
+    async function handleRemoveChannel(channel) {
+      try {
+        const res = await apiFetch('/twitch/channel', 'DELETE', { channel });
+        showToast(res.message || `ลบช่อง ${channel} แล้ว`);
+        refreshData();
+      } catch (err) {
+        showToast('ลบช่องไม่สำเร็จ: ' + err.message, 'error');
+      }
+    }
+
+    // Auto Init & Polling every 3.5s
+    document.addEventListener('DOMContentLoaded', () => {
+      refreshData();
+      setInterval(refreshData, 3500);
+    });
+  </script>
+</body>
+
+</html>

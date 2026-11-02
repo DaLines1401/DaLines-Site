@@ -231,7 +231,58 @@ export default {
       });
     }
 
-    // 3. Fallback: Serve static assets for the website
+    // 3. TTS Discord & Twitch Bot Proxy (/api/tts/* -> GCP VM port 8080)
+    if (url.pathname.startsWith('/api/tts')) {
+      const gcpOrigin = env.TTS_BOT_ORIGIN || 'http://35.187.229.200:8080';
+      const targetPath = url.pathname.replace(/^\/api\/tts/, '/api') + url.search;
+      const targetUrl = `${gcpOrigin}${targetPath}`;
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 7000);
+
+        const forwardHeaders = new Headers();
+        if (request.headers.get('Content-Type')) {
+          forwardHeaders.set('Content-Type', request.headers.get('Content-Type'));
+        }
+        if (request.headers.get('Authorization')) {
+          forwardHeaders.set('Authorization', request.headers.get('Authorization'));
+        }
+
+        const body = ['POST', 'PUT', 'PATCH'].includes(request.method) ? await request.text() : undefined;
+        const res = await fetch(targetUrl, {
+          method: request.method,
+          headers: forwardHeaders,
+          body,
+          signal: controller.signal
+        });
+        clearTimeout(timeout);
+
+        const data = await res.text();
+        return new Response(data, {
+          status: res.status,
+          headers: {
+            ...CORS_HEADERS,
+            'Content-Type': res.headers.get('Content-Type') || 'application/json'
+          }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({
+          status: 'error',
+          message: 'ไม่สามารถติดต่อเซิร์ฟเวอร์บอท TTS (GCP) ได้: ' + err.message
+        }), {
+          status: 502,
+          headers: CORS_HEADERS
+        });
+      }
+    }
+
+    // 4. Clean Route Rewrite for /tts -> /tts.html
+    if (url.pathname === '/tts' || url.pathname === '/tts/') {
+      url.pathname = '/tts.html';
+      return env.ASSETS.fetch(new Request(url.toString(), request));
+    }
+
+    // 5. Fallback: Serve static assets for the website
     return env.ASSETS.fetch(request);
   }
 };
