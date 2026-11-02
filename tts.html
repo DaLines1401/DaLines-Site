@@ -180,16 +180,22 @@
         </div>
       </div>
 
-      <!-- 2. Voice Ping -->
+      <!-- 2. Voice Ping (Ultra-Low Latency) -->
       <div class="cyber-card p-4">
         <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
-          <span class="font-mono">VOICE LATENCY</span>
-          <i class="fa-solid fa-wifi text-emerald-400 text-sm"></i>
+          <span class="font-mono flex items-center gap-1.5">
+            VOICE LATENCY
+            <span id="voiceLatencyBadge" class="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono font-bold">🟢 Ultra-Low</span>
+          </span>
+          <i class="fa-solid fa-bolt-lightning text-emerald-400 text-sm"></i>
         </div>
-        <div id="voicePing" class="text-base sm:text-lg font-bold font-gaming text-emerald-400">
-          -- ms
+        <div class="flex items-baseline gap-2">
+          <div id="voicePing" class="text-base sm:text-lg font-bold font-gaming text-emerald-400">
+            -- ms
+          </div>
+          <span id="gatewayPingNote" class="text-[10px] text-slate-500 font-mono">(GW: --ms)</span>
         </div>
-        <div class="text-[11px] text-slate-400 mt-1">Google Cloud Singapore</div>
+        <div class="text-[10px] text-slate-400 mt-0.5 truncate" id="voiceNodeText">Node: Singapore • RAM Disk 0ms</div>
       </div>
 
       <!-- 3. Audio Queue -->
@@ -269,6 +275,25 @@
                 class="px-2 py-0.5 rounded-md bg-slate-800/80 hover:bg-slate-700 text-[11px] text-slate-300 border border-slate-700 transition">
                 💖 ขอบคุณ
               </button>
+            </div>
+
+            <!-- ⚡ In-Memory Pre-Cache Quick Speech (0ms Latency) -->
+            <div class="pt-2 border-t border-slate-800/80">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[11px] font-mono font-bold text-emerald-400 flex items-center gap-1">
+                  <i class="fa-solid fa-bolt-lightning text-xs"></i> IN-MEMORY PRE-CACHE (0ms Latency):
+                </span>
+                <span id="cacheCountBadge" class="text-[10px] font-mono text-slate-400">⚡ 26 คำใน RAM</span>
+              </div>
+              <div id="precacheChips" class="flex flex-wrap gap-1.5">
+                <button onclick="instantSpeak('555+')" class="px-2 py-0.5 rounded-md bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-500/40 text-[11px] text-emerald-300 font-mono transition">⚡ 555+</button>
+                <button onclick="instantSpeak('GG')" class="px-2 py-0.5 rounded-md bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-500/40 text-[11px] text-emerald-300 font-mono transition">⚡ GG</button>
+                <button onclick="instantSpeak('NT')" class="px-2 py-0.5 rounded-md bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-500/40 text-[11px] text-emerald-300 font-mono transition">⚡ NT</button>
+                <button onclick="instantSpeak('WP')" class="px-2 py-0.5 rounded-md bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-500/40 text-[11px] text-emerald-300 font-mono transition">⚡ WP</button>
+                <button onclick="instantSpeak('Clutch สวยมาก')" class="px-2 py-0.5 rounded-md bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-500/40 text-[11px] text-emerald-300 font-mono transition">⚡ Clutch สวยมาก</button>
+                <button onclick="instantSpeak('สวัสดีครับ')" class="px-2 py-0.5 rounded-md bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-500/40 text-[11px] text-emerald-300 font-mono transition">⚡ สวัสดีครับ</button>
+                <button onclick="instantSpeak('ขอบคุณครับ')" class="px-2 py-0.5 rounded-md bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-500/40 text-[11px] text-emerald-300 font-mono transition">⚡ ขอบคุณครับ</button>
+              </div>
             </div>
           </div>
 
@@ -615,8 +640,31 @@
           voiceGuild.innerText = 'ใช้คำสั่ง /join ใน Discord';
         }
 
-        // Voice Ping
-        document.getElementById('voicePing').innerText = `${data.voice_ping || 0} ms`;
+        // ⚡ Voice Ping & Ultra-Low Latency
+        const vPing = data.voice_udp_ping || data.voice_ping || 0;
+        document.getElementById('voicePing').innerText = `${vPing} ms`;
+        const vBadge = document.getElementById('voiceLatencyBadge');
+        if (vBadge && data.voice_status_label) vBadge.innerText = data.voice_status_label;
+        const gwNote = document.getElementById('gatewayPingNote');
+        if (gwNote && data.gateway_ping) gwNote.innerText = `(GW: ${data.gateway_ping}ms)`;
+        const nodeEl = document.getElementById('voiceNodeText');
+        const ramInfo = data.ram_disk && data.ram_disk.active ? 'RAM Disk (/dev/shm 0ms)' : 'Fast Storage';
+        if (nodeEl) nodeEl.innerText = `Node: ${data.voice_node || 'Singapore'} • ${ramInfo}`;
+
+        // ⚡ Pre-Cache Stats & Dynamic Chips
+        if (data.cache) {
+          const cBadge = document.getElementById('cacheCountBadge');
+          if (cBadge) cBadge.innerText = `⚡ ${data.cache.cached_count || 0} คำใน RAM (Hits: ${data.cache.cache_hits || 0})`;
+          if (data.cache.phrases && data.cache.phrases.length > 0) {
+            const container = document.getElementById('precacheChips');
+            if (container) {
+              const topPhrases = data.cache.phrases.slice(0, 10);
+              container.innerHTML = topPhrases.map(p => 
+                `<button onclick="instantSpeak('${p.replace(/'/g, "\\'")}')" class="px-2 py-0.5 rounded-md bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-500/40 text-[11px] text-emerald-300 font-mono transition flex items-center gap-1">⚡ ${p}</button>`
+              ).join('');
+            }
+          }
+        }
 
         // Queue
         document.getElementById('queueCount').innerText = `${data.queue_size || 0} ข้อความ`;
@@ -708,6 +756,18 @@
     }
 
     // Action Handlers
+    async function instantSpeak(phrase) {
+      const voice = document.getElementById('voiceSelect').value;
+      const rate = document.getElementById('rateSelect').value;
+      try {
+        const res = await apiFetch('/say', 'POST', { text: phrase, voice, rate });
+        showToast(`⚡ พูดคำแคช "${phrase}" ทันที 0ms!`);
+        refreshData();
+      } catch (err) {
+        showToast('ส่งไม่สำเร็จ: ' + err.message, 'error');
+      }
+    }
+
     async function handleSendTTS() {
       const input = document.getElementById('ttsTextInput');
       const text = input.value.trim();
