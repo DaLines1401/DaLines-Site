@@ -231,9 +231,9 @@ export default {
       });
     }
 
-    // 3. TTS Discord & Twitch Bot Proxy (/api/tts/* -> GCP VM port 8080)
+    // 3. TTS Discord & Twitch Bot Proxy (/api/tts/* -> GCP VM via sslip.io domain)
     if (url.pathname.startsWith('/api/tts')) {
-      const gcpOrigin = env.TTS_BOT_ORIGIN || 'http://35.187.229.200:8080';
+      const gcpOrigin = env.TTS_BOT_ORIGIN || 'http://35.187.229.200.sslip.io:8080';
       const targetPath = url.pathname.replace(/^\/api\/tts/, '/api') + url.search;
       const targetUrl = `${gcpOrigin}${targetPath}`;
       try {
@@ -262,13 +262,13 @@ export default {
           status: res.status,
           headers: {
             ...CORS_HEADERS,
-            'Content-Type': res.headers.get('Content-Type') || 'application/json'
+            'Content-Type': res.headers.get('Content-Type') || 'application/json; charset=utf-8'
           }
         });
       } catch (err) {
         return new Response(JSON.stringify({
           status: 'error',
-          message: 'ไม่สามารถติดต่อเซิร์ฟเวอร์บอท TTS (GCP) ได้: ' + err.message
+          message: 'ไม่สามารถติดต่อเซิร์ฟเวอร์บอท (GCP) ได้: ' + err.message
         }), {
           status: 502,
           headers: CORS_HEADERS
