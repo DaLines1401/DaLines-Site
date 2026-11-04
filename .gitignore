@@ -26,3 +26,9 @@ desktop.ini
 # Rendered Frames
 showcase/frames/
 showcase-v2/frames/
+
+# Archives & Secrets
+*.zip
+.env
+.env.*
+!.env.example
