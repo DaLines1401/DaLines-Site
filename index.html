@@ -124,6 +124,15 @@
 
   <style>
     :root {
+      --font-heading: 'HelveticaNowDisplay-Medium', 'Helvetica Neue', Arial, sans-serif;
+      --font-body: 'HelveticaNowDisplayW01-Rg', 'Helvetica Neue', Arial, sans-serif;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    :root {
       --sat: env(safe-area-inset-top);
       --sab: env(safe-area-inset-bottom);
 
@@ -534,6 +543,10 @@
       }
     }
   </style>
+  <!-- Helvetica Now Display Fonts for Spooky Dance Hero -->
+  <link rel="stylesheet" href="https://db.onlinewebfonts.com/c/5ac3fe7c6abd2f62067f266d89671492?family=HelveticaNowDisplay-Medium" type="text/css" />
+  <link rel="stylesheet" href="https://db.onlinewebfonts.com/c/1aa3377e489837a26d019bba501e779d?family=HelveticaNowDisplayW01-Rg" type="text/css" />
+
 </head>
 
 <body
@@ -581,7 +594,144 @@
   <!-- Interactive Cyber Constellation Canvas -->
   <canvas id="cyber-bg-canvas" class="fixed inset-0 pointer-events-none -z-20 w-full h-full opacity-65"></canvas>
 
-  <div class="w-full max-w-md sm:max-w-xl md:max-w-2xl mx-auto px-3.5 sm:px-6 pt-3">
+    <!-- ================================================================= -->
+  <!-- 🕺 DALINES FULL-SCREEN INTERACTIVE SPOOKY DANCE HERO (TOP OF SITE) -->
+  <!-- ================================================================= -->
+  <section id="hero-landing-section" class="relative w-full h-screen overflow-hidden flex flex-col justify-between select-none" style="background-color: #0a0a0c;">
+    <!-- Full-Screen Interactive Dance Video -->
+    <video id="hero-dance-video" src="spookydance.mp4" muted playsinline preload="auto" loop
+      class="absolute inset-0 w-full h-full object-cover object-[70%_center] z-0 pointer-events-none transition-opacity duration-700 opacity-90"></video>
+    <!-- Dark Gradient Vignette Overlay -->
+    <div class="absolute inset-0 z-0 pointer-events-none bg-gradient-to-t from-[#0a0a0c] via-black/35 to-black/75"></div>
+
+    <!-- Fixed/Top Navbar for Hero -->
+    <header class="relative z-20 w-full px-5 sm:px-8 py-4 sm:py-5 flex justify-between items-center bg-black/30 backdrop-blur-md border-b border-white/10">
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a href="#hero-landing-section" class="flex items-center gap-2 no-underline">
+          <span class="text-[21px] sm:text-[26px] font-bold tracking-tight text-white" style="font-family: var(--font-heading);">DaLines™</span>
+          <span class="text-[22px] sm:text-[26px] text-emerald-400 select-none animate-pulse" style="letter-spacing: -0.02em;">✳︎</span>
+        </a>
+        <!-- Twitch Live Badge -->
+        <a href="https://www.twitch.tv/dalines" target="_blank" rel="noopener noreferrer" id="hero-live-badge"
+          class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border bg-white/5 text-neutral-400 border-white/10 transition-all">
+          <span class="w-1.5 h-1.5 rounded-full bg-neutral-500" id="hero-live-dot"></span>
+          <span id="hero-live-text" data-i18n="hero_offline">OFFLINE</span>
+        </a>
+      </div>
+
+      <!-- Desktop Nav Links -->
+      <nav class="hidden md:flex items-center text-[17px] sm:text-[19px] text-neutral-200 gap-1 font-medium">
+        <a href="#hub-main" class="hover:text-emerald-400 transition-colors" data-i18n="hero_nav_hub">Hub</a>
+        <span class="text-neutral-500">, </span>
+        <a href="https://www.twitch.tv/dalines" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-400 transition-colors">Twitch</a>
+        <span class="text-neutral-500">, </span>
+        <a href="https://www.youtube.com/@DaLinesTTV" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-400 transition-colors">YouTube</a>
+        <span class="text-neutral-500">, </span>
+        <a href="https://www.tiktok.com/@dalinestuang" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-400 transition-colors">TikTok</a>
+        <span class="text-neutral-500">, </span>
+        <a href="#specs" class="hover:text-emerald-400 transition-colors" data-i18n="hero_nav_setup">Setup & Gear</a>
+        <span class="text-neutral-500">, </span>
+        <a href="https://discord.gg/3m9x688YCG" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-400 transition-colors">Discord</a>
+        <span class="text-neutral-500">, </span>
+        <a href="story/" class="hover:text-emerald-400 transition-colors" data-i18n="hero_nav_story">Story</a>
+      </nav>
+
+      <!-- Right Controls -->
+      <div class="flex items-center gap-3">
+        <!-- Lang Toggle -->
+        <button onclick="toggleLanguage()" class="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-white/10 text-white hover:bg-emerald-400 hover:text-black border border-white/10 transition-all cursor-pointer">
+          <span id="hero-lang-label">EN</span>
+        </button>
+
+        <!-- Sound Toggle -->
+        <button id="hero-sound-toggle-btn" onclick="toggleHeroDanceAudio()"
+          class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border bg-white/10 text-white border-white/10 hover:bg-white/20 transition-all cursor-pointer">
+          <span id="hero-sound-icon">🔇</span>
+          <span id="hero-sound-text" data-i18n="hero_sound_off">Sound Off</span>
+        </button>
+
+        <!-- CTA Watch Live -->
+        <a href="https://www.twitch.tv/dalines" target="_blank" rel="noopener noreferrer"
+          class="hidden sm:inline-block text-[17px] sm:text-[19px] text-white underline underline-offset-4 hover:text-emerald-400 transition-colors font-medium ml-1">
+          <span data-i18n="hero_cta">🔴 Watch Live</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Hero Content (Blurred Label, Typewriter, Action Pills) -->
+    <div class="relative z-10 w-full max-w-2xl px-5 sm:px-8 md:px-12 my-auto">
+      <!-- 1. Blurred Intro Label -->
+      <div id="hero-blurred-intro" class="pointer-events-none select-none mb-4 font-normal text-neutral-200"
+        style="font-size: clamp(18px, 3.5vw, 24px); line-height: 1.3; filter: blur(4px);">
+        <span data-i18n="hero_intro_1">ยินดีต้อนรับสู่สตรีม DaLines,</span><br />
+        <span data-i18n="hero_intro_2">DaLines • Tactical & Action RPG Broadcast Hub</span>
+      </div>
+
+      <!-- 2. Typewriter Text -->
+      <p id="hero-typewriter-text" class="text-white mb-6 font-normal min-h-[56px]"
+        style="font-size: clamp(18px, 4vw, 26px); line-height: 1.4;">
+        <span id="hero-typewriter-content"></span><span id="hero-typewriter-cursor" class="inline-block w-[2px] h-[1.1em] bg-emerald-400 align-middle ml-[3px] animate-[blink_1s_step-end_infinite]"></span>
+      </p>
+
+      <!-- 3. Action Pill Buttons -->
+      <div id="hero-action-pills" class="flex flex-wrap items-center gap-2 sm:gap-2.5 transition-all duration-500 opacity-0 translate-y-2">
+        <a href="https://www.twitch.tv/dalines" target="_blank" rel="noopener noreferrer"
+          class="inline-flex items-center justify-center bg-white text-black font-medium border border-white/20 rounded-full text-[13px] sm:text-[15px] px-4 sm:px-5 py-2 hover:bg-emerald-400 hover:text-black transition-all duration-200 cursor-pointer shadow-lg whitespace-nowrap active:scale-95"
+          data-i18n="hero_pill_twitch">🎮 สตรีมสดบน Twitch</a>
+
+        <a href="https://www.youtube.com/@DaLinesTTV" target="_blank" rel="noopener noreferrer"
+          class="inline-flex items-center justify-center bg-white text-black font-medium border border-white/20 rounded-full text-[13px] sm:text-[15px] px-4 sm:px-5 py-2 hover:bg-emerald-400 hover:text-black transition-all duration-200 cursor-pointer shadow-lg whitespace-nowrap active:scale-95"
+          data-i18n="hero_pill_youtube">🎬 ไฮไลท์และคลิป YouTube</a>
+
+        <a href="#hub-main"
+          class="inline-flex items-center justify-center bg-white text-black font-medium border border-white/20 rounded-full text-[13px] sm:text-[15px] px-4 sm:px-5 py-2 hover:bg-emerald-400 hover:text-black transition-all duration-200 cursor-pointer shadow-lg whitespace-nowrap active:scale-95"
+          data-i18n="hero_pill_setup">⚡ สเปกคอมและเกียร์เกมมิ่ง</a>
+
+        <a href="https://discord.gg/3m9x688YCG" target="_blank" rel="noopener noreferrer"
+          class="inline-flex items-center justify-center bg-white text-black font-medium border border-white/20 rounded-full text-[13px] sm:text-[15px] px-4 sm:px-5 py-2 hover:bg-emerald-400 hover:text-black transition-all duration-200 cursor-pointer shadow-lg whitespace-nowrap active:scale-95"
+          data-i18n="hero_pill_community">💬 เข้าร่วม Discord ชุมชน</a>
+
+        <!-- Copy Email Pill Button -->
+        <button id="hero-copy-email-btn" onclick="copyHeroBusinessEmail()"
+          class="inline-flex items-center justify-center text-white bg-black/40 backdrop-blur-sm border border-white/40 rounded-full text-[13px] sm:text-[15px] px-4 sm:px-5 py-2 gap-2 hover:border-emerald-400 hover:text-emerald-300 transition-all cursor-pointer whitespace-nowrap shadow-lg active:scale-95">
+          <span id="hero-email-text">ติดต่องาน: <span class="underline underline-offset-2">taung@windowslive.com</span></span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 opacity-80"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
+
+      <!-- Scroll to Hub Button -->
+      <div class="mt-6">
+        <a href="#hub-main" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/20 hover:bg-emerald-400 text-emerald-300 hover:text-black border border-emerald-500/40 font-bold text-xs sm:text-sm transition-all shadow-lg backdrop-blur-md cursor-pointer group">
+          <span data-i18n="hero_scroll_btn">⚡ เลื่อนลงสู่ DaLines Command Center ⚡</span>
+          <i class="fa-solid fa-chevron-down group-hover:translate-y-1 transition-transform"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- Interactive Bottom Scrub HUD -->
+    <aside aria-label="Video scrubber HUD"
+      class="relative z-20 w-[92%] max-w-xl mx-auto mb-3 sm:mb-4 px-4 py-2 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center justify-between gap-3 text-xs sm:text-sm text-neutral-300 shadow-2xl">
+      <button id="hero-hud-play-btn" onclick="toggleHeroAutoDance()"
+        class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-emerald-400 hover:text-black font-medium transition-colors text-white shrink-0 cursor-pointer">
+        <span id="hero-hud-play-text">▶ เต้นอัตโนมัติ</span>
+      </button>
+
+      <div class="flex-1 flex flex-col justify-center gap-1">
+        <div class="w-full h-1.5 bg-white/20 rounded-full overflow-hidden relative">
+          <div id="hero-hud-progress" class="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 w-0 transition-[width] duration-75"></div>
+        </div>
+        <p id="hero-hud-hint" class="text-[10px] sm:text-[11px] text-neutral-400 truncate text-center hidden sm:block" data-i18n="hero_scrub_hint">
+          ขยับเมาส์ หรือปาดหน้าจอเพื่อสครับท่าเต้น • กด Spacebar เพื่อเต้นอัตโนมัติ
+        </p>
+      </div>
+
+      <span id="hero-hud-time" class="text-[11px] font-mono text-neutral-400 shrink-0">0.0s / 0.0s</span>
+    </aside>
+  </section>
+
+  <!-- Main Hub Wrapper -->
+  <div id="hub-main" class="relative z-10 w-full pt-4">
+<div class="w-full max-w-md sm:max-w-xl md:max-w-2xl mx-auto px-3.5 sm:px-6 pt-3">
 
     <!-- Top Action Bar -->
     <div class="flex items-center justify-between mb-3.5 flex-wrap gap-2">
@@ -4004,6 +4154,23 @@
         tracker_search_desc: "ค้นหาได้ทุกไอดี (เช่น ตัวคุณเอง หรือเพื่อนในตี้)",
         tracker_search_btn: "ค้นหา",
         toast_tracker_synced: "ซิงค์สถิติ Valorant สำเร็จแล้ว! 🎯",
+        hero_intro_1: "ยินดีต้อนรับสู่สตรีม DaLines,",
+        hero_intro_2: "DaLines • ศูนย์รวมเกม Tactical FPS & Action RPG",
+        hero_typewriter: "ดีใจที่แวะเข้ามา บรรยากาศดีๆ และความคมชัดมักจะนำพาเรามาเจอกัน วันนี้เราจะลุยเกมไหนกันดี?",
+        hero_pill_twitch: "🎮 สตรีมสดบน Twitch",
+        hero_pill_youtube: "🎬 ไฮไลท์และคลิป YouTube",
+        hero_pill_setup: "⚡ สเปกคอมและเกียร์เกมมิ่ง",
+        hero_pill_community: "💬 เข้าร่วม Discord ชุมชน",
+        hero_nav_hub: "หน้าหลัก",
+        hero_nav_setup: "สเปกคอม",
+        hero_nav_story: "สตอรี่",
+        hero_cta: "🔴 ดูสตรีมสด",
+        hero_sound_on: "เปิดเสียง",
+        hero_sound_off: "ปิดเสียง",
+        hero_scrub_hint: "ขยับเมาส์ หรือปาดหน้าจอเพื่อสครับท่าเต้น • กด Spacebar เพื่อเต้นอัตโนมัติ",
+        hero_scroll_btn: "⚡ เลื่อนลงสู่ DaLines Command Center ⚡",
+        hero_offline: "ออฟไลน์",
+        hero_live: "กำลังสตรีมสดบน TWITCH",
         toast_copy_riot_id: "คัดลอก Riot ID: DaLines#TTV เรียบร้อย! 🎮"
       },
       en: {
@@ -4093,6 +4260,23 @@
         tracker_search_desc: "Look up any Riot ID & region in real-time",
         tracker_search_btn: "Lookup",
         toast_tracker_synced: "Valorant stats synced successfully! 🎯",
+        hero_intro_1: "Hey there, welcome to the stream,",
+        hero_intro_2: "DaLines • Tactical & Action RPG Broadcast Hub",
+        hero_typewriter: "Glad you stopped by. Good vibes and sharp aim always find a way. What game are we diving into today?",
+        hero_pill_twitch: "🎮 Twitch Stream",
+        hero_pill_youtube: "🎬 YouTube VODs",
+        hero_pill_setup: "⚡ Gaming Setup & Specs",
+        hero_pill_community: "💬 Join Community",
+        hero_nav_hub: "Hub",
+        hero_nav_setup: "Setup & Gear",
+        hero_nav_story: "Story",
+        hero_cta: "🔴 Watch Live",
+        hero_sound_on: "Sound On",
+        hero_sound_off: "Sound Off",
+        hero_scrub_hint: "Drag mouse or swipe to scrub dance • Press Space to auto-dance",
+        hero_scroll_btn: "⚡ Scroll down to Battle Station & Hub ⚡",
+        hero_offline: "OFFLINE",
+        hero_live: "LIVE ON TWITCH",
         toast_copy_riot_id: "Riot ID: DaLines#TTV copied to clipboard! 🎮"
       }
     };
@@ -8653,6 +8837,274 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
       showToast('✨ DaLines Hub ติดตั้งลงเครื่องเรียบร้อยแล้ว!');
     });
   </script>
+  </div><!-- End of hub-main -->
+
+  <!-- 🕺 Hero Dance Controller -->
+  <script>
+    let heroVideo = null;
+    let heroIsSeeking = false;
+    let heroPendingTime = null;
+    let heroTargetTime = 0;
+    let heroPrevX = null;
+    let heroTouchPrevX = null;
+    let heroIsAutoPlaying = false;
+    let heroTypewriterInterval = null;
+    let heroTypewriterTimer = null;
+
+    function initHeroDance() {
+      heroVideo = document.getElementById('hero-dance-video');
+      if (!heroVideo) return;
+
+      const SENSITIVITY = 0.85;
+
+      function requestSeek(time) {
+        if (!heroVideo || isNaN(time) || !isFinite(time)) return;
+        const dur = heroVideo.duration || 1;
+        const clamped = Math.max(0, Math.min(time, dur));
+        heroTargetTime = clamped;
+
+        if (heroIsSeeking) {
+          heroPendingTime = clamped;
+        } else {
+          heroIsSeeking = true;
+          try {
+            heroVideo.currentTime = clamped;
+            updateHeroHUDProgress(clamped, dur);
+          } catch (e) {
+            heroIsSeeking = false;
+          }
+        }
+      }
+
+      heroVideo.addEventListener('seeked', () => {
+        if (heroPendingTime !== null) {
+          const next = heroPendingTime;
+          heroPendingTime = null;
+          try {
+            heroVideo.currentTime = next;
+            updateHeroHUDProgress(next, heroVideo.duration || 1);
+          } catch (e) {
+            heroIsSeeking = false;
+          }
+        } else {
+          heroIsSeeking = false;
+        }
+      });
+
+      heroVideo.addEventListener('timeupdate', () => {
+        if (heroIsAutoPlaying) {
+          updateHeroHUDProgress(heroVideo.currentTime, heroVideo.duration || 1);
+        }
+      });
+
+      // Mouse Scrubbing on Window
+      window.addEventListener('mousemove', (e) => {
+        if (!heroVideo || !heroVideo.duration) return;
+        if (window.scrollY > window.innerHeight) return;
+
+        if (heroPrevX === null) {
+          heroPrevX = e.clientX;
+          return;
+        }
+
+        const delta = e.clientX - heroPrevX;
+        heroPrevX = e.clientX;
+
+        if (Math.abs(delta) > 1 && heroIsAutoPlaying) {
+          setHeroAutoDance(false);
+        }
+
+        const dur = heroVideo.duration || 1;
+        const offset = (delta / window.innerWidth) * SENSITIVITY * dur;
+        requestSeek(heroTargetTime + offset);
+      });
+
+      window.addEventListener('mouseleave', () => {
+        heroPrevX = null;
+      });
+
+      // Touch Scrubbing
+      window.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 0) heroTouchPrevX = e.touches[0].clientX;
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!heroVideo || !heroVideo.duration || e.touches.length === 0) return;
+        if (window.scrollY > window.innerHeight) return;
+
+        const currentX = e.touches[0].clientX;
+        if (heroTouchPrevX === null) {
+          heroTouchPrevX = currentX;
+          return;
+        }
+        const delta = currentX - heroTouchPrevX;
+        heroTouchPrevX = currentX;
+
+        if (Math.abs(delta) > 2 && heroIsAutoPlaying) {
+          setHeroAutoDance(false);
+        }
+
+        const dur = heroVideo.duration || 1;
+        const offset = (delta / window.innerWidth) * SENSITIVITY * dur;
+        requestSeek(heroTargetTime + offset);
+      }, { passive: true });
+
+      window.addEventListener('touchend', () => {
+        heroTouchPrevX = null;
+      });
+
+      // Spacebar Play/Pause
+      window.addEventListener('keydown', (e) => {
+        if (['INPUT', 'TEXTAREA'].includes(e.target?.tagName)) return;
+        if (e.code === 'Space' && window.scrollY < window.innerHeight) {
+          e.preventDefault();
+          toggleHeroAutoDance();
+        }
+      });
+
+      // Action Pills entrance after 400ms
+      setTimeout(() => {
+        const pills = document.getElementById('hero-action-pills');
+        if (pills) {
+          pills.classList.remove('opacity-0', 'translate-y-2');
+          pills.classList.add('opacity-100', 'translate-y-0');
+        }
+      }, 400);
+
+      // Start Typewriter
+      startHeroTypewriter();
+
+      // Check live status for hero badge
+      checkHeroLiveStatus();
+    }
+
+    function updateHeroHUDProgress(cur, dur) {
+      const prog = document.getElementById('hero-hud-progress');
+      const time = document.getElementById('hero-hud-time');
+      if (prog && dur > 0) {
+        prog.style.width = ((cur / dur) * 100) + '%';
+      }
+      if (time) {
+        time.innerText = cur.toFixed(1) + 's / ' + dur.toFixed(1) + 's';
+      }
+    }
+
+    function toggleHeroAutoDance() {
+      setHeroAutoDance(!heroIsAutoPlaying);
+    }
+
+    function setHeroAutoDance(active) {
+      heroIsAutoPlaying = active;
+      const btn = document.getElementById('hero-hud-play-text');
+      if (!heroVideo) return;
+      if (active) {
+        heroVideo.play().catch(() => {});
+        if (btn) btn.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block mr-1"></span>⏸ พักการเต้น';
+      } else {
+        heroVideo.pause();
+        if (btn) btn.innerText = '▶ เต้นอัตโนมัติ';
+      }
+    }
+
+    function toggleHeroDanceAudio() {
+      if (!heroVideo) return;
+      heroVideo.muted = !heroVideo.muted;
+      const isMuted = heroVideo.muted;
+      const btn = document.getElementById('hero-sound-toggle-btn');
+      const icon = document.getElementById('hero-sound-icon');
+      const text = document.getElementById('hero-sound-text');
+
+      if (!isMuted) {
+        if (heroVideo.paused) heroVideo.play().catch(() => {});
+        if (icon) icon.innerText = '🔊';
+        if (text) text.innerText = (currentLang === 'th') ? 'เปิดเสียง' : 'Sound On';
+        if (btn) {
+          btn.classList.add('bg-emerald-400', 'text-black', 'border-emerald-400');
+          btn.classList.remove('bg-white/10', 'text-white');
+        }
+      } else {
+        if (icon) icon.innerText = '🔇';
+        if (text) text.innerText = (currentLang === 'th') ? 'ปิดเสียง' : 'Sound Off';
+        if (btn) {
+          btn.classList.remove('bg-emerald-400', 'text-black', 'border-emerald-400');
+          btn.classList.add('bg-white/10', 'text-white');
+        }
+      }
+    }
+
+    function startHeroTypewriter() {
+      if (heroTypewriterInterval) clearInterval(heroTypewriterInterval);
+      if (heroTypewriterTimer) clearTimeout(heroTypewriterTimer);
+
+      const content = document.getElementById('hero-typewriter-content');
+      const cursor = document.getElementById('hero-typewriter-cursor');
+      if (!content) return;
+      content.innerText = '';
+      if (cursor) cursor.style.display = 'inline-block';
+
+      const text = (translations[currentLang] && translations[currentLang].hero_typewriter) 
+        ? translations[currentLang].hero_typewriter 
+        : "Glad you stopped by. Good vibes and sharp aim always find a way. What game are we diving into today?";
+
+      let idx = 0;
+      heroTypewriterTimer = setTimeout(() => {
+        heroTypewriterInterval = setInterval(() => {
+          idx++;
+          if (idx <= text.length) {
+            content.innerText = text.slice(0, idx);
+          }
+          if (idx >= text.length) {
+            clearInterval(heroTypewriterInterval);
+            if (cursor) cursor.style.display = 'none';
+          }
+        }, 35);
+      }, 500);
+    }
+
+    function copyHeroBusinessEmail() {
+      navigator.clipboard.writeText('taung@windowslive.com').then(() => {
+        const text = document.getElementById('hero-email-text');
+        if (text) {
+          const original = text.innerHTML;
+          text.innerHTML = '<span class="text-emerald-400 font-semibold">' + (currentLang === 'th' ? 'คัดลอกอีเมลแล้ว! ✓' : 'Copied to clipboard! ✓') + '</span>';
+          setTimeout(() => {
+            text.innerHTML = original;
+          }, 2000);
+        }
+        playSound('copy');
+      }).catch(() => {});
+    }
+
+    function checkHeroLiveStatus() {
+      fetch('https://decapi.me/twitch/uptime/dalines')
+        .then(res => res.text())
+        .then(text => {
+          const offline = text.toLowerCase().includes('offline');
+          const badge = document.getElementById('hero-live-badge');
+          const dot = document.getElementById('hero-live-dot');
+          const statusText = document.getElementById('hero-live-text');
+          if (badge && dot && statusText) {
+            if (!offline) {
+              badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border bg-red-500/20 text-red-400 border-red-500/40 animate-pulse';
+              dot.className = 'w-1.5 h-1.5 rounded-full bg-red-500';
+              statusText.innerText = (currentLang === 'th') ? 'กำลังสตรีมสดบน TWITCH' : 'LIVE ON TWITCH';
+            } else {
+              badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border bg-white/5 text-neutral-400 border-white/10';
+              dot.className = 'w-1.5 h-1.5 rounded-full bg-neutral-500';
+              statusText.innerText = (currentLang === 'th') ? 'ออฟไลน์' : 'OFFLINE';
+            }
+          }
+        }).catch(() => {});
+    }
+
+    // Auto-init on DOMContentLoaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initHeroDance);
+    } else {
+      initHeroDance();
+    }
+  </script>
+
 </body>
 
 </html>
