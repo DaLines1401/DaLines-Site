@@ -282,7 +282,13 @@ export default {
       return env.ASSETS.fetch(new Request(url.toString(), request));
     }
 
-    // 5. Fallback: Serve static assets for the website
+    // 5. Clean Route Rewrite for /dance -> /dance/index.html
+    if (url.pathname === '/dance' || url.pathname === '/dance/') {
+      url.pathname = '/dance/index.html';
+      return env.ASSETS.fetch(new Request(url.toString(), request));
+    }
+
+    // 6. Fallback: Serve static assets for the website
     return env.ASSETS.fetch(request);
   }
 };

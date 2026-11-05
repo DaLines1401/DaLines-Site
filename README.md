@@ -9,6 +9,7 @@ Official Profile Hub & Battle Station for **DaLines** — Streamer, Gamer, and F
 ## 🚀 Key Features
 
 - ⚡ **Auto-Deploy with Cloudflare Workers CI/CD:** ทุกครั้งที่มีการ Commit หรือ Push โค้ดขึ้น Branch `main` บน GitHub ระบบจะ Deploy ขึ้น Cloudflare Workers ทันทีอัตโนมัติ
+- 🕺 **DaLines Spooky Dance Hero Landing Page (`/dance`):** หน้าเว็บแบบ Full-Screen Hero สไตล์ Interactive Mouse-Scrub Video Background (React 18 + TypeScript + Vite + Tailwind CSS) โต้ตอบการเต้นตามการเคลื่อนที่ของเมาส์/ทัชสกรีน, ระบบ 2 ภาษา (TH / EN) ซิงค์อัตโนมัติกับ `dalines_lang`, สถานะสด Twitch Broadcast, แผงเสียง Cyber Web Audio SFX, และปุ่มลัด Action Pills ติดต่อธุรกิจ (`taung@windowslive.com`)
 - 💰 **EZDN Donation Integration:** เชื่อมต่อระบบโดเนท [ezdn.app/dalines](https://ezdn.app/dalines) แจ้งเตือนขึ้นจอสด
 - 🎯 **Valorant Crosshair One-Click Copy:** โค้ดเป้าเล็ง Valorant ของ DaLines พร้อมปุ่มคลิกคัดลอกลง Clipboard ทันที
 - 🔴 **Real-Time Twitch Live Status:** ตรวจจับสถานะสตรีมจริง (Online / Offline) และเกมที่กำลังเล่นอัตโนมัติผ่าน Twitch API (DecAPI)
@@ -35,79 +36,27 @@ Official Profile Hub & Battle Station for **DaLines** — Streamer, Gamer, and F
 ```text
 DaLines-Hub/
 ├── index.html         # โค้ดหน้าเว็บหลัก (HTML + Tailwind + JS)
+├── dance/             # 🕺 หน้าเว็บย่อย Spooky Dance Hero Landing Page (React + TS + Vite + Tailwind)
+│   ├── index.html     # Production Bundle Entry Point
+│   ├── assets/        # Compiled CSS & JS
+│   └── spookydance.mp4 # Video Asset
+├── dance-app/         # 🛠️ Source code สำหรับพัฒนาหน้า Dance Hero (Vite dev server)
+│   ├── src/           # React Components, Hooks, SFX & Types
+│   ├── package.json
+│   └── vite.config.ts
 ├── party.html         # DaLines Cozy Party Lounge (มินิเกม Chibi Gacha & Wheel of Fate)
 ├── story/             # 🌌 หน้าเว็บย่อย 3D Scrollytelling Battlestation & Story
 │   └── index.html     # โค้ด Three.js + GSAP ScrollTrigger + Web Audio FX
 ├── showcase/          # Brutalist WebGL 12s Motion Graphic Video Showcase (Version 1)
 ├── showcase-v2/       # 🎬 Brutalist Motion Graphics 15s + Pure Code Audio Synth (Version 2)
-│   ├── index.html     # หน้าเว็บพรีวิว 15s Interactive Player
-│   ├── synth_audio.js # สคริปต์สังเคราะห์ดนตรี Stereo WAV 15 วินาที
-│   ├── render.js      # เรนเดอร์ 900 เฟรมด้วย Puppeteer + รวมวิดีโอด้วย FFmpeg
-│   ├── export-video.bat # ดับเบิลคลิกเพื่อเรนเดอร์วิดีโอ 15s MP4 บน Windows
-│   └── dalines_showcase_15s.mp4 # ไฟล์วิดีโอผลลัพธ์คุณภาพสูง
 ├── Logo.png           # โลโก้และรูปโปรไฟล์ DaLines (300x300)
 ├── banner-480.png     # รูปแบนเนอร์หลักประจำช่อง (853x480)
+├── spookydance.mp4    # วิดีโอหลักคาแรคเตอร์เต้น Spooky Dance
 ├── manifest.json      # ไฟล์ Web App Manifest (PWA)
 ├── sitemap.xml        # ไฟล์แผนผังเว็บไซต์ (Sitemap SEO)
 ├── auto-deploy.bat    # ⚡ ดับเบิลคลิกเพื่อ Auto Deploy ทันทีใน 1 วินาที
 ├── auto-watch.bat     # 👁️ เปิดทิ้งไว้เพื่อ Auto Deploy อัตโนมัติทุกครั้งที่กด Save (Ctrl+S)
 ├── val-sync.bat       # 🎮 ดับเบิลคลิกเพื่อซิงค์แรงก์ & สถิติ Valorant สดจากเครื่องขึ้นเว็บทันที
 ├── worker.js          # ⚡ Cloudflare Worker API (/api/valorant & Static Assets)
-├── tools/             # 🛠️ สคริปต์เครื่องมือเสริม (val-sync.ps1 Direct Daemon)
-├── wrangler.jsonc     # ไฟล์คอนฟิก Cloudflare Workers
-├── .gitignore         # ไฟล์ละเว้นที่ไม่ต้อง push ขึ้น Git
-└── README.md          # เอกสารแนะนำโปรเจกต์
+└── wrangler.jsonc     # ไฟล์คอนฟิก Cloudflare Workers
 ```
-
----
-
-## 🎮 วิธีการใช้งาน Valorant Direct Live Sync (สำหรับสตรีมเมอร์)
-
-ระบบ Valorant Career & Match Tracker มี API ภายในเชื่อมต่อตรงระหว่างคอมพิวเตอร์ของสตรีมเมอร์กับ Cloudflare Worker โดยไม่ต้องพึ่งพาบริการภายนอก:
-
-1. **⚡ ซิงค์แบบ 1 คลิก (One-Click Sync):**
-   - ดับเบิลคลิกที่ไฟล์ `val-sync.bat` บนเครื่องคอมพิวเตอร์
-   - เลือกเมนู **[1]** เพื่อส่งค่าสถิติล่าสุด (Diamond 1, 50 RR, 1.08 KD, 148 ADR) ขึ้นเว็บทันที
-2. **⚙️ กรอกแก้ไขตัวเลขสด (Manual Quick Edit):**
-   - เลือกเมนู **[2]** ในหน้าต่างเพื่อพิมพ์แรงก์, คะแนน RR, หรือ K/D ใหม่ แล้วระบบจะอัปเดตหน้าเว็บทันทีแบบเรียลไทม์
-3. **👁️ โหมดตรวจจับขณะสตรีม (Auto-Watch Mode):**
-   - เลือกเมนู **[3]** เพื่อให้สคริปต์ตรวจจับโปรเซสตัวเกม Valorant บนเครื่องขณะกำลังสตรีม
-
----
-
-## 🚀 วิธีการใช้งาน Auto Deploy
-
-โปรเจกต์นี้มีระบบ Auto Deploy ให้เลือกใช้ 2 โหมด:
-
-1. **⚡ โหมดรวดเร็วคลิกเดียว (Instant 1-Click Deploy):**
-   - ดับเบิลคลิกที่ไฟล์ `auto-deploy.bat`
-   - ระบบจะตรวจจับไฟล์ใหม่ -> บันทึก Commit อัตโนมัติ -> Push ขึ้น GitHub -> Cloudflare ทำการ Deploy สู่หน้าเว็บจริงทันที แล้วปิดหน้าต่างให้อัตโนมัติ
-
-2. **👁️ โหมดตรวจจับการเปลี่ยนแปลงอัตโนมัติ (Realtime Watcher):**
-   - ดับเบิลคลิกเปิดไฟล์ `auto-watch.bat` แล้วย่อหน้าต่างลง Taskbar
-   - เมื่อคุณแก้ไขไฟล์อะไรก็ตามแล้วกดบันทึก (`Ctrl + S`) ระบบจะตรวจจับและ Auto Deploy ให้อัตโนมัติทันทีโดยที่คุณไม่ต้องกดอะไรอีกเลย!
-
----
-
-## 🛠️ การตั้งค่า Cloudflare Workers Build
-
-- **Build command:** `None`
-- **Deploy command:** `npx wrangler deploy`
-- **Root directory:** `/`
-- **Production branch:** `main`
-
----
-
-## 💻 วิธีการรันและทดสอบในเครื่อง (Local Development)
-
-หากต้องการทดสอบในเครื่องด้วย Node.js และ Wrangler:
-
-```bash
-npx wrangler dev
-```
-
-เปิดเบราว์เซอร์ไปที่ `http://localhost:8787` เพื่อดูตัวอย่างหน้าเว็บ
-
----
-
-© 2026 DaLines. All Rights Reserved.
