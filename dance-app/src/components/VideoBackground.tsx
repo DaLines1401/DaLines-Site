@@ -225,7 +225,7 @@ export const VideoBackground: React.FC<VideoBackgroundProps> = ({
       {/* Background Fullscreen Video */}
       <video
         ref={videoRef}
-        src="./spookydance.mp4"
+        src="../spookydance.mp4"
         muted={isMuted}
         playsInline
         preload="auto"

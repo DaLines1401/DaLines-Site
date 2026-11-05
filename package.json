@@ -1,0 +1,10 @@
+{
+  "name": "dalines-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DaLines Official Hub & Stream Site",
+  "scripts": {
+    "build": "echo Ready",
+    "deploy": "wrangler deploy"
+  }
+}
