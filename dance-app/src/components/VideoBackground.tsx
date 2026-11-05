@@ -7,6 +7,7 @@ interface VideoBackgroundProps {
   isAutoPlaying: boolean;
   setIsAutoPlaying: React.Dispatch<React.SetStateAction<boolean>>;
   translations: Translations;
+  scrollProgress: number;
 }
 
 export const VideoBackground: React.FC<VideoBackgroundProps> = ({
@@ -14,10 +15,9 @@ export const VideoBackground: React.FC<VideoBackgroundProps> = ({
   isAutoPlaying,
   setIsAutoPlaying,
   translations,
+  scrollProgress,
 }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const prevX = useRef<number | null>(null);
-  const touchPrevX = useRef<number | null>(null);
   const isSeeking = useRef<boolean>(false);
   const pendingTargetTime = useRef<number | null>(null);
   const targetTimeRef = useRef<number>(0);
@@ -25,9 +25,6 @@ export const VideoBackground: React.FC<VideoBackgroundProps> = ({
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(1);
   const [isVideoLoaded, setIsVideoLoaded] = useState<boolean>(false);
-
-  // SENSITIVITY from spec: 0.85
-  const SENSITIVITY = 0.85;
 
   // Perform seek safely using onSeeked queue
   const requestSeek = useCallback((time: number) => {
@@ -77,11 +74,6 @@ export const VideoBackground: React.FC<VideoBackgroundProps> = ({
       const dur = video.duration || 1;
       setDuration(dur);
       setIsVideoLoaded(true);
-
-      // On touch / small screens: initial gentle auto-play fallback
-      if (window.innerWidth < 768) {
-        setIsAutoPlaying(true);
-      }
     }
   };
 
@@ -98,9 +90,7 @@ export const VideoBackground: React.FC<VideoBackgroundProps> = ({
     if (!video) return;
 
     if (isAutoPlaying) {
-      video.play().catch(() => {
-        // Browser autoplay restrictions may require user interaction
-      });
+      video.play().catch(() => {});
     } else {
       video.pause();
     }
@@ -113,99 +103,17 @@ export const VideoBackground: React.FC<VideoBackgroundProps> = ({
     }
   };
 
-  // Mouse move scrubber listener on window
+  // Scrub based on scrollProgress when not auto-playing
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const video = videoRef.current;
-      if (!video || !video.duration) return;
-
-      if (prevX.current === null) {
-        prevX.current = e.clientX;
-        return;
-      }
-
-      const delta = e.clientX - prevX.current;
-      prevX.current = e.clientX;
-
-      // When user starts dragging cursor, pause auto-dance and scrub
-      if (Math.abs(delta) > 1 && isAutoPlaying) {
-        setIsAutoPlaying(false);
-      }
-
-      const dur = video.duration || 1;
-      const timeOffset = (delta / window.innerWidth) * SENSITIVITY * dur;
-      const nextTime = targetTimeRef.current + timeOffset;
-
-      // Wrap-around loop or strict clamp:
-      // Spec: Clamp targetTime strictly between 0 and video.duration
-      const clamped = Math.max(0, Math.min(nextTime, dur));
-      requestSeek(clamped);
-    };
-
-    const handleMouseLeave = () => {
-      prevX.current = null;
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseleave', handleMouseLeave);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseleave', handleMouseLeave);
-    };
-  }, [isAutoPlaying, requestSeek, setIsAutoPlaying]);
-
-  // Touch swipe scrubber listener on window
-  useEffect(() => {
-    const handleTouchStart = (e: TouchEvent) => {
-      if (e.touches.length > 0) {
-        touchPrevX.current = e.touches[0].clientX;
-      }
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      const video = videoRef.current;
-      if (!video || !video.duration || e.touches.length === 0) return;
-
-      const currentX = e.touches[0].clientX;
-      if (touchPrevX.current === null) {
-        touchPrevX.current = currentX;
-        return;
-      }
-
-      const delta = currentX - touchPrevX.current;
-      touchPrevX.current = currentX;
-
-      if (Math.abs(delta) > 2 && isAutoPlaying) {
-        setIsAutoPlaying(false);
-      }
-
-      const dur = video.duration || 1;
-      const timeOffset = (delta / window.innerWidth) * SENSITIVITY * dur;
-      const nextTime = targetTimeRef.current + timeOffset;
-      const clamped = Math.max(0, Math.min(nextTime, dur));
-      requestSeek(clamped);
-    };
-
-    const handleTouchEnd = () => {
-      touchPrevX.current = null;
-    };
-
-    window.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: true });
-    window.addEventListener('touchend', handleTouchEnd, { passive: true });
-
-    return () => {
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('touchend', handleTouchEnd);
-    };
-  }, [isAutoPlaying, requestSeek, setIsAutoPlaying]);
+    if (!isAutoPlaying && videoRef.current && duration > 0) {
+      const mappedTime = scrollProgress * duration;
+      requestSeek(mappedTime);
+    }
+  }, [scrollProgress, isAutoPlaying, duration, requestSeek]);
 
   // Keyboard shortcut: Spacebar to toggle Play/Pause
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore if user is in an input or textarea
       if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) return;
       if (e.code === 'Space') {
         e.preventDefault();
@@ -218,7 +126,24 @@ export const VideoBackground: React.FC<VideoBackgroundProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [setIsAutoPlaying]);
 
+  // Active audio visualizer animation
+  const [vizBars, setVizBars] = useState<number[]>([4, 6, 10, 5, 8, 4, 9, 6]);
+  useEffect(() => {
+    if (!isMuted && (isAutoPlaying || !videoRef.current?.paused)) {
+      const interval = setInterval(() => {
+        const now = Date.now() / 150;
+        setVizBars(
+          Array.from({ length: 8 }, (_, i) => 4 + Math.abs(Math.sin(now + i * 0.8)) * 12)
+        );
+      }, 50);
+      return () => clearInterval(interval);
+    } else {
+      setVizBars([4, 4, 4, 4, 4, 4, 4, 4]);
+    }
+  }, [isMuted, isAutoPlaying]);
+
   const scrubProgressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const currentStageNum = scrollProgress >= 0.60 ? 3 : scrollProgress >= 0.25 ? 2 : 1;
 
   return (
     <>
@@ -235,17 +160,17 @@ export const VideoBackground: React.FC<VideoBackgroundProps> = ({
         onTimeUpdate={handleTimeUpdate}
         className="fixed inset-0 w-full h-full object-cover object-[70%_center] z-0 pointer-events-none transition-opacity duration-700"
         style={{
-          opacity: isVideoLoaded ? 1 : 0,
+          opacity: isVideoLoaded ? 0.9 : 0,
         }}
       />
 
       {/* Subtle Dark Vignette & Gradient Overlay */}
-      <div className="fixed inset-0 z-0 pointer-events-none bg-gradient-to-t from-black/85 via-black/35 to-black/60" />
+      <div className="fixed inset-0 z-0 pointer-events-none bg-gradient-to-t from-[#0a0a0c] via-black/40 to-black/80" />
 
-      {/* Interactive Bottom Scrub HUD */}
-      <aside 
+      {/* Interactive Bottom HUD with Active Audio Visualizer */}
+      <aside
         aria-label="Video scrubber HUD"
-        className="fixed bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 w-[92%] max-w-xl px-4 py-2 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center justify-between gap-3 text-xs sm:text-sm text-neutral-300 shadow-2xl transition-all"
+        className="fixed bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 w-[92%] max-w-2xl px-4 py-2 rounded-full bg-black/70 backdrop-blur-xl border border-white/10 flex items-center justify-between gap-3 text-xs sm:text-sm text-neutral-300 shadow-2xl transition-all"
       >
         {/* Play/Pause Button */}
         <button
@@ -262,23 +187,33 @@ export const VideoBackground: React.FC<VideoBackgroundProps> = ({
               <span>⏸ {translations.autoPlayActive.split('(')[0]}</span>
             </>
           ) : (
-            <>
-              <span>▶ {translations.autoPlayPaused.split('(')[0]}</span>
-            </>
+            <span>▶ {translations.autoPlayPaused.split('(')[0]}</span>
           )}
         </button>
 
-        {/* Scrub Progress Bar */}
+        {/* 8-Bar Audio Visualizer Equalizer */}
+        <div className={`flex items-center gap-1 h-4 px-2 transition-opacity ${!isMuted ? 'opacity-100' : 'opacity-40'}`}>
+          {vizBars.map((height, idx) => (
+            <span
+              key={idx}
+              className={`w-1 rounded-full transition-all ${idx < 4 ? 'bg-emerald-400' : 'bg-cyan-400'}`}
+              style={{ height: `${height}px` }}
+            />
+          ))}
+        </div>
+
+        {/* Scrub Progress Bar & Stage Indicator */}
         <div className="flex-1 flex flex-col justify-center gap-1">
           <div className="w-full h-1.5 bg-white/20 rounded-full overflow-hidden relative">
             <div
-              className="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 transition-[width] duration-75"
+              className="h-full bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-500 transition-[width] duration-75"
               style={{ width: `${scrubProgressPercent}%` }}
             />
           </div>
-          <p className="text-[10px] sm:text-[11px] text-neutral-400 truncate text-center hidden sm:block">
-            {translations.scrubHint}
-          </p>
+          <div className="flex items-center justify-between text-[10px] text-neutral-400">
+            <span className="font-mono text-emerald-400 font-semibold">STAGE {currentStageNum}/3</span>
+            <span className="truncate hidden sm:inline">{translations.scrubHint}</span>
+          </div>
         </div>
 
         {/* Time Stamp */}
