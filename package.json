@@ -1,0 +1,20 @@
+{
+  "name": "dalines-site",
+  "version": "2.0.0",
+  "private": true,
+  "description": "DaLines profile hub and battle station",
+  "engines": { "node": ">=20.9.0" },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "npm run build && node scripts/serve.mjs",
+    "preview": "node scripts/serve.mjs",
+    "check": "npm run build && npm test",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "linkedom": "0.18.12",
+    "sharp": "0.35.5",
+    "tailwindcss": "3.4.17"
+  }
+}

@@ -1,79 +1,80 @@
 # 🎮 DaLines-Site
 
-Official Profile Hub & Battle Station for **DaLines** — Streamer, Gamer, and FPS/Battle Royale Creator.
+Profile Hub & Battle Station ของ **DaLines** รวมช่องทางติดตาม สตรีมสด และเครื่องมือสำหรับคนเล่น FPS
 
-🌐 **Live URL:** [https://pages.dalines.workers.dev/](https://pages.dalines.workers.dev/)
+🌐 เว็บไซต์: [dalines-site.dalines.workers.dev](https://dalines-site.dalines.workers.dev/)
 
----
+## ฟีเจอร์หลัก
 
-## 🚀 Key Features
+- Twitch Live Status, เครื่องเล่นสตรีมและแชท, คลังคลิปพร้อมตัวกรองเกม
+- EZDN Donation, ช่องทาง YouTube/TikTok/Discord และปุ่มคัดลอกชื่อในเกม/เป้า Valorant
+- เครื่องคำนวณ eDPI และแปลงความไวเมาส์ระหว่างเกม, วงล้อชาเลนจ์, Soundboard และการเชื่อมต่อ OBS ผ่าน PeerJS
+- ภาษาไทย/อังกฤษ, ธีมสี 3 แบบ, เปิด/ปิดเสียง และไอคอนสำหรับเพิ่มเว็บบนหน้าจอหลัก
+- ฉากหลังอนุภาคที่ปรับตามอุปกรณ์ รองรับการลดภาพเคลื่อนไหว และตารางสตรีมตามเวลาไทย (UTC+7)
 
-- ⚡ **Auto-Deploy with Cloudflare Workers CI/CD:** ทุกครั้งที่มีการ Commit หรือ Push โค้ดขึ้น Branch `main` บน GitHub ระบบจะ Deploy ขึ้น Cloudflare Workers ทันทีอัตโนมัติ
-- 💰 **EZDN Donation Integration:** เชื่อมต่อระบบโดเนท [ezdn.app/dalines](https://ezdn.app/dalines) แจ้งเตือนขึ้นจอสด
-- 🎯 **Valorant Crosshair One-Click Copy:** โค้ดเป้าเล็ง Valorant ของ DaLines พร้อมปุ่มคลิกคัดลอกลง Clipboard ทันที
-- 🔴 **Real-Time Twitch Live Status:** ตรวจจับสถานะสตรีมจริง (Online / Offline) และเกมที่กำลังเล่นอัตโนมัติผ่าน Twitch API (DecAPI)
-- 🎥 **YouTube Channel & Twitch Embed:** รวมช่องทางดูสตรีมสดและช่อง YouTube [youtube.com/@DaLinesTTV](https://www.youtube.com/@DaLinesTTV)
-- 📱 **PWA (Progressive Web App):** รองรับ "Add to Home Screen" บนมือถือ iOS / Android เป็นไอคอนแอป DaLines ใช้งานแบบ Standalone
-- 🎨 **Dynamic Themes:** สลับธีมสีได้ 3 รูปแบบ (Toxic Emerald, Cyber Cyan, Twitch Violet)
-- 🔊 **Web Audio FX:** ระบบเสียงเอฟเฟกต์ (เปิด/ปิดได้) ทำงานด้วย Web Audio API
-- 🌐 **Multi-Language (TH / EN):** รองรับ 2 ภาษา สลับได้ตลอดเวลา
-- 🛸 **Cyberpunk Command Center:** แบ็กกราวด์อนุภาคโต้ตอบเมาส์ (Interactive Constellation Canvas 60fps), เรดาร์สแกนคลื่นสดพร้อมนาฬิกานับถอยหลังรอบไลฟ์, DaLines Cyber Soundboard แผงเสียงมีมพร้อมแถบคลื่นเสียง, และ Valorant Challenge Randomizer สุ่มโจทย์ท้าทายในสตรีม
-- 🎬 **DaLines Hall of Fame (Twitch Clips):** คลังคลิปไฮไลท์ยอดนิยมตลอดกาลจาก [twitch.tv/dalines/clips?range=all](https://www.twitch.tv/dalines/clips?range=all) แสดงปก Thumbnail คมชัด, ตัวกรองแยกตามเกม (VALORANT, Apex Legends, GTA V & อื่นๆ), ระบบเล่นคลิปผ่าน Twitch Embed Player ใน Modal, ปุ่มกด Like และปุ่มแชร์
-- 🎮 **FPS E-DPI Calculator & Sensitivity Converter:** เครื่องคำนวณ E-DPI และแปลงค่าความไวเมาส์ข้ามเกม 8 เกมดัง (Valorant, Apex Legends, Fortnite, Delta Force, CS2, Overwatch 2, CoD/Warzone, PUBG) แม่นยำ 100% ตามระยะทางจริง (cm/360°) พร้อมแถบวิเคราะห์สไตล์การเล็ง (Arm/Wrist Aim), แนะนำขนาดแผ่นรองเมาส์, ปุ่มลัดโหลดค่าโปรเพลเยอร์ DaLines (800 DPI), และปุ่มคัดลอกค่าแต่ละเกมในคลิกเดียว
-- 🏎️ **Optimized Performance:** Preconnect, Zero Cumulative Layout Shift (CLS), และ SEO / Open Graph Image Preview ขนาดเต็ม
+## เริ่มพัฒนาในเครื่อง
 
----
+ใช้ Node.js 20.9 ขึ้นไป แล้วรันจากโฟลเดอร์โปรเจกต์:
 
-## 📁 โครงสร้างโปรเจกต์ (Project Structure)
+```sh
+npm ci
+npm run dev
+```
+
+เปิด [http://localhost:4173](http://localhost:4173) เพื่อดูเว็บ คำสั่ง `dev` สร้างไฟล์ก่อนเปิดเซิร์ฟเวอร์ เมื่อแก้ไฟล์ต้นฉบับให้รัน `npm run build` อีกครั้งแล้วรีเฟรชหน้า
+
+ตรวจสอบและสร้างไฟล์สำหรับเผยแพร่:
+
+```sh
+npm run check
+npm run preview
+```
+
+`npm run check` สร้างเว็บและทดสอบพฤติกรรมหลักพร้อมตรวจไฟล์สำหรับเผยแพร่ ส่วน `npm run build` สร้างไฟล์ใน `dist/` อย่างเดียว และ `npm run preview` เปิดดูผลลัพธ์ผ่านพอร์ต 4173 หากใช้ `npm test` โดยตรง ต้องสร้าง `dist/` ให้เรียบร้อยก่อน
+
+## โครงสร้างโปรเจกต์
 
 ```text
-DaLines-Hub/
-├── index.html         # โค้ดหน้าเว็บหลัก (HTML + Tailwind + JS)
-├── Logo.png           # โลโก้และรูปโปรไฟล์ DaLines (300x300)
-├── banner-480.png     # รูปแบนเนอร์หลักประจำช่อง (853x480)
-├── manifest.json      # ไฟล์ Web App Manifest (PWA)
-├── auto-deploy.bat    # ⚡ ดับเบิลคลิกเพื่อ Auto Deploy ทันทีใน 1 วินาที
-├── auto-watch.bat     # 👁️ เปิดทิ้งไว้เพื่อ Auto Deploy อัตโนมัติทุกครั้งที่กด Save (Ctrl+S)
-├── wrangler.jsonc     # ไฟล์คอนฟิก Cloudflare Workers Static Assets
-├── .gitignore         # ไฟล์ละเว้นที่ไม่ต้อง push ขึ้น Git
-└── README.md          # เอกสารแนะนำโปรเจกต์
+index.html             โครงสร้างหน้าเว็บและเนื้อหา
+assets/app.js          การทำงานหลัก แท็บ สตรีม เครื่องมือ และ OBS
+assets/effects.js      ฉากหลัง ตารางสตรีม เสียง และวงล้อ
+assets/custom.css      สไตล์เฉพาะ ธีม และการลดภาพเคลื่อนไหว
+assets/tailwind.css    จุดเริ่มต้นสำหรับสร้าง Tailwind CSS
+tailwind.config.cjs    รายการไฟล์ที่ใช้สแกนคลาส
+scripts/build.mjs      สร้าง CSS/JS ย่อขนาด แปลงภาพ และเตรียม dist/
+scripts/serve.mjs      เซิร์ฟเวอร์ดูเว็บในเครื่อง
+tests/                 ชุดทดสอบพฤติกรรมหลัก
+wrangler.jsonc         การสร้างและเผยแพร่บน Cloudflare Workers
+dist/                  ผลลัพธ์ที่สร้างใหม่ ไม่ต้องแก้โดยตรง
 ```
 
----
+ไฟล์ PNG ต้นฉบับ, QR Donation, Manifest, Robots และ Sitemap อยู่ที่โฟลเดอร์หลัก ไฟล์ต้นฉบับ สคริปต์ และชุดทดสอบจะไม่ถูกรวมในเว็บที่เผยแพร่
 
-## 🚀 วิธีการใช้งาน Auto Deploy
+## การปรับประสิทธิภาพ
 
-โปรเจกต์นี้มีระบบ Auto Deploy ให้เลือกใช้ 2 โหมด:
+- สร้าง Tailwind CSS ล่วงหน้า แยกและย่อ CSS/JS พร้อมชื่อไฟล์ที่เปลี่ยนตามเนื้อหาเพื่อใช้แคช
+- โหลดเครื่องเล่นและ PeerJS เมื่อใช้งาน หยุดงานเบื้องหลังที่ไม่จำเป็น และจำกัดฉากหลังไว้ที่ 30fps
+- สร้างภาพ WebP สำหรับหน้าเว็บจาก PNG เดิม โดยยังเก็บต้นฉบับไว้
 
-1. **⚡ โหมดรวดเร็วคลิกเดียว (Instant 1-Click Deploy):**
-   - ดับเบิลคลิกที่ไฟล์ `auto-deploy.bat`
-   - ระบบจะตรวจจับไฟล์ใหม่ -> บันทึก Commit อัตโนมัติ -> Push ขึ้น GitHub -> Cloudflare ทำการ Deploy สู่หน้าเว็บจริงทันที แล้วปิดหน้าต่างให้อัตโนมัติ
+| ภาพ | PNG ต้นฉบับ | WebP ที่สร้าง | ลดขนาด |
+| --- | ---: | ---: | ---: |
+| แบนเนอร์ | 684,778 ไบต์ | 84,342 ไบต์ | 87.7% |
+| รูปโปรไฟล์ | 111,294 ไบต์ | 17,962 ไบต์ | 83.9% |
 
-2. **👁️ โหมดตรวจจับการเปลี่ยนแปลงอัตโนมัติ (Realtime Watcher):**
-   - ดับเบิลคลิกเปิดไฟล์ `auto-watch.bat` แล้วย่อหน้าต่างลง Taskbar
-   - เมื่อคุณแก้ไขไฟล์อะไรก็ตามแล้วกดบันทึก (`Ctrl + S`) ระบบจะตรวจจับและ Auto Deploy ให้อัตโนมัติทันทีโดยที่คุณไม่ต้องกดอะไรอีกเลย!
+ตัวเลขนี้วัดจากขนาดไฟล์ภาพที่สร้างจริง ไม่ใช่คะแนน Lighthouse หรือผลวัดความเร็วของเว็บไซต์จริง
 
----
+## เผยแพร่ผ่าน Cloudflare Workers
 
-## 🛠️ การตั้งค่า Cloudflare Workers Build
+`wrangler.jsonc` กำหนด `build.command` เป็น `npm run build` และ `assets.directory` เป็น `./dist` ดังนั้น Wrangler จะสร้างไฟล์ก่อนเผยแพร่:
 
-- **Build command:** `None`
-- **Deploy command:** `npx wrangler deploy`
-- **Root directory:** `/`
-- **Production branch:** `main`
-
----
-
-## 💻 วิธีการรันและทดสอบในเครื่อง (Local Development)
-
-หากต้องการทดสอบในเครื่องด้วย Node.js และ Wrangler:
-
-```bash
-npx wrangler dev
+```sh
+npm ci
+npm run check
+npx wrangler deploy
 ```
 
-เปิดเบราว์เซอร์ไปที่ `http://localhost:8787` เพื่อดูตัวอย่างหน้าเว็บ
+สำหรับ Cloudflare Workers Builds ใช้ Root directory `/`, Production branch `main` และ Deploy command `npx wrangler deploy` โดยให้ Wrangler เรียกขั้นตอน Build จากไฟล์ตั้งค่า ไม่จำเป็นต้องสั่ง Build ซ้ำ
 
----
+สคริปต์ `auto-deploy.bat` และ `auto-watch.bat` เดิมยังใช้ได้: สคริปต์จะ Commit/Push ขึ้น GitHub แล้วให้ Cloudflare สร้าง `dist/` และเผยแพร่ตามการเชื่อมต่อที่ตั้งไว้ การแก้ไฟล์ในเครื่องอย่างเดียวไม่ได้อัปเดตเว็บไซต์จริง
 
 © 2026 DaLines. All Rights Reserved.
