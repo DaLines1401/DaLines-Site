@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="th" class="dark scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <title>DaLines // Battlestation & Journey (Interactive Scrollytelling)</title>
+  <meta name="description"
+    content="สัมผัสประสบการณ์ Scrollytelling 3D WebGL เจาะลึกมุมมอง Battlestation, ฮาร์ดแวร์เกมมิ่ง, สถิติ FPS และเรื่องราวการเดินทางของ DaLines" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../Logo.png" />
+  <meta name="theme-color" content="#06080c" />
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Orbitron:wght@600;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- GSAP & ScrollTrigger CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            kanit: ['Kanit', 'sans-serif'],
+            gaming: ['Orbitron', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            cyber: {
+              cyan: '#00f0ff',
+              emerald: '#10b981',
+              violet: '#a855f7',
+              red: '#ff0055',
+              dark: '#06080c',
+              surface: 'rgba(10, 14, 23, 0.75)',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    :root {
+      --primary: #00f0ff;
+      --primary-glow: rgba(0, 240, 255, 0.45);
+      --secondary: #10b981;
+      --accent: #a855f7;
+      --bg: #06080c;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: #e2e8f0;
+      font-family: 'Kanit', sans-serif;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* WebGL Canvas */
+    #webgl-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Cyber Chamfered Cards */
+    .cyber-card {
+      background: rgba(8, 12, 20, 0.78);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(0, 240, 255, 0.22);
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    .cyber-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 16px;
+      height: 16px;
+      background: var(--primary);
+      clip-path: polygon(0 0, 100% 100%, 100% 0);
+      opacity: 0.9;
+    }
+
+    .cyber-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 0 30px -5px var(--primary-glow);
+      transform: translateY(-2px);
+    }
+
+    /* Glow text */
+    .glow-cyan {
+      text-shadow: 0 0 16px rgba(0, 240, 255, 0.65), 0 0 35px rgba(0, 240, 255, 0.3);
+    }
+
+    .glow-emerald {
+      text-shadow: 0 0 16px rgba(16, 185, 129, 0.65), 0 0 35px rgba(16, 185, 129, 0.3);
+    }
+
+    .glow-red {
+      text-shadow: 0 0 16px rgba(255, 0, 85, 0.65), 0 0 35px rgba(255, 0, 85, 0.3);
+    }
+
+    /* Scanline effect */
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      opacity: 0.45;
+    }
+
+    /* Chapter HUD Navigation Dots */
+    .hud-dot {
+      transition: all 0.25s ease;
+    }
+
+    .hud-dot.active {
+      background-color: var(--primary);
+      box-shadow: 0 0 12px var(--primary);
+      transform: scale(1.35);
+    }
+
+    .hud-dot.active .dot-label {
+      opacity: 1;
+      transform: translateX(0);
+      color: var(--primary);
+    }
+
+    /* Scroll progress bar */
+    #progress-bar {
+      height: 3px;
+      background: linear-gradient(90deg, #10b981, #00f0ff, #a855f7);
+      width: 0%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 50;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
+      transition: width 0.05s linear;
+    }
+
+    /* Mouse Scroll Indicator Bounce */
+    @keyframes mouseScrollBounce {
+      0%, 100% {
+        transform: translateY(0);
+        opacity: 0.8;
+      }
+      50% {
+        transform: translateY(8px);
+        opacity: 0.2;
+      }
+    }
+
+    .mouse-scroll-indicator {
+      animation: mouseScrollBounce 1.8s infinite ease-in-out;
+    }
+
+    /* Section Pin Container */
+    .story-section {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      pointer-events: auto;
+    }
+  </style>
+</head>
+
+<body class="bg-[#06080c] text-slate-100 selection:bg-cyan-500 selection:text-black">
+
+  <!-- Scanline Overlay -->
+  <div class="scanlines"></div>
+
+  <!-- Scroll Progress Indicator -->
+  <div id="progress-bar"></div>
+
+  <!-- WebGL 3D Canvas Background -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- Top Sticky Navigation Bar -->
+  <header class="fixed top-0 left-0 right-0 z-40 px-4 py-3 flex items-center justify-between pointer-events-none">
+    <!-- Back to Hub Button -->
+    <a href="../index.html"
+      class="pointer-events-auto flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-slate-700/80 text-slate-300 hover:text-cyan-400 hover:border-cyan-400 text-xs font-gaming tracking-wider backdrop-blur-md transition-all active:scale-95 shadow-lg group">
+      <i class="fa-solid fa-arrow-left text-[11px] group-hover:-translate-x-1 transition-transform"></i>
+      <span>RETURN TO HUB</span>
+    </a>
+
+    <!-- Current Chapter HUD Display -->
+    <div
+      class="pointer-events-auto hidden md:flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-950/80 border border-cyan-500/30 backdrop-blur-md text-xs font-mono">
+      <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+      <span class="text-slate-400">MISSION //</span>
+      <span id="current-chapter-text" class="text-cyan-300 font-bold tracking-wider">ACT 1: GENESIS</span>
+    </div>
+
+    <!-- Audio & Control Buttons -->
+    <div class="pointer-events-auto flex items-center gap-2">
+      <button id="audio-toggle-btn" onclick="toggleAudio()"
+        class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/80 border border-slate-700 text-slate-300 hover:text-cyan-300 hover:border-cyan-400 text-xs font-mono backdrop-blur-md transition-all active:scale-95 shadow-lg"
+        title="เปิด/ปิดเสียงไซเบอร์ FX">
+        <i id="audio-icon" class="fa-solid fa-volume-xmark text-cyan-400"></i>
+        <span id="audio-label" class="hidden sm:inline">AUDIO: OFF</span>
+      </button>
+
+      <a href="https://ezdn.app/dalines" target="_blank" rel="noopener noreferrer"
+        class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-500/50 hover:border-emerald-400 text-emerald-300 text-xs font-bold font-gaming tracking-wider backdrop-blur-md transition active:scale-95 shadow-md">
+        <i class="fa-solid fa-heart text-red-400"></i>
+        <span class="hidden sm:inline">DONATE</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Right Floating Chapter HUD Dots -->
+  <aside class="fixed right-3 sm:right-6 top-1/2 -translate-y-1/2 z-40 hidden sm:flex flex-col gap-5 pointer-events-auto">
+    <div class="flex items-center justify-end group cursor-pointer" onclick="jumpToChapter(1)">
+      <span class="dot-label mr-3 text-[11px] font-mono tracking-wider text-slate-400 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">01 GENESIS</span>
+      <div id="dot-1" class="hud-dot active w-2.5 h-2.5 rounded-full bg-slate-600 border border-cyan-400/50"></div>
+    </div>
+    <div class="flex items-center justify-end group cursor-pointer" onclick="jumpToChapter(2)">
+      <span class="dot-label mr-3 text-[11px] font-mono tracking-wider text-slate-400 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">02 THE RIG</span>
+      <div id="dot-2" class="hud-dot w-2.5 h-2.5 rounded-full bg-slate-600 border border-cyan-400/50"></div>
+    </div>
+    <div class="flex items-center justify-end group cursor-pointer" onclick="jumpToChapter(3)">
+      <span class="dot-label mr-3 text-[11px] font-mono tracking-wider text-slate-400 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">03 COMBAT ARENA</span>
+      <div id="dot-3" class="hud-dot w-2.5 h-2.5 rounded-full bg-slate-600 border border-cyan-400/50"></div>
+    </div>
+    <div class="flex items-center justify-end group cursor-pointer" onclick="jumpToChapter(4)">
+      <span class="dot-label mr-3 text-[11px] font-mono tracking-wider text-slate-400 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">04 PULSE & STATS</span>
+      <div id="dot-4" class="hud-dot w-2.5 h-2.5 rounded-full bg-slate-600 border border-cyan-400/50"></div>
+    </div>
+    <div class="flex items-center justify-end group cursor-pointer" onclick="jumpToChapter(5)">
+      <span class="dot-label mr-3 text-[11px] font-mono tracking-wider text-slate-400 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">05 COMMAND OUTRO</span>
+      <div id="dot-5" class="hud-dot w-2.5 h-2.5 rounded-full bg-slate-600 border border-cyan-400/50"></div>
+    </div>
+  </aside>
+
+  <!-- ==================== STORY SECTIONS ==================== -->
+
+  <!-- ACT 1: GENESIS -->
+  <section id="act-1" class="story-section px-4 sm:px-8">
+    <div class="max-w-4xl mx-auto text-center z-20" id="act-1-content">
+      <!-- Status Badge -->
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/40 text-cyan-400 text-xs font-mono uppercase tracking-widest mb-6 backdrop-blur-md">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+        <span>SYSTEM ONLINE // DALINES NEURAL ARCHIVE</span>
+      </div>
+
+      <!-- Main Title -->
+      <h1 class="text-6xl sm:text-8xl md:text-9xl font-black font-gaming tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-100 to-cyan-400 glow-cyan mb-4">
+        DALINES
+      </h1>
+
+      <p class="text-lg sm:text-2xl text-slate-300 font-medium max-w-2xl mx-auto tracking-wide mb-8">
+        STREAMER <span class="text-cyan-400">•</span> FPS CREATOR <span class="text-emerald-400">•</span> TECH ENTHUSIAST
+      </p>
+
+      <!-- Subtitle Description Card -->
+      <div class="cyber-card p-6 max-w-xl mx-auto mb-10 text-left border-l-4 border-l-cyan-400">
+        <p class="text-sm sm:text-base text-slate-300 leading-relaxed font-light">
+          ยินดีต้อนรับสู่ <span class="text-cyan-300 font-bold">DaLines Interactive Battlestation</span> แหล่งรวมอัตลักษณ์ ตัวตน และการเดินทางผ่านสมรภูมิเกม FPS คมชัดทุกรายละเอียด เลื่อนเมาส์ลงด้านล่างเพื่อเริ่มการเดินทาง
+        </p>
+      </div>
+
+      <!-- Scroll Down Mouse Indicator -->
+      <div class="flex flex-col items-center justify-center gap-2 text-slate-400 font-mono text-xs cursor-pointer" onclick="jumpToChapter(2)">
+        <span>SCROLL TO DIVE</span>
+        <div class="w-5 h-9 rounded-full border-2 border-slate-500 flex items-start justify-center p-1">
+          <div class="w-1.5 h-2 bg-cyan-400 rounded-full mouse-scroll-indicator"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACT 2: THE RIG (BATTLESTATION DEEP-DIVE) -->
+  <section id="act-2" class="story-section px-4 sm:px-8">
+    <div class="max-w-5xl mx-auto w-full z-20" id="act-2-content">
+      <!-- Section Header -->
+      <div class="text-center sm:text-left mb-8">
+        <span class="text-xs font-mono text-emerald-400 tracking-widest uppercase">// CHAPTER 02</span>
+        <h2 class="text-4xl sm:text-6xl font-black font-gaming text-white glow-emerald tracking-wide mt-1">
+          THE RIG // BATTLESTATION
+        </h2>
+        <p class="text-slate-400 text-sm sm:text-base mt-2">
+          ขุมพลังฮาร์ดแวร์และอุปกรณ์เกมมิ่งเกียร์ที่ขับเคลื่อนทุกเฟรมเรตและชัยชนะ
+        </p>
+      </div>
+
+      <!-- Specs Grid Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- CPU Card -->
+        <div class="cyber-card p-5 border-l-4 border-l-emerald-500">
+          <div class="flex items-center justify-between text-xs font-mono text-emerald-400 mb-2">
+            <span>PROCESSOR</span>
+            <i class="fa-solid fa-microchip text-base"></i>
+          </div>
+          <h3 class="text-lg font-bold font-gaming text-white">AMD RYZEN 5 5600</h3>
+          <p class="text-xs text-slate-400 mt-2">6 Cores / 12 Threads ประมวลผลเกมไว ไร้ขวดสตรีมมิ่ง 60 FPS คมกริบ</p>
+          <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-[11px] font-mono text-slate-400">
+            <span>CLOCK</span>
+            <span class="text-emerald-400 font-bold">4.4 GHz Max</span>
+          </div>
+        </div>
+
+        <!-- GPU Card -->
+        <div class="cyber-card p-5 border-l-4 border-l-cyan-400">
+          <div class="flex items-center justify-between text-xs font-mono text-cyan-400 mb-2">
+            <span>GRAPHICS CORE</span>
+            <i class="fa-solid fa-vr-cardboard text-base"></i>
+          </div>
+          <h3 class="text-lg font-bold font-gaming text-white">RTX 5060 Ti</h3>
+          <p class="text-xs text-slate-400 mt-2">สถาปัตยกรรม Blackwell Ray Tracing & DLSS 4 เรนเดอร์เกม FPS สบายตา</p>
+          <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-[11px] font-mono text-slate-400">
+            <span>STABILITY</span>
+            <span class="text-cyan-400 font-bold">360+ FPS Peak</span>
+          </div>
+        </div>
+
+        <!-- MOUSE Card -->
+        <div class="cyber-card p-5 border-l-4 border-l-purple-500">
+          <div class="flex items-center justify-between text-xs font-mono text-purple-400 mb-2">
+            <span>PRIMARY AIM</span>
+            <i class="fa-solid fa-computer-mouse text-base"></i>
+          </div>
+          <h3 class="text-lg font-bold font-gaming text-white">ATK GHOST ULTIMATE</h3>
+          <p class="text-xs text-slate-400 mt-2">เมาส์น้ำหนักเบาพิเศษ เซนเซอร์ PAW3950 ความแม่นยำระดับพิกเซล</p>
+          <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-[11px] font-mono text-slate-400">
+            <span>HARDWARE DPI</span>
+            <span class="text-purple-400 font-bold">800 DPI</span>
+          </div>
+        </div>
+
+        <!-- PAD Card -->
+        <div class="cyber-card p-5 border-l-4 border-l-rose-500">
+          <div class="flex items-center justify-between text-xs font-mono text-rose-400 mb-2">
+            <span>SURFACE CONTROL</span>
+            <i class="fa-solid fa-square text-base"></i>
+          </div>
+          <h3 class="text-lg font-bold font-gaming text-white">LOGA X CARNIVAL</h3>
+          <p class="text-xs text-slate-400 mt-2">แผ่นรองเมาส์ Speed-Control Balanced ให้แรงหยุด Micro-adjustment นิ่งสงบ</p>
+          <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-[11px] font-mono text-slate-400">
+            <span>GLIDE FEEL</span>
+            <span class="text-rose-400 font-bold">Balanced Glide</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Battlestation Motto Banner -->
+      <div class="mt-6 p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 backdrop-blur-md">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl text-cyan-400"><i class="fa-solid fa-bolt"></i></span>
+          <p class="text-xs sm:text-sm text-slate-300">
+            <span class="font-bold text-white font-gaming">OPTICAL CALIBRATION:</span> ทุกชิ้นส่วนถูกจูนเพื่อความไวการตอบสนองขั้นสุด
+          </p>
+        </div>
+        <a href="../index.html#converter-section" class="px-4 py-2 rounded-lg bg-cyan-500/10 border border-cyan-400/40 text-cyan-300 hover:bg-cyan-500/20 text-xs font-mono tracking-wider transition whitespace-nowrap">
+          VIEW E-DPI CONVERTER ➔
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACT 3: COMBAT ARENA -->
+  <section id="act-3" class="story-section px-4 sm:px-8">
+    <div class="max-w-5xl mx-auto w-full z-20" id="act-3-content">
+      <div class="text-center mb-8">
+        <span class="text-xs font-mono text-red-400 tracking-widest uppercase">// CHAPTER 03</span>
+        <h2 class="text-4xl sm:text-6xl font-black font-gaming text-white glow-red tracking-wide mt-1">
+          COMBAT ARENA // TITLES
+        </h2>
+        <p class="text-slate-400 text-sm sm:text-base mt-2">
+          3 สมรภูมิหลักที่สตรีมและประลองฝีมือเป็นประจำ
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- VALORANT -->
+        <div class="cyber-card p-6 border-t-4 border-t-red-500 relative overflow-hidden group">
+          <div class="absolute -right-4 -bottom-4 text-7xl font-gaming font-black text-red-500/10 pointer-events-none group-hover:scale-110 transition-transform">
+            VAL
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+            <span class="text-xs font-mono text-red-400 font-bold">TACTICAL FPS</span>
+          </div>
+          <h3 class="text-2xl font-bold font-gaming text-white">VALORANT</h3>
+          <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+            สายยิงหัว เล็งวันแทป คุมจังหวะรีคอยล์และดักมุมอย่างเฉียบขาด
+          </p>
+
+          <div class="mt-5 space-y-2 text-xs font-mono">
+            <div class="flex justify-between p-2 rounded bg-black/40 border border-slate-800">
+              <span class="text-slate-400">IN-GAME SENS</span>
+              <span class="text-red-400 font-bold">0.45 (800 DPI)</span>
+            </div>
+            <div class="flex justify-between p-2 rounded bg-black/40 border border-slate-800">
+              <span class="text-slate-400">E-DPI</span>
+              <span class="text-white font-bold">360 eDPI</span>
+            </div>
+            <div class="flex justify-between p-2 rounded bg-black/40 border border-slate-800">
+              <span class="text-slate-400">CROSSHAIR</span>
+              <span class="text-cyan-400 font-bold">Cyan 1-4-2-0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- APEX LEGENDS -->
+        <div class="cyber-card p-6 border-t-4 border-t-amber-500 relative overflow-hidden group">
+          <div class="absolute -right-4 -bottom-4 text-7xl font-gaming font-black text-amber-500/10 pointer-events-none group-hover:scale-110 transition-transform">
+            APEX
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+            <span class="text-xs font-mono text-amber-400 font-bold">FAST BATTLE ROYALE</span>
+          </div>
+          <h3 class="text-2xl font-bold font-gaming text-white">APEX LEGENDS</h3>
+          <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+            การเคลื่อนไหวความเร็วสูง Tap-strafe, Wall-bounce และการ Tracking เป้ากลางอากาศ
+          </p>
+
+          <div class="mt-5 space-y-2 text-xs font-mono">
+            <div class="flex justify-between p-2 rounded bg-black/40 border border-slate-800">
+              <span class="text-slate-400">IN-GAME SENS</span>
+              <span class="text-amber-400 font-bold">2.1 (800 DPI)</span>
+            </div>
+            <div class="flex justify-between p-2 rounded bg-black/40 border border-slate-800">
+              <span class="text-slate-400">AIM STYLE</span>
+              <span class="text-white font-bold">Arm + Wrist Track</span>
+            </div>
+            <div class="flex justify-between p-2 rounded bg-black/40 border border-slate-800">
+              <span class="text-slate-400">CM / 360°</span>
+              <span class="text-amber-400 font-bold">47.2 cm</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PATH OF EXILE 2 -->
+        <div class="cyber-card p-6 border-t-4 border-t-purple-500 relative overflow-hidden group">
+          <div class="absolute -right-4 -bottom-4 text-7xl font-gaming font-black text-purple-500/10 pointer-events-none group-hover:scale-110 transition-transform">
+            POE2
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+            <span class="text-xs font-mono text-purple-400 font-bold">HARDCORE ARPG</span>
+          </div>
+          <h3 class="text-2xl font-bold font-gaming text-white">PATH OF EXILE 2</h3>
+          <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+            การฟาร์ม การสร้างบิลด์สุดลึก และคอมโบสกิลท้าทายบอสระดับเอ็กซ์ตรีม
+          </p>
+
+          <div class="mt-5 space-y-2 text-xs font-mono">
+            <div class="flex justify-between p-2 rounded bg-black/40 border border-slate-800">
+              <span class="text-slate-400">EXPERIENCE</span>
+              <span class="text-purple-400 font-bold">Deep Theorycraft</span>
+            </div>
+            <div class="flex justify-between p-2 rounded bg-black/40 border border-slate-800">
+              <span class="text-slate-400">STREAM VIBE</span>
+              <span class="text-white font-bold">Loot & Chill</span>
+            </div>
+            <div class="flex justify-between p-2 rounded bg-black/40 border border-slate-800">
+              <span class="text-slate-400">STATUS</span>
+              <span class="text-cyan-400 font-bold">Active Grinding</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACT 4: PULSE & STATS -->
+  <section id="act-4" class="story-section px-4 sm:px-8">
+    <div class="max-w-4xl mx-auto w-full z-20 text-center" id="act-4-content">
+      <span class="text-xs font-mono text-cyan-400 tracking-widest uppercase">// CHAPTER 04</span>
+      <h2 class="text-4xl sm:text-6xl font-black font-gaming text-white glow-cyan tracking-wide mt-1 mb-8">
+        PULSE // METRICS & VIBE
+      </h2>
+
+      <!-- Streamer Philosophy Quote -->
+      <div class="cyber-card p-8 sm:p-10 mb-8 border-cyan-500/30 relative">
+        <i class="fa-solid fa-quote-left text-3xl text-cyan-400/30 absolute top-4 left-4"></i>
+        <blockquote class="text-lg sm:text-2xl font-medium text-slate-100 italic leading-relaxed">
+          "สตรีมเมอร์สายยิง เน้นโยน ยิงคมเป็นบางวัน ขำขันเป็นประจำ แต่ทุกช็อตใส่ใจเต็มร้อย"
+        </blockquote>
+        <div class="mt-4 text-xs font-mono text-cyan-400 tracking-widest uppercase">
+          — DALINES (ตวง) • THAILAND
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="p-4 rounded-xl bg-slate-900/70 border border-slate-800 backdrop-blur-md">
+          <div class="text-3xl font-black font-gaming text-cyan-400">1080p</div>
+          <div class="text-xs text-slate-400 font-mono mt-1">60FPS BROADCAST</div>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/70 border border-slate-800 backdrop-blur-md">
+          <div class="text-3xl font-black font-gaming text-emerald-400">100%</div>
+          <div class="text-xs text-slate-400 font-mono mt-1">COMMUNITY FRIENDLY</div>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/70 border border-slate-800 backdrop-blur-md">
+          <div class="text-3xl font-black font-gaming text-purple-400">3+</div>
+          <div class="text-xs text-slate-400 font-mono mt-1">PLATFORMS STREAM</div>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/70 border border-slate-800 backdrop-blur-md">
+          <div class="text-3xl font-black font-gaming text-rose-400">24/7</div>
+          <div class="text-xs text-slate-400 font-mono mt-1">DISCORD HANGOUT</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACT 5: COMMAND OUTRO -->
+  <section id="act-5" class="story-section px-4 sm:px-8">
+    <div class="max-w-3xl mx-auto w-full z-20 text-center" id="act-5-content">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/40 text-cyan-400 text-xs font-mono uppercase tracking-widest mb-4 backdrop-blur-md">
+        <span>MISSION COMPLETE // READY FOR ACTION</span>
+      </div>
+
+      <h2 class="text-4xl sm:text-6xl md:text-7xl font-black font-gaming text-white glow-cyan tracking-wide mb-4">
+        JOIN THE SQUAD
+      </h2>
+
+      <p class="text-sm sm:text-base text-slate-300 max-w-lg mx-auto mb-8 font-light">
+        ติดตามสตรีมสด เข้าร่วมคอมมูนิตี้ หรือกลับสู่หน้าหลักเพื่อใช้งานระบบเครื่องมือคำนวณและมินิเกม
+      </p>
+
+      <!-- Primary Action Buttons -->
+      <div class="flex flex-wrap items-center justify-center gap-4 mb-8">
+        <!-- Twitch -->
+        <a href="https://www.twitch.tv/dalines" target="_blank" rel="noopener noreferrer"
+          class="flex items-center gap-2.5 px-6 py-3 rounded-xl bg-[#9146FF] hover:bg-[#772ce8] text-white font-gaming font-bold text-sm tracking-wider shadow-[0_0_20px_rgba(145,70,255,0.4)] transition active:scale-95">
+          <i class="fa-brands fa-twitch text-lg"></i>
+          <span>WATCH TWITCH</span>
+        </a>
+
+        <!-- YouTube -->
+        <a href="https://www.youtube.com/@DaLinesTTV" target="_blank" rel="noopener noreferrer"
+          class="flex items-center gap-2.5 px-6 py-3 rounded-xl bg-[#FF0000] hover:bg-[#cc0000] text-white font-gaming font-bold text-sm tracking-wider shadow-[0_0_20px_rgba(255,0,0,0.35)] transition active:scale-95">
+          <i class="fa-brands fa-youtube text-lg"></i>
+          <span>YOUTUBE CHANNEL</span>
+        </a>
+
+        <!-- Discord -->
+        <a href="https://discord.gg/3m9x688YCG" target="_blank" rel="noopener noreferrer"
+          class="flex items-center gap-2.5 px-6 py-3 rounded-xl bg-[#5865F2] hover:bg-[#4752c4] text-white font-gaming font-bold text-sm tracking-wider shadow-[0_0_20px_rgba(88,101,242,0.35)] transition active:scale-95">
+          <i class="fa-brands fa-discord text-lg"></i>
+          <span>JOIN DISCORD</span>
+        </a>
+
+        <!-- EZDN Donate -->
+        <a href="https://ezdn.app/dalines" target="_blank" rel="noopener noreferrer"
+          class="flex items-center gap-2.5 px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-gaming font-extrabold text-sm tracking-wider shadow-[0_0_20px_rgba(16,185,129,0.4)] transition active:scale-95">
+          <i class="fa-solid fa-gift text-lg"></i>
+          <span>SUPPORT / DONATE</span>
+        </a>
+      </div>
+
+      <!-- Return to Hub Prominent Link -->
+      <div class="pt-6 border-t border-slate-800">
+        <a href="../index.html"
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-slate-900 border border-cyan-400/40 text-cyan-300 hover:bg-cyan-500/10 hover:border-cyan-300 font-mono text-xs tracking-widest transition-all">
+          <i class="fa-solid fa-house"></i>
+          <span>RETURN TO MAIN COMMAND HUB (INDEX)</span>
+        </a>
+      </div>
+
+      <!-- Copyright Footer -->
+      <footer class="mt-12 text-slate-500 text-xs font-mono">
+        © 2026 DALINES OFFICIAL SITE // ALL RIGHTS RESERVED
+      </footer>
+    </div>
+  </section>
+
+  <!-- ==================== THREE.JS & GSAP SCRIPT ==================== -->
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    /* ----------------------------------------------------
+       1. WEB AUDIO API SYNTHESIZER
+    ---------------------------------------------------- */
+    let audioCtx = null;
+    let isAudioEnabled = false;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function toggleAudio() {
+      initAudio();
+      isAudioEnabled = !isAudioEnabled;
+      const icon = document.getElementById('audio-icon');
+      const label = document.getElementById('audio-label');
+
+      if (isAudioEnabled) {
+        icon.className = 'fa-solid fa-volume-high text-cyan-400';
+        label.innerText = 'AUDIO: ON';
+        playSciFiChirp(440, 880, 0.2);
+      } else {
+        icon.className = 'fa-solid fa-volume-xmark text-slate-500';
+        label.innerText = 'AUDIO: OFF';
+      }
+    }
+
+    function playSciFiChirp(startFreq, endFreq, duration) {
+      if (!isAudioEnabled || !audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(startFreq, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(endFreq, audioCtx.currentTime + duration);
+
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        // Audio error handle
+      }
+    }
+
+    function playWhoosh() {
+      if (!isAudioEnabled || !audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+        osc.frequency.linearRampToValueAtTime(40, audioCtx.currentTime + 0.4);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(800, audioCtx.currentTime);
+        filter.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.4);
+
+        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.4);
+      } catch (e) { }
+    }
+
+    /* ----------------------------------------------------
+       2. THREE.JS 3D SCENE SETUP
+    ---------------------------------------------------- */
+    const canvas = document.getElementById('webgl-canvas');
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x06080c, 0.015);
+
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 0, 18);
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance'
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // Ambient & Point Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+
+    const pointLightCyan = new THREE.PointLight(0x00f0ff, 2.5, 50);
+    pointLightCyan.position.set(10, 10, 10);
+    scene.add(pointLightCyan);
+
+    const pointLightEmerald = new THREE.PointLight(0x10b981, 2, 50);
+    pointLightEmerald.position.set(-10, -5, 10);
+    scene.add(pointLightEmerald);
+
+    const pointLightViolet = new THREE.PointLight(0xa855f7, 2, 50);
+    pointLightViolet.position.set(0, 15, -10);
+    scene.add(pointLightViolet);
+
+    // ------------------------------------------------
+    // 3D OBJECT 1: HOLOGRAPHIC CORE (Act 1: Genesis)
+    // ------------------------------------------------
+    const coreGroup = new THREE.Group();
+
+    // Inner Octahedron Core
+    const innerGeo = new THREE.OctahedronGeometry(2.8, 0);
+    const innerMat = new THREE.MeshStandardMaterial({
+      color: 0x00f0ff,
+      wireframe: true,
+      emissive: 0x006688,
+      emissiveIntensity: 0.8
+    });
+    const innerCore = new THREE.Mesh(innerGeo, innerMat);
+    coreGroup.add(innerCore);
+
+    // Outer Icosahedron Wireframe
+    const outerGeo = new THREE.IcosahedronGeometry(4.2, 1);
+    const outerMat = new THREE.MeshStandardMaterial({
+      color: 0x10b981,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.45
+    });
+    const outerCage = new THREE.Mesh(outerGeo, outerMat);
+    coreGroup.add(outerCage);
+
+    // Orbiting Ring 1
+    const ringGeo1 = new THREE.TorusGeometry(5.2, 0.04, 16, 100);
+    const ringMat1 = new THREE.MeshBasicMaterial({ color: 0x00f0ff, wireframe: true });
+    const ring1 = new THREE.Mesh(ringGeo1, ringMat1);
+    ring1.rotation.x = Math.PI / 3;
+    coreGroup.add(ring1);
+
+    // Orbiting Ring 2
+    const ringGeo2 = new THREE.TorusGeometry(6.0, 0.03, 16, 100);
+    const ringMat2 = new THREE.MeshBasicMaterial({ color: 0xa855f7, wireframe: true });
+    const ring2 = new THREE.Mesh(ringGeo2, ringMat2);
+    ring2.rotation.y = Math.PI / 4;
+    coreGroup.add(ring2);
+
+    scene.add(coreGroup);
+
+    // ------------------------------------------------
+    // 3D OBJECT 2: HARDWARE COMPUTER RIG (Act 2: The Rig)
+    // ------------------------------------------------
+    const rigGroup = new THREE.Group();
+    rigGroup.position.set(8, -25, -5);
+
+    // PC Chassis Wireframe Box
+    const chassisGeo = new THREE.BoxGeometry(4.5, 8.5, 7.5);
+    const chassisMat = new THREE.MeshStandardMaterial({
+      color: 0x10b981,
+      wireframe: true,
+      emissive: 0x064e3b,
+      emissiveIntensity: 0.5
+    });
+    const chassis = new THREE.Mesh(chassisGeo, chassisMat);
+    rigGroup.add(chassis);
+
+    // GPU Floating Plate
+    const gpuGeo = new THREE.BoxGeometry(3.5, 1.2, 5.5);
+    const gpuMat = new THREE.MeshStandardMaterial({
+      color: 0x00f0ff,
+      wireframe: true,
+      emissive: 0x004466,
+      emissiveIntensity: 0.6
+    });
+    const gpu = new THREE.Mesh(gpuGeo, gpuMat);
+    gpu.position.set(0, -1.2, 0);
+    rigGroup.add(gpu);
+
+    // CPU Cooler Torus Knot
+    const cpuGeo = new THREE.TorusKnotGeometry(1.2, 0.3, 64, 16);
+    const cpuMat = new THREE.MeshStandardMaterial({
+      color: 0xa855f7,
+      wireframe: true,
+      emissive: 0x581c87,
+      emissiveIntensity: 0.6
+    });
+    const cpu = new THREE.Mesh(cpuGeo, cpuMat);
+    cpu.position.set(0, 1.8, 0);
+    rigGroup.add(cpu);
+
+    scene.add(rigGroup);
+
+    // ------------------------------------------------
+    // 3D OBJECT 3: COMBAT GYROSCOPE (Act 3: Combat Arena)
+    // ------------------------------------------------
+    const arenaGroup = new THREE.Group();
+    arenaGroup.position.set(-8, -50, -5);
+
+    const gyro1Geo = new THREE.TorusGeometry(4.0, 0.08, 16, 80);
+    const gyro1Mat = new THREE.MeshBasicMaterial({ color: 0xff0055 });
+    const gyro1 = new THREE.Mesh(gyro1Geo, gyro1Mat);
+    arenaGroup.add(gyro1);
+
+    const gyro2Geo = new THREE.TorusGeometry(3.2, 0.08, 16, 80);
+    const gyro2Mat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+    const gyro2 = new THREE.Mesh(gyro2Geo, gyro2Mat);
+    gyro2.rotation.x = Math.PI / 2;
+    arenaGroup.add(gyro2);
+
+    const gyro3Geo = new THREE.TorusGeometry(2.4, 0.08, 16, 80);
+    const gyro3Mat = new THREE.MeshBasicMaterial({ color: 0xa855f7 });
+    const gyro3 = new THREE.Mesh(gyro3Geo, gyro3Mat);
+    gyro3.rotation.y = Math.PI / 2;
+    arenaGroup.add(gyro3);
+
+    scene.add(arenaGroup);
+
+    // ------------------------------------------------
+    // 3D OBJECT 4: PERSPECTIVE ANTIGRAVITY WAVE GRID
+    // ------------------------------------------------
+    const gridHelper = new THREE.GridHelper(120, 60, 0x00f0ff, 0x1e293b);
+    gridHelper.position.y = -8;
+    scene.add(gridHelper);
+
+    // ------------------------------------------------
+    // 3D OBJECT 5: PARTICLES (Cyber Dust Starfield)
+    // ------------------------------------------------
+    const particleCount = 1200;
+    const particleGeo = new THREE.BufferGeometry();
+    const particlePos = new Float32Array(particleCount * 3);
+
+    for (let i = 0; i < particleCount * 3; i += 3) {
+      particlePos[i] = (Math.random() - 0.5) * 120;
+      particlePos[i + 1] = (Math.random() - 0.5) * 120;
+      particlePos[i + 2] = (Math.random() - 0.5) * 80;
+    }
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
+
+    const particleMat = new THREE.PointsMaterial({
+      size: 0.18,
+      color: 0x00f0ff,
+      transparent: true,
+      opacity: 0.7,
+      blending: THREE.AdditiveBlending
+    });
+    const particles = new THREE.Points(particleGeo, particleMat);
+    scene.add(particles);
+
+    // ------------------------------------------------
+    // 3D OBJECT 6: MONOLITHIC PORTAL (Act 5: Outro)
+    // ------------------------------------------------
+    const portalGroup = new THREE.Group();
+    portalGroup.position.set(0, -95, -10);
+
+    const portalFrameGeo = new THREE.TorusGeometry(6, 0.2, 16, 100);
+    const portalFrameMat = new THREE.MeshStandardMaterial({
+      color: 0x00f0ff,
+      wireframe: true,
+      emissive: 0x00f0ff,
+      emissiveIntensity: 0.8
+    });
+    const portalFrame = new THREE.Mesh(portalFrameGeo, portalFrameMat);
+    portalGroup.add(portalFrame);
+
+    const portalCoreGeo = new THREE.CircleGeometry(5.8, 32);
+    const portalCoreMat = new THREE.MeshBasicMaterial({
+      color: 0x06080c,
+      transparent: true,
+      opacity: 0.85
+    });
+    const portalCore = new THREE.Mesh(portalCoreGeo, portalCoreMat);
+    portalGroup.add(portalCore);
+
+    scene.add(portalGroup);
+
+    /* ----------------------------------------------------
+       3. GSAP SCROLLTRIGGER TIMELINE
+    ---------------------------------------------------- */
+    // Scroll progress bar
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('progress-bar').style.width = scrolled + '%';
+    });
+
+    // Master Timeline linked to page scroll
+    const masterTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: 'body',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1.2,
+      }
+    });
+
+    // Act 1 -> Act 2 Camera & Object Transitions
+    masterTl
+      // Moving to Act 2 (The Rig)
+      .to(camera.position, { x: 4, y: -22, z: 12, ease: 'power1.inOut' }, 'act2')
+      .to(coreGroup.position, { y: 15, ease: 'power1.inOut' }, 'act2')
+      .to(rigGroup.rotation, { y: Math.PI * 0.75, x: 0.2, ease: 'none' }, 'act2')
+
+      // Moving to Act 3 (Combat Arena)
+      .to(camera.position, { x: -4, y: -48, z: 13, ease: 'power1.inOut' }, 'act3')
+      .to(arenaGroup.rotation, { x: Math.PI * 1.2, y: Math.PI * 1.5, ease: 'none' }, 'act3')
+
+      // Moving to Act 4 (Pulse & Stats)
+      .to(camera.position, { x: 0, y: -72, z: 16, ease: 'power1.inOut' }, 'act4')
+      .to(particles.rotation, { y: Math.PI * 0.5, ease: 'none' }, 'act4')
+
+      // Moving to Act 5 (Command Outro)
+      .to(camera.position, { x: 0, y: -95, z: 10, ease: 'power1.inOut' }, 'act5')
+      .to(portalGroup.rotation, { z: Math.PI, ease: 'none' }, 'act5');
+
+    // Individual Chapter triggers for Active HUD and Sound
+    const chapters = [
+      { id: 'act-1', num: 1, name: 'ACT 1: GENESIS' },
+      { id: 'act-2', num: 2, name: 'ACT 2: THE RIG' },
+      { id: 'act-3', num: 3, name: 'ACT 3: COMBAT ARENA' },
+      { id: 'act-4', num: 4, name: 'ACT 4: PULSE & STATS' },
+      { id: 'act-5', num: 5, name: 'ACT 5: COMMAND OUTRO' },
+    ];
+
+    chapters.forEach(ch => {
+      ScrollTrigger.create({
+        trigger: `#${ch.id}`,
+        start: 'top center',
+        end: 'bottom center',
+        onEnter: () => updateActiveChapter(ch),
+        onEnterBack: () => updateActiveChapter(ch),
+      });
+    });
+
+    let lastChapterNum = 1;
+    function updateActiveChapter(ch) {
+      document.getElementById('current-chapter-text').innerText = ch.name;
+
+      for (let i = 1; i <= 5; i++) {
+        const dot = document.getElementById(`dot-${i}`);
+        if (dot) {
+          if (i === ch.num) {
+            dot.classList.add('active');
+          } else {
+            dot.classList.remove('active');
+          }
+        }
+      }
+
+      if (lastChapterNum !== ch.num) {
+        playWhoosh();
+        lastChapterNum = ch.num;
+      }
+    }
+
+    function jumpToChapter(actNum) {
+      const target = document.getElementById(`act-${actNum}`);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+        playSciFiChirp(600, 900, 0.15);
+      }
+    }
+
+    /* ----------------------------------------------------
+       4. ANIMATION LOOP (60 FPS)
+    ---------------------------------------------------- */
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetMouseX = 0;
+    let targetMouseY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+      targetMouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+    });
+
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const delta = clock.getDelta();
+      const time = clock.getElapsedTime();
+
+      // Smooth mouse parallax
+      mouseX += (targetMouseX - mouseX) * 0.05;
+      mouseY += (targetMouseY - mouseY) * 0.05;
+
+      // Rotate Core Group (Act 1)
+      innerCore.rotation.x = time * 0.4;
+      innerCore.rotation.y = time * 0.6;
+      outerCage.rotation.x = -time * 0.2;
+      outerCage.rotation.y = -time * 0.3;
+      ring1.rotation.z = time * 0.5;
+      ring2.rotation.z = -time * 0.4;
+
+      // Rotate Rig elements (Act 2)
+      cpu.rotation.x = time * 0.8;
+      cpu.rotation.y = time * 0.5;
+
+      // Rotate Gyros (Act 3)
+      gyro1.rotation.x = time * 1.2;
+      gyro2.rotation.y = time * 1.5;
+      gyro3.rotation.z = time * 0.9;
+
+      // Rotate Portal (Act 5)
+      portalFrame.rotation.z = time * 0.3;
+
+      // Starfield Particle subtle drift
+      particles.rotation.y = time * 0.05;
+      particles.rotation.x = time * 0.02;
+
+      // Parallax camera rotation based on mouse
+      camera.rotation.y = -mouseX * 0.08;
+      camera.rotation.x = -mouseY * 0.05;
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Resize Handler
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    });
+  </script>
+</body>
+
+</html>

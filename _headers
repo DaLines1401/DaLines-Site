@@ -18,3 +18,9 @@
 
 /manifest.json
   Cache-Control: public, max-age=3600, must-revalidate
+
+/dance/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/spookydance.mp4
+  Cache-Control: public, max-age=86400, must-revalidate

@@ -6,6 +6,10 @@ const safeStorage = {
     try { return window.localStorage.getItem(key); }
     catch { return preferenceMemory.get(key) ?? null; }
   },
+  removeItem(key) {
+    preferenceMemory.set(key, null);
+    try { window.localStorage.removeItem(key); } catch { /* Cleared for this session. */ }
+  },
   setItem(key, value) {
     preferenceMemory.set(key, String(value));
     try { window.localStorage.setItem(key, String(value)); } catch { /* Keep this session's preference. */ }
@@ -46,16 +50,36 @@ async function copyTextToClipboard(text, successMessage) {
 }
 
     // -----------------------------------------------------------------
-    // TWITCH VIDEO & STREAM PLAYER CONTROLLER
+    // TWITCH VIDEO & STREAM PLAYER CONTROLLER (LAZY-LOADED & TRAILER DEFAULT)
     // -----------------------------------------------------------------
-    let currentPlayerMode = 'live'; // 'live' หรือ 'trailer'
+    let currentPlayerMode = 'trailer'; // Default to trailer (channel offline by default)
     let isChatOpen = false;
+    let isTwitchPlayerLoaded = false;
+    let twitchFacadeTimer = 0;
 
     function getTwitchParentsQuery() {
       const host = window.location.hostname;
       const parents = new Set(['localhost', '127.0.0.1', 'dalines-site.dalines.workers.dev', 'pages.dalines.workers.dev', 'dalines.tv']);
       if (host) parents.add(host);
       return Array.from(parents).filter(Boolean).map(p => `parent=${encodeURIComponent(p)}`).join('&');
+    }
+
+    function loadTwitchPlayer(mode) {
+      if (mode) currentPlayerMode = mode;
+      isTwitchPlayerLoaded = true;
+
+      const facade = document.getElementById('twitch-player-facade');
+      clearTimeout(twitchFacadeTimer);
+      if (facade) {
+        facade.style.transition = 'opacity 0.3s ease';
+        facade.style.opacity = '0';
+        facade.style.pointerEvents = 'none';
+        twitchFacadeTimer = setTimeout(() => {
+          if (facade) facade.style.display = 'none';
+        }, 300);
+      }
+
+      updateTwitchPlayer(currentPlayerMode);
     }
 
     function updateTwitchPlayer(mode) {
@@ -70,28 +94,34 @@ async function copyTextToClipboard(text, successMessage) {
 
       if (mode === 'live') {
         currentPlayerMode = 'live';
-        setFrameSource(iframe, `https://player.twitch.tv/?channel=dalines&${parentQuery}&autoplay=true&muted=false`);
-        
+        if (isTwitchPlayerLoaded) {
+          const targetSrc = `https://player.twitch.tv/?channel=dalines&${parentQuery}&autoplay=true&muted=false`;
+          if (iframe.src !== targetSrc) iframe.src = targetSrc;
+        }
+
         if (badge) {
           badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-gaming font-bold bg-red-500/20 text-red-400 border border-red-500/30 flex items-center gap-1';
-          badge.innerHTML = currentLiveState ? '<span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-ping"></span>STREAMING' : '<span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>LIVE PLAYER';
+          badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-ping"></span>STREAMING';
         }
         if (title) title.innerText = 'Twitch: dalines (Live Stream)';
-        
-        btnLive.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-red-600 text-white shadow-lg cursor-pointer';
-        btnTrailer.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 hover:bg-slate-800 cursor-pointer';
+
+        if (btnLive) btnLive.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-red-600 text-white shadow-lg cursor-pointer';
+        if (btnTrailer) btnTrailer.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 hover:bg-slate-800 cursor-pointer';
       } else {
         currentPlayerMode = 'trailer';
-        setFrameSource(iframe, `https://player.twitch.tv/?video=1475544386&${parentQuery}&autoplay=true`);
-        
+        if (isTwitchPlayerLoaded) {
+          const targetSrc = `https://player.twitch.tv/?video=1475544386&${parentQuery}&autoplay=true`;
+          if (iframe.src !== targetSrc) iframe.src = targetSrc;
+        }
+
         if (badge) {
           badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-gaming font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1';
           badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>TRAILER VOD';
         }
         if (title) title.innerText = 'Twitch VOD: 1475544386 (Trailer)';
-        
-        btnTrailer.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-emerald-600 text-white shadow-lg cursor-pointer';
-        btnLive.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 hover:bg-slate-800 cursor-pointer';
+
+        if (btnTrailer) btnTrailer.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-emerald-600 text-white shadow-lg cursor-pointer';
+        if (btnLive) btnLive.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 hover:bg-slate-800 cursor-pointer';
       }
     }
 
@@ -102,6 +132,11 @@ async function copyTextToClipboard(text, successMessage) {
     function stopStreamEmbeds() {
       setFrameSource(document.getElementById('twitch-main-player'), 'about:blank');
       setFrameSource(document.getElementById('twitch-chat-frame'), 'about:blank');
+      isTwitchPlayerLoaded = false;
+      clearTimeout(twitchFacadeTimer);
+      twitchFacadeTimer = 0;
+      const facade = document.getElementById('twitch-player-facade');
+      if (facade) { facade.style.display = ''; facade.style.opacity = ''; facade.style.pointerEvents = ''; }
       if (isChatOpen) {
         isChatOpen = false;
         document.getElementById('twitch-chat-container')?.classList.add('hidden');
@@ -112,8 +147,7 @@ async function copyTextToClipboard(text, successMessage) {
 
     function setPlayerMode(mode) {
       playSound('tab');
-      currentPlayerMode = mode === 'trailer' ? 'trailer' : 'live';
-      updateTwitchPlayer(currentPlayerMode);
+      loadTwitchPlayer(mode);
     }
 
     function toggleTwitchChat() {
@@ -137,23 +171,32 @@ async function copyTextToClipboard(text, successMessage) {
     }
 
     function switchToStreamTab(mode) {
-      playSound('tab');
-      const streamBtn = document.querySelector('[data-tab="stream"]');
-      if (streamBtn) streamBtn.click();
+      switchTab('stream', true, true);
       setPlayerMode(mode);
     }
 
     // -----------------------------------------------------------------
-    // MULTI-LANGUAGE SYSTEM (i18n: TH & EN)
+    // MULTI-LANGUAGE SYSTEM (i18n: TH & EN) & DYNAMIC AGE
     // -----------------------------------------------------------------
+    function calculateAge(birthDateString) {
+      const birthDate = new Date(birthDateString);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      return age;
+    }
+
     const translations = {
       th: {
         banner_desc: "• สตรีมหลักบน Twitch แวะมาเมาท์กันได้!",
         banner_btn: "ชมไลฟ์สด",
-        theme_label: '<i aria-hidden="true" class="fa-solid fa-palette text-xs mr-1"></i>ธีม',
+        theme_label: '<i class="fa-solid fa-palette text-xs mr-1"></i>ธีม',
         share_btn: "แชร์",
         bio_text: "🎮 สตรีมเมอร์สายยิง เน้นโยน จริงจังมาเยอะแล้วครับ! • Just an FPS & Battle Royale lover from Thailand 🇹🇭",
-        name_tag: "ตวง (Tuang) • 30 yrs",
+        name_tag: "ตวง (Tuang) • 30 ปี",
         stream_tag: "Streaming Since May 2017",
         tab_links: "ช่องทาง",
         tab_stream: "สตรีมสด",
@@ -171,9 +214,17 @@ async function copyTextToClipboard(text, successMessage) {
         facebook_sub: "DaLines Tuang • อัปเดตตารางเวลาสตรีมและข่าวสาร",
         instagram_sub: "@tuangdanai • ไลฟ์สไตล์และรูปภาพเบื้องหลัง",
         hw_conf: "Hardware Configuration",
+        sched_banner_title: "ตารางเวลาสตรีม &amp; เกมที่เล่นช่วงนี้",
+        sched_banner_sub: "แวะมาดูเวลาไลฟ์สดและเกมที่ตวงเล่นประจำช่วงนี้ได้เลย!",
+        discord_notify_btn: "แจ้งเตือนใน Discord",
+        sched_time_title: "ตารางไลฟ์ (Stream Schedule)",
+        sched_weekday_desc: "ช่วงค่ำ <strong>20:00 น. เป็นต้นไป</strong> (ยาวถึงเที่ยงคืน)",
+        sched_weekend_desc: "ตามใจสตรีมเมอร์ (ติดตามแจ้งเตือนสดใน Discord)",
+        now_playing_title: "เกมที่เล่นประจำช่วงนี้ (Now Playing)",
+        creator_tools_title: "🛠️ Creator Tools &amp; Dev Projects (สำหรับสตรีมเมอร์)",
         party_title: "Join the Party & Add In-Game",
-        party_desc: "ชื่อในเกม / IGN: <strong class=\"text-emerald-300 font-mono text-sm\">DaLines</strong> (รบกวนกด Follow ในสตรีมก่อนแอดมาเล่นด้วยกันน้า!)",
-        copy_ign: "คัดลอกชื่อในเกม: DaLines",
+        party_desc: "ชื่อในเกม / IGN: <strong class=\"text-emerald-300 font-mono text-sm\">DaLines#TTV</strong> (รบกวนกด Follow ในสตรีมก่อนแอดมาเล่นด้วยกันน้า!)",
+        copy_ign: "คัดลอกชื่อในเกม: DaLines#TTV",
         chat_rules_title: "กฎกติกาการพูดคุย (Chat Rules)",
         rule_1: "พิมพ์คุยเล่นได้ตลอด ถามได้ไม่กัดครับ เป็นกันเองได้เลย",
         rule_2: "ให้เกียรติเพื่อนๆ ในแชท ไม่สปอยล์ และงดใช้คำพูดเสียดสีรุนแรง",
@@ -185,6 +236,15 @@ async function copyTextToClipboard(text, successMessage) {
         donate_qr_hint: "สแกน QR ผ่านแอปธนาคารหรือ TrueMoney โดเนทขึ้นจอสดได้เลยครับ!",
         open_ezdn_btn: "เปิดหน้า EZDN",
         save_qr_btn: "บันทึกรูป QR",
+        pro_settings_title: "Pro Settings / Mouse &amp; Sensitivity (Valorant)",
+        pro_settings_desc: "ตารางสเปกค่าความไวเมาส์และหน้าจอที่ DaLines ใช้เล่น Valorant ประจำช่อง",
+        copy_pro_settings_btn: "คัดลอกค่า Setting ทั้งหมด (Copy All Settings)",
+        toast_copy_pro_settings: "คัดลอกค่า Setting Valorant ครบทุกตัวเลขเรียบร้อย! 🖱️",
+        crosshair_title: "Valorant Crosshair &amp; Reflex Aim Simulator",
+        crosshair_desc: "จำลองเป้าเล็งจริงของ DaLines พร้อมสนามทดสอบความคม &amp; ชาเลนจ์ 10 วินาที",
+        crosshair_copy_btn: "คัดลอกโค้ดเป้า (Valorant Code)",
+        crosshair_click_hint: "🎯 คลิกซ้ายในสนามเพื่อทดสอบสะบัดยิง (มีเสียงเอฟเฟกต์กระสุนสมจริง)",
+        obs_toggle_btn: "⚙️ สำหรับสตรีมเมอร์ (OBS Sync)",
         sens_title: "FPS E-DPI Calculator & Sensitivity Converter",
         sens_desc: "คำนวณ E-DPI และแปลงค่าความไวเมาส์ข้ามเกมแบบแม่นยำ 100% ตามระยะทางจริง (cm/360°)",
         sens_dpi_label: "Mouse DPI:",
@@ -195,15 +255,61 @@ async function copyTextToClipboard(text, successMessage) {
         copy_val_btn: "คัดลอกเป้า Valorant",
         toast_copy_crosshair: "คัดลอกโค้ดเป้า Valorant เรียบร้อย! 🎯",
         toast_copy_link: "คัดลอกลิงก์โปรไฟล์ DaLines แล้วครับ! 🔗",
-        toast_copy_ign: "คัดลอก IGN: DaLines เรียบร้อย! 🎮",
+        toast_copy_ign: "คัดลอก IGN: DaLines#TTV เรียบร้อย! 🎮",
+        bank_name: "ธนาคารกสิกรไทย",
+        bank_account_label: "เลขที่บัญชี:",
+        copy_bank_btn: "คัดลอกเลขบัญชี",
+        toast_copy_bank: "คัดลอกเลขบัญชี 6322170767 เรียบร้อย! 🏦",
+        master_volume_title: "ระดับเสียงหลัก",
         toast_sound_on: "เปิดเสียงเอฟเฟกต์แล้ว 🔊",
         toast_sound_off: "ปิดเสียงเอฟเฟกต์แล้ว 🔇",
-        clips_desc: "คลังคลิปไฮไลท์ยอดนิยมตลอดกาลจาก twitch.tv/dalines เรียงตามยอดเข้าชมสูงสุด"
+        clips_desc: "คลังคลิปไฮไลท์ยอดนิยมตลอดกาลจาก twitch.tv/dalines เรียงตามยอดเข้าชมสูงสุด",
+        tracker_title: "Valorant Career &amp; Live Match Tracker",
+        tracker_desc: "สถิติแรงก์สด ผลการแข่ง และเอเจนท์ตัวเมนของ DaLines#TTV",
+        tracker_sync_live: "ซิงค์สด",
+        tracker_synced_status: "สถานะ: ซิงค์ล่าสุด",
+        tracker_rank_label: "แรงก์ปัจจุบัน (Competitive Rank)",
+        tracker_peak_label: "แรงก์สูงสุด (Career Peak)",
+        tracker_streak_label: "🔥 3 Win Streak",
+        tracker_agents_title: "เอเจนท์ที่เล่นบ่อยที่สุด (Most Played Agents)",
+        tracker_matches_title: "ผลการแข่ง 5 แมตช์ล่าสุด (Recent Competitive Matches)",
+        tracker_search_title: "ค้นหาแรงก์ผู้เล่นสด (Live Player Lookup)",
+        tracker_search_desc: "ค้นหาได้ทุกไอดี (เช่น ตัวคุณเอง หรือเพื่อนในตี้)",
+        tracker_search_btn: "ค้นหา",
+        toast_tracker_synced: "ซิงค์สถิติ Valorant สำเร็จแล้ว! 🎯",
+        hero_intro_1: "ยินดีต้อนรับสู่สตรีม DaLines,",
+        hero_stage1_scroll: "หมุนล้อเมาส์ หรือเลื่อนลงเพื่อสำรวจจักรวาล DaLines ↓",
+        hero_bento_rank_badge: "VALORANT ESPORTS",
+        hero_bento_rank_peak: "แต้มสูงสุด: Immortal 1 (34 RR)",
+        hero_bento_agents_label: "3 เอเจนท์ตัวเมน (ชั่วโมงเล่น)",
+        hero_bento_specs_badge: "BATTLESTATION",
+        hero_bento_specs_btn: "เจาะลึก 3D Scrollytelling",
+        hero_bento_crosshair_badge: "VALORANT CROSSHAIR",
+        hero_bento_crosshair_btn: "คัดลอกโค้ดเป้า 🎯",
+        hero_stage3_title: "เข้าร่วมคอมมูนิตี้ & ติดต่องาน",
+        hero_stage3_desc: "คลิกติดตามช่องทางสตรีมสด หรือคัดลอกอีเมลเพื่อติดต่อธุรกิจได้ทันที",
+        hero_intro_2: "DaLines • ศูนย์รวมเกม Tactical FPS & Action RPG",
+        hero_typewriter: "ดีใจที่แวะเข้ามา บรรยากาศดีๆ และความคมชัดมักจะนำพาเรามาเจอกัน วันนี้เราจะลุยเกมไหนกันดี?",
+        hero_pill_twitch: "🎮 สตรีมสดบน Twitch",
+        hero_pill_youtube: "🎬 ไฮไลท์และคลิป YouTube",
+        hero_pill_setup: "⚡ สเปกคอมและเกียร์เกมมิ่ง",
+        hero_pill_community: "💬 เข้าร่วม Discord ชุมชน",
+        hero_nav_hub: "หน้าหลัก",
+        hero_nav_setup: "สเปกคอม",
+        hero_nav_story: "สตอรี่",
+        hero_cta: "🔴 ดูสตรีมสด",
+        hero_sound_on: "เปิดเสียง",
+        hero_sound_off: "ปิดเสียง",
+        hero_scrub_hint: "ขยับเมาส์ หรือปาดหน้าจอเพื่อสครับท่าเต้น • กด Spacebar เพื่อเต้นอัตโนมัติ",
+        hero_scroll_btn: "⚡ เลื่อนลงสู่ DaLines Command Center ⚡",
+        hero_offline: "ออฟไลน์",
+        hero_live: "กำลังสตรีมสดบน TWITCH",
+        toast_copy_riot_id: "คัดลอก Riot ID: DaLines#TTV เรียบร้อย! 🎮"
       },
       en: {
         banner_desc: "• Catch me live on Twitch! Come say hi!",
         banner_btn: "Watch Live",
-        theme_label: '<i aria-hidden="true" class="fa-solid fa-palette text-xs mr-1"></i>Theme',
+        theme_label: '<i class="fa-solid fa-palette text-xs mr-1"></i>Theme',
         share_btn: "Share",
         bio_text: "🎮 FPS & Battle Royale lover from Thailand 🇹🇭 • Streaming Since 2017",
         name_tag: "Tuang • 30 yrs",
@@ -224,9 +330,17 @@ async function copyTextToClipboard(text, successMessage) {
         facebook_sub: "DaLines Tuang • Schedule announcements & updates",
         instagram_sub: "@tuangdanai • Personal vibes & photos",
         hw_conf: "Hardware Configuration",
+        sched_banner_title: "Stream Schedule &amp; Current Rotation",
+        sched_banner_sub: "Check out stream broadcast hours and games DaLines is actively playing!",
+        discord_notify_btn: "Discord Alerts",
+        sched_time_title: "Stream Schedule",
+        sched_weekday_desc: "Mon - Fri: <strong>8:00 PM+ (BKK)</strong> until midnight",
+        sched_weekend_desc: "Sat - Sun: Weekend Pop-up Streams (Follow Discord Alerts)",
+        now_playing_title: "Current Rotation (Now Playing)",
+        creator_tools_title: "🛠️ Creator Tools &amp; Dev Projects (For Streamers)",
         party_title: "Join the Party & In-Game ID",
-        party_desc: "In-Game Name: <strong class=\"text-emerald-300 font-mono text-sm\">DaLines</strong> (Please follow the stream before sending a friend request!)",
-        copy_ign: "Copy IGN: DaLines",
+        party_desc: "In-Game Name: <strong class=\"text-emerald-300 font-mono text-sm\">DaLines#TTV</strong> (Please follow the stream before sending a friend request!)",
+        copy_ign: "Copy IGN: DaLines#TTV",
         chat_rules_title: "Community Guidelines & Chat Rules",
         rule_1: "Friendly chat, feel free to ask questions and hang out.",
         rule_2: "Respect each other in chat, no spoilers or toxic behavior.",
@@ -238,6 +352,15 @@ async function copyTextToClipboard(text, successMessage) {
         donate_qr_hint: "Scan QR with Mobile Banking or TrueMoney for live on-screen stream alerts!",
         open_ezdn_btn: "Open EZDN",
         save_qr_btn: "Save QR Image",
+        pro_settings_title: "Pro Settings / Mouse &amp; Sensitivity (Valorant)",
+        pro_settings_desc: "Official mouse sensitivity and display hardware settings used by DaLines in Valorant",
+        copy_pro_settings_btn: "Copy All Settings",
+        toast_copy_pro_settings: "Valorant Pro Settings copied to clipboard! 🖱️",
+        crosshair_title: "Valorant Crosshair &amp; Reflex Aim Simulator",
+        crosshair_desc: "Authentic DaLines crosshair reticle with interactive 10-second aim reflex challenge",
+        crosshair_copy_btn: "Copy Valorant Code",
+        crosshair_click_hint: "🎯 Click inside stage to test crosshair flick &amp; recoil sound effects",
+        obs_toggle_btn: "⚙️ Streamer Tools (OBS Sync)",
         sens_title: "FPS E-DPI Calculator & Sensitivity Converter",
         sens_desc: "Calculate eDPI and convert mouse sensitivity across games accurately by cm/360°",
         sens_dpi_label: "Mouse DPI:",
@@ -248,10 +371,56 @@ async function copyTextToClipboard(text, successMessage) {
         copy_val_btn: "Copy Valorant Crosshair",
         toast_copy_crosshair: "Valorant Crosshair code copied! 🎯",
         toast_copy_link: "DaLines Profile link copied! 🔗",
-        toast_copy_ign: "IGN: DaLines copied to clipboard! 🎮",
+        toast_copy_ign: "IGN: DaLines#TTV copied to clipboard! 🎮",
+        bank_name: "Kasikornbank (KBank)",
+        bank_account_label: "Account No:",
+        copy_bank_btn: "Copy Account No.",
+        toast_copy_bank: "Account number 6322170767 copied! 🏦",
+        master_volume_title: "Master Volume",
         toast_sound_on: "Sound FX Enabled 🔊",
         toast_sound_off: "Sound FX Muted 🔇",
-        clips_desc: "All-time top clips and highlights from twitch.tv/dalines sorted by view count!"
+        clips_desc: "All-time top clips and highlights from twitch.tv/dalines sorted by view count!",
+        tracker_title: "Valorant Career &amp; Live Match Tracker",
+        tracker_desc: "Live rank stats, match history & signature agents for DaLines#TTV",
+        tracker_sync_live: "Sync Live",
+        tracker_synced_status: "Status: Synced",
+        tracker_rank_label: "Current Rank (Competitive)",
+        tracker_peak_label: "Career Peak:",
+        tracker_streak_label: "🔥 3 Win Streak",
+        tracker_agents_title: "Most Played Agents (Signature Roster)",
+        tracker_matches_title: "Recent Competitive Matches (Last 5)",
+        tracker_search_title: "Live Player Rank Lookup",
+        tracker_search_desc: "Look up any Riot ID & region in real-time",
+        tracker_search_btn: "Lookup",
+        toast_tracker_synced: "Valorant stats synced successfully! 🎯",
+        hero_intro_1: "Hey there, welcome to the stream,",
+        hero_stage1_scroll: "Scroll down to explore DaLines universe ↓",
+        hero_bento_rank_badge: "VALORANT ESPORTS",
+        hero_bento_rank_peak: "Peak: Immortal 1 (34 RR)",
+        hero_bento_agents_label: "Signature Agents (Hours)",
+        hero_bento_specs_badge: "BATTLESTATION",
+        hero_bento_specs_btn: "Explore 3D Story",
+        hero_bento_crosshair_badge: "VALORANT CROSSHAIR",
+        hero_bento_crosshair_btn: "Copy Crosshair 🎯",
+        hero_stage3_title: "Join Community & Business Inquiry",
+        hero_stage3_desc: "Watch live streams or reach out for esports / sponsorship inquiries",
+        hero_intro_2: "DaLines • Tactical & Action RPG Broadcast Hub",
+        hero_typewriter: "Glad you stopped by. Good vibes and sharp aim always find a way. What game are we diving into today?",
+        hero_pill_twitch: "🎮 Twitch Stream",
+        hero_pill_youtube: "🎬 YouTube VODs",
+        hero_pill_setup: "⚡ Gaming Setup & Specs",
+        hero_pill_community: "💬 Join Community",
+        hero_nav_hub: "Hub",
+        hero_nav_setup: "Setup & Gear",
+        hero_nav_story: "Story",
+        hero_cta: "🔴 Watch Live",
+        hero_sound_on: "Sound On",
+        hero_sound_off: "Sound Off",
+        hero_scrub_hint: "Drag mouse or swipe to scrub dance • Press Space to auto-dance",
+        hero_scroll_btn: "⚡ Scroll down to Battle Station & Hub ⚡",
+        hero_offline: "OFFLINE",
+        hero_live: "LIVE ON TWITCH",
+        toast_copy_riot_id: "Riot ID: DaLines#TTV copied to clipboard! 🎮"
       }
     };
 
@@ -263,6 +432,11 @@ async function copyTextToClipboard(text, successMessage) {
       safeStorage.setItem('dalines_lang', lang);
       document.documentElement.lang = lang;
 
+      // Dynamic Age Injection from birthdate 1996-01-14
+      const dynamicAge = calculateAge('1996-01-14');
+      translations.th.name_tag = `ตวง (Tuang) • ${dynamicAge} ปี`;
+      translations.en.name_tag = `Tuang • ${dynamicAge} yrs`;
+
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (translations[lang] && translations[lang][key]) {
@@ -270,6 +444,7 @@ async function copyTextToClipboard(text, successMessage) {
         }
       });
 
+      if (typeof lastTwitchStatus !== 'undefined' && lastTwitchStatus) document.dispatchEvent(new CustomEvent('dalines:live-status', { detail: lastTwitchStatus }));
       const indicator = document.getElementById('lang-indicator');
       if (indicator) {
         indicator.innerText = (lang === 'th') ? 'EN' : 'TH';
@@ -283,22 +458,153 @@ async function copyTextToClipboard(text, successMessage) {
     }
 
     // -----------------------------------------------------------------
-    // SOUND EFFECTS ENGINE (Web Audio API)
+    // SOUND EFFECTS ENGINE (Web Audio API & Master Volume Control)
     // -----------------------------------------------------------------
     let audioCtx = null;
+    let masterGainNode = null;
     let isSoundEnabled = safeStorage.getItem('dalines_sound') !== 'false';
+    let savedMasterVol = safeStorage.getItem('dalines_master_volume');
+    let masterVolume = savedMasterVol !== null ? parseFloat(savedMasterVol) : 0.8;
+    if (isNaN(masterVolume) || masterVolume < 0 || masterVolume > 1) {
+      masterVolume = 0.8;
+    }
+
+    function triggerHaptic(duration = 15) {
+      try {
+        if (typeof navigator !== 'undefined' && 'vibrate' in navigator && typeof navigator.vibrate === 'function') {
+          navigator.vibrate(duration);
+        }
+      } catch (err) {
+        // Fallback gracefully if vibration is blocked or unsupported
+      }
+    }
 
     function initAudio() {
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (!masterGainNode) {
+        masterGainNode = audioCtx.createGain();
+        const effectiveVol = (isSoundEnabled && masterVolume > 0) ? masterVolume : 0;
+        masterGainNode.gain.setValueAtTime(effectiveVol, audioCtx.currentTime);
+        masterGainNode.connect(audioCtx.destination);
       }
       if (audioCtx.state === 'suspended') {
         audioCtx.resume();
       }
     }
 
+    function getAudioDestination() {
+      initAudio();
+      return masterGainNode || audioCtx.destination;
+    }
+
+    function applyMasterVolume() {
+      if (audioCtx && masterGainNode) {
+        const effectiveVol = (isSoundEnabled && masterVolume > 0) ? masterVolume : 0;
+        masterGainNode.gain.setValueAtTime(effectiveVol, audioCtx.currentTime);
+      }
+    }
+
+    function toggleVolumeDropdown(e) {
+      if (e) e.stopPropagation();
+      const panel = document.getElementById('volume-dropdown-panel');
+      const chevron = document.getElementById('volume-dropdown-chevron');
+      if (!panel) return;
+      const isClosed = panel.classList.contains('hidden');
+      if (isClosed) {
+        panel.classList.remove('hidden');
+        if (chevron) chevron.style.transform = 'rotate(180deg)';
+        updateVolumeUI();
+      } else {
+        closeVolumeDropdown();
+      }
+    }
+
+    function closeVolumeDropdown() {
+      const panel = document.getElementById('volume-dropdown-panel');
+      const chevron = document.getElementById('volume-dropdown-chevron');
+      if (panel) panel.classList.add('hidden');
+      if (chevron) chevron.style.transform = 'rotate(0deg)';
+    }
+
+    function onVolumeSliderInput(val) {
+      const pct = parseInt(val, 10);
+      const vol = Math.min(Math.max(pct / 100, 0), 1);
+      masterVolume = vol;
+      safeStorage.setItem('dalines_master_volume', vol);
+
+      if (pct === 0) {
+        isSoundEnabled = false;
+        safeStorage.setItem('dalines_sound', false);
+      } else if (!isSoundEnabled) {
+        isSoundEnabled = true;
+        safeStorage.setItem('dalines_sound', true);
+      }
+
+      applyMasterVolume();
+      updateSoundIcon();
+      updateVolumeUI();
+    }
+
+    function setQuickVolume(pct) {
+      const vol = Math.min(Math.max(pct / 100, 0), 1);
+      masterVolume = vol;
+      safeStorage.setItem('dalines_master_volume', vol);
+
+      if (pct === 0) {
+        isSoundEnabled = false;
+        safeStorage.setItem('dalines_sound', false);
+      } else {
+        isSoundEnabled = true;
+        safeStorage.setItem('dalines_sound', true);
+      }
+
+      applyMasterVolume();
+      updateSoundIcon();
+      updateVolumeUI();
+      if (pct > 0) {
+        playSound('pop');
+      }
+      triggerHaptic(15);
+    }
+
+    function updateSoundIcon() {
+      const icon = document.getElementById('sound-icon');
+      if (icon) {
+        if (!isSoundEnabled || masterVolume === 0) {
+          icon.className = 'fa-solid fa-volume-xmark text-xs text-slate-500';
+          icon.style.color = '';
+        } else if (masterVolume < 0.5) {
+          icon.className = 'fa-solid fa-volume-low text-xs';
+          icon.style.color = 'var(--primary-color)';
+        } else {
+          icon.className = 'fa-solid fa-volume-high text-xs';
+          icon.style.color = 'var(--primary-color)';
+        }
+      }
+      updateVolumeUI();
+    }
+
+    function updateVolumeUI() {
+      const badge = document.getElementById('volume-badge-text');
+      const slider = document.getElementById('master-volume-slider');
+      const sliderLabel = document.getElementById('volume-slider-label');
+      const pct = Math.round(masterVolume * 100);
+
+      if (badge) {
+        badge.innerText = (!isSoundEnabled || masterVolume === 0) ? '0%' : `${pct}%`;
+      }
+      if (slider) {
+        slider.value = (!isSoundEnabled) ? 0 : pct;
+      }
+      if (sliderLabel) {
+        sliderLabel.innerText = (!isSoundEnabled || masterVolume === 0) ? 'Muted (0%)' : `${pct}%`;
+      }
+    }
+
     function playSound(type) {
-      if (!isSoundEnabled) return;
+      if (!isSoundEnabled || masterVolume === 0) return;
       try {
         initAudio();
         const now = audioCtx.currentTime;
@@ -312,7 +618,7 @@ async function copyTextToClipboard(text, successMessage) {
           gain.gain.setValueAtTime(0.08, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now);
           osc.stop(now + 0.06);
         } else if (type === 'theme') {
@@ -324,7 +630,7 @@ async function copyTextToClipboard(text, successMessage) {
             gain.gain.setValueAtTime(0.05, now + idx * 0.04);
             gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.04 + 0.15);
             osc.connect(gain);
-            gain.connect(audioCtx.destination);
+            gain.connect(getAudioDestination());
             osc.start(now + idx * 0.04);
             osc.stop(now + idx * 0.04 + 0.15);
           });
@@ -337,7 +643,7 @@ async function copyTextToClipboard(text, successMessage) {
           gain.gain.setValueAtTime(0.03, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now);
           osc.stop(now + 0.08);
         } else if (type === 'pop') {
@@ -349,7 +655,7 @@ async function copyTextToClipboard(text, successMessage) {
           gain.gain.setValueAtTime(0.06, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now);
           osc.stop(now + 0.08);
         } else if (type === 'gunshot') {
@@ -378,7 +684,7 @@ async function copyTextToClipboard(text, successMessage) {
           gain.gain.setValueAtTime(0.12, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now);
           osc.stop(now + 0.09);
         } else if (type === 'countdown_go') {
@@ -389,11 +695,11 @@ async function copyTextToClipboard(text, successMessage) {
           gain.gain.setValueAtTime(0.2, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now);
           osc.stop(now + 0.22);
         }
-      } catch (e) {}
+      } catch (e) { }
     }
 
     function playGunshotSynth(audioCtx, now) {
@@ -417,7 +723,7 @@ async function copyTextToClipboard(text, successMessage) {
 
       noise.connect(filter);
       filter.connect(noiseGain);
-      noiseGain.connect(audioCtx.destination);
+      noiseGain.connect(getAudioDestination());
       noise.start(now);
 
       const subOsc = audioCtx.createOscillator();
@@ -429,7 +735,7 @@ async function copyTextToClipboard(text, successMessage) {
       subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
 
       subOsc.connect(subGain);
-      subGain.connect(audioCtx.destination);
+      subGain.connect(getAudioDestination());
       subOsc.start(now);
       subOsc.stop(now + 0.1);
     }
@@ -444,7 +750,7 @@ async function copyTextToClipboard(text, successMessage) {
         gain.gain.setValueAtTime(0.18, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(getAudioDestination());
         osc.start(now);
         osc.stop(now + 0.22);
       });
@@ -467,7 +773,7 @@ async function copyTextToClipboard(text, successMessage) {
 
       osc.connect(filter);
       filter.connect(gain);
-      gain.connect(audioCtx.destination);
+      gain.connect(getAudioDestination());
       osc.start(now);
       osc.stop(now + 0.45);
 
@@ -480,7 +786,7 @@ async function copyTextToClipboard(text, successMessage) {
       boingGain.gain.setValueAtTime(0.12, now + 0.45);
       boingGain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
       boing.connect(boingGain);
-      boingGain.connect(audioCtx.destination);
+      boingGain.connect(getAudioDestination());
       boing.start(now + 0.45);
       boing.stop(now + 0.7);
     }
@@ -493,7 +799,7 @@ async function copyTextToClipboard(text, successMessage) {
       clickGain1.gain.setValueAtTime(0.15, now);
       clickGain1.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
       click1.connect(clickGain1);
-      clickGain1.connect(audioCtx.destination);
+      clickGain1.connect(getAudioDestination());
       click1.start(now);
       click1.stop(now + 0.05);
 
@@ -504,7 +810,7 @@ async function copyTextToClipboard(text, successMessage) {
       clickGain2.gain.setValueAtTime(0.18, now + 0.08);
       clickGain2.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
       click2.connect(clickGain2);
-      clickGain2.connect(audioCtx.destination);
+      clickGain2.connect(getAudioDestination());
       click2.start(now + 0.08);
       click2.stop(now + 0.13);
 
@@ -516,7 +822,7 @@ async function copyTextToClipboard(text, successMessage) {
         gain.gain.setValueAtTime(0.08, now + 0.15 + i * 0.03);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(getAudioDestination());
         osc.start(now + 0.15 + i * 0.03);
         osc.stop(now + 0.45);
       });
@@ -537,7 +843,7 @@ async function copyTextToClipboard(text, successMessage) {
         gain.gain.setValueAtTime(0.12, now + n.t);
         gain.gain.exponentialRampToValueAtTime(0.001, now + n.t + n.d);
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(getAudioDestination());
         osc.start(now + n.t);
         osc.stop(now + n.t + n.d);
       });
@@ -553,7 +859,7 @@ async function copyTextToClipboard(text, successMessage) {
         gain.gain.setValueAtTime(0.1, now + idx * 0.06);
         gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.3);
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(getAudioDestination());
         osc.start(now + idx * 0.06);
         osc.stop(now + idx * 0.06 + 0.3);
       });
@@ -576,7 +882,7 @@ async function copyTextToClipboard(text, successMessage) {
 
         osc.connect(filter);
         filter.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(getAudioDestination());
         osc.start(t);
         osc.stop(t + 0.15);
       }
@@ -597,7 +903,7 @@ async function copyTextToClipboard(text, successMessage) {
         gain.gain.setValueAtTime(0.15, now + tOffset);
         gain.gain.exponentialRampToValueAtTime(0.001, now + tOffset + 0.09);
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(getAudioDestination());
         osc.start(now + tOffset);
         osc.stop(now + tOffset + 0.09);
       });
@@ -606,6 +912,11 @@ async function copyTextToClipboard(text, successMessage) {
     function toggleSoundFx() {
       isSoundEnabled = !isSoundEnabled;
       safeStorage.setItem('dalines_sound', isSoundEnabled);
+      if (isSoundEnabled && masterVolume === 0) {
+        masterVolume = 0.8;
+        safeStorage.setItem('dalines_master_volume', 0.8);
+      }
+      applyMasterVolume();
       updateSoundIcon();
       if (isSoundEnabled) {
         playSound('pop');
@@ -615,24 +926,14 @@ async function copyTextToClipboard(text, successMessage) {
       }
     }
 
-    function updateSoundIcon() {
-      const icon = document.getElementById('sound-icon');
-      if (icon) {
-        if (isSoundEnabled) {
-          icon.className = 'fa-solid fa-volume-high text-xs';
-          icon.style.color = 'var(--primary-color)';
-        } else {
-          icon.className = 'fa-solid fa-volume-xmark text-xs text-slate-500';
-          icon.style.color = '';
-        }
-      }
-    }
+    // -----------------------------------------------------------------
+    // THEME CONTROLLER & EASTER EGG (CYBERPUNK GOLD)
+    // -----------------------------------------------------------------
+    let currentTheme = safeStorage.getItem('dalines_theme') || 'emerald';
 
-    // -----------------------------------------------------------------
-    // THEME CONTROLLER
-    // -----------------------------------------------------------------
     function setTheme(color, silent = false) {
-      if (!['emerald', 'cyan', 'purple'].includes(color)) color = 'emerald';
+      if (!['emerald', 'cyan', 'purple', 'gold'].includes(color)) color = 'emerald';
+      currentTheme = color;
       if (color === 'emerald') {
         document.documentElement.removeAttribute('data-theme');
       } else {
@@ -650,15 +951,229 @@ async function copyTextToClipboard(text, successMessage) {
       if (!silent) playSound('theme');
     }
 
+    function initGoldTheme() {
+      const isGoldUnlocked = safeStorage.getItem('dalines_unlocked_gold') === 'true';
+      const goldDot = document.getElementById('theme-dot-gold');
+      if (goldDot && isGoldUnlocked) {
+        goldDot.classList.remove('hidden');
+      }
+    }
+
+    let profileClickCount = 0;
+    let profileClickResetTimer = null;
+
+    function handleProfileEasterEgg(e) {
+      if (e) {
+        e.stopPropagation();
+      }
+
+      profileClickCount++;
+      triggerHaptic(15);
+      playSound('pop');
+
+      // Visual tap bounce on avatar
+      const avatar = document.getElementById('profile-img') || document.getElementById('profile-container');
+      if (avatar) {
+        avatar.style.transition = 'transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        avatar.style.transform = `scale(1.15) rotate(${profileClickCount % 2 === 0 ? 8 : -8}deg)`;
+        setTimeout(() => {
+          if (avatar) avatar.style.transform = '';
+        }, 150);
+      }
+
+      clearTimeout(profileClickResetTimer);
+
+      if (profileClickCount >= 5) {
+        profileClickCount = 0;
+        triggerGoldEasterEgg();
+      } else {
+        profileClickResetTimer = setTimeout(() => {
+          profileClickCount = 0;
+        }, 2000);
+      }
+    }
+
+    function triggerGoldEasterEgg() {
+      triggerHaptic(40);
+      playFanfareSound();
+      triggerConfettiExplosion();
+
+      safeStorage.setItem('dalines_unlocked_gold', 'true');
+      const goldDot = document.getElementById('theme-dot-gold');
+      if (goldDot) {
+        goldDot.classList.remove('hidden');
+        goldDot.classList.add('animate-bounce');
+        setTimeout(() => goldDot.classList.remove('animate-bounce'), 1200);
+      }
+
+      setTheme('gold');
+      showToast("🎉 ยินดีด้วย! คุณปลดล็อกธีมลับ DaLines Gold Edition สำเร็จ!");
+    }
+
+    function playFanfareSound() {
+      if (!isSoundEnabled || masterVolume === 0) return;
+      try {
+        initAudio();
+        const now = audioCtx.currentTime;
+        const dest = getAudioDestination();
+
+        const notes = [
+          { f: 523.25, t: 0.00, d: 0.15 }, // C5
+          { f: 659.25, t: 0.14, d: 0.15 }, // E5
+          { f: 783.99, t: 0.28, d: 0.18 }, // G5
+          { f: 1046.50, t: 0.46, d: 0.65 }, // C6
+          { f: 1318.51, t: 0.50, d: 0.65 }, // E6
+          { f: 1567.98, t: 0.54, d: 0.80 }  // G6
+        ];
+
+        notes.forEach(n => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          const startTime = now + n.t;
+          osc.frequency.setValueAtTime(n.f, startTime);
+          gain.gain.setValueAtTime(0.2, startTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, startTime + n.d);
+          osc.connect(gain);
+          gain.connect(dest);
+          osc.start(startTime);
+          osc.stop(startTime + n.d);
+        });
+
+        for (let i = 0; i < 8; i++) {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          const t = now + 0.45 + i * 0.06;
+          osc.frequency.setValueAtTime(1760 + i * 180 + Math.random() * 100, t);
+          gain.gain.setValueAtTime(0.08, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+          osc.connect(gain);
+          gain.connect(dest);
+          osc.start(t);
+          osc.stop(t + 0.2);
+        }
+      } catch (e) {
+        console.error('Fanfare audio error:', e);
+      }
+    }
+
+    function triggerConfettiExplosion() {
+      let canvas = document.getElementById('easter-egg-confetti-canvas');
+      if (!canvas) {
+        canvas = document.createElement('canvas');
+        canvas.id = 'easter-egg-confetti-canvas';
+        canvas.style.position = 'fixed';
+        canvas.style.inset = '0';
+        canvas.style.width = '100vw';
+        canvas.style.height = '100vh';
+        canvas.style.pointerEvents = 'none';
+        canvas.style.zIndex = '99999';
+        document.body.appendChild(canvas);
+      }
+
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const colors = ['#facc15', '#eab308', '#fbbf24', '#fef08a', '#10b981', '#06b6d4', '#a855f7', '#f43f5e', '#ffffff'];
+      const particles = [];
+      const count = 140;
+
+      const originX = canvas.width / 2;
+      const originY = Math.min(canvas.height * 0.35, 280);
+
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 15 + 6;
+        particles.push({
+          x: originX,
+          y: originY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 5,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotationSpeed: (Math.random() - 0.5) * 14,
+          gravity: 0.25,
+          opacity: 1,
+          decay: Math.random() * 0.008 + 0.008,
+          isCircle: Math.random() > 0.5
+        });
+      }
+
+      let animId;
+      const startTime = performance.now();
+
+      function animate(now) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = 0;
+
+        for (let p of particles) {
+          if (p.opacity <= 0) continue;
+          alive++;
+
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.vx *= 0.98;
+          p.vy *= 0.98;
+          p.rotation += p.rotationSpeed;
+          p.opacity -= p.decay;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.globalAlpha = Math.max(0, p.opacity);
+          ctx.fillStyle = p.color;
+
+          if (p.isCircle) {
+            ctx.beginPath();
+            ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+          }
+
+          ctx.restore();
+        }
+
+        if (alive > 0 && now - startTime < 4500) {
+          animId = requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          cancelAnimationFrame(animId);
+          if (canvas && canvas.parentNode) {
+            canvas.parentNode.removeChild(canvas);
+          }
+        }
+      }
+
+      animId = requestAnimationFrame(animate);
+    }
+
     const savedTheme = safeStorage.getItem('dalines_theme') || 'emerald';
     setTheme(savedTheme, true);
+    initGoldTheme();
+
+    function updateBannerHeight() {
+      const banner = document.getElementById('sticky-live-banner');
+      const h = (banner && banner.isConnected && banner.offsetHeight > 0 && window.getComputedStyle(banner).display !== 'none')
+        ? `${banner.offsetHeight}px`
+        : '0px';
+      document.documentElement.style.setProperty('--banner-height', h);
+    }
 
     function dismissLiveBanner() {
       const banner = document.getElementById('sticky-live-banner');
       if (banner) {
         banner.style.transform = 'translateY(-100%)';
         banner.style.opacity = '0';
-        setTimeout(() => banner.remove(), 300);
+        document.documentElement.style.setProperty('--banner-height', '0px');
+        setTimeout(() => {
+          banner.remove();
+          updateBannerHeight();
+        }, 300);
       }
       playSound('pop');
     }
@@ -685,28 +1200,118 @@ async function copyTextToClipboard(text, successMessage) {
       });
     }, { passive: true });
 
+    const VALID_TABS = ['links', 'stream', 'pc', 'gear', 'rules'];
+
+    function animateCounters(container) {
+      if (!container) return;
+      const counters = container.querySelectorAll('.counter-number');
+      counters.forEach(counter => {
+        const target = +counter.getAttribute('data-target');
+        const duration = 600;
+        const start = 0;
+        const startTime = performance.now();
+
+        function updateCount(currentTime) {
+          const progress = Math.min((currentTime - startTime) / duration, 1);
+          const currentVal = Math.floor(progress * (target - start) + start);
+          counter.innerText = currentVal;
+          if (progress < 1) {
+            requestAnimationFrame(updateCount);
+          } else {
+            counter.innerText = target;
+          }
+        }
+        requestAnimationFrame(updateCount);
+      });
+    }
+
     const initializedTabs = new Set();
     function initializeTab(tab) {
       if (initializedTabs.has(tab)) return;
       initializedTabs.add(tab);
-      if (tab === 'stream') {
-        initClipsVault();
-        initEmoteShowcase();
-        initStreamCountdown();
-      } else if (tab === 'gear') {
-        initSensCalculator();
-        initRouletteWheel();
-      } else if (tab === 'rules') {
-        initObsTts();
-        initBotCommands();
+      if (tab === 'stream') { initClipsVault(); initEmoteShowcase(); initStreamCountdown(); }
+      else if (tab === 'gear') { initSensCalculator(); initRouletteWheel(); initValorantTracker(); initAimChallenge(); }
+      else if (tab === 'rules') { initObsTts(); initBotCommands(); }
+    }
+
+    function switchTab(tabId, updateUrl = true, playSoundEffect = true) {
+      const targetTab = VALID_TABS.includes(tabId) ? tabId : 'links';
+      initializeTab(targetTab);
+      if (targetTab !== 'stream') stopStreamEmbeds();
+      if (targetTab !== 'gear' && (isChallengeRunning || challengeCountdownTimer)) endAimChallenge(true);
+
+      if (playSoundEffect) {
+        playSound('tab');
+      }
+
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabContents.forEach(content => {
+        if (content.id === `tab-${targetTab}`) {
+          content.classList.add('active');
+          content.hidden = false;
+          if (targetTab === 'pc') {
+            animateCounters(content);
+          }
+          if (targetTab === 'stream') {
+            if (playSoundEffect || isTwitchPlayerLoaded) {
+              loadTwitchPlayer(currentPlayerMode);
+            }
+          }
+        } else {
+          content.classList.remove('active');
+          content.hidden = true;
+        }
+      });
+
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      tabButtons.forEach(btn => {
+        const selected = btn.getAttribute('data-tab') === targetTab;
+        btn.setAttribute('aria-selected', String(selected));
+        btn.tabIndex = selected ? 0 : -1;
+        if (selected) {
+          btn.className = 'tab-btn theme-active-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs rounded-xl transition-all duration-200 cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5';
+        } else {
+          btn.className = 'tab-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-white cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5';
+        }
+      });
+
+      if (updateUrl) {
+        const newHash = `#${targetTab}`;
+        if (window.location.hash !== newHash) {
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, '', newHash);
+          } else {
+            window.location.hash = newHash;
+          }
+        }
       }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
       setLanguage(currentLang);
       updateSoundIcon();
+      updateVolumeUI();
+      initGoldTheme();
+      const profileImg = document.getElementById('profile-img');
+      if (profileImg) {
+        profileImg.addEventListener('click', handleProfileEasterEgg);
+      }
       initCyberCanvas();
       setupModals();
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden && (isChallengeRunning || challengeCountdownTimer)) endAimChallenge(true);
+      });
+
+      // Click outside to close volume dropdown
+      document.addEventListener('click', (e) => {
+        const wrapper = document.getElementById('volume-control-wrapper');
+        const panel = document.getElementById('volume-dropdown-panel');
+        if (panel && !panel.classList.contains('hidden')) {
+          if (wrapper && !wrapper.contains(e.target)) {
+            closeVolumeDropdown();
+          }
+        }
+      });
 
       // Decorative work is bounded to one frame and respects motion/data preferences.
       const cursorGlow = document.getElementById('cursor-glow');
@@ -743,53 +1348,51 @@ async function copyTextToClipboard(text, successMessage) {
           });
         });
       }
-      document.addEventListener('pointerdown', e => {
-        if (prefersQuietEffects() || e.pointerType === 'touch') return;
+      // Sparkles Effect (Only on Interactive Elements: button, a, .tilt-card, .sound-card)
+      // Listen to 'click' (instead of pointerdown) so scrolling/swiping on mobile never triggers unwanted sparkles
+      document.addEventListener('click', (e) => {
+        if (prefersQuietEffects()) return;
+        const interactiveTarget = e.target && e.target.closest('button, a, .tilt-card, .sound-card, [role="button"]');
+        if (!interactiveTarget) return;
+
         playSound('sparkle');
-        const color = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim() || '#10b981';
+
+        const themeCol = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim() || '#10b981';
+        const colors = [themeCol, '#ffffff', '#a855f7', '#38bdf8', '#fbbf24'];
+
+        const rect = interactiveTarget.getBoundingClientRect();
+        const x = (typeof e.clientX === 'number' && e.clientX > 0)
+          ? e.clientX
+          : (rect.left + rect.width / 2);
+        const y = (typeof e.clientY === 'number' && e.clientY > 0)
+          ? e.clientY
+          : (rect.top + rect.height / 2);
+
         for (let i = 0; i < 4; i++) {
           const sparkle = document.createElement('div');
           sparkle.className = 'sparkle-particle';
-          sparkle.style.cssText = 'width:5px;height:5px;background:' + color + ';left:' + e.clientX + 'px;top:' + e.clientY + 'px';
+          const size = Math.random() * 6 + 4;
+          sparkle.style.width = `${size}px`;
+          sparkle.style.height = `${size}px`;
+          sparkle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          sparkle.style.boxShadow = `0 0 8px ${sparkle.style.backgroundColor}`;
+          sparkle.style.left = `${x}px`;
+          sparkle.style.top = `${y}px`;
+
           const angle = Math.random() * Math.PI * 2;
-          sparkle.style.setProperty('--tx', (Math.cos(angle) * 35 - 50) + '%');
-          sparkle.style.setProperty('--ty', (Math.sin(angle) * 35 - 50) + '%');
+          const distance = Math.random() * 45 + 18;
+          sparkle.style.setProperty('--tx', `${Math.cos(angle) * distance - 50}%`);
+          sparkle.style.setProperty('--ty', `${Math.sin(angle) * distance - 50}%`);
+
           document.body.appendChild(sparkle);
           setTimeout(() => sparkle.remove(), 650);
         }
-      }, { passive: true });
+      }, true);
 
+      // Accessible tabs retain the latest URL-hash and history behavior.
       const tabButtons = Array.from(document.querySelectorAll('.tab-btn'));
-      const tabContents = document.querySelectorAll('.tab-content');
-      const tabList = tabButtons[0]?.parentElement;
-      tabList?.setAttribute('role', 'tablist');
-      tabList?.setAttribute('aria-label', 'DaLines');
-      function activateTab(button, focus = false) {
-        const target = button.dataset.tab;
-        playSound('tab');
-        initializeTab(target);
-        tabContents.forEach(panel => {
-          const selected = panel.id === 'tab-' + target;
-          panel.classList.toggle('active', selected);
-          panel.hidden = !selected;
-        });
-        tabButtons.forEach(btn => {
-          const selected = btn === button;
-          btn.setAttribute('aria-selected', String(selected));
-          btn.tabIndex = selected ? 0 : -1;
-          btn.classList.toggle('theme-active-btn', selected);
-          btn.classList.toggle('text-slate-400', !selected);
-          btn.classList.toggle('font-medium', !selected);
-        });
-        if (target === 'stream') updateTwitchPlayer(currentPlayerMode);
-        else stopStreamEmbeds();
-        if (target === 'pc') {
-          document.getElementById('tab-pc')?.querySelectorAll('.counter-number').forEach(counter => {
-            counter.textContent = counter.dataset.target;
-          });
-        }
-        if (focus) button.focus();
-      }
+      tabButtons[0]?.parentElement?.setAttribute('role', 'tablist');
+      tabButtons[0]?.parentElement?.setAttribute('aria-label', 'DaLines');
       tabButtons.forEach((button, index) => {
         const tab = button.dataset.tab;
         button.id ||= 'tab-button-' + tab;
@@ -797,15 +1400,12 @@ async function copyTextToClipboard(text, successMessage) {
         button.setAttribute('aria-controls', 'tab-' + tab);
         const panel = document.getElementById('tab-' + tab);
         if (panel) {
-          panel.setAttribute('role', 'tabpanel');
-          panel.setAttribute('aria-labelledby', button.id);
-          panel.tabIndex = 0;
-          panel.hidden = !panel.classList.contains('active');
+          panel.setAttribute('role', 'tabpanel'); panel.setAttribute('aria-labelledby', button.id);
+          panel.tabIndex = 0; panel.hidden = !panel.classList.contains('active');
         }
         const selected = Boolean(panel?.classList.contains('active'));
-        button.setAttribute('aria-selected', String(selected));
-        button.tabIndex = selected ? 0 : -1;
-        button.addEventListener('click', event => { event.preventDefault(); activateTab(button); });
+        button.setAttribute('aria-selected', String(selected)); button.tabIndex = selected ? 0 : -1;
+        button.addEventListener('click', event => { event.preventDefault(); switchTab(tab, true, true); });
         button.addEventListener('keydown', event => {
           let next;
           if (event.key === 'ArrowRight') next = (index + 1) % tabButtons.length;
@@ -813,22 +1413,49 @@ async function copyTextToClipboard(text, successMessage) {
           else if (event.key === 'Home') next = 0;
           else if (event.key === 'End') next = tabButtons.length - 1;
           else return;
-          event.preventDefault(); activateTab(tabButtons[next], true);
+          event.preventDefault(); switchTab(tabButtons[next].dataset.tab, true, true); tabButtons[next].focus();
         });
       });
-      const activeTab = tabButtons.find(button => button.getAttribute('aria-selected') === 'true');
-      if (activeTab) initializeTab(activeTab.dataset.tab);
 
-      document.getElementById('btn-share')?.addEventListener('click', () => {
-        playSound('pop');
-        if (navigator.share) {
-          navigator.share({ title: 'DaLines | Profile Hub & Battle Station', url: window.location.href }).catch(() => {});
-        } else copyTextToClipboard(window.location.href, translations[currentLang].toast_copy_link);
+      // Restore Tab from URL Hash on Initial Load & Refresh
+      const initialTabHash = window.location.hash.replace('#', '').toLowerCase();
+      switchTab(VALID_TABS.includes(initialTabHash) ? initialTabHash : 'links', false, false);
+
+      // Sync Tab when Browser Back/Forward or Hash Changes
+      window.addEventListener('hashchange', () => {
+        const hash = window.location.hash.replace('#', '').toLowerCase();
+        if (VALID_TABS.includes(hash)) {
+          switchTab(hash, false, true);
+        }
       });
+
+      // Sticky Nav Banner Height Sync
+      updateBannerHeight();
+      window.addEventListener('resize', updateBannerHeight);
+
+      // Share Button
+      const shareBtn = document.getElementById('btn-share');
+      if (shareBtn) {
+        shareBtn.addEventListener('click', () => {
+          playSound('pop');
+          if (navigator.share) {
+            navigator.share({
+              title: 'DaLines | Profile Hub & Battle Station',
+              url: window.location.href
+            }).catch(() => { });
+          } else {
+            copyTextToClipboard(window.location.href, translations[currentLang].toast_copy_link);
+          }
+        });
+      }
+
+      // Real-time Twitch Status Check
       startLiveStatusPolling();
     });
 
     let currentLiveState = false;
+    let twitchStatusKnown = false;
+    let lastTwitchStatus = null;
     let liveStatusTimer = 0;
     let liveStatusRequest = null;
     let lastLiveStatusCheck = 0;
@@ -860,8 +1487,7 @@ async function copyTextToClipboard(text, successMessage) {
 
     async function checkTwitchLiveStatus() {
       if (document.hidden || navigator.onLine === false || liveStatusRequest) return;
-      const controller = new AbortController();
-      liveStatusRequest = controller;
+      const controller = new AbortController(); liveStatusRequest = controller;
       lastLiveStatusCheck = Date.now();
       const timeout = setTimeout(() => controller.abort(), 8000);
       try {
@@ -869,23 +1495,27 @@ async function copyTextToClipboard(text, successMessage) {
           fetch('https://decapi.me/twitch/uptime/dalines', { signal: controller.signal }),
           fetch('https://decapi.me/twitch/game/dalines', { signal: controller.signal })
         ]);
-        if (!uptimeRes.ok) return;
+        if (!uptimeRes.ok) throw new Error('Live status unavailable');
         const uptime = (await uptimeRes.text()).trim();
         const game = gameRes.ok ? (await gameRes.text()).trim() : '';
 
-        if (!uptime || /error|not found|rate limit|too many|unknown/i.test(uptime)) return;
+        if (!uptime || /error|not found|rate limit|too many|unknown/i.test(uptime)) throw new Error('Unconfirmed status');
         const hasDuration = /\d+\s*(?:days?|hours?|minutes?|seconds?)/i.test(uptime);
-        if (!hasDuration && !/offline/i.test(uptime)) return;
+        if (!hasDuration && !/offline/i.test(uptime)) throw new Error('Unconfirmed status');
         const isLive = hasDuration && !/offline/i.test(uptime);
         currentLiveState = isLive;
+        twitchStatusKnown = true;
+        lastTwitchStatus = { isLive, uptime, game };
+        document.dispatchEvent(new CustomEvent('dalines:live-status', { detail: lastTwitchStatus }));
 
         const liveDot = document.getElementById('live-dot');
         const textBadge = document.getElementById('live-text-badge');
         const bannerDesc = document.getElementById('live-banner-desc');
         const btnText = document.getElementById('live-banner-btn-text');
-        const streamBadge = currentPlayerMode === 'live' ? document.getElementById('player-status-badge') : null;
+        const streamBadge = document.getElementById('player-status-badge');
 
         if (isLive) {
+          currentPlayerMode = 'live';
           if (liveDot) liveDot.className = 'w-2.5 h-2.5 rounded-full bg-red-500 live-ping-dot';
           if (textBadge) {
             textBadge.className = 'font-gaming font-bold text-red-400 tracking-wider text-[11px] sm:text-xs';
@@ -900,25 +1530,33 @@ async function copyTextToClipboard(text, successMessage) {
             streamBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-gaming font-bold bg-red-500/20 text-red-400 border border-red-500/30 flex items-center gap-1';
             streamBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-ping"></span>STREAMING';
           }
+          const streamTab = document.getElementById('tab-stream');
+          if (streamTab && streamTab.classList.contains('active')) {
+            if (isTwitchPlayerLoaded) {
+              updateTwitchPlayer('live');
+            }
+          }
         } else {
+          currentPlayerMode = 'trailer';
           if (liveDot) liveDot.className = 'w-2.5 h-2.5 rounded-full bg-slate-500';
           if (textBadge) {
             textBadge.className = 'font-gaming font-bold text-slate-400 tracking-wider text-[11px] sm:text-xs';
             textBadge.innerText = 'OFFLINE';
           }
           if (bannerDesc) {
-            bannerDesc.innerText = (currentLang === 'th') 
-              ? '• สตรีมเมอร์ออฟไลน์อยู่ • แวะดูคลิปย้อนหลังหรือคุยในดิสคอร์ดได้!' 
+            bannerDesc.innerText = (currentLang === 'th')
+              ? '• สตรีมเมอร์ออฟไลน์อยู่ • แวะดูคลิปย้อนหลังหรือคุยในดิสคอร์ดได้!'
               : '• Channel is currently offline • Check out highlights or join Discord!';
           }
           if (btnText) btnText.innerText = (currentLang === 'th') ? 'คลิปไฮไลท์' : 'Watch VOD';
           if (streamBadge) {
-            streamBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-gaming font-bold bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-1';
-            streamBadge.textContent = 'OFFLINE';
+            streamBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-gaming font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1';
+            streamBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>TRAILER VOD';
           }
         }
+        updateBannerHeight();
       } catch (err) {
-        // Keep the last known status during a transient network failure.
+        document.dispatchEvent(new CustomEvent('dalines:live-status', { detail: { isLive: null } }));
       } finally {
         clearTimeout(timeout);
         if (liveStatusRequest === controller) liveStatusRequest = null;
@@ -929,11 +1567,13 @@ async function copyTextToClipboard(text, successMessage) {
 
     function copyValorantCrosshair() {
       playSound('pop');
+      triggerHaptic(20);
       return copyTextToClipboard(VALORANT_CROSSHAIR, translations[currentLang].toast_copy_crosshair || 'คัดลอกโค้ดเป้า Valorant เรียบร้อย! 🎯');
     }
 
     let toastTimer = 0;
     function showToast(msg) {
+      triggerHaptic(15);
       const toast = document.getElementById('toast');
       if (!toast) return;
       clearTimeout(toastTimer);
@@ -946,7 +1586,543 @@ async function copyTextToClipboard(text, successMessage) {
 
     function copyIGN() {
       playSound('pop');
-      return copyTextToClipboard('DaLines', translations[currentLang].toast_copy_ign);
+      triggerHaptic(20);
+      return copyTextToClipboard('DaLines#TTV', translations[currentLang].toast_copy_ign);
+    }
+
+    async function copyBankAccount() {
+      playSound('pop');
+      triggerHaptic(20);
+      const accNumber = '6322170767';
+      if (!await copyTextToClipboard(accNumber, translations[currentLang]?.toast_copy_bank || 'คัดลอกเลขบัญชี 6322170767 เรียบร้อย! 🏦')) return;
+
+      const btn = document.getElementById('btn-copy-bank');
+      if (btn) {
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check text-emerald-300"></i><span>คัดลอกแล้ว!</span>';
+        btn.classList.add('bg-emerald-600', 'text-white');
+        setTimeout(() => {
+          btn.innerHTML = originalHtml;
+          btn.classList.remove('bg-emerald-600', 'text-white');
+        }, 1800);
+      }
+
+
+    }
+
+    function fallbackCopyText(text) {
+      return copyTextToClipboard(text, currentLang === 'en' ? 'Copied!' : 'คัดลอกแล้ว!');
+    }
+
+    function copyProSettingsSummary() {
+      playSound('pop');
+      triggerHaptic(20);
+      const text = `DaLines Pro Settings (Valorant):
+Mouse: ATK Ghost Ultimate
+DPI: 800
+In-Game Sens: 0.45
+Scoped Sens: 1.00
+eDPI: 360
+Polling Rate: 1000Hz
+Windows Sens: 6/11
+Resolution: 2560x1440 (16:9) 165Hz
+Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1t;10;1l;3;1o;6;1a;0;1m;0;1e;0.338;A;c;7;t;6;o;1;d;1;z;6;a;0;m;1;0t;3;0l;3;0o;5;0a;0;0f;0;1t;10;1l;3;1o;3;1a;0;1m;0;1e;3;S;c;6;s;4;o;1`;
+      return copyTextToClipboard(text, translations[currentLang].toast_copy_pro_settings || 'คัดลอกค่า Setting Valorant ครบทุกตัวเลขเรียบร้อย! 🖱️');
+    }
+
+    function toggleObsStreamerPanel() {
+      playSound('pop');
+      const panel = document.getElementById('obs-panel-wrapper');
+      const btn = document.getElementById('btn-toggle-obs-panel');
+      if (!panel) return;
+      const isHidden = panel.classList.contains('hidden');
+      if (isHidden) {
+        panel.classList.remove('hidden');
+        if (btn) btn.innerHTML = '<i class="fa-solid fa-chevron-up"></i><span>' + (currentLang === 'th' ? 'ซ่อนแผง OBS' : 'Hide OBS Panel') + '</span>';
+      } else {
+        panel.classList.add('hidden');
+        if (btn) btn.innerHTML = '<i class="fa-solid fa-sliders"></i><span>' + (currentLang === 'th' ? '⚙️ สำหรับสตรีมเมอร์ (OBS Sync)' : '⚙️ Streamer Tools (OBS Sync)') + '</span>';
+      }
+    }
+
+    // -----------------------------------------------------------------
+    // VALORANT CROSSHAIR SIMULATOR & 10s REFLEX AIM CHALLENGE
+    // -----------------------------------------------------------------
+    let aimMode = 'free'; // 'free' หรือ 'challenge'
+    let isChallengeRunning = false;
+    let challengeTimer = 10.0;
+    let challengeInterval = null;
+    let challengeCountdownTimer = 0;
+    let challengeScore = 0;
+    let challengeTotalShots = 0;
+    let challengeTargetSpawnTime = 0;
+    let challengeReactionTimes = [];
+    let challengeHighScore = Math.max(0, parseInt(safeStorage.getItem('dalines_aim_highscore') || '0', 10) || 0);
+    let crosshairHits = 0;
+    let crosshairHeadshots = 0;
+
+    function initAimChallenge() {
+      const hsEl = document.getElementById('val-aim-highscore');
+      if (hsEl) hsEl.innerText = challengeHighScore;
+    }
+
+    function setAimMode(mode) {
+      aimMode = mode;
+      playSound('tab');
+
+      const btnFree = document.getElementById('btn-aim-mode-free');
+      const btnChallenge = document.getElementById('btn-aim-mode-challenge');
+      const freeBg = document.getElementById('free-mode-bg');
+      const freeHudTop = document.getElementById('free-hud-top');
+      const freeHudBottom = document.getElementById('free-hud-bottom');
+      const challengeHud = document.getElementById('challenge-hud');
+      const challengeStartCard = document.getElementById('challenge-start-card');
+      const challengeTarget = document.getElementById('challenge-target');
+      const challengeProgressBar = document.getElementById('challenge-progress-bar-wrap');
+
+      if (mode === 'free') {
+        if (isChallengeRunning || challengeCountdownTimer) endAimChallenge(true); // silent abort
+        if (btnFree) btnFree.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-cyan-600 text-white shadow cursor-pointer';
+        if (btnChallenge) btnChallenge.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5 cursor-pointer';
+
+        if (freeBg) freeBg.classList.remove('hidden');
+        if (freeHudTop) freeHudTop.classList.remove('hidden');
+        if (freeHudBottom) freeHudBottom.classList.remove('hidden');
+        if (challengeHud) challengeHud.classList.add('hidden');
+        if (challengeStartCard) challengeStartCard.classList.add('hidden');
+        if (challengeTarget) challengeTarget.classList.add('hidden');
+        if (challengeProgressBar) challengeProgressBar.classList.add('hidden');
+      } else {
+        if (btnChallenge) btnChallenge.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-amber-500 text-black shadow cursor-pointer';
+        if (btnFree) btnFree.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5 cursor-pointer';
+
+        if (freeBg) freeBg.classList.add('hidden');
+        if (freeHudTop) freeHudTop.classList.add('hidden');
+        if (freeHudBottom) freeHudBottom.classList.add('hidden');
+
+        if (!isChallengeRunning) {
+          if (challengeStartCard) challengeStartCard.classList.remove('hidden');
+          if (challengeHud) challengeHud.classList.add('hidden');
+          if (challengeTarget) challengeTarget.classList.add('hidden');
+          if (challengeProgressBar) challengeProgressBar.classList.add('hidden');
+        }
+      }
+    }
+
+    function startAimChallenge() {
+      if (isChallengeRunning || challengeCountdownTimer) return;
+      closeAimResultModal();
+      if (!isSoundEnabled) {
+        isSoundEnabled = true;
+        safeStorage.setItem('dalines_sound', true);
+        updateSoundIcon();
+      }
+
+      const startCard = document.getElementById('challenge-start-card');
+      const countdownOverlay = document.getElementById('challenge-countdown-overlay');
+      const countdownNum = document.getElementById('challenge-countdown-number');
+      if (startCard) startCard.classList.add('hidden');
+      if (countdownOverlay) countdownOverlay.classList.remove('hidden');
+
+      let count = 3;
+      if (countdownNum) countdownNum.innerText = count;
+      playSound('countdown_beep');
+
+      challengeCountdownTimer = setInterval(() => {
+        count--;
+        if (count > 0) {
+          if (countdownNum) {
+            countdownNum.innerText = count;
+            countdownNum.style.transform = 'scale(1.3)';
+            setTimeout(() => { if (countdownNum) countdownNum.style.transform = 'scale(1)'; }, 150);
+          }
+          playSound('countdown_beep');
+        } else if (count === 0) {
+          if (countdownNum) {
+            countdownNum.innerText = 'GO!';
+            countdownNum.style.transform = 'scale(1.5)';
+            countdownNum.style.color = '#10b981';
+          }
+          playSound('countdown_go');
+        } else {
+          clearInterval(challengeCountdownTimer);
+          challengeCountdownTimer = 0;
+          if (countdownOverlay) countdownOverlay.classList.add('hidden');
+          if (countdownNum) {
+            countdownNum.style.color = '#fbbf24';
+            countdownNum.style.transform = 'scale(1)';
+          }
+          runAimChallengeGame();
+        }
+      }, 700);
+    }
+
+    function runAimChallengeGame() {
+      isChallengeRunning = true;
+      challengeScore = 0;
+      challengeTotalShots = 0;
+      challengeReactionTimes = [];
+      challengeTimer = 10.0;
+
+      const challengeHud = document.getElementById('challenge-hud');
+      const progressBarWrap = document.getElementById('challenge-progress-bar-wrap');
+      const progressBar = document.getElementById('challenge-progress-bar');
+      const timerText = document.getElementById('challenge-timer-text');
+      const scoreText = document.getElementById('challenge-score-text');
+      const accText = document.getElementById('challenge-acc-text');
+      const reactionText = document.getElementById('challenge-reaction-text');
+
+      if (challengeHud) challengeHud.classList.remove('hidden');
+      if (progressBarWrap) progressBarWrap.classList.remove('hidden');
+      if (progressBar) progressBar.style.width = '100%';
+      if (scoreText) scoreText.innerText = '0';
+      if (accText) accText.innerText = '100%';
+      if (reactionText) reactionText.innerText = '--';
+      if (timerText) timerText.innerText = '10.0s';
+
+      spawnChallengeTarget();
+
+      const startTime = Date.now();
+      const totalDuration = 10000;
+
+      clearInterval(challengeInterval);
+      challengeInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const remain = Math.max(0, (totalDuration - elapsed) / 1000);
+        challengeTimer = remain;
+
+        if (timerText) timerText.innerText = `${remain.toFixed(1)}s`;
+        if (progressBar) {
+          const pct = Math.max(0, (remain / 10) * 100);
+          progressBar.style.width = `${pct}%`;
+        }
+
+        if (remain <= 0) {
+          clearInterval(challengeInterval);
+          endAimChallenge(false);
+        }
+      }, 50);
+    }
+
+    function spawnChallengeTarget() {
+      const stage = document.getElementById('crosshair-stage');
+      const target = document.getElementById('challenge-target');
+      if (!stage || !target) return;
+
+      const stageRect = stage.getBoundingClientRect();
+      const targetSize = 44;
+      const margin = 26;
+
+      const maxX = stageRect.width - targetSize - margin;
+      const maxY = stageRect.height - targetSize - margin;
+
+      const randX = Math.floor(margin + Math.random() * Math.max(20, maxX - margin));
+      const randY = Math.floor(margin + Math.random() * Math.max(20, maxY - margin));
+
+      target.style.left = `${randX}px`;
+      target.style.top = `${randY}px`;
+      target.classList.remove('hidden');
+
+      target.style.transform = 'scale(0.3)';
+      requestAnimationFrame(() => {
+        target.style.transform = 'scale(1)';
+      });
+
+      challengeTargetSpawnTime = Date.now();
+    }
+
+    function hitChallengeTarget(e) {
+      e.stopPropagation();
+      if (!isChallengeRunning) return;
+
+      triggerHaptic(30);
+
+      challengeScore++;
+      challengeTotalShots++;
+
+      const rt = Math.max(50, Date.now() - challengeTargetSpawnTime);
+      challengeReactionTimes.push(rt);
+
+      playSound('headshot');
+
+      // Update reticle recoil
+      const reticle = document.getElementById('crosshair-reticle');
+      if (reticle) {
+        reticle.style.transform = 'scale(1.35)';
+        setTimeout(() => { if (reticle) reticle.style.transform = 'scale(1)'; }, 80);
+      }
+
+      // Spark effect
+      const stage = document.getElementById('crosshair-stage');
+      const rect = stage.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+      createBulletImpact(stage, clickX, clickY);
+
+      // Floating hit text
+      createFloatingHitText(stage, clickX, clickY, `+100 HEADSHOT (${rt}ms)`, '#fbbf24');
+
+      // Update HUD
+      updateChallengeHUD();
+
+      // Spawn next target immediately
+      spawnChallengeTarget();
+    }
+
+    function handleStageClick(e) {
+      if (aimMode === 'free') {
+        fireCrosshair(e);
+      } else if (aimMode === 'challenge' && isChallengeRunning) {
+        // Registered as a miss shot
+        challengeTotalShots++;
+        playSound('gunshot');
+
+        const stage = document.getElementById('crosshair-stage');
+        const reticle = document.getElementById('crosshair-reticle');
+        if (reticle) {
+          reticle.style.transform = 'scale(1.25)';
+          setTimeout(() => { if (reticle) reticle.style.transform = 'scale(1)'; }, 80);
+        }
+
+        const rect = stage.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const clickY = e.clientY - rect.top;
+        createBulletImpact(stage, clickX, clickY);
+        createFloatingHitText(stage, clickX, clickY, 'MISS 💨', '#94a3b8');
+
+        updateChallengeHUD();
+      }
+    }
+
+    function updateChallengeHUD() {
+      const scoreText = document.getElementById('challenge-score-text');
+      const accText = document.getElementById('challenge-acc-text');
+      const reactionText = document.getElementById('challenge-reaction-text');
+
+      if (scoreText) scoreText.innerText = challengeScore;
+      if (accText) {
+        const acc = Math.round((challengeScore / Math.max(1, challengeTotalShots)) * 100);
+        accText.innerText = `${acc}%`;
+      }
+      if (reactionText && challengeReactionTimes.length > 0) {
+        const avg = Math.round(challengeReactionTimes.reduce((a, b) => a + b, 0) / challengeReactionTimes.length);
+        reactionText.innerText = `${avg}`;
+      }
+    }
+
+    function createFloatingHitText(stage, x, y, text, color) {
+      const floater = document.createElement('div');
+      floater.className = 'absolute font-bold text-xs pointer-events-none transition-all duration-500 ease-out z-20 font-mono';
+      floater.style.left = `${x - 30}px`;
+      floater.style.top = `${y - 10}px`;
+      floater.style.color = color;
+      floater.style.textShadow = '0 0 6px rgba(0,0,0,0.9), 0 0 2px #000';
+      floater.innerText = text;
+      stage.appendChild(floater);
+
+      requestAnimationFrame(() => {
+        floater.style.transform = 'translateY(-26px) scale(1.15)';
+        floater.style.opacity = '0';
+      });
+      setTimeout(() => floater.remove(), 550);
+    }
+
+    function endAimChallenge(silent = false) {
+      isChallengeRunning = false;
+      clearInterval(challengeInterval);
+      clearInterval(challengeCountdownTimer);
+      challengeCountdownTimer = 0;
+      document.getElementById('challenge-countdown-overlay')?.classList.add('hidden');
+
+      const target = document.getElementById('challenge-target');
+      if (target) target.classList.add('hidden');
+
+      const progressBarWrap = document.getElementById('challenge-progress-bar-wrap');
+      if (progressBarWrap) progressBarWrap.classList.add('hidden');
+
+      if (silent) {
+        document.getElementById('challenge-hud')?.classList.add('hidden');
+        if (aimMode === 'challenge') document.getElementById('challenge-start-card')?.classList.remove('hidden');
+        return;
+      }
+
+      playSound('victory');
+
+      const acc = Math.round((challengeScore / Math.max(1, challengeTotalShots)) * 100);
+      const avgRt = challengeReactionTimes.length > 0
+        ? Math.round(challengeReactionTimes.reduce((a, b) => a + b, 0) / challengeReactionTimes.length)
+        : 0;
+
+      // Tier & Quotes Calculation
+      let tier = '';
+      let quote = '';
+      let icon = '🏆';
+      if (challengeScore <= 5) {
+        tier = '🤡 โยนสมชื่อ DaLines';
+        quote = '"เป้าไม่ตรง โทษโต๊ะ โทษเน็ต โทษแผ่นรองเมาส์เอียง"';
+        icon = '🤡';
+      } else if (challengeScore <= 13) {
+        tier = '🔫 คนยิงไม่โดน โทษเมาส์ (Silver/Gold)';
+        quote = '"วอร์มมือก่อนลงแรงก์จริง ยิงโดนนกกระจอกตายไป 3 ตัว"';
+        icon = '🔫';
+      } else if (challengeScore <= 21) {
+        tier = '⚡ คมจัดปลัดบอก (Ascendant)';
+        quote = '"สะบัดหัวคมกริบ! เริ่มจะคมกว่าสตรีมเมอร์ตัวจริงแล้วนะเนี่ย"';
+        icon = '⚡';
+      } else {
+        tier = '👑 Radiant ในตำนาน';
+        quote = '"คมระดับพระกาฬ Aimbot ยังกราบ! แคปส่งเข้า Discord ด่วน สตรีมเมอร์ขอยอม!"';
+        icon = '👑';
+      }
+
+      // Check New High Score
+      const isNewRecord = challengeScore > challengeHighScore;
+      if (isNewRecord) {
+        challengeHighScore = challengeScore;
+        safeStorage.setItem('dalines_aim_highscore', challengeHighScore);
+        const hsEl = document.getElementById('val-aim-highscore');
+        if (hsEl) hsEl.innerText = challengeHighScore;
+      }
+
+      // Send excitement to OBS if connected
+      if (isObsConnected && obsConn && obsConn.open) {
+        sendObsAction('hype', { amount: 20 });
+      }
+
+      // Populate Result Modal
+      const modal = document.getElementById('modal-aim-result');
+      const iconEl = document.getElementById('aim-result-icon');
+      const newRecordBadge = document.getElementById('aim-new-record-badge');
+      const titleEl = document.getElementById('aim-result-tier-title');
+      const quoteEl = document.getElementById('aim-result-tier-quote');
+      const scoreEl = document.getElementById('aim-result-score');
+      const accEl = document.getElementById('aim-result-acc');
+      const reactionEl = document.getElementById('aim-result-reaction');
+
+      if (iconEl) iconEl.innerText = icon;
+      if (newRecordBadge) {
+        if (isNewRecord && challengeScore > 0) newRecordBadge.classList.remove('hidden');
+        else newRecordBadge.classList.add('hidden');
+      }
+      if (titleEl) titleEl.innerText = tier;
+      if (quoteEl) quoteEl.innerText = quote;
+      if (scoreEl) scoreEl.innerText = `${challengeScore}`;
+      if (accEl) accEl.innerText = `${acc}%`;
+      if (reactionEl) reactionEl.innerText = `${avgRt}ms`;
+
+      setModalOpen(modal, true);
+    }
+
+    function closeAimResultModal() {
+      playSound('pop');
+      const modal = document.getElementById('modal-aim-result');
+      setModalOpen(modal, false);
+
+      const startCard = document.getElementById('challenge-start-card');
+      if (startCard && aimMode === 'challenge') {
+        startCard.classList.remove('hidden');
+      }
+    }
+
+    function copyAimResult() {
+      playSound('pop');
+      const acc = Math.round((challengeScore / Math.max(1, challengeTotalShots)) * 100);
+      const avgRt = challengeReactionTimes.length > 0
+        ? Math.round(challengeReactionTimes.reduce((a, b) => a + b, 0) / challengeReactionTimes.length)
+        : 0;
+
+      let tier = (challengeScore <= 5) ? '🤡 โยนสมชื่อ DaLines' : (challengeScore <= 13) ? '🔫 คนยิงไม่โดน โทษเมาส์' : (challengeScore <= 21) ? '⚡ คมจัดปลัดบอก (Ascendant)' : '👑 Radiant ในตำนาน';
+
+      const shareText = `🎯 DaLines Aim Challenge: ฉันยิงได้ ${challengeScore} แต้ม! (ความแม่นยำ ${acc}%, เฉลี่ย ${avgRt}ms)\n🏆 อันดับ: ${tier}\n🎮 มาประลองความคมกันได้ที่: https://dalines-site.dalines.workers.dev/`;
+
+      return copyTextToClipboard(shareText, 'คัดลอกผลคะแนนไปอวดแล้ว! 🏆');
+    }
+
+    function fireCrosshair(e) {
+      if (!isSoundEnabled) {
+        isSoundEnabled = true;
+        safeStorage.setItem('dalines_sound', true);
+        updateSoundIcon();
+      }
+
+      const stage = document.getElementById('crosshair-stage');
+      const reticle = document.getElementById('crosshair-reticle');
+      if (!stage) return;
+
+      const rect = stage.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const dist = Math.hypot(clickX - centerX, clickY - centerY);
+
+      // Recoil bloom animation on reticle
+      if (reticle) {
+        reticle.style.transform = 'scale(1.4)';
+        setTimeout(() => {
+          if (reticle) reticle.style.transform = 'scale(1)';
+        }, 90);
+      }
+
+      // Spawn bullet spark & decal
+      createBulletImpact(stage, clickX, clickY);
+
+      crosshairHits++;
+      const hitsEl = document.getElementById('ch-hits');
+      if (hitsEl) hitsEl.innerText = crosshairHits;
+
+      let dmgText = '';
+      let dmgColor = '';
+      if (dist <= 26) {
+        crosshairHeadshots++;
+        const hsEl = document.getElementById('ch-headshots');
+        if (hsEl) hsEl.innerText = crosshairHeadshots;
+        playSound('headshot');
+        dmgText = 'HEADSHOT 160 🎯';
+        dmgColor = '#fbbf24';
+      } else if (dist <= 75) {
+        playSound('gunshot');
+        dmgText = 'BODY 40 💥';
+        dmgColor = '#22d3ee';
+      } else {
+        playSound('gunshot');
+        dmgText = 'MISS 💨';
+        dmgColor = '#94a3b8';
+      }
+
+      // Floating damage indicator
+      createFloatingHitText(stage, clickX, clickY, dmgText, dmgColor);
+    }
+
+    function createBulletImpact(stage, x, y) {
+      const spark = document.createElement('div');
+      spark.className = 'absolute rounded-full pointer-events-none z-10 transition-opacity duration-200';
+      spark.style.left = `${x - 4}px`;
+      spark.style.top = `${y - 4}px`;
+      spark.style.width = '8px';
+      spark.style.height = '8px';
+      spark.style.backgroundColor = '#fbbf24';
+      spark.style.boxShadow = '0 0 12px 4px #fbbf24, 0 0 4px #ffffff';
+      stage.appendChild(spark);
+
+      setTimeout(() => {
+        spark.style.opacity = '0';
+        setTimeout(() => spark.remove(), 150);
+      }, 50);
+
+      const hole = document.createElement('div');
+      hole.className = 'absolute rounded-full bg-slate-900 border border-black/80 pointer-events-none transition-opacity duration-700 z-0';
+      hole.style.left = `${x - 3}px`;
+      hole.style.top = `${y - 3}px`;
+      hole.style.width = '6px';
+      hole.style.height = '6px';
+      stage.appendChild(hole);
+
+      setTimeout(() => {
+        hole.style.opacity = '0';
+        setTimeout(() => hole.remove(), 700);
+      }, 2000);
     }
 
     // -----------------------------------------------------------------
@@ -963,7 +2139,7 @@ async function copyTextToClipboard(text, successMessage) {
       if (input) {
         input.value = savedRoom;
       }
-      // Connect only on an explicit click; ordinary visitors do not need WebRTC or PeerJS.
+      // Connect only after an explicit user click; ordinary visitors do not need WebRTC.
     }
 
     function handleConnectObsClick() {
@@ -1047,7 +2223,7 @@ async function copyTextToClipboard(text, successMessage) {
             updateObsSyncStatus('connected', 'ONLINE');
             if (!isSilent) showToast('🟢 เชื่อมต่อกับ OBS TTS สำเร็จแล้ว!');
             playSound('thanks');
-            
+
             // Request state to get custom soundboard
             conn.send({ action: 'REQUEST_STATE' });
           });
@@ -1113,6 +2289,14 @@ async function copyTextToClipboard(text, successMessage) {
         if (statusText) statusText.innerText = 'ONLINE';
         if (btnText) btnText.innerText = 'ตัดการเชื่อมต่อ';
         if (quickControls) quickControls.classList.remove('hidden');
+
+        // Auto-reveal streamer panel if it was folded
+        const obsWrapper = document.getElementById('obs-panel-wrapper');
+        const toggleBtn = document.getElementById('btn-toggle-obs-panel');
+        if (obsWrapper && obsWrapper.classList.contains('hidden')) {
+          obsWrapper.classList.remove('hidden');
+          if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-chevron-up"></i><span>' + (currentLang === 'th' ? 'ซ่อนแผง OBS' : 'Hide OBS Panel') + '</span>';
+        }
       } else if (status === 'connecting') {
         if (badge) badge.className = 'px-2 py-0.5 rounded text-[10px] font-mono bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 flex items-center gap-1';
         if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-yellow-400 animate-ping';
@@ -1140,7 +2324,7 @@ async function copyTextToClipboard(text, successMessage) {
         playSound('pop');
         showToast(`📡 ส่งคำสั่ง "${action}" ไปยัง OBS สำเร็จ!`);
         return true;
-      } catch(e) {
+      } catch (e) {
         showToast('❌ ไม่สามารถส่งคำสั่งไปยัง OBS ได้');
         return false;
       }
@@ -1155,10 +2339,10 @@ async function copyTextToClipboard(text, successMessage) {
       if (muteBtn && state.isMuted !== undefined) {
         if (state.isMuted) {
           muteBtn.className = 'px-2 py-1 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[10px] font-bold flex items-center gap-1 cursor-pointer';
-          muteBtn.innerHTML = '<i aria-hidden="true" class="fa-solid fa-volume-xmark"></i> Muted (เปิดเสียง)';
+          muteBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> Muted (เปิดเสียง)';
         } else {
           muteBtn.className = 'px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-300 text-[10px] font-medium transition cursor-pointer flex items-center gap-1';
-          muteBtn.innerHTML = '<i aria-hidden="true" class="fa-solid fa-volume-high"></i> Mute/Unmute';
+          muteBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Mute/Unmute';
         }
       }
     }
@@ -1217,22 +2401,22 @@ async function copyTextToClipboard(text, successMessage) {
       }
     }
     function setupModals() {
-      ['modal-tts-helper', 'modal-clip-player'].forEach(id => {
+      ['modal-tts-helper', 'modal-clip-player', 'modal-aim-result'].forEach(id => {
         const modal = document.getElementById(id);
         if (!modal) return;
         modal.setAttribute('role', 'dialog');
         modal.setAttribute('aria-modal', 'true');
         modal.setAttribute('aria-hidden', 'true');
         modal.addEventListener('click', event => {
-          if (event.target === modal) id === 'modal-clip-player' ? closeClipModal() : closeTtsHelperModal();
+          if (event.target === modal) id === 'modal-clip-player' ? closeClipModal() : id === 'modal-aim-result' ? closeAimResultModal() : closeTtsHelperModal();
         });
       });
       document.addEventListener('keydown', event => {
-        const modal = ['modal-clip-player', 'modal-tts-helper'].map(id => document.getElementById(id)).find(el => el && !el.classList.contains('hidden'));
+        const modal = ['modal-clip-player', 'modal-tts-helper', 'modal-aim-result'].map(id => document.getElementById(id)).find(el => el && !el.classList.contains('hidden'));
         if (!modal) return;
         if (event.key === 'Escape') {
           event.preventDefault();
-          modal.id === 'modal-clip-player' ? closeClipModal() : closeTtsHelperModal();
+          modal.id === 'modal-clip-player' ? closeClipModal() : modal.id === 'modal-aim-result' ? closeAimResultModal() : closeTtsHelperModal();
         } else if (event.key === 'Tab') {
           const controls = Array.from(modal.querySelectorAll('button, a[href], input, select, textarea, iframe, [tabindex="0"]')).filter(el => !el.disabled && !el.closest('.hidden'));
           if (!controls.length) { event.preventDefault(); return; }
@@ -1268,6 +2452,7 @@ async function copyTextToClipboard(text, successMessage) {
     // DALINES SOUNDBOARD CONTROLLER & VOICE FX
     // -----------------------------------------------------------------
     function playMemeSound(type, phrase, btnEl) {
+      triggerHaptic(20);
       if (!isSoundEnabled) {
         isSoundEnabled = true;
         safeStorage.setItem('dalines_sound', true);
@@ -1346,8 +2531,9 @@ async function copyTextToClipboard(text, successMessage) {
         u.lang = 'th-TH';
         u.rate = 1.05;
         u.pitch = 1.05;
+        u.volume = (isSoundEnabled && masterVolume > 0) ? masterVolume : 0;
         window.speechSynthesis.speak(u);
-      } catch (e) {}
+      } catch (e) { }
     }
 
     // -----------------------------------------------------------------
@@ -1356,366 +2542,114 @@ async function copyTextToClipboard(text, successMessage) {
     // -----------------------------------------------------------------
     const DALINES_CLIPS = [
       {
-            "id": "clip-1",
-            "slug": "ElegantEagerGoldfishAMPEnergyCherry-9uGytF396fyRA5xc",
-            "title": "นัวอะไรขนาดนั้น",
-            "game": "VALORANT",
-            "curator": "DaLines",
-            "views": 216,
-            "duration": "0:26",
-            "category": "valorant",
-            "badge": "👑 #1 ALL-TIME TOP",
-            "badgeClass": "bg-amber-500/20 text-amber-300 border-amber-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/a7fd0812-aabe-4df1-9c62-33f743f76411/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/ElegantEagerGoldfishAMPEnergyCherry-9uGytF396fyRA5xc",
-            "createdAt": "2022-04-03"
+        id: "clip-1",
+        title: "นัวอะไรขนาดนั้น (Valorant Clutch Moment)",
+        category: "valorant",
+        duration: "0:26",
+        views: 216,
+        initialLikes: 216,
+        videoUrl: "https://www.twitch.tv/dalines/clip/ElegantEagerGoldfishAMPEnergyCherry-9uGytF396fyRA5xc",
+        clipUrl: "https://www.twitch.tv/dalines/clip/ElegantEagerGoldfishAMPEnergyCherry-9uGytF396fyRA5xc",
+        embedUrl: "https://clips.twitch.tv/embed?clip=ElegantEagerGoldfishAMPEnergyCherry-9uGytF396fyRA5xc",
+        youtubeUrl: "",
+        slug: "ElegantEagerGoldfishAMPEnergyCherry-9uGytF396fyRA5xc",
+        curator: "DaLines",
+        game: "VALORANT",
+        badge: "👑 #1 ALL-TIME TOP",
+        badgeClass: "bg-amber-500/20 text-amber-300 border-amber-500/40",
+        thumbnailUrl: "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/a7fd0812-aabe-4df1-9c62-33f743f76411/landscape/thumb/thumb-0000000000-1920x1080.jpg"
       },
       {
-            "id": "clip-2",
-            "slug": "DifficultNiceGarageUncleNox",
-            "title": "Dancing : รถซื้อแกง",
-            "game": "Just Chatting",
-            "curator": "feixian1412",
-            "views": 192,
-            "duration": "0:24",
-            "category": "other",
-            "badge": "🥈 #2 TOP VIRAL",
-            "badgeClass": "bg-slate-400/20 text-slate-200 border-slate-400/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/f7f6701f-12bc-4972-8330-054b2c7ce6e8/landscape/thumb/thumb-0000000000-1280x720.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/DifficultNiceGarageUncleNox",
-            "createdAt": "2020-05-06"
+        id: "clip-2",
+        title: "Dancing : รถซื้อแกง",
+        category: "other",
+        duration: "0:24",
+        views: 192,
+        initialLikes: 192,
+        videoUrl: "https://www.twitch.tv/dalines/clip/DifficultNiceGarageUncleNox",
+        clipUrl: "https://www.twitch.tv/dalines/clip/DifficultNiceGarageUncleNox",
+        embedUrl: "https://clips.twitch.tv/embed?clip/DifficultNiceGarageUncleNox",
+        youtubeUrl: "",
+        slug: "DifficultNiceGarageUncleNox",
+        curator: "feixian1412",
+        game: "Just Chatting",
+        badge: "🥈 #2 TOP VIRAL",
+        badgeClass: "bg-slate-400/20 text-slate-200 border-slate-400/40",
+        thumbnailUrl: "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/f7f6701f-12bc-4972-8330-054b2c7ce6e8/landscape/thumb/thumb-0000000000-1280x720.jpg"
       },
       {
-            "id": "clip-3",
-            "slug": "RealChillyPancakeKeepo-XUD53z3NRrGzcqkB",
-            "title": "A clear? then go B",
-            "game": "VALORANT",
-            "curator": "DaLines",
-            "views": 172,
-            "duration": "0:30",
-            "category": "valorant",
-            "badge": "🥉 #3 TOP HIGHLIGHT",
-            "badgeClass": "bg-orange-500/20 text-orange-300 border-orange-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/42467f1d-f0d1-4e95-9449-b7f6a84f18c7/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/RealChillyPancakeKeepo-XUD53z3NRrGzcqkB",
-            "createdAt": "2021-09-29"
+        id: "clip-3",
+        title: "A clear? then go B (จังหวะอ่านเกมขาด)",
+        category: "valorant",
+        duration: "0:30",
+        views: 172,
+        initialLikes: 172,
+        videoUrl: "https://www.twitch.tv/dalines/clip/RealChillyPancakeKeepo-XUD53z3NRrGzcqkB",
+        clipUrl: "https://www.twitch.tv/dalines/clip/RealChillyPancakeKeepo-XUD53z3NRrGzcqkB",
+        embedUrl: "https://clips.twitch.tv/embed?clip=RealChillyPancakeKeepo-XUD53z3NRrGzcqkB",
+        youtubeUrl: "",
+        slug: "RealChillyPancakeKeepo-XUD53z3NRrGzcqkB",
+        curator: "DaLines",
+        game: "VALORANT",
+        badge: "🥉 #3 TOP HIGHLIGHT",
+        badgeClass: "bg-orange-500/20 text-orange-300 border-orange-500/40",
+        thumbnailUrl: "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/42467f1d-f0d1-4e95-9449-b7f6a84f18c7/landscape/thumb/thumb-0000000000-1920x1080.jpg"
       },
       {
-            "id": "clip-4",
-            "slug": "BitterBraveTomatoEleGiggle-LCD4OrW4n4OP0N5Z",
-            "title": "โนเอลร้องเพลง",
-            "game": "Grand Theft Auto V",
-            "curator": "DaLines",
-            "views": 145,
-            "duration": "0:26",
-            "category": "other",
-            "badge": "🚗 GTA V RP",
-            "badgeClass": "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/79fa3232-4084-4500-841a-62a6a2908872/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/BitterBraveTomatoEleGiggle-LCD4OrW4n4OP0N5Z",
-            "createdAt": "2022-05-28"
+        id: "clip-4",
+        title: "โนเอลร้องเพลง (GTA V RP Moment)",
+        category: "other",
+        duration: "0:26",
+        views: 145,
+        initialLikes: 145,
+        videoUrl: "https://www.twitch.tv/dalines/clip/BitterBraveTomatoEleGiggle-LCD4OrW4n4OP0N5Z",
+        clipUrl: "https://www.twitch.tv/dalines/clip/BitterBraveTomatoEleGiggle-LCD4OrW4n4OP0N5Z",
+        embedUrl: "https://clips.twitch.tv/embed?clip=BitterBraveTomatoEleGiggle-LCD4OrW4n4OP0N5Z",
+        youtubeUrl: "",
+        slug: "BitterBraveTomatoEleGiggle-LCD4OrW4n4OP0N5Z",
+        curator: "DaLines",
+        game: "Grand Theft Auto V",
+        badge: "🚗 GTA V RP",
+        badgeClass: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
+        thumbnailUrl: "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/79fa3232-4084-4500-841a-62a6a2908872/landscape/thumb/thumb-0000000000-1920x1080.jpg"
       },
       {
-            "id": "clip-5",
-            "slug": "EnchantingLaconicSparrowTheTarFu",
-            "title": "Skip Valorant battle pass 50 tiers",
-            "game": "VALORANT",
-            "curator": "Archuron",
-            "views": 119,
-            "duration": "0:59",
-            "category": "valorant",
-            "badge": "🎯 VALORANT",
-            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/bac763d1-bca8-4134-be26-72ce11275692/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/EnchantingLaconicSparrowTheTarFu",
-            "createdAt": "2020-10-13"
+        id: "clip-5",
+        title: "Skip Valorant battle pass 50 tiers",
+        category: "valorant",
+        duration: "0:59",
+        views: 119,
+        initialLikes: 119,
+        videoUrl: "https://www.twitch.tv/dalines/clip/EnchantingLaconicSparrowTheTarFu",
+        clipUrl: "https://www.twitch.tv/dalines/clip/EnchantingLaconicSparrowTheTarFu",
+        embedUrl: "https://clips.twitch.tv/embed?clip=EnchantingLaconicSparrowTheTarFu",
+        youtubeUrl: "",
+        slug: "EnchantingLaconicSparrowTheTarFu",
+        curator: "Archuron",
+        game: "VALORANT",
+        badge: "🎯 VALORANT",
+        badgeClass: "bg-rose-500/20 text-rose-300 border-rose-500/40",
+        thumbnailUrl: "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/bac763d1-bca8-4134-be26-72ce11275692/landscape/thumb/thumb-0000000000-1920x1080.jpg"
       },
       {
-            "id": "clip-6",
-            "slug": "KnottyCuriousCattleHoneyBadger",
-            "title": "360 stinger",
-            "game": "VALORANT",
-            "curator": "DaLines",
-            "views": 111,
-            "duration": "0:28",
-            "category": "valorant",
-            "badge": "🎯 VALORANT",
-            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/ba2fdbe3-d147-49d5-bfa8-6bb6a71dc3c9/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/KnottyCuriousCattleHoneyBadger",
-            "createdAt": "2021-02-08"
-      },
-      {
-            "id": "clip-7",
-            "slug": "DependableGracefulWheelBrainSlug-SMdvjtBZ4jL7qMpP",
-            "title": "สมแล้วที่ชื่อ TaoHooo",
-            "game": "VALORANT",
-            "curator": "zealproject",
-            "views": 110,
-            "duration": "0:28",
-            "category": "valorant",
-            "badge": "🎯 VALORANT",
-            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/71cbeeed-d997-4d68-ad0c-c72b7033ddf3/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/DependableGracefulWheelBrainSlug-SMdvjtBZ4jL7qMpP",
-            "createdAt": "2021-04-11"
-      },
-      {
-            "id": "clip-8",
-            "slug": "PlainDiligentWolfBudBlast",
-            "title": "Scrim เค้าเล่นกันอย่างนี้",
-            "game": "Apex Legends",
-            "curator": "DaLines",
-            "views": 110,
-            "duration": "1:00",
-            "category": "apex",
-            "badge": "⚡ APEX HIGHLIGHT",
-            "badgeClass": "bg-amber-500/20 text-amber-300 border-amber-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/42c88ec2-96e0-486d-b9ed-1b14be00edc8/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/PlainDiligentWolfBudBlast",
-            "createdAt": "2020-05-09"
-      },
-      {
-            "id": "clip-9",
-            "slug": "ProtectiveVainGrouseBrokeBack",
-            "title": "ท่าหมา",
-            "game": "Apex Legends",
-            "curator": "ssingtho",
-            "views": 100,
-            "duration": "0:09",
-            "category": "apex",
-            "badge": "🏆 APEX MOMENT",
-            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/208d4b9d-daa6-41e0-8b6a-8d1ea6d6c2be/landscape/thumb/thumb-0000000000-1280x720.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/ProtectiveVainGrouseBrokeBack",
-            "createdAt": "2019-12-03"
-      },
-      {
-            "id": "clip-10",
-            "slug": "LitigiousIronicSageBCouch-ec4xE4jyeoPJ3qif",
-            "title": "กดเรี���กเคสมั้ยล่ะ 55555",
-            "game": "Grand Theft Auto V",
-            "curator": "DaLines",
-            "views": 94,
-            "duration": "1:00",
-            "category": "other",
-            "badge": "🚗 GTA V RP",
-            "badgeClass": "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/15059b4c-070a-45bc-9f6c-7084d18e04fc/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/LitigiousIronicSageBCouch-ec4xE4jyeoPJ3qif",
-            "createdAt": "2022-02-20"
-      },
-      {
-            "id": "clip-11",
-            "slug": "EnergeticImpossibleClipsdadKappaWealth",
-            "title": "โนตม",
-            "game": "Apex Legends",
-            "curator": "Archuron",
-            "views": 90,
-            "duration": "0:07",
-            "category": "apex",
-            "badge": "🏆 APEX MOMENT",
-            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/923a3fcd-3e25-4080-9eee-1beb1c547391/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/EnergeticImpossibleClipsdadKappaWealth",
-            "createdAt": "2020-11-20"
-      },
-      {
-            "id": "clip-12",
-            "slug": "LachrymoseObliviousCardHeyGirl",
-            "title": "RE-45 330m+ ",
-            "game": "Apex Legends",
-            "curator": "DaLines",
-            "views": 84,
-            "duration": "0:33",
-            "category": "apex",
-            "badge": "🏆 APEX MOMENT",
-            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/0bc22c82-b040-4ddd-812a-361460ff1919/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/LachrymoseObliviousCardHeyGirl",
-            "createdAt": "2020-05-24"
-      },
-      {
-            "id": "clip-13",
-            "slug": "InterestingRealBorkRalpherZ-a3CT1ubdygsDQTqS",
-            "title": "[ace] รีบขึ้นได โทษที",
-            "game": "VALORANT",
-            "curator": "DaLines",
-            "views": 82,
-            "duration": "0:30",
-            "category": "valorant",
-            "badge": "🔥 VALORANT ACE",
-            "badgeClass": "bg-red-500/20 text-red-300 border-red-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/6a2f7b98-be2d-45b7-9933-a871b4e782bc/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/InterestingRealBorkRalpherZ-a3CT1ubdygsDQTqS",
-            "createdAt": "2023-08-10"
-      },
-      {
-            "id": "clip-14",
-            "slug": "CuriousAffluentNewtSuperVinlin",
-            "title": "3 เกม apex 10 kills XD",
-            "game": "VALORANT",
-            "curator": "DaLines",
-            "views": 80,
-            "duration": "1:00",
-            "category": "valorant",
-            "badge": "🎯 VALORANT",
-            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/41e514a8-e92c-4eb4-a19a-7e7a98efd3a5/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/CuriousAffluentNewtSuperVinlin",
-            "createdAt": "2021-01-28"
-      },
-      {
-            "id": "clip-15",
-            "slug": "ArtisticAveragePepperoniSoBayed",
-            "title": "เชี้ยเฟี้ยวสัส อย่างเท��� idolเลย",
-            "game": "VALORANT",
-            "curator": "Archuron",
-            "views": 80,
-            "duration": "0:40",
-            "category": "valorant",
-            "badge": "🎯 VALORANT",
-            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/6b14209d-4958-45b6-b60c-387b1a47143a/landscape/thumb/thumb-0000000000-1664x936.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/ArtisticAveragePepperoniSoBayed",
-            "createdAt": "2021-01-06"
-      },
-      {
-            "id": "clip-16",
-            "slug": "AggressiveManlyPenguinKappaClaus",
-            "title": "หมากัดหัวนม",
-            "game": "Apex Legends",
-            "curator": "Archuron",
-            "views": 80,
-            "duration": "0:25",
-            "category": "apex",
-            "badge": "🏆 APEX MOMENT",
-            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/634b8de6-6953-463a-b706-6b662ef64154/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/AggressiveManlyPenguinKappaClaus",
-            "createdAt": "2020-08-22"
-      },
-      {
-            "id": "clip-17",
-            "slug": "HandsomeCallousRatMrDestructoid-Zzz6FfuzdD6PI3fy",
-            "title": "ฝาแฝดหอยแครง",
-            "game": "VALORANT",
-            "curator": "typepy",
-            "views": 77,
-            "duration": "1:00",
-            "category": "valorant",
-            "badge": "🎯 VALORANT",
-            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/bc2ad997-427f-4cf6-8350-9efe70fb2e46/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/HandsomeCallousRatMrDestructoid-Zzz6FfuzdD6PI3fy",
-            "createdAt": "2021-09-26"
-      },
-      {
-            "id": "clip-18",
-            "slug": "HomelyFurtiveSushiCclamChamp-jCKX-x3I_5Gii6zm",
-            "title": "เยนมาเเล้ว",
-            "game": "Apex Legends",
-            "curator": "guyenna",
-            "views": 73,
-            "duration": "0:12",
-            "category": "apex",
-            "badge": "🏆 APEX MOMENT",
-            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/e75a4a7b-2d99-4024-9c13-f0e7a200b8af/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/HomelyFurtiveSushiCclamChamp-jCKX-x3I_5Gii6zm",
-            "createdAt": "2021-05-31"
-      },
-      {
-            "id": "clip-19",
-            "slug": "MoldyDifficultCougarThisIsSparta",
-            "title": "ลงยังไง",
-            "game": "Fortnite",
-            "curator": "Ammarinn",
-            "views": 71,
-            "duration": "0:41",
-            "category": "other",
-            "badge": "🎪 FORTNITE",
-            "badgeClass": "bg-blue-500/20 text-blue-300 border-blue-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/6b8c647e-3ea8-41ef-83d0-46c0d2b80431/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/MoldyDifficultCougarThisIsSparta",
-            "createdAt": "2020-02-19"
-      },
-      {
-            "id": "clip-20",
-            "slug": "LuckyCrispyBasenjiOptimizePrime",
-            "title": "God Havoc",
-            "game": "Apex Legends",
-            "curator": "1StarGamingTH",
-            "views": 71,
-            "duration": "0:28",
-            "category": "apex",
-            "badge": "⚡ APEX HIGHLIGHT",
-            "badgeClass": "bg-amber-500/20 text-amber-300 border-amber-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/77d29652-6aa8-40b2-85fd-d25b9cb9d42e/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/LuckyCrispyBasenjiOptimizePrime",
-            "createdAt": "2020-05-03"
-      },
-      {
-            "id": "clip-21",
-            "slug": "AdventurousBlindingButterBIRB",
-            "title": "Lucky with largest crosshair",
-            "game": "VALORANT",
-            "curator": "DaLines",
-            "views": 69,
-            "duration": "0:23",
-            "category": "valorant",
-            "badge": "🎯 VALORANT",
-            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/4582e1d1-ff92-4392-a61d-4cb74bc3685f/landscape/thumb/thumb-0000000000-1664x936.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/AdventurousBlindingButterBIRB",
-            "createdAt": "2021-01-11"
-      },
-      {
-            "id": "clip-22",
-            "slug": "ExuberantPlausibleCoyoteStoneLightning",
-            "title": "Loba 3.8k Damage",
-            "game": "Apex Legends",
-            "curator": "DaLines",
-            "views": 66,
-            "duration": "1:00",
-            "category": "apex",
-            "badge": "⚡ APEX HIGHLIGHT",
-            "badgeClass": "bg-amber-500/20 text-amber-300 border-amber-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/640d4a55-73d5-4f2a-8496-472c6d518bcb/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/ExuberantPlausibleCoyoteStoneLightning",
-            "createdAt": "2020-05-15"
-      },
-      {
-            "id": "clip-23",
-            "slug": "ComfortableElatedInternSpicyBoy-kX84MxdkorxVtKZH",
-            "title": "เป็นแฟนทำไรได้บ้าง",
-            "game": "VALORANT",
-            "curator": "Archuron",
-            "views": 65,
-            "duration": "0:05",
-            "category": "valorant",
-            "badge": "🎯 VALORANT",
-            "badgeClass": "bg-rose-500/20 text-rose-300 border-rose-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/db8ad1f1-e699-4871-aaaf-d32a64101407/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/ComfortableElatedInternSpicyBoy-kX84MxdkorxVtKZH",
-            "createdAt": "2023-01-15"
-      },
-      {
-            "id": "clip-24",
-            "slug": "InnocentTangiblePuppyDancingBaby",
-            "title": "หลุด",
-            "game": "Apex Legends",
-            "curator": "typepy",
-            "views": 60,
-            "duration": "0:28",
-            "category": "apex",
-            "badge": "🏆 APEX MOMENT",
-            "badgeClass": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
-            "thumbnailUrl": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/da18730e-cc88-48bd-87a9-d5836fe88504/landscape/thumb/thumb-0000000000-1920x1080.jpg",
-            "clipUrl": "https://www.twitch.tv/dalines/clip/InnocentTangiblePuppyDancingBaby",
-            "createdAt": "2020-05-10"
+        id: "clip-6",
+        title: "360 stinger สะบัดยิงอย่างตึง",
+        category: "valorant",
+        duration: "0:28",
+        views: 111,
+        initialLikes: 111,
+        videoUrl: "https://www.twitch.tv/dalines/clip/KnottyCuriousCattleHoneyBadger",
+        clipUrl: "https://www.twitch.tv/dalines/clip/KnottyCuriousCattleHoneyBadger",
+        embedUrl: "https://clips.twitch.tv/embed?clip=KnottyCuriousCattleHoneyBadger",
+        youtubeUrl: "",
+        slug: "KnottyCuriousCattleHoneyBadger",
+        curator: "DaLines",
+        game: "VALORANT",
+        badge: "🎯 VALORANT",
+        badgeClass: "bg-rose-500/20 text-rose-300 border-rose-500/40",
+        thumbnailUrl: "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/ba2fdbe3-d147-49d5-bfa8-6bb6a71dc3c9/landscape/thumb/thumb-0000000000-1920x1080.jpg"
       }
-];
+    ];
 
     let currentClipFilter = 'all';
 
@@ -1734,13 +2668,15 @@ async function copyTextToClipboard(text, successMessage) {
 
       grid.innerHTML = filtered.map(clip => {
         const isLiked = !!likedMap[clip.id];
-        const likes = clip.views + (isLiked ? 1 : 0);
+        const baseLikes = typeof clip.initialLikes === "number" ? clip.initialLikes : (clip.views || 100);
+        const likes = baseLikes + (isLiked ? 1 : 0);
+        const viewsCount = typeof clip.views === "number" ? clip.views : (clip.initialLikes || 0);
         return `
           <div class="tilt-card rounded-xl bg-slate-900/90 border border-slate-800 hover:border-purple-500/50 transition-all duration-300 flex flex-col justify-between shadow-lg relative group overflow-hidden">
             <!-- Video Thumbnail with 16:9 aspect ratio and hover overlay -->
             <div role="button" tabindex="0" aria-label="${escapeHtml(clip.title)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openClipModal('${clip.id}')}" class="relative w-full aspect-video bg-black/60 overflow-hidden cursor-pointer" onclick="openClipModal('${clip.id}')">
               <img src="${clip.thumbnailUrl}" alt="${escapeHtml(clip.title)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://static-cdn.jtvnw.net/ttv-static-metadata/twitch_logo3.jpg'">
-              
+
               <!-- Gradient Overlay -->
               <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-black/30 pointer-events-none"></div>
 
@@ -1753,14 +2689,14 @@ async function copyTextToClipboard(text, successMessage) {
 
               <!-- Views Badge -->
               <div class="absolute top-2 right-2 px-1.5 py-0.5 rounded-md bg-black/75 border border-white/10 text-[9px] font-mono text-purple-300 backdrop-blur-md flex items-center gap-1 shadow">
-                <i aria-hidden="true" class="fa-solid fa-eye text-[8px]"></i>
-                <span>${clip.views} views</span>
+                <i class="fa-solid fa-eye text-[8px]"></i>
+                <span>${viewsCount} views</span>
               </div>
 
               <!-- Center Play Icon -->
               <div class="absolute inset-0 flex items-center justify-center opacity-85 group-hover:opacity-100 transition-opacity">
                 <div class="w-10 h-10 rounded-full bg-[#9146FF]/90 group-hover:bg-[#9146FF] text-white flex items-center justify-center text-sm shadow-[0_0_20px_rgba(145,70,255,0.7)] group-hover:scale-110 transition-transform">
-                  <i aria-hidden="true" class="fa-solid fa-play ml-0.5 text-xs"></i>
+                  <i class="fa-solid fa-play ml-0.5 text-xs"></i>
                 </div>
               </div>
 
@@ -1777,7 +2713,7 @@ async function copyTextToClipboard(text, successMessage) {
                   ${escapeHtml(clip.title)}
                 </h4>
                 <div class="text-[10px] text-slate-400 mt-1 flex items-center justify-between gap-1 font-mono">
-                  <span class="truncate"><i aria-hidden="true" class="fa-solid fa-user-pen text-[9px] text-purple-400 mr-1"></i>${escapeHtml(clip.curator)}</span>
+                  <span class="truncate"><i class="fa-solid fa-user-pen text-[9px] text-purple-400 mr-1"></i>${escapeHtml(clip.curator)}</span>
                   <span class="text-slate-500 shrink-0 font-medium">${clip.game}</span>
                 </div>
               </div>
@@ -1785,25 +2721,25 @@ async function copyTextToClipboard(text, successMessage) {
               <!-- Action Buttons -->
               <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between gap-1.5 text-xs">
                 <button type="button" onclick="openClipModal('${clip.id}')" class="px-2.5 py-1.5 rounded-lg bg-[#9146FF]/30 hover:bg-[#9146FF] text-purple-200 hover:text-white border border-[#9146FF]/50 text-[10px] font-bold transition flex items-center gap-1 active:scale-95 cursor-pointer shadow">
-                  <i aria-hidden="true" class="fa-solid fa-play text-[8px]"></i>
+                  <i class="fa-solid fa-play text-[8px]"></i>
                   <span>ชมคลิป</span>
                 </button>
 
                 <div class="flex items-center gap-1">
                   <!-- Like Button -->
                   <button type="button" onclick="toggleClipLike('${clip.id}', event)" class="px-2 py-1 rounded-lg ${isLiked ? 'bg-pink-500/20 text-pink-400 border border-pink-500/40' : 'bg-slate-800 text-slate-400 hover:text-pink-400'} text-[10px] font-mono transition flex items-center gap-1 cursor-pointer active:scale-90" title="ถูกใจคลิป">
-                    <i aria-hidden="true" class="fa-${isLiked ? 'solid' : 'regular'} fa-heart ${isLiked ? 'text-pink-400' : ''}"></i>
+                    <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart ${isLiked ? 'text-pink-400' : ''}"></i>
                     <span id="like-count-${clip.id}">${likes}</span>
                   </button>
 
                   <!-- Direct Link on Twitch -->
-                  <a href="${clip.clipUrl}" target="_blank" rel="noopener noreferrer" class="p-1.5 rounded-lg bg-slate-800 hover:bg-[#9146FF]/40 text-slate-400 hover:text-white text-[10px] transition cursor-pointer" title="เปิดดูบน Twitch">
-                    <i aria-hidden="true" class="fa-brands fa-twitch"></i>
+                  <a href="${clip.videoUrl || clip.clipUrl || '#'}" target="_blank" rel="noopener noreferrer" class="p-1.5 rounded-lg bg-slate-800 hover:bg-[#9146FF]/40 text-slate-400 hover:text-white text-[10px] transition cursor-pointer" title="เปิดดูบน Twitch">
+                    <i class="fa-brands fa-twitch"></i>
                   </a>
 
                   <!-- Share Link Button -->
                   <button type="button" onclick="shareClip('${clip.id}', event)" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white text-[10px] transition cursor-pointer" title="แชร์คลิป">
-                    <i aria-hidden="true" class="fa-solid fa-share-nodes"></i>
+                    <i class="fa-solid fa-share-nodes"></i>
                   </button>
                 </div>
               </div>
@@ -1847,15 +2783,38 @@ async function copyTextToClipboard(text, successMessage) {
       const extLink = document.getElementById('clip-modal-ext-link');
 
       if (title) title.innerText = clip.title;
-      if (badge) badge.innerText = `${clip.game.toUpperCase()} • ${clip.views} VIEWS • CLIPPED BY ${clip.curator.toUpperCase()}`;
-      
-      const hostname = window.location.hostname || 'dalines-site.dalines.workers.dev';
-      const embedUrl = `https://clips.twitch.tv/embed?clip=${encodeURIComponent(clip.slug)}&parent=${hostname}&parent=localhost&parent=127.0.0.1&parent=dalines-site.dalines.workers.dev&parent=dalines.pages.dev&autoplay=true`;
-      if (iframe) iframe.src = embedUrl;
+      if (badge) badge.innerText = `${(clip.game || 'VALORANT').toUpperCase()} • ${clip.duration || '0:30'} • BY ${(clip.curator || 'DaLines').toUpperCase()}`;
+
+      // Resolve embed URL
+      let embedSrc = clip.embedUrl || '';
+      const parentQuery = getTwitchParentsQuery();
+
+      if (!embedSrc) {
+        if (clip.youtubeUrl) {
+          const ytMatch = clip.youtubeUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
+          if (ytMatch) {
+            embedSrc = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
+          }
+        } else if (clip.slug) {
+          embedSrc = `https://clips.twitch.tv/embed?clip=${encodeURIComponent(clip.slug)}&${parentQuery}&autoplay=true`;
+        } else if (clip.videoUrl) {
+          embedSrc = clip.videoUrl;
+        }
+      } else if (embedSrc.includes('twitch.tv/embed') || embedSrc.includes('clips.twitch.tv')) {
+        if (!embedSrc.includes('parent=')) {
+          embedSrc += (embedSrc.includes('?') ? '&' : '?') + parentQuery;
+        }
+        if (!embedSrc.includes('autoplay=')) {
+          embedSrc += '&autoplay=true';
+        }
+      }
+
+      if (iframe) iframe.src = embedSrc || 'about:blank';
 
       if (extLink) {
-        extLink.href = clip.clipUrl;
-        extLink.innerHTML = `<i aria-hidden="true" class="fa-brands fa-twitch"></i> <span>เปิดบน Twitch</span> <i aria-hidden="true" class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>`;
+        const targetUrl = clip.youtubeUrl || clip.videoUrl || clip.clipUrl || (clip.slug ? `https://www.twitch.tv/dalines/clip/${clip.slug}` : 'https://www.twitch.tv/dalines');
+        extLink.href = targetUrl;
+        extLink.innerHTML = `<i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i> <span>เปิดดูคลิปต้นฉบับ</span>`;
       }
       setModalOpen(modal, true);
     }
@@ -1869,14 +2828,14 @@ async function copyTextToClipboard(text, successMessage) {
     }
 
     function shareClip(clipId, e) {
-      e.stopPropagation();
+      if (e) e.stopPropagation();
       playSound('pop');
       const clip = DALINES_CLIPS.find(c => c.id === clipId);
       if (!clip) return;
-      return copyTextToClipboard(`${clip.title} - ชมคลิป DaLines จาก Twitch: ${clip.clipUrl}`, 'คัดลอกลิงก์คลิป Twitch เรียบร้อย! 🎬');
+      const targetUrl = clip.youtubeUrl || clip.videoUrl || clip.clipUrl || (clip.slug ? `https://www.twitch.tv/dalines/clip/${clip.slug}` : window.location.href);
+      return copyTextToClipboard(`${clip.title} - ชมคลิป DaLines: ${targetUrl}`, 'คัดลอกลิงก์คลิปเรียบร้อย! 🎬');
     }
 
-    // -----------------------------------------------------------------
     // 🎮 FPS E-DPI CALCULATOR & CROSS-GAME SENSITIVITY CONVERTER
     // High-precision physical distance conversion (cm/360°)
     // -----------------------------------------------------------------
@@ -2072,7 +3031,7 @@ async function copyTextToClipboard(text, successMessage) {
               <!-- Top Game Header -->
               <div class="flex items-center justify-between gap-1">
                 <div class="flex items-center gap-1.5 min-w-0">
-                  <i aria-hidden="true" class="${game.icon} text-xs"></i>
+                  <i class="${game.icon} text-xs"></i>
                   <span class="text-[11px] font-bold text-white truncate">${game.name}</span>
                 </div>
                 <span class="px-1.5 py-0.2 rounded text-[8px] font-mono font-bold ${game.bgBadge} shrink-0">
@@ -2093,7 +3052,7 @@ async function copyTextToClipboard(text, successMessage) {
 
               <!-- Bottom Copy Button -->
               <button type="button" onclick="copySingleGameSens('${game.key}', '${rawSensVal}', event)" class="w-full py-1 px-2 rounded-lg bg-slate-800 hover:bg-cyan-600 text-slate-300 hover:text-white text-[10px] font-mono font-semibold transition flex items-center justify-center gap-1 active:scale-95 cursor-pointer shadow">
-                <i aria-hidden="true" class="fa-regular fa-copy text-[9px]"></i>
+                <i class="fa-regular fa-copy text-[9px]"></i>
                 <span>Copy Sens</span>
               </button>
             </div>
@@ -2188,7 +3147,7 @@ async function copyTextToClipboard(text, successMessage) {
       if (gameSelect) gameSelect.value = gameKey;
 
       const config = SENS_GAMES[gameKey];
-      currentBaseSens = (gameKey === 'valorant') ? 0.3 : 1.8;
+      currentBaseSens = (gameKey === 'valorant') ? 0.45 : 1.8;
 
       const sensInput = document.getElementById('sens-input-value');
       if (sensInput) sensInput.value = currentBaseSens;
@@ -2231,15 +3190,572 @@ async function copyTextToClipboard(text, successMessage) {
     }
 
     // -----------------------------------------------------------------
+    // 🎯 VALORANT ESPORTS CAREER & LIVE MATCH TRACKER
+    // -----------------------------------------------------------------
+    const DALINES_VALORANT_BASELINE = {
+      riotId: "DaLines#TTV",
+      region: "ap",
+      currentTier: "Diamond 1",
+      tierColor: "#a855f7",
+      currentRR: 31,
+      peakRank: "Immortal 1 34RR (Ep 7: Act III)",
+      streak: "🔥 11W - 9L (55%)",
+      stats: {
+        kd: "1.08",
+        hs: "26.4%",
+        winrate: "55.0%",
+        acs: "218.5",
+        adr: "148.0",
+        kpr: "0.78",
+        firstBloods: "48",
+        clutchRate: "16.5%"
+      },
+      agents: [
+        { name: "Sova", role: "Initiator", pickRate: "769 hrs", kd: "1.03", winRate: "53%", initial: "S", color: "sky" },
+        { name: "Jett", role: "Duelist", pickRate: "399 hrs", kd: "1.15", winRate: "52%", initial: "J", color: "cyan" },
+        { name: "Killjoy", role: "Sentinel", pickRate: "308 hrs", kd: "1.10", winRate: "54%", initial: "K", color: "amber" }
+      ],
+      recentMatches: [
+        { map: "5h ago", result: "VICTORY", score: "13 - 11", agent: "Sova", role: "Initiator", kda: "KD 1.8", kd: "1.80", acs: 235, rrChange: "+19", mvp: false },
+        { map: "6h ago", result: "DEFEAT", score: "10 - 13", agent: "Sova", role: "Initiator", kda: "KD 1.2", kd: "1.20", acs: 215, rrChange: "-14", mvp: false },
+        { map: "7h ago", result: "VICTORY", score: "13 - 8", agent: "Sova", role: "Initiator", kda: "KD 0.7", kd: "0.70", acs: 180, rrChange: "+18", mvp: false },
+        { map: "7h ago", result: "VICTORY", score: "13 - 3", agent: "Sova", role: "Initiator", kda: "KD 1.7", kd: "1.70", acs: 260, rrChange: "+24", mvp: true },
+        { map: "11h ago", result: "DEFEAT", score: "2 - 13", agent: "Chamber", role: "Sentinel", kda: "KD 1.1", kd: "1.10", acs: 195, rrChange: "-16", mvp: false }
+      ]
+    };
+
+    let valTrackerData = { ...DALINES_VALORANT_BASELINE };
+
+    function initValorantTracker() {
+      try {
+        const cachedStr = safeStorage.getItem('dalines_val_tracker_cache_v2');
+        if (cachedStr) {
+          const parsed = JSON.parse(cachedStr);
+          if (parsed && parsed.timestamp && (Date.now() - parsed.timestamp < 1000 * 60 * 15)) {
+            valTrackerData = { ...DALINES_VALORANT_BASELINE, ...parsed.data };
+            updateValorantTrackerDOM(valTrackerData);
+            setTrackerSyncStatus(true, 'LIVE SYNC');
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('Tracker cache load error:', e);
+      }
+      updateValorantTrackerDOM(valTrackerData);
+      setTrackerSyncStatus(false, 'OFFICIAL CACHE');
+    }
+
+    function setTrackerSyncStatus(isLive, labelText) {
+      const badge = document.getElementById('tracker-sync-badge');
+      const text = document.getElementById('tracker-sync-status-text');
+      const time = document.getElementById('tracker-last-sync-time');
+      if (badge && text) {
+        if (isLive) {
+          badge.className = 'px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1';
+          text.innerText = labelText || 'LIVE SYNC';
+        } else {
+          badge.className = 'px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 flex items-center gap-1';
+          text.innerText = labelText || 'OFFICIAL CACHE';
+        }
+      }
+      if (time) {
+        const now = new Date();
+        const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} น.`;
+        time.innerText = timeStr;
+      }
+    }
+
+    function updateValorantTrackerDOM(data) {
+      if (!data) return;
+
+      if (data.currentTier) {
+        applyValorantTierTheme(data.currentTier);
+      }
+
+      const rankTitle = document.getElementById('tracker-rank-title');
+      if (rankTitle && data.currentTier) rankTitle.innerText = data.currentTier.toUpperCase();
+
+      const rrCur = document.getElementById('tracker-rr-current');
+      if (rrCur && data.currentRR !== undefined) rrCur.innerText = data.currentRR;
+
+      const rrPercent = document.getElementById('tracker-rr-percent');
+      if (rrPercent && data.currentRR !== undefined) rrPercent.innerText = `${data.currentRR}%`;
+
+      const rrBar = document.getElementById('tracker-rr-bar');
+      if (rrBar && data.currentRR !== undefined) rrBar.style.width = `${Math.min(100, Math.max(0, data.currentRR))}%`;
+
+      const peak = document.getElementById('tracker-peak-val');
+      if (peak && data.peakRank) peak.innerText = data.peakRank;
+
+      if (data.stats) {
+        const kd = document.getElementById('tracker-stat-kd');
+        if (kd && data.stats.kd) kd.innerText = data.stats.kd;
+
+        const hs = document.getElementById('tracker-stat-hs');
+        if (hs && data.stats.hs) hs.innerText = data.stats.hs;
+
+        const wr = document.getElementById('tracker-stat-winrate');
+        if (wr && data.stats.winrate) wr.innerText = data.stats.winrate;
+
+        const acs = document.getElementById('tracker-stat-acs');
+        if (acs && data.stats.acs) acs.innerText = data.stats.acs;
+
+        const adr = document.getElementById('tracker-stat-adr');
+        if (adr && data.stats.adr) adr.innerText = data.stats.adr;
+
+        const kpr = document.getElementById('tracker-stat-kpr');
+        if (kpr && data.stats.kpr) kpr.innerText = data.stats.kpr;
+
+        const fb = document.getElementById('tracker-stat-fb');
+        if (fb && data.stats.firstBloods) fb.innerText = data.stats.firstBloods;
+
+        const clutch = document.getElementById('tracker-stat-clutch');
+        if (clutch && data.stats.clutchRate) clutch.innerText = data.stats.clutchRate;
+      }
+    }
+
+    let valorantTrackerRefreshing = false;
+    async function refreshValorantTracker(manual = false) {
+      if (valorantTrackerRefreshing) return;
+      valorantTrackerRefreshing = true;
+      try {
+      if (manual) {
+        playSound('sparkle');
+        triggerHaptic(25);
+      }
+
+      const icon = document.getElementById('tracker-refresh-icon');
+      if (icon) icon.classList.add('animate-spin');
+
+      let liveSuccess = false;
+      const apiEndpoints = [
+        '/api/valorant',
+        'https://dalines-site.dalines.workers.dev/api/valorant'
+      ];
+
+      for (const endpoint of apiEndpoints) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3500);
+
+          const res = await fetch(endpoint, {
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+
+          if (res.ok) {
+            const json = await res.json();
+            const payload = json && (json.data || json);
+            if (payload && (payload.currentTier || payload.stats)) {
+              if (payload.currentTier) valTrackerData.currentTier = payload.currentTier;
+              if (payload.currentRR !== undefined) valTrackerData.currentRR = payload.currentRR;
+              if (payload.peakRank) valTrackerData.peakRank = payload.peakRank;
+              if (payload.streak) valTrackerData.streak = payload.streak;
+              if (payload.stats) {
+                valTrackerData.stats = { ...valTrackerData.stats, ...payload.stats };
+              }
+              if (payload.agents && Array.isArray(payload.agents)) {
+                valTrackerData.agents = payload.agents;
+              }
+              if (payload.recentMatches && Array.isArray(payload.recentMatches)) {
+                valTrackerData.recentMatches = payload.recentMatches;
+              }
+              liveSuccess = true;
+              break;
+            }
+          }
+        } catch (err) {
+          // Continue to next endpoint or graceful fallback
+        }
+      }
+
+      // Update LocalStorage cache
+      try {
+        safeStorage.setItem('dalines_val_tracker_cache_v2', JSON.stringify({
+          timestamp: Date.now(),
+          data: valTrackerData
+        }));
+      } catch (e) { }
+
+      updateValorantTrackerDOM(valTrackerData);
+      setTrackerSyncStatus(liveSuccess, liveSuccess ? 'DIRECT API LIVE' : 'OFFICIAL CACHE');
+
+      setTimeout(() => {
+        if (icon) icon.classList.remove('animate-spin');
+        if (manual) {
+          const toastMsg = liveSuccess
+            ? (translations[currentLang].toast_tracker_synced || 'ซิงค์สถิติ Valorant สดสำเร็จ! 🎯')
+            : 'ซิงค์ข้อมูลสถิติเรียบร้อย (Official Cache) ⚡';
+          showToast(toastMsg);
+        }
+      }, 500);
+
+      } finally { valorantTrackerRefreshing = false; }
+    }
+
+
+    function copyTrackerRiotId() {
+      playSound('pop');
+      triggerHaptic(20);
+      return copyTextToClipboard('DaLines#TTV', translations[currentLang].toast_copy_riot_id || 'คัดลอก Riot ID: DaLines#TTV เรียบร้อย! 🎮');
+    }
+
+    // -----------------------------------------------------------------
+    // 🔍 VALORANT LIVE PLAYER SEARCH & RANK THEME ENGINE
+    // -----------------------------------------------------------------
+    function applyValorantTierTheme(tierName) {
+      const t = (tierName || '').toLowerCase();
+      let theme = {
+        titleClass: 'text-purple-300',
+        boxBorder: 'border-purple-400/50',
+        boxShadow: '0 0 20px rgba(168,85,247,0.35)',
+        grad0: '#c084fc', grad50: '#7c3aed', grad100: '#4c1d95',
+        strokeOuter: '#c084fc', strokeMid: '#a855f7', fillMid: '#2e1065',
+        inner0: '#a855f7', inner100: '#581c87', core: '#f5d0fe',
+        barGrad: 'from-purple-500 via-indigo-500 to-cyan-400',
+        rankValue: 6
+      };
+
+      if (t.includes('radiant')) {
+        theme = {
+          titleClass: 'text-amber-300',
+          boxBorder: 'border-amber-400/70',
+          boxShadow: '0 0 25px rgba(251,191,36,0.6)',
+          grad0: '#fef08a', grad50: '#f59e0b', grad100: '#b45309',
+          strokeOuter: '#fbbf24', strokeMid: '#f59e0b', fillMid: '#451a03',
+          inner0: '#fbbf24', inner100: '#78350f', core: '#ffffff',
+          barGrad: 'from-amber-400 via-yellow-400 to-orange-500',
+          rankValue: 9
+        };
+      } else if (t.includes('immortal')) {
+        theme = {
+          titleClass: 'text-rose-400',
+          boxBorder: 'border-rose-400/60',
+          boxShadow: '0 0 25px rgba(244,63,94,0.5)',
+          grad0: '#fda4af', grad50: '#e11d48', grad100: '#881337',
+          strokeOuter: '#f43f5e', strokeMid: '#e11d48', fillMid: '#4c0519',
+          inner0: '#f43f5e', inner100: '#881337', core: '#ffe4e6',
+          barGrad: 'from-rose-500 via-red-500 to-amber-400',
+          rankValue: 8
+        };
+      } else if (t.includes('ascendant')) {
+        theme = {
+          titleClass: 'text-emerald-300',
+          boxBorder: 'border-emerald-400/50',
+          boxShadow: '0 0 20px rgba(16,185,129,0.4)',
+          grad0: '#6ee7b7', grad50: '#059669', grad100: '#064e3b',
+          strokeOuter: '#10b981', strokeMid: '#059669', fillMid: '#022c22',
+          inner0: '#10b981', inner100: '#064e3b', core: '#a7f3d0',
+          barGrad: 'from-emerald-500 via-teal-500 to-cyan-400',
+          rankValue: 7
+        };
+      } else if (t.includes('diamond')) {
+        theme = {
+          titleClass: 'text-purple-300',
+          boxBorder: 'border-purple-400/50',
+          boxShadow: '0 0 20px rgba(168,85,247,0.4)',
+          grad0: '#c084fc', grad50: '#7c3aed', grad100: '#4c1d95',
+          strokeOuter: '#c084fc', strokeMid: '#a855f7', fillMid: '#2e1065',
+          inner0: '#a855f7', inner100: '#581c87', core: '#f5d0fe',
+          barGrad: 'from-purple-500 via-indigo-500 to-cyan-400',
+          rankValue: 6
+        };
+      } else if (t.includes('platinum')) {
+        theme = {
+          titleClass: 'text-cyan-300',
+          boxBorder: 'border-cyan-400/50',
+          boxShadow: '0 0 20px rgba(6,182,212,0.4)',
+          grad0: '#67e8f9', grad50: '#0891b2', grad100: '#164e63',
+          strokeOuter: '#06b6d4', strokeMid: '#0891b2', fillMid: '#083344',
+          inner0: '#06b6d4', inner100: '#164e63', core: '#cffafe',
+          barGrad: 'from-cyan-500 via-sky-500 to-teal-400',
+          rankValue: 5
+        };
+      } else if (t.includes('gold')) {
+        theme = {
+          titleClass: 'text-yellow-300',
+          boxBorder: 'border-yellow-400/50',
+          boxShadow: '0 0 20px rgba(234,179,8,0.4)',
+          grad0: '#fde047', grad50: '#ca8a04', grad100: '#713f12',
+          strokeOuter: '#eab308', strokeMid: '#ca8a04', fillMid: '#422006',
+          inner0: '#eab308', inner100: '#713f12', core: '#fef08a',
+          barGrad: 'from-yellow-500 via-amber-500 to-orange-400',
+          rankValue: 4
+        };
+      } else if (t.includes('silver')) {
+        theme = {
+          titleClass: 'text-slate-200',
+          boxBorder: 'border-slate-400/50',
+          boxShadow: '0 0 18px rgba(203,213,225,0.3)',
+          grad0: '#f1f5f9', grad50: '#94a3b8', grad100: '#475569',
+          strokeOuter: '#cbd5e1', strokeMid: '#94a3b8', fillMid: '#1e293b',
+          inner0: '#cbd5e1', inner100: '#475569', core: '#f8fafc',
+          barGrad: 'from-slate-400 via-gray-400 to-zinc-300',
+          rankValue: 3
+        };
+      } else if (t.includes('bronze')) {
+        theme = {
+          titleClass: 'text-amber-500',
+          boxBorder: 'border-amber-600/50',
+          boxShadow: '0 0 18px rgba(180,83,9,0.3)',
+          grad0: '#f59e0b', grad50: '#b45309', grad100: '#78350f',
+          strokeOuter: '#d97706', strokeMid: '#b45309', fillMid: '#451a03',
+          inner0: '#d97706', inner100: '#78350f', core: '#fed7aa',
+          barGrad: 'from-amber-600 via-orange-600 to-amber-700',
+          rankValue: 2
+        };
+      } else if (t.includes('iron')) {
+        theme = {
+          titleClass: 'text-slate-400',
+          boxBorder: 'border-slate-600/50',
+          boxShadow: '0 0 15px rgba(148,163,184,0.25)',
+          grad0: '#cbd5e1', grad50: '#64748b', grad100: '#334155',
+          strokeOuter: '#94a3b8', strokeMid: '#64748b', fillMid: '#0f172a',
+          inner0: '#94a3b8', inner100: '#334155', core: '#e2e8f0',
+          barGrad: 'from-slate-600 via-gray-600 to-zinc-500',
+          rankValue: 1
+        };
+      }
+
+      // Update SVG Stops
+      const s0 = document.getElementById('rankGradStop0');
+      if (s0) s0.setAttribute('stop-color', theme.grad0);
+      const s50 = document.getElementById('rankGradStop50');
+      if (s50) s50.setAttribute('stop-color', theme.grad50);
+      const s100 = document.getElementById('rankGradStop100');
+      if (s100) s100.setAttribute('stop-color', theme.grad100);
+
+      const is0 = document.getElementById('rankInnerStop0');
+      if (is0) is0.setAttribute('stop-color', theme.inner0);
+      const is100 = document.getElementById('rankInnerStop100');
+      if (is100) is100.setAttribute('stop-color', theme.inner100);
+
+      const polyOuter = document.getElementById('tracker-poly-outer');
+      if (polyOuter) polyOuter.setAttribute('stroke', theme.strokeOuter);
+      const polyMid = document.getElementById('tracker-poly-mid');
+      if (polyMid) {
+        polyMid.setAttribute('stroke', theme.strokeMid);
+        polyMid.setAttribute('fill', theme.fillMid);
+      }
+      const polyCore = document.getElementById('tracker-poly-core');
+      if (polyCore) polyCore.setAttribute('fill', theme.core);
+
+      const box = document.getElementById('tracker-rank-badge-box');
+      if (box) box.style.boxShadow = theme.boxShadow;
+
+      const titleEl = document.getElementById('tracker-rank-title');
+      if (titleEl) {
+        titleEl.className = `text-base sm:text-lg font-black font-gaming tracking-wider ${theme.titleClass}`;
+      }
+
+      const bar = document.getElementById('tracker-rr-bar');
+      if (bar) {
+        bar.className = `h-full rounded-full bg-gradient-to-r ${theme.barGrad} transition-all duration-700 shadow-md`;
+      }
+
+      return theme;
+    }
+
+    async function searchValorantPlayer(e) {
+      if (e && e.preventDefault) e.preventDefault();
+
+      const input = document.getElementById('val-search-input');
+      const regionSelect = document.getElementById('val-search-region');
+      const btn = document.getElementById('btn-val-search');
+      const icon = document.getElementById('val-search-icon');
+      const btnText = document.getElementById('val-search-btn-text');
+
+      if (!input) return;
+      const rawQuery = input.value.trim();
+      if (!rawQuery) {
+        showToast('กรุณากรอก Riot ID เช่น YourName#TAG 🎯');
+        input.focus();
+        return;
+      }
+
+      const parts = rawQuery.split('#');
+      if (parts.length < 2 || !parts[0].trim() || !parts[1].trim()) {
+        showToast('กรุณาระบุ Tag ด้วยครับ เช่น ' + rawQuery + '#1234 ⚠️');
+        input.focus();
+        return;
+      }
+
+      const playerName = parts[0].trim();
+      const playerTag = parts.slice(1).join('#').trim();
+      const region = regionSelect ? regionSelect.value : 'ap';
+
+      playSound('pop');
+      triggerHaptic(20);
+      if (btn) btn.disabled = true;
+      if (icon) icon.className = 'fa-solid fa-spinner animate-spin text-xs';
+      if (btnText) btnText.innerText = 'กำลังค้นหา...';
+
+      try {
+        let result = null;
+        const searchEndpoints = [
+          `/api/valorant?name=${encodeURIComponent(playerName)}&tag=${encodeURIComponent(playerTag)}&region=${region}`,
+          `https://dalines-site.dalines.workers.dev/api/valorant?name=${encodeURIComponent(playerName)}&tag=${encodeURIComponent(playerTag)}&region=${region}`,
+          `https://api.kyroskoh.xyz/valorant/v1/mmr/${region}/${encodeURIComponent(playerName)}/${encodeURIComponent(playerTag)}?show=all&display=0`
+        ];
+
+        for (const ep of searchEndpoints) {
+          try {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 6500);
+            const res = await fetch(ep, { signal: controller.signal });
+            clearTimeout(timeout);
+
+            if (res.ok) {
+              const contentType = res.headers.get('content-type') || '';
+              if (contentType.includes('application/json')) {
+                const json = await res.json();
+                if (json && json.status === 'success' && json.data) {
+                  result = json.data;
+                  break;
+                }
+              } else {
+                const text = (await res.text()).trim();
+                const match = text.match(/^([A-Za-z0-9 ]+?)\s*-\s*(\d+)\s*RR(?:\s+MMR Elo:\s*(\d+))?/i);
+                if (match) {
+                  result = {
+                    riotId: `${playerName}#${playerTag}`,
+                    region: region,
+                    currentTier: match[1].trim(),
+                    currentRR: parseInt(match[2], 10),
+                    elo: match[3] ? parseInt(match[3], 10) : null
+                  };
+                  break;
+                }
+              }
+            }
+          } catch (err) {
+            // Try next endpoint
+          }
+        }
+
+        if (result && result.currentTier) {
+          playSound('sparkle');
+          triggerHaptic(35);
+          renderViewerRank(result);
+          showToast(`🎯 พบข้อมูล ${result.riotId}: ${result.currentTier} (${result.currentRR} RR)!`);
+        } else {
+          playSound('pop');
+          showToast(`⚠️ ไม่พบข้อมูลแรงก์ของ ${playerName}#${playerTag} หรือยังไม่ได้เล่นโหมด Competitive ใน Act ปัจจุบัน`);
+        }
+      } catch (err) {
+        showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง');
+      } finally {
+        if (btn) btn.disabled = false;
+        if (icon) icon.className = 'fa-solid fa-magnifying-glass text-xs';
+        if (btnText) btnText.innerText = translations[currentLang].tracker_search_btn || 'ค้นหา';
+      }
+    }
+
+    function renderViewerRank(playerData) {
+      const banner = document.getElementById('val-viewer-banner');
+      const viewerName = document.getElementById('val-viewer-name');
+      const regionBadge = document.getElementById('val-viewer-region-badge');
+      const compareBadge = document.getElementById('val-viewer-compare-badge');
+      const resetBtn = document.getElementById('btn-val-reset-streamer');
+      const clearBtn = document.getElementById('btn-val-clear-search');
+
+      if (banner) banner.classList.remove('hidden');
+      if (resetBtn) resetBtn.classList.remove('hidden');
+      if (clearBtn) clearBtn.classList.remove('hidden');
+      if (viewerName) viewerName.innerText = playerData.riotId;
+      if (regionBadge) regionBadge.innerText = (playerData.region || 'AP').toUpperCase();
+
+      const viewerTheme = applyValorantTierTheme(playerData.currentTier);
+      const dalinesTierRank = 6; // Diamond 1
+      if (compareBadge) {
+        if (viewerTheme.rankValue > dalinesTierRank) {
+          compareBadge.className = 'ml-1.5 px-2 py-0.5 rounded text-[9px] font-sans font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40';
+          compareBadge.innerText = '👑 สูงกว่า DaLines! คมจัดดด 🔥';
+        } else if (viewerTheme.rankValue === dalinesTierRank) {
+          compareBadge.className = 'ml-1.5 px-2 py-0.5 rounded text-[9px] font-sans font-bold bg-purple-500/20 text-purple-200 border border-purple-500/40';
+          compareBadge.innerText = '🎯 แรงก์ระดับเดียวกับ DaLines! ตี้กันได้ ⚡';
+        } else {
+          compareBadge.className = 'ml-1.5 px-2 py-0.5 rounded text-[9px] font-sans font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40';
+          compareBadge.innerText = '💪 กำลังไต่ตาม DaLines มาติดๆ สู้ๆ! 🚀';
+        }
+      }
+
+      const rankTitle = document.getElementById('tracker-rank-title');
+      if (rankTitle) rankTitle.innerText = playerData.currentTier.toUpperCase();
+
+      const rrCur = document.getElementById('tracker-rr-current');
+      if (rrCur) rrCur.innerText = playerData.currentRR;
+
+      const rrPercent = document.getElementById('tracker-rr-percent');
+      if (rrPercent) rrPercent.innerText = `${playerData.currentRR}%`;
+
+      const rrBar = document.getElementById('tracker-rr-bar');
+      if (rrBar) rrBar.style.width = `${Math.min(100, Math.max(0, playerData.currentRR))}%`;
+
+      const rankLabel = document.getElementById('tracker-rank-label-sub');
+      if (rankLabel) rankLabel.innerText = `RATING: ${playerData.riotId}`;
+
+      const trackerSection = document.getElementById('valorant-tracker-section');
+      if (trackerSection) {
+        trackerSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    function resetToStreamerProfile() {
+      playSound('sparkle');
+      triggerHaptic(20);
+
+      const banner = document.getElementById('val-viewer-banner');
+      const resetBtn = document.getElementById('btn-val-reset-streamer');
+      const clearBtn = document.getElementById('btn-val-clear-search');
+      const input = document.getElementById('val-search-input');
+      const rankLabel = document.getElementById('tracker-rank-label-sub');
+
+      if (banner) banner.classList.add('hidden');
+      if (resetBtn) resetBtn.classList.add('hidden');
+      if (clearBtn) clearBtn.classList.add('hidden');
+      if (input) input.value = '';
+      if (rankLabel) rankLabel.innerText = translations[currentLang].tracker_rank_label || 'COMPETITIVE RANK';
+
+      updateValorantTrackerDOM(valTrackerData);
+      showToast('🔄 กลับสู่ข้อมูลสตรีมเมอร์ DaLines#TTV เรียบร้อย 🎯');
+    }
+
+    function clearValSearchInput() {
+      const input = document.getElementById('val-search-input');
+      const clearBtn = document.getElementById('btn-val-clear-search');
+      if (input) {
+        input.value = '';
+        input.focus();
+      }
+      if (clearBtn) clearBtn.classList.add('hidden');
+    }
+
+    // -----------------------------------------------------------------
     // NIGHTBOT STREAM COMMANDS HUB
     // -----------------------------------------------------------------
     const NIGHTBOT_COMMANDS = [
+      // 🎯 แรงก์ & สถิติแข่ง (Rank & Tracker)
+      {
+        name: "!rank",
+        cat: "aim",
+        desc: "แรงก์ Valorant ปัจจุบัน & สถิติ",
+        response: "แรงก์ปัจจุบัน: Diamond 1 31RR (Peak: Immortal 1 34RR Ep 7: Act III) • K/D 1.08 | 148 ADR | Sova Main 769 hrs | ดูสถิติสดและประวัติแมตช์ได้ที่หน้าเว็บ DaLines Hub ครับ! 🎯",
+        tags: ["rank", "valorant", "แรงก์", "stats", "tracker"]
+      },
+      {
+        name: "!ranklive",
+        cat: "aim",
+        desc: "คำสั่ง Nightbot ดึงแรงก์สด Valorant อัตโนมัติ (Custom API)",
+        response: "$(urlfetch https://api.kyroskoh.xyz/valorant/v1/mmr/ap/DaLines/TTV?show=combo&display=1)",
+        tags: ["rank", "live", "api", "valorant", "nightbot"]
+      },
       // 🎯 เป้า & ความไวเมาส์ (Aim & Sens)
       {
         name: "!sens",
         cat: "aim",
         desc: "ความไวเมาส์ในเกม (In-game Sensitivity)",
-        response: "Valorant : in game sens : 0.3 // ADS : 1.0 | Apex : in game sens : 1.8 // ADS : 1.0",
+        response: "Valorant : in game sens : 0.45 (DPI 800) // Scoped : 1.00 | Apex : in game sens : 1.43 // ADS : 1.0",
         tags: ["sens", "ความไว", "เมาส์", "valorant", "apex"]
       },
       {
@@ -2292,7 +3808,7 @@ async function copyTextToClipboard(text, successMessage) {
         name: "!ign",
         cat: "ign",
         desc: "ชื่อไอดีในเกม Valorant (หลัก & รอง)",
-        response: "หลัก DaLines #0001 | ไก่1 DaLines #0002 | ไก่2 DaLines #0003 | ไก่3 DaLines #0004 | ไก่4 DaLines #0005",
+        response: "Riot ID / Valorant : DaLines#TTV (กด Follow สตรีมก่อนแอดมาเล่นด้วยกันนะ!)",
         tags: ["ign", "ชื่อ", "ไอดี", "id", "valorant"]
       },
       {
@@ -2330,15 +3846,15 @@ async function copyTextToClipboard(text, successMessage) {
         name: "!specs",
         cat: "gear",
         desc: "สเปกคอมพิวเตอร์สตรีมเมอร์ PC",
-        response: "CPU: Ryzen 7 2700 | GPU: GTX 1070 8GB OC | RAM: Corsair RGB Pro 16GB (3000MHz) | Monitor: Xiaomi Mi 2K 27\" (165Hz) + Dell 144Hz",
+        response: "CPU: Ryzen 5 5600 | GPU: RTX 5060 Ti | RAM: 16GB | Monitor: Xiaomi Mi 2K 27\" (165Hz) + Dell 144Hz",
         tags: ["spec", "specs", "สเปก", "คอม", "cpu", "gpu", "จอ"]
       },
       {
         name: "!mouse",
         cat: "gear",
         desc: "เมาส์เกมมิ่งประจำกาย",
-        response: "Loga Garuda Wireless",
-        tags: ["mouse", "เมาส์", "loga", "garuda"]
+        response: "ATK Ghost Ultimate",
+        tags: ["mouse", "เมาส์", "atk", "ghost"]
       },
       {
         name: "!headset",
@@ -2368,7 +3884,7 @@ async function copyTextToClipboard(text, successMessage) {
         name: "!discord",
         cat: "social",
         desc: "ดิสคอร์ดคอมมูนิตี้ DaLines",
-        response: "https://discord.gg/62uf9BE",
+        response: "https://discord.gg/3m9x688YCG",
         isLink: true,
         tags: ["discord", "ดิส", "dc"]
       },
@@ -2460,7 +3976,7 @@ async function copyTextToClipboard(text, successMessage) {
           linkBtn = `
             <a href="${cmd.response}" target="_blank" rel="noopener noreferrer" class="px-2 py-0.5 rounded bg-indigo-500/15 hover:bg-indigo-500/30 text-indigo-300 text-[10px] font-medium transition flex items-center gap-1 active:scale-95 cursor-pointer">
               <span>เปิดลิงก์</span>
-              <i aria-hidden="true" class="fa-solid fa-arrow-up-right-from-square text-[8px]"></i>
+              <i class="fa-solid fa-arrow-up-right-from-square text-[8px]"></i>
             </a>
           `;
         }
@@ -2471,7 +3987,7 @@ async function copyTextToClipboard(text, successMessage) {
               <div class="flex items-center justify-between gap-1.5 mb-1.5">
                 <button type="button" onclick="copyBotCommand('${safeName}', this)" class="cmd-badge-btn px-2 py-0.5 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/35 border border-indigo-500/40 text-indigo-300 font-mono font-bold text-xs flex items-center gap-1.5 transition active:scale-95 cursor-pointer" title="คลิกเพื่อคัดลอกคำสั่ง">
                   <span>${safeName}</span>
-                  <i aria-hidden="true" class="fa-regular fa-copy text-[10px] opacity-70 group-hover:opacity-100"></i>
+                  <i class="fa-regular fa-copy text-[10px] opacity-70 group-hover:opacity-100"></i>
                 </button>
                 <span class="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700/60">${cmd.cat}</span>
               </div>
@@ -2480,13 +3996,13 @@ async function copyTextToClipboard(text, successMessage) {
             </div>
             <div class="mt-2 pt-1.5 border-t border-slate-800/60 flex items-center justify-between gap-1">
               <button type="button" onclick="copyBotCommand('${safeName}', this)" class="text-[10px] text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition cursor-pointer">
-                <i aria-hidden="true" class="fa-solid fa-terminal text-[9px]"></i>
+                <i class="fa-solid fa-terminal text-[9px]"></i>
                 <span>ก๊อปปี้คำสั่ง</span>
               </button>
               <div class="flex items-center gap-1">
                 ${linkBtn}
                 <button type="button" onclick="copyBotResponse('${safeResp.replace(/'/g, "\\'")}', this)" class="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[10px] font-medium transition active:scale-95 cursor-pointer" title="คัดลอกคำตอบ">
-                  <i aria-hidden="true" class="fa-regular fa-clipboard text-[9px]"></i>
+                  <i class="fa-regular fa-clipboard text-[9px]"></i>
                 </button>
               </div>
             </div>
@@ -2792,8 +4308,8 @@ async function copyTextToClipboard(text, successMessage) {
       if (!grid) return;
 
       grid.innerHTML = list.map(e => {
-        const tierBadgeColor = e.tier === 'Tier 1' 
-          ? 'bg-purple-500/20 text-purple-300 border-purple-500/30' 
+        const tierBadgeColor = e.tier === 'Tier 1'
+          ? 'bg-purple-500/20 text-purple-300 border-purple-500/30'
           : (e.tier === 'Tier 2' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' : 'bg-amber-500/20 text-amber-300 border-amber-500/30');
 
         return `

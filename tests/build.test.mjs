@@ -28,12 +28,15 @@ const localResource = value => value && !/^(?:[a-z][a-z\d+.-]*:|\/\/|#)/i.test(v
 
 
 test('deployment contains only public assets and excludes source, tooling and private files', () => {
-  const allowedRoot = new Set(['index.html', 'manifest.json', 'robots.txt', 'sitemap.xml', '_headers', 'Logo.png', 'banner-480.png', 'qr-donate.png']);
+  const allowedRoot = new Set(['index.html', 'manifest.json', 'robots.txt', 'sitemap.xml', '_headers', 'Logo.png', 'banner-480.png', 'qr-donate.png', 'party.html', 'tts.html', 'spookydance.mp4']);
   for (const filename of files) {
     assert.ok(allowedRoot.has(filename)
       || /^google[a-zA-Z0-9]+\.html$/.test(filename)
       || /^assets\/[a-z]+\.[a-f0-9]{12}\.(?:js|css|webp)$/.test(filename)
-      || /^icons\/icon-(?:32|180|192|512|maskable-512)\.png$/.test(filename),
+      || /^icons\/icon-(?:32|180|192|512|maskable-512)\.png$/.test(filename)
+      || /^story\/(?:[^/]+\/)*[^/]+\.html$/.test(filename)
+      || /^dance\/(?:index\.html|Logo\.png|assets\/[^/]+\.(?:js|css|png|webp|jpg|svg|woff2?))$/.test(filename)
+      || /^showcase(?:-v2)?\/(?:index\.html|[^/]+\.(?:mp4|wav))$/.test(filename),
     `Unexpected file in deployment: ${filename}`);
   }
   assert.ok(!files.some(filename => /(?:^|\/)(?:node_modules|tests|scripts|\.git|\.env)(?:\/|$)|\.(?:ps1|bat|mjs|map)$|package(?:-lock)?\.json$|README/i.test(filename)));
@@ -59,7 +62,7 @@ test('every local page resource exists and fingerprinted assets match their cont
 
 test('production JavaScript is local and deferred, parses, and retains inline event handlers', async () => {
   const scripts = [...document.querySelectorAll('script[src]')];
-  assert.equal(scripts.length, 2);
+  assert.equal(scripts.length, 3);
   const definedFunctions = new Set();
   for (const script of scripts) {
     assert.ok(localResource(script.getAttribute('src')), 'Third-party JavaScript must load on demand');
@@ -88,6 +91,8 @@ test('compiled CSS includes dynamic feature styles and motion/focus accessibilit
     '.group:hover .group-hover\\:drop-shadow-\\[0_0_8px_rgba\\(168\\,85\\,247\\,0\\.6\\)\\]',
     '.page-hidden',
     ':focus-visible',
+    '[data-theme=gold]',
+    '.from-amber-400',
     'prefers-reduced-motion'
   ]) assert.ok(css.includes(selector), `Missing production CSS for ${selector}`);
 });
@@ -125,4 +130,31 @@ test('manifest icons have valid dimensions and cache rules match versioned asset
   assert.match(headers, /\/assets\/\*\s+Cache-Control: public, max-age=31536000, immutable/);
   assert.match(headers, /\/index\.html\s+Cache-Control: public, max-age=0, must-revalidate/);
   assert.match(headers, /X-Content-Type-Options: nosniff/);
+});
+
+test('all existing public subpages and their local media survive packaging', async () => {
+  const expected = [
+    'party.html', 'tts.html', 'spookydance.mp4', 'story/index.html',
+    'dance/index.html', 'dance/Logo.png', 'showcase/index.html',
+    'showcase-v2/index.html', 'showcase-v2/dalines_showcase_15s.mp4', 'showcase-v2/audio.wav',
+    ...(await listFiles(path.join(root, 'dance/assets'))).map(filename => 'dance/assets/' + filename)
+  ];
+  for (const filename of expected) {
+    const original = await readFile(path.join(root, filename));
+    const packaged = await readFile(path.join(output, filename));
+    assert.equal(createHash('sha256').update(packaged).digest('hex'), createHash('sha256').update(original).digest('hex'), `Public route or media changed unexpectedly: ${filename}`);
+  }
+  for (const filename of expected.filter(name => name.endsWith('.html'))) {
+    const { document: page } = parseHTML(await readFile(path.join(output, filename), 'utf8'));
+    const resources = [
+      ...[...page.querySelectorAll('[src]')].map(element => element.getAttribute('src')),
+      ...[...page.querySelectorAll('link[href], a[download]')].map(element => element.getAttribute('href'))
+    ].filter(localResource);
+    for (const reference of resources) {
+      const resourceUrl = new URL(reference, 'https://site.invalid/' + filename);
+      const resolved = path.resolve(output, decodeURIComponent(resourceUrl.pathname).replace(/^\//, ''));
+      assert.ok(resolved.startsWith(output + path.sep), `Resource escapes public directory: ${filename}: ${reference}`);
+      await assert.doesNotReject(access(resolved), `Missing resource on ${filename}: ${reference}`);
+    }
+  }
 });

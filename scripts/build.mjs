@@ -32,7 +32,7 @@ await fs.unlink(path.join(output, 'tailwind.css'));
 
 let html = await fs.readFile(path.join(root, 'index.html'), 'utf8');
 html = html.replace('assets/site.css', cssPath);
-for (const name of ['app', 'effects']) {
+for (const name of ['app', 'effects', 'hero']) {
   const js = await fs.readFile(path.join(root, `assets/${name}.js`), 'utf8');
   // Classic scripts keep their global handlers for the existing HTML controls.
   const result = await transform(js, { loader: 'js', minifyWhitespace: true, minifySyntax: true, minifyIdentifiers: false, target: 'es2020', legalComments: 'none' });
@@ -49,7 +49,6 @@ for (const [source, target, options] of [
   const assetPath = await asset(target, bytes);
   html = html.replaceAll(`src="${source}"`, `src="${assetPath}"`);
   imageSizes[source] = { original: original.length, optimized: bytes.length };
-  if (target === 'banner.webp') html = html.replace('<!-- Preconnect & Performance Hints -->', `<link rel="preload" as="image" href="${assetPath}" fetchpriority="high" />\n  <!-- Preconnect & Performance Hints -->`);
 }
 
 const logo = await fs.readFile(path.join(root, 'Logo.png'));
@@ -61,12 +60,34 @@ for (const size of [32, 180, 192, 512]) {
 await sharp(logo).resize(300, 300).extend({ top: 106, bottom: 106, left: 106, right: 106, background: '#06080c' }).png().toFile(generated('icons/icon-maskable-512.png'));
 
 // Publish an explicit allowlist; source, tests, scripts and Git files stay private.
-for (const filename of ['Logo.png', 'banner-480.png', 'qr-donate.png', 'manifest.json', 'robots.txt', 'sitemap.xml', '_headers']) {
+for (const filename of ['Logo.png', 'banner-480.png', 'qr-donate.png', 'manifest.json', 'robots.txt', 'sitemap.xml', '_headers', 'party.html', 'tts.html', 'spookydance.mp4']) {
   await fs.copyFile(path.join(root, filename), generated(filename));
 }
 for (const filename of await fs.readdir(root)) {
   if (/^google[a-zA-Z0-9]+\.html$/.test(filename)) await fs.copyFile(path.join(root, filename), generated(filename));
 }
+// Retain published companion experiences, including their media, without shipping
+// source projects, rendered frame folders, Node scripts or package metadata.
+const companionFiles = {
+  dance: /^(?:index\.html|Logo\.png|spookydance\.mp4|assets\/[\w.-]+\.(?:js|css|png|svg|webp|woff2|mp4))$/,
+  story: /^index\.html$/,
+  showcase: /^index\.html$/,
+  'showcase-v2': /^(?:index\.html|audio\.wav|dalines_showcase_15s\.mp4)$/
+};
+async function copyCompanion(directory, pattern, relative = '') {
+  for (const entry of await fs.readdir(path.join(root, directory, relative), { withFileTypes: true })) {
+    if (entry.isSymbolicLink()) throw new Error(`Unexpected source link: ${directory}/${relative}${entry.name}`);
+    const name = relative + entry.name;
+    if (entry.isDirectory()) {
+      if (name === 'assets') await copyCompanion(directory, pattern, name + '/');
+    } else if (pattern.test(name)) {
+      const filename = `${directory}/${name}`;
+      await fs.mkdir(path.dirname(path.join(output, filename)), { recursive: true });
+      await fs.copyFile(path.join(root, filename), generated(filename));
+    }
+  }
+}
+for (const [directory, pattern] of Object.entries(companionFiles)) await copyCompanion(directory, pattern);
 await fs.writeFile(generated('index.html'), html.replace(/<!--(?!\[if)[\s\S]*?-->/g, '').replace(/\n\s*\n/g, '\n'));
 // Keep directories in place on Windows, where a live preview can hold directory
 // handles. Remove obsolete files only after the new page is complete.
@@ -75,7 +96,7 @@ async function cleanFiles(directory = output, prefix = '') {
     const filename = prefix + entry.name;
     if (entry.isSymbolicLink()) throw new Error(`Unexpected link in dist: ${filename}`);
     if (entry.isDirectory()) {
-      if (!['assets', 'icons'].includes(filename)) throw new Error(`Unexpected directory in dist: ${filename}`);
+      if (!['assets', 'icons', 'dance', 'dance/assets', 'story', 'showcase', 'showcase-v2'].includes(filename)) throw new Error(`Unexpected directory in dist: ${filename}`);
       await cleanFiles(path.join(directory, entry.name), filename + '/');
     } else if (!generatedFiles.has(filename)) {
       await fs.unlink(path.join(directory, entry.name));

@@ -1,0 +1,7 @@
+node_modules/
+**/node_modules/**
+dance-app/**
+.git/**
+.github/**
+.wrangler/**
+worker-configuration.d.ts

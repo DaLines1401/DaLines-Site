@@ -1,80 +1,80 @@
 # 🎮 DaLines-Site
 
-Profile Hub & Battle Station ของ **DaLines** รวมช่องทางติดตาม สตรีมสด และเครื่องมือสำหรับคนเล่น FPS
+Official Profile Hub & Battle Station for **DaLines** — Streamer, Gamer, and FPS/Battle Royale Creator.
 
-🌐 เว็บไซต์: [dalines-site.dalines.workers.dev](https://dalines-site.dalines.workers.dev/)
+🌐 **Live URL:** [https://dalines-site.dalines.workers.dev/](https://dalines-site.dalines.workers.dev/)
 
-## ฟีเจอร์หลัก
+## พัฒนาและตรวจเว็บเวอร์ชันปัจจุบัน
 
-- Twitch Live Status, เครื่องเล่นสตรีมและแชท, คลังคลิปพร้อมตัวกรองเกม
-- EZDN Donation, ช่องทาง YouTube/TikTok/Discord และปุ่มคัดลอกชื่อในเกม/เป้า Valorant
-- เครื่องคำนวณ eDPI และแปลงความไวเมาส์ระหว่างเกม, วงล้อชาเลนจ์, Soundboard และการเชื่อมต่อ OBS ผ่าน PeerJS
-- ภาษาไทย/อังกฤษ, ธีมสี 3 แบบ, เปิด/ปิดเสียง และไอคอนสำหรับเพิ่มเว็บบนหน้าจอหลัก
-- ฉากหลังอนุภาคที่ปรับตามอุปกรณ์ รองรับการลดภาพเคลื่อนไหว และตารางสตรีมตามเวลาไทย (UTC+7)
-
-## เริ่มพัฒนาในเครื่อง
-
-ใช้ Node.js 20.9 ขึ้นไป แล้วรันจากโฟลเดอร์โปรเจกต์:
+ใช้ Node.js 20.9 ขึ้นไป (แนะนำ Node.js 22 หรือ 24):
 
 ```sh
 npm ci
+npm run check
 npm run dev
 ```
 
-เปิด [http://localhost:4173](http://localhost:4173) เพื่อดูเว็บ คำสั่ง `dev` สร้างไฟล์ก่อนเปิดเซิร์ฟเวอร์ เมื่อแก้ไฟล์ต้นฉบับให้รัน `npm run build` อีกครั้งแล้วรีเฟรชหน้า
+เปิด `http://localhost:4173` เพื่อดูหน้าเว็บ คำสั่ง `npm run build` สร้าง CSS/JS ที่ย่อขนาด ภาพ WebP และไฟล์สาธารณะใน `dist/` เมื่อแก้ไฟล์แล้วให้ Build และรีเฟรชใหม่ `npm test` ต้องรันหลัง Build เพราะตรวจทั้งการทำงานและไฟล์สำหรับเผยแพร่
 
-ตรวจสอบและสร้างไฟล์สำหรับเผยแพร่:
+โค้ดหลักแยกเป็น `assets/app.js`, `assets/effects.js`, `assets/hero.js` และ `assets/custom.css` ส่วน Worker API อยู่ที่ `worker.js` เช่นเดิม การ Build คงหน้า Dance, Story, Party, TTS และ Showcase ทั้งสองเวอร์ชันไว้ โดยไม่เผยแพร่ไฟล์พัฒนา สคริปต์ หรือโฟลเดอร์เรนเดอร์เฟรม
 
-```sh
-npm run check
-npm run preview
-```
+Cloudflare เชื่อมกับ `DaLines1401/DaLines-Site` สาขา `main` ใช้ `npx wrangler deploy` โดย `wrangler.jsonc` จะเรียก `npm run build` และเผยแพร่เฉพาะ `dist/` พร้อม Worker API ผ่าน binding `ASSETS` ส่วนตัวอย่าง `npm run dev` เป็นเซิร์ฟเวอร์ไฟล์ หากต้องทดสอบ API ในเครื่อง ใช้ `npx wrangler dev`
 
-`npm run check` สร้างเว็บและทดสอบพฤติกรรมหลักพร้อมตรวจไฟล์สำหรับเผยแพร่ ส่วน `npm run build` สร้างไฟล์ใน `dist/` อย่างเดียว และ `npm run preview` เปิดดูผลลัพธ์ผ่านพอร์ต 4173 หากใช้ `npm test` โดยตรง ต้องสร้าง `dist/` ให้เรียบร้อยก่อน
+ภาพแบนเนอร์ลดจาก 684,778 เป็น 84,342 ไบต์ และรูปโปรไฟล์จาก 111,294 เป็น 17,962 ไบต์ ขนาดนี้วัดจากไฟล์ที่ Build จริง การปรับความเร็วรวมการสร้าง Tailwind ล่วงหน้า โหลดส่วนเสริมเมื่อใช้ และหยุดภาพเคลื่อนไหวเมื่อซ่อนหน้า/พ้นจอ โดยยังคงดีไซน์และฟีเจอร์ล่าสุด
 
-## โครงสร้างโปรเจกต์
+---
+
+## 🚀 Key Features
+
+- ⚡ **Auto-Deploy with Cloudflare Workers CI/CD:** ทุกครั้งที่มีการ Commit หรือ Push โค้ดขึ้น Branch `main` บน GitHub ระบบจะ Deploy ขึ้น Cloudflare Workers ทันทีอัตโนมัติ
+- 🕺 **DaLines Spooky Dance Hero Landing Page (`/dance`):** หน้าเว็บแบบ Full-Screen Hero สไตล์ Interactive Mouse-Scrub Video Background (React 18 + TypeScript + Vite + Tailwind CSS) โต้ตอบการเต้นตามการเคลื่อนที่ของเมาส์/ทัชสกรีน, ระบบ 2 ภาษา (TH / EN) ซิงค์อัตโนมัติกับ `dalines_lang`, สถานะสด Twitch Broadcast, แผงเสียง Cyber Web Audio SFX, และปุ่มลัด Action Pills ติดต่อธุรกิจ (`taung@windowslive.com`)
+- 💰 **EZDN Donation Integration:** เชื่อมต่อระบบโดเนท [ezdn.app/dalines](https://ezdn.app/dalines) แจ้งเตือนขึ้นจอสด
+- 🎯 **Valorant Crosshair One-Click Copy:** โค้ดเป้าเล็ง Valorant ของ DaLines พร้อมปุ่มคลิกคัดลอกลง Clipboard ทันที
+- 🔴 **Real-Time Twitch Live Status:** ตรวจจับสถานะสตรีมจริง (Online / Offline) และเกมที่กำลังเล่นอัตโนมัติผ่าน Twitch API (DecAPI)
+- 🎥 **YouTube Channel & Twitch Embed:** รวมช่องทางดูสตรีมสดและช่อง YouTube [youtube.com/@DaLinesTTV](https://www.youtube.com/@DaLinesTTV)
+- 📱 **PWA (Progressive Web App):** รองรับ "Add to Home Screen" บนมือถือ iOS / Android เป็นไอคอนแอป DaLines ใช้งานแบบ Standalone
+- 🎨 **Dynamic Themes:** สลับธีมสีได้ 3 รูปแบบ (Toxic Emerald, Cyber Cyan, Twitch Violet)
+- 🔊 **Web Audio FX:** ระบบเสียงเอฟเฟกต์ (เปิด/ปิดได้) ทำงานด้วย Web Audio API
+- 🌐 **Multi-Language (TH / EN):** รองรับ 2 ภาษา สลับได้ตลอดเวลา
+- 🛸 **Cyberpunk Command Center:** แบ็กกราวด์อนุภาคโต้ตอบเมาส์ (Interactive Constellation Canvas สูงสุด 30fps), เรดาร์สแกนคลื่นสดพร้อมนาฬิกานับถอยหลังรอบไลฟ์, DaLines Cyber Soundboard แผงเสียงมีมพร้อมแถบคลื่นเสียง, และ Valorant Challenge Randomizer สุ่มโจทย์ท้าทายในสตรีม
+- 🎯 **Valorant Crosshair & 10s Aim Challenge:** จำลองเป้าเล็ง Valorant พร้อมมินิเกมวัดความไวการยิง 10 วินาที
+- 🎬 **DaLines Hall of Fame (Twitch Clips):** คลังคลิปไฮไลท์ยอดนิยมตลอดกาลจาก [twitch.tv/dalines/clips?range=all](https://www.twitch.tv/dalines/clips?range=all) แสดงปก Thumbnail คมชัด, ตัวกรองแยกตามเกม (VALORANT, Apex Legends, GTA V & อื่นๆ), ระบบเล่นคลิปผ่าน Twitch Embed Player ใน Modal, ปุ่มกด Like และปุ่มแชร์
+- 🎮 **FPS E-DPI Calculator & Sensitivity Converter:** เครื่องคำนวณ E-DPI และแปลงค่าความไวเมาส์ข้ามเกม 8 เกมดัง (Valorant, Apex Legends, Fortnite, Delta Force, CS2, Overwatch 2, CoD/Warzone, PUBG) โดยอ้างอิงระยะทางจริง (cm/360°) พร้อมแถบวิเคราะห์สไตล์การเล็ง (Arm/Wrist Aim), แนะนำขนาดแผ่นรองเมาส์, ปุ่มลัดโหลดค่าโปรเพลเยอร์ DaLines (800 DPI), และปุ่มคัดลอกค่าแต่ละเกมในคลิกเดียว
+- 🏆 **Valorant Esports Career & Live Match Tracker:** ศูนย์รวมสถิติแรงก์สด Valorant ประจำช่อง DaLines#TTV (เซิร์ฟเวอร์ APAC) ซิงค์ตรงจากเกมและ Cloudflare Worker API แสดงตราสัญลักษณ์แรงก์ Diamond 1, หลอดคะแนน RR Progress Bar, สถิติ Career & Last 20 Matches (K/D 1.08, 148 ADR, Winrate 55% 11W-9L), Peak Rank: Immortal 1 34RR (Ep 7: Act III), 3 เอเจนท์ตัวเมนตามชั่วโมงเล่นจริง (Sova 769 hrs, Jett 399 hrs, Killjoy 308 hrs), ไทม์ไลน์ผลการแข่งล่าสุดพร้อม K/D และแต้ม RR, ปุ่มคัดลอก Riot ID, ปุ่มซิงค์สด, **ระบบค้นหาแรงก์ผู้เล่นสด (Live Player Lookup)** ค้นหา Riot ID ของผู้ชมหรือเพื่อนในตี้ได้ทุกเซิร์ฟเวอร์ (AP, NA, EU, KR, LATAM, BR) พร้อมระบบเปรียบเทียบแรงก์กับ DaLines และเปลี่ยนสกินตราสัญลักษณ์ตามแรงก์ที่ค้นพบ (Iron ถึง Radiant) อัตโนมัติ!
+- 🌌 **DaLines Scrollytelling Battlestation & Story (`/story`):** หน้าเว็บย่อย 3D WebGL (Three.js + GSAP ScrollTrigger) ถ่ายทอดการเดินทาง, เจาะลึกมุมโต๊ะคอม Battlestation (Ryzen 5 5600, RTX 5060 Ti, ATK Ghost Mouse 800 DPI, Loga Pad), สถิติเกม FPS (Valorant, Apex, PoE2), และระบบเสียงสังเคราะห์ Cyber Web Audio FX พร้อม Chapter Navigator
+- ⚡ **DaLines Dual Motion Showcase (`/showcase` & `/showcase-v2`):**
+  - **Showcase V1 (`/showcase`):** 12-Second WebGL 3D Brutalist Motion Graphic (Three.js + GSAP 60FPS) พร้อม Interactive Timeline Controller และพรีวิวในเบราว์เซอร์
+  - **Showcase V2 (`/showcase-v2`):** วิดีโอ Motion Graphics 15 วินาที (1920x1080 @ 60 FPS, 900 เฟรม) สไตล์ Swiss / Minimal Tech พร้อมดนตรีอิเล็กทรอนิกส์สังเคราะห์ขึ้นจากโค้ดล้วน 100% (Node.js Math Sound Synth) เรนเดอร์เป็นไฟล์ `dalines_showcase_15s.mp4` ด้วย FFmpeg
+- 🏎️ **Optimized Performance:** CSS ที่สร้างล่วงหน้า, ภาพ WebP, การลดงานเบื้องหลัง และ SEO / Open Graph Image Preview ขนาดเต็ม
+
+---
+
+## 📁 โครงสร้างโปรเจกต์ (Project Structure)
 
 ```text
-index.html             โครงสร้างหน้าเว็บและเนื้อหา
-assets/app.js          การทำงานหลัก แท็บ สตรีม เครื่องมือ และ OBS
-assets/effects.js      ฉากหลัง ตารางสตรีม เสียง และวงล้อ
-assets/custom.css      สไตล์เฉพาะ ธีม และการลดภาพเคลื่อนไหว
-assets/tailwind.css    จุดเริ่มต้นสำหรับสร้าง Tailwind CSS
-tailwind.config.cjs    รายการไฟล์ที่ใช้สแกนคลาส
-scripts/build.mjs      สร้าง CSS/JS ย่อขนาด แปลงภาพ และเตรียม dist/
-scripts/serve.mjs      เซิร์ฟเวอร์ดูเว็บในเครื่อง
-tests/                 ชุดทดสอบพฤติกรรมหลัก
-wrangler.jsonc         การสร้างและเผยแพร่บน Cloudflare Workers
-dist/                  ผลลัพธ์ที่สร้างใหม่ ไม่ต้องแก้โดยตรง
+DaLines-Hub/
+├── index.html         # โค้ดหน้าเว็บหลัก (HTML + Tailwind + JS)
+├── dance/             # 🕺 หน้าเว็บย่อย Spooky Dance Hero Landing Page (React + TS + Vite + Tailwind)
+│   ├── index.html     # Production Bundle Entry Point
+│   ├── assets/        # Compiled CSS & JS
+│   └── spookydance.mp4 # Video Asset
+├── dance-app/         # 🛠️ Source code สำหรับพัฒนาหน้า Dance Hero (Vite dev server)
+│   ├── src/           # React Components, Hooks, SFX & Types
+│   ├── package.json
+│   └── vite.config.ts
+├── party.html         # DaLines Cozy Party Lounge (มินิเกม Chibi Gacha & Wheel of Fate)
+├── story/             # 🌌 หน้าเว็บย่อย 3D Scrollytelling Battlestation & Story
+│   └── index.html     # โค้ด Three.js + GSAP ScrollTrigger + Web Audio FX
+├── showcase/          # Brutalist WebGL 12s Motion Graphic Video Showcase (Version 1)
+├── showcase-v2/       # 🎬 Brutalist Motion Graphics 15s + Pure Code Audio Synth (Version 2)
+├── Logo.png           # โลโก้และรูปโปรไฟล์ DaLines (300x300)
+├── banner-480.png     # รูปแบนเนอร์หลักประจำช่อง (853x480)
+├── spookydance.mp4    # วิดีโอหลักคาแรคเตอร์เต้น Spooky Dance
+├── manifest.json      # ไฟล์ Web App Manifest (PWA)
+├── sitemap.xml        # ไฟล์แผนผังเว็บไซต์ (Sitemap SEO)
+├── auto-deploy.bat    # ⚡ ดับเบิลคลิกเพื่อ Auto Deploy ทันทีใน 1 วินาที
+├── auto-watch.bat     # 👁️ เปิดทิ้งไว้เพื่อ Auto Deploy อัตโนมัติทุกครั้งที่กด Save (Ctrl+S)
+├── val-sync.bat       # 🎮 ดับเบิลคลิกเพื่อซิงค์แรงก์ & สถิติ Valorant สดจากเครื่องขึ้นเว็บทันที
+├── worker.js          # ⚡ Cloudflare Worker API (/api/valorant & Static Assets)
+└── wrangler.jsonc     # ไฟล์คอนฟิก Cloudflare Workers
 ```
-
-ไฟล์ PNG ต้นฉบับ, QR Donation, Manifest, Robots และ Sitemap อยู่ที่โฟลเดอร์หลัก ไฟล์ต้นฉบับ สคริปต์ และชุดทดสอบจะไม่ถูกรวมในเว็บที่เผยแพร่
-
-## การปรับประสิทธิภาพ
-
-- สร้าง Tailwind CSS ล่วงหน้า แยกและย่อ CSS/JS พร้อมชื่อไฟล์ที่เปลี่ยนตามเนื้อหาเพื่อใช้แคช
-- โหลดเครื่องเล่นและ PeerJS เมื่อใช้งาน หยุดงานเบื้องหลังที่ไม่จำเป็น และจำกัดฉากหลังไว้ที่ 30fps
-- สร้างภาพ WebP สำหรับหน้าเว็บจาก PNG เดิม โดยยังเก็บต้นฉบับไว้
-
-| ภาพ | PNG ต้นฉบับ | WebP ที่สร้าง | ลดขนาด |
-| --- | ---: | ---: | ---: |
-| แบนเนอร์ | 684,778 ไบต์ | 84,342 ไบต์ | 87.7% |
-| รูปโปรไฟล์ | 111,294 ไบต์ | 17,962 ไบต์ | 83.9% |
-
-ตัวเลขนี้วัดจากขนาดไฟล์ภาพที่สร้างจริง ไม่ใช่คะแนน Lighthouse หรือผลวัดความเร็วของเว็บไซต์จริง
-
-## เผยแพร่ผ่าน Cloudflare Workers
-
-`wrangler.jsonc` กำหนด `build.command` เป็น `npm run build` และ `assets.directory` เป็น `./dist` ดังนั้น Wrangler จะสร้างไฟล์ก่อนเผยแพร่:
-
-```sh
-npm ci
-npm run check
-npx wrangler deploy
-```
-
-สำหรับ Cloudflare Workers Builds ใช้ Root directory `/`, Production branch `main` และ Deploy command `npx wrangler deploy` โดยให้ Wrangler เรียกขั้นตอน Build จากไฟล์ตั้งค่า ไม่จำเป็นต้องสั่ง Build ซ้ำ
-
-สคริปต์ `auto-deploy.bat` และ `auto-watch.bat` เดิมยังใช้ได้: สคริปต์จะ Commit/Push ขึ้น GitHub แล้วให้ Cloudflare สร้าง `dist/` และเผยแพร่ตามการเชื่อมต่อที่ตั้งไว้ การแก้ไฟล์ในเครื่องอย่างเดียวไม่ได้อัปเดตเว็บไซต์จริง
-
-© 2026 DaLines. All Rights Reserved.

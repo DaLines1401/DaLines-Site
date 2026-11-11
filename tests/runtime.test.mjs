@@ -17,10 +17,22 @@ async function createSite(options = {}) {
     configurable: true, get() { return this.textContent; }, set(value) { this.textContent = String(value); }
   });
   Object.defineProperty(document, 'activeElement', { configurable: true, writable: true, value: document.body });
+  Object.defineProperty(document, 'readyState', { configurable: true, writable: true, value: 'loading' });
   Object.defineProperty(document, 'hidden', { configurable: true, writable: true, value: false });
   domWindow.HTMLElement.prototype.focus = function () { this.ownerDocument.activeElement = this; };
   domWindow.HTMLTextAreaElement.prototype.select = function () {};
   document.execCommand = () => Boolean(options.legacyClipboard);
+  domWindow.HTMLElement.prototype.scrollIntoView = function () {};
+  domWindow.HTMLElement.prototype.getBoundingClientRect = function () { return { x: 0, y: 0, top: 0, left: 0, right: 640, bottom: 360, width: 640, height: 360 }; };
+  const mediaCalls = [];
+  for (const video of document.querySelectorAll('video, audio')) {
+    Object.assign(video, { duration: 15, currentTime: 0, paused: true, muted: true, readyState: 1 });
+    video.play = async () => { video.paused = false; mediaCalls.push('play'); };
+    video.pause = () => { video.paused = true; mediaCalls.push('pause'); };
+    video.load = () => mediaCalls.push('load');
+  }
+  const heroTrack = document.getElementById('hero-scroll-track');
+  if (heroTrack) Object.defineProperty(heroTrack, 'offsetHeight', { configurable: true, value: 2400 });
 
   let sequence = 0;
   const frames = new Map();
@@ -49,7 +61,7 @@ async function createSite(options = {}) {
     document, console, URL, URLSearchParams, AbortController, Promise, Intl,
     Event: domWindow.Event, CustomEvent: domWindow.CustomEvent,
     HTMLElement: domWindow.HTMLElement, Element: domWindow.Element,
-    location: { hostname: 'localhost', href: 'http://localhost:8787/', origin: 'http://localhost:8787', protocol: 'http:' },
+    location: { hostname: 'localhost', href: 'http://localhost:8787/', origin: 'http://localhost:8787', protocol: 'http:', hash: options.hash || '' },
     navigator: {
       onLine: true, connection: { saveData: Boolean(options.saveData), addEventListener() {} },
       clipboard: { writeText: options.clipboard || (async () => {}) }
@@ -71,20 +83,21 @@ async function createSite(options = {}) {
     addEventListener: domWindow.addEventListener.bind(domWindow),
     removeEventListener: domWindow.removeEventListener.bind(domWindow),
     dispatchEvent: domWindow.dispatchEvent.bind(domWindow),
-    scrollTo() {}, open() {}
+    scrollY: 0, pageYOffset: 0, scrollTo() {}, open() {}
   };
+  sandbox.history = { replaceState(_state, _title, url) { sandbox.location.hash = String(url).startsWith('#') ? String(url) : new URL(url, sandbox.location.href).hash; } };
   sandbox.window = sandbox;
   sandbox.self = sandbox;
   const context = vm.createContext(sandbox);
   const scriptFiles = [...document.querySelectorAll('script[src]')].map(script => script.getAttribute('src')).filter(src => src.startsWith('assets/') && src.endsWith('.js'));
-  assert.equal(scriptFiles.length, 2, 'Expected the app and effects classic scripts');
+  assert.equal(scriptFiles.length, 3, 'Expected app, effects and hero classic scripts');
   for (const name of scriptFiles) {
     vm.runInContext(await readFile(new URL(name, root), 'utf8'), context, { filename: name });
   }
   document.dispatchEvent(new domWindow.Event('DOMContentLoaded'));
   await settle();
   return {
-    context, document, requests, frames, timers, storage, canvasCalls,
+    context, document, requests, frames, timers, storage, canvasCalls, mediaCalls,
     clickTab(name) { document.querySelector(`[data-tab="${name}"]`).click(); },
     keyTab(name, key) {
       const event = new domWindow.Event('keydown', { bubbles: true, cancelable: true });
@@ -95,6 +108,7 @@ async function createSite(options = {}) {
       const pending = [...frames.values()]; frames.clear();
       for (const callback of pending) callback(timestamp);
     },
+    setHash(value) { sandbox.location.hash = value; sandbox.dispatchEvent(new domWindow.Event('hashchange')); },
     setHidden(value) { document.hidden = value; document.dispatchEvent(new domWindow.Event('visibilitychange')); },
     evaluate(code) { return vm.runInContext(code, context); }
   };
@@ -189,6 +203,8 @@ test('canvas draws with the current theme, pauses while hidden and respects redu
   site.setHidden(false);
   assert.ok(site.frames.size > 0);
   const quiet = await createSite({ reducedMotion: true });
+  // The hero needs one static render; reduced motion must not sustain a loop.
+  quiet.frame();
   assert.equal(quiet.frames.size, 0);
 });
 
@@ -197,10 +213,12 @@ test('offline and DecAPI errors never advertise a live stream', async () => {
     const site = await createSite({ uptime });
     assert.equal(site.evaluate('currentLiveState'), false);
     assert.doesNotMatch(site.document.getElementById('live-text-badge').textContent, /LIVE NOW/);
+    assert.doesNotMatch(site.document.getElementById('hero-live-text').textContent, /LIVE ON TWITCH/);
   }
   const live = await createSite({ uptime: '1 hour, 23 minutes' });
   assert.equal(live.evaluate('currentLiveState'), true);
   assert.match(live.document.getElementById('live-text-badge').textContent, /LIVE NOW/);
+  assert.match(live.document.getElementById('hero-live-text').textContent, /LIVE ON TWITCH|กำลังสตรีมสด/);
 });
 
 test('status requests stop while hidden or offline and cannot overlap', async () => {
@@ -235,7 +253,7 @@ test('PeerJS loads only after an explicit OBS connection request', async () => {
 test('stream schedule uses Bangkok time across days and the weekly break', async () => {
   const site = await createSite();
   const next = site.evaluate(`getNextStreamStart(Date.parse('2026-11-15T12:00:00Z'))`);
-  assert.equal(new Date(next.target).toISOString(), '2026-11-16T12:30:00.000Z');
+  assert.equal(new Date(next.target).toISOString(), '2026-11-16T13:00:00.000Z');
   assert.equal(next.schedule.day, 1);
 });
 
@@ -282,4 +300,163 @@ test('helper dialog traps keyboard focus and Escape returns it to the opener', a
   site.document.dispatchEvent(escape);
   assert.equal(modal.getAttribute('aria-hidden'), 'true');
   assert.equal(site.document.activeElement, opener);
+});
+
+
+test('hash links restore the selected tab and browser navigation keeps it in sync', async () => {
+  const site = await createSite({ hash: '#gear' });
+  assertSelected(site, 'gear');
+  assert.ok(site.document.getElementById('sens-results-grid').children.length > 0);
+  site.clickTab('rules');
+  assert.equal(site.context.location.hash, '#rules');
+  site.setHash('#pc');
+  assertSelected(site, 'pc');
+  site.context.switchTab('unknown-tab');
+  assertSelected(site, 'links');
+});
+
+test('master volume controls mute, persist, restore and update their labels', async () => {
+  const site = await createSite();
+  site.context.onVolumeSliderInput('35');
+  assert.equal(site.evaluate('masterVolume'), .35);
+  assert.equal(site.storage.get('dalines_master_volume'), '0.35');
+  assert.equal(site.document.getElementById('volume-badge-text').textContent, '35%');
+  site.context.setQuickVolume(0);
+  assert.equal(site.evaluate('isSoundEnabled'), false);
+  assert.equal(site.document.getElementById('volume-badge-text').textContent, '0%');
+  site.context.setQuickVolume(80);
+  assert.equal(site.evaluate('masterVolume'), .8);
+  assert.equal(site.evaluate('isSoundEnabled'), true);
+  site.context.toggleVolumeDropdown();
+  assert.equal(site.document.getElementById('volume-dropdown-panel').classList.contains('hidden'), false);
+  site.context.closeVolumeDropdown();
+  assert.equal(site.document.getElementById('volume-dropdown-panel').classList.contains('hidden'), true);
+  const restored = await createSite({ storage: { dalines_sound: 'true', dalines_master_volume: '0.35' } });
+  assert.equal(restored.document.getElementById('volume-badge-text').textContent, '35%');
+});
+
+test('the five-tap gold theme unlock and an existing unlock both survive startup', async () => {
+  const site = await createSite();
+  const avatar = site.document.getElementById('profile-img');
+  for (let i = 0; i < 5; i++) avatar.click();
+  assert.equal(site.storage.get('dalines_unlocked_gold'), 'true');
+  assert.equal(site.document.documentElement.dataset.theme, 'gold');
+  assert.equal(site.document.getElementById('theme-dot-gold').classList.contains('hidden'), false);
+  const restored = await createSite({ storage: { dalines_unlocked_gold: 'true', dalines_theme: 'gold' } });
+  assert.equal(restored.document.documentElement.dataset.theme, 'gold');
+  assert.equal(restored.document.getElementById('theme-dot-gold').classList.contains('hidden'), false);
+});
+
+test('aim challenge records hits, misses, accuracy and a high score', async () => {
+  const site = await createSite();
+  site.clickTab('gear');
+  site.context.setAimMode('challenge');
+  assert.equal(site.document.getElementById('challenge-start-card').classList.contains('hidden'), false);
+  site.context.runAimChallengeGame();
+  assert.equal(site.evaluate('isChallengeRunning'), true);
+  assert.equal(site.document.getElementById('challenge-target').classList.contains('hidden'), false);
+  site.context.hitChallengeTarget({ clientX: 200, clientY: 150, stopPropagation() {} });
+  site.context.handleStageClick({ clientX: 100, clientY: 100 });
+  assert.equal(site.document.getElementById('challenge-score-text').textContent, '1');
+  assert.equal(site.document.getElementById('challenge-acc-text').textContent, '50%');
+  site.context.endAimChallenge();
+  assert.equal(site.evaluate('isChallengeRunning'), false);
+  assert.equal(site.storage.get('dalines_aim_highscore'), '1');
+  assert.equal(site.document.getElementById('aim-result-score').textContent, '1');
+  assert.equal(site.document.getElementById('modal-aim-result').classList.contains('hidden'), false);
+  site.context.closeAimResultModal();
+  site.context.setAimMode('free');
+  assert.equal(site.document.getElementById('free-mode-bg').classList.contains('hidden'), false);
+});
+
+test('Valorant tracker refresh and viewer search retain rank rendering and reset', async () => {
+  const site = await createSite({ fetch: async url => {
+    if (!String(url).includes('/api/valorant')) return new Response('dalines is offline');
+    const data = String(url).includes('name=')
+      ? { riotId: 'Viewer#123', region: 'ap', currentTier: 'Radiant', currentRR: 88 }
+      : { currentTier: 'Ascendant 2', currentRR: 53, stats: { kd: '1.32' } };
+    return new Response(JSON.stringify({ status: 'success', data }), { headers: { 'content-type': 'application/json' } });
+  } });
+  site.clickTab('gear');
+  await site.context.refreshValorantTracker();
+  assert.equal(site.document.getElementById('tracker-rank-title').textContent, 'ASCENDANT 2');
+  assert.equal(site.document.getElementById('tracker-rr-current').textContent, '53');
+  assert.equal(site.document.getElementById('tracker-stat-kd').textContent, '1.32');
+  assert.ok(site.storage.has('dalines_val_tracker_cache_v2'));
+  site.document.getElementById('val-search-input').value = 'Viewer#123';
+  await site.context.searchValorantPlayer();
+  assert.equal(site.document.getElementById('val-viewer-name').textContent, 'Viewer#123');
+  assert.equal(site.document.getElementById('tracker-rank-title').textContent, 'RADIANT');
+  assert.equal(site.document.getElementById('btn-val-search').disabled, false);
+  site.context.resetToStreamerProfile();
+  assert.equal(site.document.getElementById('val-viewer-banner').classList.contains('hidden'), true);
+  assert.equal(site.document.getElementById('tracker-rank-title').textContent, 'ASCENDANT 2');
+});
+
+test('hero stages, video controls and the latest copy actions remain functional', async () => {
+  const copied = [];
+  const site = await createSite({ clipboard: async text => copied.push(text) });
+  for (const [progress, stage] of [[0, 1], [.45, 2], [.9, 3]]) {
+    site.context.renderHeroStages(progress);
+    assert.equal(site.document.getElementById('hero-hud-stage-badge').textContent, `STAGE ${stage}/3`);
+    assert.equal(site.document.getElementById(`hero-stage-${stage}`).style.pointerEvents, 'auto');
+    for (const inactive of [1, 2, 3].filter(value => value !== stage)) assert.equal(site.document.getElementById(`hero-stage-${inactive}`).getAttribute('aria-hidden'), 'true');
+  }
+  const video = site.document.getElementById('hero-dance-video');
+  site.context.setHeroAutoDance(true);
+  assert.equal(video.paused, false);
+  site.context.setHeroAutoDance(false);
+  assert.equal(video.paused, true);
+  site.context.toggleHeroDanceAudio();
+  assert.equal(video.muted, false);
+  site.context.toggleHeroDanceAudio();
+  assert.equal(video.muted, true);
+  await site.context.copyHeroBusinessEmail();
+  await site.context.copyValorantCrosshairHero();
+  await site.context.copyProSettingsSummary();
+  await site.context.copyBankAccount();
+  await settle();
+  assert.ok(copied.some(text => text.includes('@')));
+  assert.ok(copied.some(text => text.startsWith('0;P;')));
+  assert.ok(copied.some(text => text.includes('DaLines Pro Settings')));
+  assert.ok(copied.some(text => /^\d{10}$/.test(text)));
+  const panel = site.document.getElementById('obs-panel-wrapper');
+  site.context.toggleObsStreamerPanel();
+  assert.equal(panel.classList.contains('hidden'), false);
+  site.context.toggleObsStreamerPanel();
+  assert.equal(panel.classList.contains('hidden'), true);
+  site.context.setHeroAutoDance(true);
+  site.setHidden(true);
+  assert.equal(video.paused, true);
+  assert.equal(site.frames.size, 0);
+  site.setHidden(false);
+  assert.equal(video.paused, false);
+});
+
+test('an initial stream deep link preserves the click-to-play facade', async () => {
+  const site = await createSite({ hash: '#stream' });
+  assertSelected(site, 'stream');
+  const player = site.document.getElementById('twitch-main-player');
+  assert.ok(!player.getAttribute('src') || player.getAttribute('src') === 'about:blank');
+  site.context.loadTwitchPlayer('trailer');
+  assert.match(player.getAttribute('src'), /^https:\/\/player\.twitch\.tv\//);
+});
+
+test('aim countdowns and running games stop when leaving the panel or hiding the page', async () => {
+  const site = await createSite();
+  site.clickTab('gear');
+  site.context.setAimMode('challenge');
+  site.context.startAimChallenge();
+  const countdownTimer = site.evaluate('challengeCountdownTimer');
+  assert.ok(site.timers.has(countdownTimer));
+  site.clickTab('links');
+  assert.equal(site.timers.has(countdownTimer), false);
+  assert.equal(site.document.getElementById('challenge-countdown-overlay').classList.contains('hidden'), true);
+  assert.equal(site.evaluate('isChallengeRunning'), false);
+  site.clickTab('gear');
+  site.context.runAimChallengeGame();
+  assert.equal(site.evaluate('isChallengeRunning'), true);
+  site.setHidden(true);
+  assert.equal(site.evaluate('isChallengeRunning'), false);
+  assert.equal(site.document.getElementById('challenge-target').classList.contains('hidden'), true);
 });

@@ -49,6 +49,7 @@
         const theme = document.documentElement.dataset.theme;
         if (theme === 'cyan') return '6, 182, 212';
         if (theme === 'purple') return '168, 85, 247';
+        if (theme === 'gold') return '234, 179, 8';
         return '16, 185, 129';
       }
 
@@ -156,10 +157,10 @@
 
     const WEEKLY_SCHEDULE_DATA = [
       { day: 0, name: "วันอาทิตย์ (Sunday)", status: "OFF", badge: "💤 วันพักผ่อน", game: "😴 พักผ่อนชาร์จพลัง • เจอกันใหม่วันจันทร์", time: "OFF DAY", icon: "fa-bed", isLive: false },
-      { day: 1, name: "วันจันทร์ (Monday)", status: "LIVE", badge: "🟢 LIVE 19:30", game: "🎯 Valorant ไต่แรงค์กับตวง • สายยิงเน้นโยน", time: "19:30 - 23:30", icon: "fa-crosshairs", isLive: true },
-      { day: 2, name: "วันอังคาร (Tuesday)", status: "LIVE", badge: "🟢 LIVE 19:30", game: "🏹 Valorant ลุยเดี่ยว • ฝึกเป้าเล็งวันแท็ป", time: "19:30 - 23:30", icon: "fa-bullseye", isLive: true },
-      { day: 3, name: "วันพุธ (Wednesday)", status: "LIVE", badge: "🟢 LIVE 19:30", game: "🛡️ Apex Legends / Party เล่นกับคนดู", time: "19:30 - 23:30", icon: "fa-shield-halved", isLive: true },
-      { day: 4, name: "วันพฤหัสบดี (Thursday)", status: "LIVE", badge: "🟢 LIVE 19:30", game: "🎯 Valorant Custom Game กับคนดูในดิสคอร์ด", time: "19:30 - 23:30", icon: "fa-users", isLive: true },
+      { day: 1, name: "วันจันทร์ (Monday)", status: "LIVE", badge: "🟢 LIVE 20:00", game: "🎯 Valorant ไต่แรงค์กับตวง • สายยิงเน้นโยน", time: "20:00 - เที่ยงคืน", icon: "fa-crosshairs", isLive: true },
+      { day: 2, name: "วันอังคาร (Tuesday)", status: "LIVE", badge: "🟢 LIVE 20:00", game: "🏹 Valorant ลุยเดี่ยว • ฝึกเป้าเล็งวันแท็ป", time: "20:00 - เที่ยงคืน", icon: "fa-bullseye", isLive: true },
+      { day: 3, name: "วันพุธ (Wednesday)", status: "LIVE", badge: "🟢 LIVE 20:00", game: "🛡️ Apex Legends / Party เล่นกับคนดู", time: "20:00 - เที่ยงคืน", icon: "fa-shield-halved", isLive: true },
+      { day: 4, name: "วันพฤหัสบดี (Thursday)", status: "LIVE", badge: "🟢 LIVE 20:00", game: "🎯 Valorant Custom Game กับคนดูในดิสคอร์ด", time: "20:00 - เที่ยงคืน", icon: "fa-users", isLive: true },
       { day: 5, name: "วันศุกร์ (Friday)", status: "LIVE", badge: "🔥 FRIDAY NIGHT", game: "🍻 Friday Night Live สตรีมยาวๆ ฉลองสุดสัปดาห์", time: "20:00 - 00:30", icon: "fa-fire", isLive: true },
       { day: 6, name: "วันเสาร์ (Saturday)", status: "LIVE", badge: "⭐ WEEKEND SPECIAL", game: "🎮 วาไรตี้ & ชาเลนจ์สุดปั่นตามใจคนดู", time: "19:00 - 23:30", icon: "fa-trophy", isLive: true }
     ];
@@ -190,13 +191,13 @@
 
       if (cardBadge) {
         cardBadge.textContent = data.badge;
-        cardBadge.className = data.isLive 
+        cardBadge.className = data.isLive
           ? "px-2 py-0.2 rounded text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
           : "px-2 py-0.2 rounded text-[9px] font-mono font-bold bg-slate-800 text-slate-400 border border-slate-700";
       }
 
       if (cardIcon) {
-        cardIcon.innerHTML = `<i aria-hidden="true" class="fa-solid ${data.icon}"></i>`;
+        cardIcon.innerHTML = `<i class="fa-solid ${data.icon}"></i>`;
         cardIcon.className = data.isLive
           ? "w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-sm shrink-0"
           : "w-8 h-8 rounded-lg bg-slate-800 text-slate-400 border border-slate-700 flex items-center justify-center text-sm shrink-0";
@@ -285,7 +286,8 @@
     let visualizerTimer = null;
 
     function playCyberSound(soundId) {
-      if (!isSoundEnabled) {
+      triggerHaptic(20);
+      if (!isSoundEnabled || masterVolume === 0) {
         showToast('เปิดเสียงเอฟเฟกต์ที่ปุ่มลำโพงมุมขวาบนก่อนนะครับ 🔊');
         return;
       }
@@ -303,7 +305,7 @@
         gain.gain.setValueAtTime(0.12, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(getAudioDestination());
         osc.start(now);
         osc.stop(now + 0.35);
         showToast('🎯 สายยิงเน้นโยน! วืดเป็นงานประจำ');
@@ -316,7 +318,7 @@
         gain.gain.setValueAtTime(0.15, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(getAudioDestination());
         osc.start(now);
         osc.stop(now + 0.18);
         showToast('⚡ One Tap ลั่นหัว! คมจัดปลัดบอก');
@@ -329,7 +331,7 @@
           gain.gain.setValueAtTime(0.08, now + idx * 0.06);
           gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.4);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now + idx * 0.06);
           osc.stop(now + idx * 0.06 + 0.4);
         });
@@ -343,7 +345,7 @@
           gain.gain.setValueAtTime(0.1, now + idx * 0.09);
           gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.08);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now + idx * 0.09);
           osc.stop(now + idx * 0.09 + 0.08);
         });
@@ -357,7 +359,7 @@
           gain.gain.setValueAtTime(0.12, now + idx * 0.07);
           gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.07 + 0.35);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now + idx * 0.07);
           osc.stop(now + idx * 0.07 + 0.35);
         });
@@ -371,7 +373,7 @@
           gain.gain.setValueAtTime(0.05, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now);
           osc.stop(now + 0.5);
         });
@@ -567,7 +569,7 @@
       const startTime = performance.now();
 
       function playTickSound() {
-        if (!isSoundEnabled) return;
+        if (!isSoundEnabled || masterVolume === 0) return;
         try {
           initAudio();
           const now = audioCtx.currentTime;
@@ -579,7 +581,7 @@
           gain.gain.setValueAtTime(0.08, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(getAudioDestination());
           osc.start(now);
           osc.stop(now + 0.04);
 
@@ -589,7 +591,7 @@
             pointer.classList.add('kick');
             setTimeout(() => pointer.classList.remove('kick'), 50);
           }
-        } catch (e) {}
+        } catch (e) { }
       }
 
       function animateSpin(currentTime) {
@@ -694,3 +696,94 @@
         setTimeout(() => el.remove(), 850);
       }
     }
+
+    // -----------------------------------------------------------------
+    // 📲 PWA CUSTOM INSTALL PROMPT CONTROLLER
+    // -----------------------------------------------------------------
+    let deferredInstallPrompt = null;
+    let pwaHideTimer = null;
+    let pwaInstallPending = false;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent standard browser mini-infobar
+      e.preventDefault();
+      deferredInstallPrompt = e;
+
+      // Don't show if already in standalone app mode
+      if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+        return;
+      }
+
+      // Check 7-day dismissal expiry
+      const dismissedUntil = safeStorage.getItem('dalines_pwa_dismissed_until');
+      if (dismissedUntil && Date.now() < parseInt(dismissedUntil, 10)) {
+        return;
+      }
+
+      showPwaInstallBanner();
+    });
+
+    function showPwaInstallBanner() {
+      clearTimeout(pwaHideTimer);
+      const banner = document.getElementById('pwa-install-banner');
+      if (!banner) return;
+      banner.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        banner.classList.remove('translate-y-full', 'opacity-0');
+      });
+    }
+
+    async function installPwaApp() {
+      if (pwaInstallPending) return;
+      playSound('pop');
+      triggerHaptic(20);
+
+      if (!deferredInstallPrompt) {
+        showToast('💡 เพื่อติดตั้ง: แตะเมนูแชร์ของเบราว์เซอร์ แล้วเลือก "เพิ่มลงหน้าจอโฮม"');
+        hidePwaInstallBanner();
+        return;
+      }
+
+      pwaInstallPending = true;
+      const promptEvent = deferredInstallPrompt;
+      try {
+        await promptEvent.prompt();
+        const { outcome } = await promptEvent.userChoice;
+        if (outcome === 'accepted') {
+          showToast('🎉 ขอบคุณที่ติดตั้ง DaLines Hub ครับ!');
+        }
+      } catch (err) {
+        console.error('PWA install error:', err);
+      } finally {
+        pwaInstallPending = false;
+        deferredInstallPrompt = null;
+        hidePwaInstallBanner();
+      }
+    }
+
+    function dismissPwaPrompt() {
+      playSound('pop');
+      triggerHaptic(15);
+      hidePwaInstallBanner();
+
+      // Remember dismissal for 7 days (7 * 24 * 60 * 60 * 1000 = 604,800,000 ms)
+      const expiry = Date.now() + 604800000;
+      safeStorage.setItem('dalines_pwa_dismissed_until', expiry);
+    }
+
+    function hidePwaInstallBanner() {
+      const banner = document.getElementById('pwa-install-banner');
+      if (!banner) return;
+      banner.classList.add('translate-y-full', 'opacity-0');
+      clearTimeout(pwaHideTimer);
+      pwaHideTimer = setTimeout(() => {
+        if (banner) banner.classList.add('hidden');
+      }, 350);
+    }
+
+    window.addEventListener('appinstalled', () => {
+      deferredInstallPrompt = null;
+      hidePwaInstallBanner();
+      safeStorage.removeItem('dalines_pwa_dismissed_until');
+      showToast('✨ DaLines Hub ติดตั้งลงเครื่องเรียบร้อยแล้ว!');
+    });
