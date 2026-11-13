@@ -116,7 +116,7 @@
   <!-- CDN Resources -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link
-    href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Orbitron:wght@600;800;900&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet" />
 
   <link rel="stylesheet" href="assets/site.css" />
@@ -130,220 +130,179 @@
   class="text-slate-100 min-h-screen relative selection:bg-emerald-500 selection:text-black antialiased">
   <a href="#main-content" class="skip-link">ข้ามไปเนื้อหาหลัก / Skip to content</a>
 
-  <!-- REAL-TIME LIVE INDICATOR BANNER (TWITCH) -->
-  <aside id="sticky-live-banner"
-    class="sticky top-0 z-40 w-full bg-slate-950/90 backdrop-blur-md border-b transition-all duration-300 shadow-2xl"
-    style="border-color: var(--primary-border);">
-    <div class="max-w-2xl mx-auto px-3.5 py-2 flex items-center justify-between text-xs">
-      <div class="flex items-center gap-2">
-        <span id="live-dot" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
-        <span id="live-text-badge" role="status" class="font-gaming font-bold text-slate-400 tracking-wider text-[11px] sm:text-xs">CHECKING</span>
-        <span id="live-banner-desc" class="text-slate-300 hidden sm:inline" data-i18n="banner_desc">• สตรีมหลักบน Twitch
-          แวะมาเมาท์กันได้!</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <button id="live-banner-btn" onclick="handleLiveBannerClick()"
-          class="px-3.5 py-1.5 rounded-full text-white text-[11px] font-bold transition active:scale-95 shadow-md flex items-center gap-1.5 bg-[#9146FF] hover:bg-[#772ce8] cursor-pointer">
-          <i aria-hidden="true" id="live-banner-btn-icon" class="fa-brands fa-twitch text-xs"></i>
-          <span id="live-banner-btn-text" data-i18n="banner_btn">ชมไลฟ์สด</span>
-        </button>
-        <button onclick="dismissLiveBanner()" aria-label="Dismiss Banner"
-          class="text-slate-500 hover:text-slate-300 p-1 transition cursor-pointer">
-          <i aria-hidden="true" class="fa-solid fa-xmark text-sm"></i>
-        </button>
-      </div>
-    </div>
-  </aside>
-
   <!-- Interactive Mouse Spotlight -->
   <div id="cursor-glow" class="hidden sm:block"></div>
 
-  <!-- Ambient Glow Background -->
+  <!-- Ambient Glow Background (Subtle Obsidian Studio Atmosphere) -->
   <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
     <div id="ambient-1"
-      class="absolute -top-32 left-1/2 -translate-x-1/2 w-[90vw] max-w-[650px] h-[90vw] max-h-[650px] rounded-full blur-[100px] sm:blur-[140px] transition-colors duration-500"
+      class="absolute -top-32 left-1/2 -translate-x-1/2 w-[90vw] max-w-[680px] h-[90vw] max-h-[680px] rounded-full blur-[120px] sm:blur-[150px] transition-colors duration-500 opacity-70"
       style="background-color: var(--ambient-blob-1);"></div>
     <div id="ambient-2"
-      class="absolute top-[35%] -left-32 w-[60vw] max-w-[380px] h-[60vw] max-h-[380px] rounded-full blur-[90px] sm:blur-[120px] transition-colors duration-500"
+      class="absolute top-[35%] -left-32 w-[60vw] max-w-[400px] h-[60vw] max-h-[400px] rounded-full blur-[100px] sm:blur-[130px] transition-colors duration-500 opacity-60"
       style="background-color: var(--ambient-blob-2);"></div>
   </div>
 
   <!-- Interactive Cyber Constellation Canvas -->
-  <canvas id="cyber-bg-canvas" class="fixed inset-0 pointer-events-none -z-20 w-full h-full opacity-65"></canvas>
+  <canvas id="cyber-bg-canvas" class="fixed inset-0 pointer-events-none -z-20 w-full h-full opacity-55"></canvas>
 
-    <!-- ================================================================= -->
-  <!-- 🕺 DALINES $10K CINEMATIC SCROLL-DRIVEN HERO TRACK (300vh - CREATIVO STYLE) -->
+  <!-- ================================================================= -->
+  <!-- 🕺 DALINES STUDIO SCROLL-DRIVEN HERO TRACK (300vh — BLEEDS TO Y=0) -->
   <div id="hero-scroll-track" class="relative w-full" style="height: 300vh;">
     <!-- Sticky Full-Screen Viewport (100vh) -->
-    <div id="hero-sticky-viewport" class="sticky top-0 w-full h-screen overflow-hidden flex flex-col justify-between select-none" style="background-color: #0a0a0c;">
+    <div id="hero-sticky-viewport" class="sticky top-0 w-full h-screen overflow-hidden flex flex-col justify-between select-none" style="background-color: #06080c;">
 
       <!-- Full-Screen Interactive Dance Video -->
       <video id="hero-dance-video" src="spookydance.mp4" muted playsinline preload="metadata" loop
-        class="absolute inset-0 w-full h-full object-cover object-[70%_center] z-0 pointer-events-none transition-opacity duration-700 opacity-90"></video>
-      <!-- Dark Vignette Gradient Overlay -->
-      <div class="absolute inset-0 z-0 pointer-events-none bg-gradient-to-t from-[#0a0a0c] via-black/40 to-black/80"></div>
+        class="absolute inset-0 w-full h-full object-cover object-[72%_center] z-0 pointer-events-none transition-opacity duration-700 opacity-90"></video>
+      <!-- Directional Vignette Overlays for Razor-Sharp Typography Contrast -->
+      <div class="absolute inset-0 z-0 pointer-events-none bg-gradient-to-t from-[#06080c] via-[#06080c]/25 to-[#06080c]/75"></div>
+      <div class="absolute inset-0 z-0 pointer-events-none bg-gradient-to-r from-[#06080c]/90 via-[#06080c]/40 to-transparent"></div>
       <!-- Mouse Spotlight Glow -->
-      <div id="hero-cursor-spotlight" class="absolute inset-0 pointer-events-none z-1 opacity-60 transition-opacity duration-300"
+      <div id="hero-cursor-spotlight" class="absolute inset-0 pointer-events-none z-1 opacity-55 transition-opacity duration-300"
         style="background: radial-gradient(600px circle at 50% 50%, rgba(16, 185, 129, 0.12), transparent 70%);"></div>
 
-      <!-- Fixed/Top Navbar for Hero (z-30) -->
-      <header class="relative z-30 w-full px-4 sm:px-8 py-3.5 sm:py-4 flex justify-between items-center bg-black/40 backdrop-blur-md border-b border-white/10">
-        <div class="flex items-center gap-2 sm:gap-3">
-          <a href="#hero-scroll-track" class="flex items-center gap-2 no-underline">
-            <span class="text-[20px] sm:text-[25px] font-bold tracking-tight text-white" style="font-family: var(--font-heading);">DaLines™</span>
-            <span class="text-[21px] sm:text-[25px] text-emerald-400 select-none animate-pulse" style="letter-spacing: -0.02em;">✳︎</span>
+      <!-- Borderless Unified Studio Header (z-30, bleeds at y = 0) -->
+      <header id="hero-navbar" class="relative z-30 w-full max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-5 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <a href="#hero-scroll-track" class="flex items-center gap-2 no-underline group">
+            <span class="text-[22px] sm:text-[26px] font-bold tracking-tight text-white" style="font-family: var(--font-heading);">DaLines™</span>
+            <span class="text-[22px] sm:text-[26px] text-emerald-400 select-none" style="letter-spacing: -0.02em;">✳︎</span>
           </a>
           <!-- Twitch Live Badge -->
           <a href="https://www.twitch.tv/dalines" target="_blank" rel="noopener noreferrer" id="hero-live-badge"
-            class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border bg-white/5 text-neutral-400 border-white/10 transition-all">
+            class="hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full text-[13px] font-medium border bg-white/[0.04] text-neutral-300 border-white/10 transition-colors">
             <span class="w-1.5 h-1.5 rounded-full bg-neutral-500" id="hero-live-dot"></span>
             <span id="hero-live-text" data-i18n="hero_offline">OFFLINE</span>
           </a>
         </div>
 
-        <!-- Desktop Nav Links -->
-        <nav class="hidden md:flex items-center text-[16px] sm:text-[18px] text-neutral-200 gap-1 font-medium">
+        <!-- Single-Line Desktop Nav Links -->
+        <nav class="hidden md:flex items-center text-[15px] lg:text-[16px] text-neutral-300 gap-1.5 font-medium" aria-label="Hero Primary Navigation">
           <a href="#hub-main" class="hover:text-emerald-400 transition-colors" data-i18n="hero_nav_hub">Hub</a>
-          <span class="text-neutral-500">, </span>
+          <span class="text-neutral-600">,</span>
           <a href="https://www.twitch.tv/dalines" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-400 transition-colors">Twitch</a>
-          <span class="text-neutral-500">, </span>
+          <span class="text-neutral-600">,</span>
           <a href="https://www.youtube.com/@DaLinesTTV" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-400 transition-colors">YouTube</a>
-          <span class="text-neutral-500">, </span>
+          <span class="text-neutral-600">,</span>
           <a href="https://www.tiktok.com/@dalinestuang" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-400 transition-colors">TikTok</a>
-          <span class="text-neutral-500">, </span>
-          <a href="#specs" class="hover:text-emerald-400 transition-colors" data-i18n="hero_nav_setup">Setup & Gear</a>
-          <span class="text-neutral-500">, </span>
+          <span class="text-neutral-600">,</span>
+          <a href="#gear" onclick="document.getElementById('hub-main')?.scrollIntoView({behavior:'smooth'});" class="hover:text-emerald-400 transition-colors" data-i18n="hero_nav_setup">Setup &amp; Gear</a>
+          <span class="text-neutral-600">,</span>
           <a href="https://discord.gg/3m9x688YCG" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-400 transition-colors">Discord</a>
-          <span class="text-neutral-500">, </span>
+          <span class="text-neutral-600">,</span>
           <a href="story/" class="hover:text-emerald-400 transition-colors" data-i18n="hero_nav_story">Story</a>
         </nav>
 
         <!-- Right Controls -->
         <div class="flex items-center gap-2.5 sm:gap-3">
-          <!-- Lang Toggle -->
-          <button onclick="toggleLanguage()" class="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-white/10 text-white hover:bg-emerald-400 hover:text-black border border-white/10 transition-all cursor-pointer">
+          <button onclick="toggleLanguage()" class="flex items-center gap-1 px-3 py-1.5 rounded-full text-[13px] font-semibold bg-white/[0.06] text-white hover:bg-emerald-400 hover:text-black border border-white/10 transition-colors cursor-pointer">
             <span id="hero-lang-label">EN</span>
           </button>
 
-          <!-- Sound Toggle -->
           <button id="hero-sound-toggle-btn" onclick="toggleHeroDanceAudio()"
-            class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border bg-white/10 text-white border-white/10 hover:bg-white/20 transition-all cursor-pointer">
+            class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium border bg-white/[0.06] text-white border-white/10 hover:bg-white/[0.14] transition-colors cursor-pointer">
             <span id="hero-sound-icon">🔇</span>
             <span id="hero-sound-text" data-i18n="hero_sound_off">Sound Off</span>
           </button>
 
-          <!-- CTA Watch Live -->
           <a href="https://www.twitch.tv/dalines" target="_blank" rel="noopener noreferrer"
-            class="hidden sm:inline-block text-[16px] sm:text-[18px] text-white underline underline-offset-4 hover:text-emerald-400 transition-colors font-medium ml-1">
-            <span data-i18n="hero_cta">🔴 Watch Live</span>
+            class="hidden sm:inline-block text-[15px] lg:text-[16px] text-white underline underline-offset-4 hover:text-emerald-400 transition-colors font-medium ml-1">
+            <span data-i18n="hero_cta">Watch Live</span>
           </a>
         </div>
       </header>
 
-      <!-- STAGES WRAPPER (z-20, centered content) -->
-      <div class="relative z-20 w-full max-w-5xl mx-auto px-4 sm:px-8 my-auto flex items-center justify-center min-h-[460px]">
+      <!-- STAGES WRAPPER (z-20, spacious studio stage leaving right canvas clear for character) -->
+      <div class="relative z-20 w-full max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 my-auto flex items-center min-h-[460px]">
 
-        <!-- ================= STAGE 1: INTRO & TYPEWRITER ================= -->
-        <div id="hero-stage-1" class="w-full max-w-2xl transition-all duration-300 ease-out flex flex-col justify-center">
-          <!-- Blurred Intro Label -->
-          <div id="hero-blurred-intro" class="pointer-events-none select-none mb-3 font-normal text-neutral-200"
-            style="font-size: clamp(18px, 3.5vw, 24px); line-height: 1.3; filter: blur(4px);">
-            <span data-i18n="hero_intro_1">ยินดีต้อนรับสู่สตรีม DaLines,</span><br />
-            <span data-i18n="hero_intro_2">DaLines • Tactical & Action RPG Broadcast Hub</span>
+        <!-- ================= STAGE 1: ARCHITECTURAL INTRO & TYPEWRITER ================= -->
+        <div id="hero-stage-1" class="w-full max-w-2xl mr-auto flex flex-col justify-center">
+          <div id="hero-blurred-intro" class="pointer-events-none select-none mb-4 font-medium text-emerald-400/95 tracking-tight"
+            style="font-size: clamp(16px, 2vw, 20px); line-height: 1.4;">
+            <span data-i18n="hero_intro_1">ยินดีต้อนรับสู่สตรีม DaLines</span>
+            <span class="text-neutral-500 mx-2">•</span>
+            <span class="text-neutral-300" data-i18n="hero_intro_2">Tactical FPS &amp; Action RPG Studio</span>
           </div>
 
-          <!-- Typewriter Text -->
-          <p id="hero-typewriter-text" class="text-white mb-6 font-normal min-h-[56px]"
-            style="font-size: clamp(18px, 4vw, 26px); line-height: 1.4;">
-            <span id="hero-typewriter-content"></span><span id="hero-typewriter-cursor" class="inline-block w-[2px] h-[1.1em] bg-emerald-400 align-middle ml-[3px] animate-[blink_1s_step-end_infinite]"></span>
+          <p id="hero-typewriter-text" class="text-white mb-7 font-medium min-h-[88px] tracking-tight"
+            style="font-family: var(--font-heading); font-size: clamp(26px, 4vw, 44px); line-height: 1.16; letter-spacing: -0.025em;">
+            <span id="hero-typewriter-content"></span><span id="hero-typewriter-cursor" class="inline-block w-[3px] h-[0.95em] bg-emerald-400 align-middle ml-[4px] animate-[blink_1s_step-end_infinite]"></span>
           </p>
 
-          <!-- Stage 1 Scroll Indicator -->
-          <div class="flex items-center gap-2 text-xs sm:text-sm text-emerald-400 font-mono tracking-wider animate-pulse select-none">
-            <i aria-hidden="true" class="fa-solid fa-angles-down"></i>
-            <span data-i18n="hero_stage1_scroll">หมุนล้อเมาส์ หรือเลื่อนลงเพื่อสำรวจจักรวาล DaLines ↓</span>
+          <div class="flex items-center gap-3 text-[13px] sm:text-[14px] text-neutral-300 font-medium select-none">
+            <span class="inline-flex items-center justify-center w-7 h-7 rounded-full border border-emerald-500/40 bg-emerald-500/10 text-emerald-400">
+              <i aria-hidden="true" class="fa-solid fa-angles-down text-xs"></i>
+            </span>
+            <span data-i18n="hero_stage1_scroll">เลื่อนลงเพื่อสครับท่าเต้นและเข้าสู่สตูดิโอ DaLines</span>
           </div>
         </div>
 
-        <!-- ================= STAGE 2: 3D BENTO GRID ================= -->
-        <div id="hero-stage-2" class="absolute inset-0 w-full flex items-center justify-center transition-all duration-300 ease-out opacity-0 pointer-events-none scale-95">
-          <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 p-2 sm:p-4">
+        <!-- ================= STAGE 2: ARCHITECTURAL TELEMETRY STAGE ================= -->
+        <div id="hero-stage-2" class="absolute inset-0 w-full flex items-center justify-center opacity-0 pointer-events-none scale-95 px-2 sm:px-6">
+          <div class="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
 
-            <!-- Bento Card 1: Valorant Rank & Signature Agents -->
-            <div class="bento-tilt-card group relative p-4 sm:p-5 rounded-2xl bg-slate-900/80 border border-white/10 hover:border-purple-500/50 backdrop-blur-xl shadow-2xl transition-transform duration-200" style="transform-style: preserve-3d;">
-              <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-              <div class="relative z-10 flex flex-col justify-between h-full space-y-3">
-                <div class="flex items-center justify-between">
-                  <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-purple-400 px-2 py-0.5 rounded-full bg-purple-950/80 border border-purple-500/30" data-i18n="hero_bento_rank_badge">VALORANT ESPORTS</span>
-                  <span class="text-xs text-neutral-400 font-mono">APAC</span>
-                </div>
-                <div class="flex items-center gap-3">
-                  <div class="w-12 h-12 rounded-xl bg-purple-900/40 border border-purple-500/40 flex items-center justify-center text-purple-300 text-xl shadow-lg">
-                    💎
-                  </div>
-                  <div>
-                    <h4 class="text-base sm:text-lg font-extrabold text-white">Diamond 1 <span class="text-xs font-normal text-purple-300">(31 RR)</span></h4>
-                    <p class="text-[11px] text-neutral-400" data-i18n="hero_bento_rank_peak">แต้มสูงสุด: Immortal 1 (34 RR)</p>
-                  </div>
-                </div>
-                <div class="pt-2 border-t border-white/10">
-                  <p class="text-[10px] text-neutral-400 font-mono uppercase mb-1.5" data-i18n="hero_bento_agents_label">3 เอเจนท์ตัวเมน (ชั่วโมงเล่น)</p>
-                  <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="px-2 py-0.5 rounded-md text-[10px] bg-sky-500/20 text-sky-300 border border-sky-500/30">Sova (769h)</span>
-                    <span class="px-2 py-0.5 rounded-md text-[10px] bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Jett (399h)</span>
-                    <span class="px-2 py-0.5 rounded-md text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30">Killjoy (308h)</span>
-                  </div>
-                </div>
+            <!-- Telemetry Card 1: Valorant Rank & Signature Agents -->
+            <div class="bento-tilt-card group relative p-5 sm:p-6 rounded-2xl bg-[#0b0f17]/88 border border-white/10 hover:border-purple-400/50 backdrop-blur-xl flex flex-col justify-between gap-4" style="transform-style: preserve-3d;">
+              <div class="flex items-center justify-between text-[13px] text-neutral-400 font-medium">
+                <span class="text-purple-300" data-i18n="hero_bento_rank_badge">Valorant Esports</span>
+                <span>APAC</span>
               </div>
-            </div>
-
-            <!-- Bento Card 2: Battlestation & Specs -->
-            <div class="bento-tilt-card group relative p-4 sm:p-5 rounded-2xl bg-slate-900/80 border border-white/10 hover:border-emerald-500/50 backdrop-blur-xl shadow-2xl transition-transform duration-200" style="transform-style: preserve-3d;">
-              <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-              <div class="relative z-10 flex flex-col justify-between h-full space-y-3">
-                <div class="flex items-center justify-between">
-                  <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-500/30" data-i18n="hero_bento_specs_badge">BATTLESTATION</span>
-                  <i aria-hidden="true" class="fa-solid fa-microchip text-emerald-400 text-xs"></i>
+              <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 rounded-xl bg-purple-950/60 border border-purple-500/30 flex items-center justify-center text-purple-300 text-xl shrink-0">
+                  💎
                 </div>
                 <div>
-                  <h4 class="text-base sm:text-lg font-extrabold text-white mb-1">Ryzen 5 5600</h4>
-                  <p class="text-xs text-emerald-300 font-semibold mb-1">RTX 5060 Ti • 32GB RAM</p>
-                  <p class="text-[11px] text-neutral-300">ATK Ghost (800 DPI) • Loga Pad</p>
+                  <h4 class="text-xl font-bold text-white tracking-tight font-gaming">Diamond 1 <span class="text-sm font-medium text-purple-300">(31 RR)</span></h4>
+                  <p class="text-[13px] text-neutral-400" data-i18n="hero_bento_rank_peak">Peak: Immortal 1 (34 RR)</p>
                 </div>
-                <div class="pt-2 border-t border-white/10">
-                  <a href="story/" class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400 hover:text-emerald-300 group-hover:translate-x-1 transition-transform">
-                    <span data-i18n="hero_bento_specs_btn">เจาะลึก 3D Scrollytelling</span>
-                    <i aria-hidden="true" class="fa-solid fa-arrow-right text-[10px]"></i>
-                  </a>
-                </div>
+              </div>
+              <div class="pt-3 border-t border-white/[0.08] flex items-center justify-between text-[13px] text-neutral-300">
+                <span class="text-neutral-400" data-i18n="hero_bento_agents_label">Main Agents</span>
+                <span class="font-medium text-white tabular-nums">Sova 769h · Jett 399h · KJ 308h</span>
               </div>
             </div>
 
-            <!-- Bento Card 3: Interactive Crosshair One-Click Copy -->
-            <div class="bento-tilt-card group relative p-4 sm:p-5 rounded-2xl bg-slate-900/80 border border-white/10 hover:border-cyan-500/50 backdrop-blur-xl shadow-2xl transition-transform duration-200" style="transform-style: preserve-3d;">
-              <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-              <div class="relative z-10 flex flex-col justify-between h-full space-y-3">
-                <div class="flex items-center justify-between">
-                  <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-400 px-2 py-0.5 rounded-full bg-cyan-950/80 border border-cyan-500/30" data-i18n="hero_bento_crosshair_badge">VALORANT CROSSHAIR</span>
-                  <i aria-hidden="true" class="fa-solid fa-crosshairs text-cyan-400 text-xs"></i>
+            <!-- Telemetry Card 2: Battlestation & Specs -->
+            <div class="bento-tilt-card group relative p-5 sm:p-6 rounded-2xl bg-[#0b0f17]/88 border border-white/10 hover:border-emerald-400/50 backdrop-blur-xl flex flex-col justify-between gap-4" style="transform-style: preserve-3d;">
+              <div class="flex items-center justify-between text-[13px] text-neutral-400 font-medium">
+                <span class="text-emerald-400" data-i18n="hero_bento_specs_badge">Battlestation</span>
+                <i aria-hidden="true" class="fa-solid fa-microchip text-emerald-400 text-sm"></i>
+              </div>
+              <div>
+                <h4 class="text-xl font-bold text-white tracking-tight font-gaming mb-1">Ryzen 5 5600</h4>
+                <p class="text-[14px] text-emerald-300 font-medium mb-1">GALAX RTX 5060 Ti • 16GB RAM</p>
+                <p class="text-[13px] text-neutral-400">ATK Ghost (800 DPI) • Loga Custom</p>
+              </div>
+              <div class="pt-3 border-t border-white/[0.08]">
+                <a href="story/" class="inline-flex items-center gap-2 text-[13px] font-semibold text-emerald-400 hover:text-emerald-300 group-hover:translate-x-1 transition-transform">
+                  <span data-i18n="hero_bento_specs_btn">เจาะลึก 3D Scrollytelling</span>
+                  <i aria-hidden="true" class="fa-solid fa-arrow-right text-xs"></i>
+                </a>
+              </div>
+            </div>
+
+            <!-- Telemetry Card 3: Interactive Crosshair One-Click Copy -->
+            <div class="bento-tilt-card group relative p-5 sm:p-6 rounded-2xl bg-[#0b0f17]/88 border border-white/10 hover:border-cyan-500/50 backdrop-blur-xl flex flex-col justify-between gap-4" style="transform-style: preserve-3d;">
+              <div class="flex items-center justify-between text-[13px] text-neutral-400 font-medium">
+                <span class="text-cyan-400" data-i18n="hero_bento_crosshair_badge">Valorant Crosshair</span>
+                <i aria-hidden="true" class="fa-solid fa-crosshairs text-cyan-400 text-sm"></i>
+              </div>
+              <div class="flex items-center justify-center py-1">
+                <div class="relative w-16 h-16 rounded-xl bg-[#06080c]/80 border border-cyan-500/35 flex items-center justify-center">
+                  <div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div>
+                  <div class="absolute w-3 h-0.5 bg-cyan-400 left-2"></div>
+                  <div class="absolute w-3 h-0.5 bg-cyan-400 right-2"></div>
+                  <div class="absolute h-3 w-0.5 bg-cyan-400 top-2"></div>
+                  <div class="absolute h-3 w-0.5 bg-cyan-400 bottom-2"></div>
                 </div>
-                <div class="flex items-center justify-center py-2">
-                  <!-- Crosshair Visualizer Box -->
-                  <div class="relative w-16 h-16 rounded-xl bg-black/60 border border-cyan-500/40 flex items-center justify-center shadow-inner">
-                    <div class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]"></div>
-                    <div class="absolute w-3 h-0.5 bg-cyan-400 left-2"></div>
-                    <div class="absolute w-3 h-0.5 bg-cyan-400 right-2"></div>
-                    <div class="absolute h-3 w-0.5 bg-cyan-400 top-2"></div>
-                    <div class="absolute h-3 w-0.5 bg-cyan-400 bottom-2"></div>
-                  </div>
-                </div>
-                <div class="pt-2 border-t border-white/10">
-                  <button onclick="copyValorantCrosshairHero()" id="hero-crosshair-copy-btn"
-                    class="w-full py-1.5 px-3 rounded-xl bg-cyan-500/20 hover:bg-cyan-400 text-cyan-300 hover:text-black font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95">
-                    <i aria-hidden="true" class="fa-solid fa-copy text-[11px]"></i>
-                    <span id="hero-crosshair-copy-text" data-i18n="hero_bento_crosshair_btn">คัดลอกโค้ดเป้า 🎯</span>
-                  </button>
-                </div>
+              </div>
+              <div class="pt-3 border-t border-white/[0.08]">
+                <button onclick="copyValorantCrosshairHero()" id="hero-crosshair-copy-btn"
+                  class="w-full py-2 px-3 rounded-xl bg-cyan-500/15 hover:bg-cyan-400 text-cyan-300 hover:text-black font-semibold text-[13px] transition-colors flex items-center justify-center gap-2 cursor-pointer">
+                  <i aria-hidden="true" class="fa-solid fa-copy text-xs"></i>
+                  <span id="hero-crosshair-copy-text" data-i18n="hero_bento_crosshair_btn">คัดลอกโค้ดเป้า 🎯</span>
+                </button>
               </div>
             </div>
 
@@ -351,172 +310,185 @@
         </div>
 
         <!-- ================= STAGE 3: ACTIONS & HUB CTA ================= -->
-        <div id="hero-stage-3" class="absolute inset-0 w-full flex flex-col items-center justify-center transition-all duration-300 ease-out opacity-0 pointer-events-none scale-95 px-4 text-center">
-          <h3 class="text-2xl sm:text-3xl font-extrabold text-white mb-2 font-gaming tracking-wider" data-i18n="hero_stage3_title">
-            เข้าร่วมคอมมูนิตี้ & ติดต่องาน
+        <div id="hero-stage-3" class="absolute inset-0 w-full flex flex-col items-center justify-center opacity-0 pointer-events-none scale-95 px-4 text-center">
+          <h3 class="text-3xl sm:text-5xl font-bold text-white mb-3 font-gaming tracking-tight" data-i18n="hero_stage3_title">
+            เข้าร่วมคอมมูนิตี้ &amp; ติดต่องาน
           </h3>
-          <p class="text-xs sm:text-sm text-neutral-400 mb-6 max-w-md" data-i18n="hero_stage3_desc">
+          <p class="text-[15px] sm:text-base text-neutral-300 mb-7 max-w-lg leading-relaxed" data-i18n="hero_stage3_desc">
             คลิกติดตามช่องทางสตรีมสด หรือคัดลอกอีเมลเพื่อติดต่อธุรกิจได้ทันที
           </p>
 
-          <!-- Action Pill Buttons -->
-          <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 max-w-xl mb-6">
+          <div class="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 max-w-2xl mb-7">
             <a href="https://www.twitch.tv/dalines" target="_blank" rel="noopener noreferrer"
-              class="inline-flex items-center justify-center bg-white text-black font-medium border border-white/20 rounded-full text-[13px] sm:text-[15px] px-4 sm:px-5 py-2 hover:bg-emerald-400 hover:text-black transition-all duration-200 cursor-pointer shadow-lg whitespace-nowrap active:scale-95"
-              data-i18n="hero_pill_twitch">🎮 สตรีมสดบน Twitch</a>
+              class="inline-flex items-center justify-center bg-white text-black font-semibold rounded-full text-[14px] sm:text-[15px] px-5 py-2.5 hover:bg-emerald-400 hover:text-black transition-colors cursor-pointer whitespace-nowrap"
+              data-i18n="hero_pill_twitch">สตรีมสดบน Twitch</a>
 
             <a href="https://www.youtube.com/@DaLinesTTV" target="_blank" rel="noopener noreferrer"
-              class="inline-flex items-center justify-center bg-white text-black font-medium border border-white/20 rounded-full text-[13px] sm:text-[15px] px-4 sm:px-5 py-2 hover:bg-emerald-400 hover:text-black transition-all duration-200 cursor-pointer shadow-lg whitespace-nowrap active:scale-95"
-              data-i18n="hero_pill_youtube">🎬 ไฮไลท์และคลิป YouTube</a>
+              class="inline-flex items-center justify-center bg-[#0b0f17]/90 text-white font-medium border border-white/20 rounded-full text-[14px] sm:text-[15px] px-5 py-2.5 hover:border-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer whitespace-nowrap"
+              data-i18n="hero_pill_youtube">ไฮไลท์และคลิป YouTube</a>
 
             <a href="https://discord.gg/3m9x688YCG" target="_blank" rel="noopener noreferrer"
-              class="inline-flex items-center justify-center bg-white text-black font-medium border border-white/20 rounded-full text-[13px] sm:text-[15px] px-4 sm:px-5 py-2 hover:bg-emerald-400 hover:text-black transition-all duration-200 cursor-pointer shadow-lg whitespace-nowrap active:scale-95"
-              data-i18n="hero_pill_community">💬 เข้าร่วม Discord ชุมชน</a>
+              class="inline-flex items-center justify-center bg-[#0b0f17]/90 text-white font-medium border border-white/20 rounded-full text-[14px] sm:text-[15px] px-5 py-2.5 hover:border-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer whitespace-nowrap"
+              data-i18n="hero_pill_community">เข้าร่วม Discord ชุมชน</a>
 
-            <!-- Copy Email Pill Button -->
             <button id="hero-copy-email-btn" onclick="copyHeroBusinessEmail()"
-              class="inline-flex items-center justify-center text-white bg-black/40 backdrop-blur-sm border border-white/40 rounded-full text-[13px] sm:text-[15px] px-4 sm:px-5 py-2 gap-2 hover:border-emerald-400 hover:text-emerald-300 transition-all cursor-pointer whitespace-nowrap shadow-lg active:scale-95">
+              class="inline-flex items-center justify-center text-white bg-[#0b0f17]/90 backdrop-blur-sm border border-white/25 rounded-full text-[14px] sm:text-[15px] px-5 py-2.5 gap-2 hover:border-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer whitespace-nowrap">
               <span id="hero-email-text">ติดต่องาน: <span class="underline underline-offset-2">taung@windowslive.com</span></span>
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 opacity-80"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
           </div>
 
-          <!-- Direct Scroll to Hub Button -->
-          <a href="#hub-main" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-emerald-500/20 hover:bg-emerald-400 text-emerald-300 hover:text-black border border-emerald-500/40 font-bold text-xs sm:text-sm transition-all shadow-lg backdrop-blur-md cursor-pointer group">
-            <span data-i18n="hero_scroll_btn">⚡ เข้าสู่ DaLines Battle Station Command Center ⚡</span>
-            <i aria-hidden="true" class="fa-solid fa-chevron-down group-hover:translate-y-1 transition-transform"></i>
+          <a href="#hub-main" class="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-emerald-400 hover:bg-emerald-300 text-[#06080c] font-bold text-[14px] sm:text-[15px] transition-colors cursor-pointer group">
+            <span data-i18n="hero_scroll_btn">เข้าสู่ DaLines Command Center</span>
+            <i aria-hidden="true" class="fa-solid fa-arrow-down group-hover:translate-y-0.5 transition-transform"></i>
           </a>
         </div>
 
       </div>
 
-      <!-- Interactive Bottom HUD with Active 8-Bar Audio Visualizer (z-30) -->
+      <!-- Compact Studio Bottom HUD Dock (z-30) -->
       <aside aria-label="Video scrubber HUD"
-        class="relative z-30 w-[92%] max-w-2xl mx-auto mb-3 sm:mb-4 px-4 py-2 rounded-full bg-black/70 backdrop-blur-xl border border-white/10 flex items-center justify-between gap-3 text-xs sm:text-sm text-neutral-300 shadow-2xl">
+        class="relative z-30 w-[92%] max-w-2xl mx-auto mb-4 sm:mb-5 px-4 py-2 rounded-full bg-[#0b0f17]/85 backdrop-blur-xl border border-white/10 flex items-center justify-between gap-3 text-[13px] text-neutral-300 shadow-2xl">
 
-        <!-- Play / Pause Button -->
         <button id="hero-hud-play-btn" onclick="toggleHeroAutoDance()"
-          class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-emerald-400 hover:text-black font-medium transition-colors text-white shrink-0 cursor-pointer">
+          class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/[0.08] hover:bg-emerald-400 hover:text-black font-medium transition-colors text-white shrink-0 cursor-pointer text-[13px]">
           <span id="hero-hud-play-text">▶ เต้นอัตโนมัติ</span>
         </button>
 
-        <!-- 8-Bar Audio Visualizer Equalizer -->
         <div id="hero-audio-viz" class="flex items-center gap-1 h-4 px-2 opacity-40 transition-opacity">
-          <span class="w-1 bg-emerald-400 rounded-full h-1.5 transition-all"></span>
-          <span class="w-1 bg-emerald-400 rounded-full h-3 transition-all"></span>
-          <span class="w-1 bg-emerald-400 rounded-full h-4 transition-all"></span>
-          <span class="w-1 bg-emerald-400 rounded-full h-2 transition-all"></span>
-          <span class="w-1 bg-cyan-400 rounded-full h-3.5 transition-all"></span>
-          <span class="w-1 bg-cyan-400 rounded-full h-1.5 transition-all"></span>
-          <span class="w-1 bg-cyan-400 rounded-full h-4 transition-all"></span>
-          <span class="w-1 bg-cyan-400 rounded-full h-2.5 transition-all"></span>
+          <span class="w-1 bg-emerald-400 rounded-full h-1.5"></span>
+          <span class="w-1 bg-emerald-400 rounded-full h-3"></span>
+          <span class="w-1 bg-emerald-400 rounded-full h-4"></span>
+          <span class="w-1 bg-emerald-400 rounded-full h-2"></span>
+          <span class="w-1 bg-cyan-400 rounded-full h-3.5"></span>
+          <span class="w-1 bg-cyan-400 rounded-full h-1.5"></span>
+          <span class="w-1 bg-cyan-400 rounded-full h-4"></span>
+          <span class="w-1 bg-cyan-400 rounded-full h-2.5"></span>
         </div>
 
-        <!-- Center Scrub Track & Stage Badge -->
-        <div class="flex-1 flex flex-col justify-center gap-1">
-          <div class="w-full h-1.5 bg-white/20 rounded-full overflow-hidden relative">
+        <div class="flex-1 flex flex-col justify-center gap-1 min-w-0">
+          <div class="w-full h-1.5 bg-white/15 rounded-full overflow-hidden relative">
             <div id="hero-hud-progress" class="h-full bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-500 w-0 transition-[width] duration-75"></div>
           </div>
-          <div class="flex items-center justify-between text-[10px] text-neutral-400">
-            <span id="hero-hud-stage-badge" class="font-mono text-emerald-400">STAGE 1/3</span>
-            <span id="hero-hud-hint" class="truncate hidden sm:inline" data-i18n="hero_scrub_hint">เลื่อนจอเพื่อสครับท่าเต้น • กด Space เพื่อเต้นอัตโนมัติ</span>
+          <div class="flex items-center justify-between text-[13px] text-neutral-400">
+            <span id="hero-hud-stage-badge" class="font-mono text-emerald-400 font-semibold">STAGE 1/3</span>
+            <span id="hero-hud-hint" class="truncate hidden sm:inline ml-2" data-i18n="hero_scrub_hint">เลื่อนจอเพื่อสครับท่าเต้น • กด Space เพื่อเต้นอัตโนมัติ</span>
           </div>
         </div>
 
-        <!-- Timecode -->
-        <span id="hero-hud-time" class="text-[11px] font-mono text-neutral-400 shrink-0">0.0s / 0.0s</span>
+        <span id="hero-hud-time" class="text-[13px] font-mono text-neutral-400 shrink-0 tabular-nums">0.0s / 0.0s</span>
       </aside>
 
     </div>
   </div>
 
-  <!-- Main Hub Wrapper -->
-  <div id="hub-main" class="relative z-10 w-full pt-4">
-<div class="w-full max-w-md sm:max-w-xl md:max-w-2xl mx-auto px-3.5 sm:px-6 pt-3">
+  <!-- Main Hub Wrapper (Wide Editorial & Command Workspace) -->
+  <div id="hub-main" class="relative z-10 w-full bg-[#06080c] border-t border-white/[0.08]">
 
-    <!-- Top Action Bar -->
-    <div class="flex items-center justify-between mb-3.5 flex-wrap gap-2">
-      <div class="flex items-center gap-2">
+    <!-- REAL-TIME LIVE INDICATOR BANNER (Docks cleanly inside Hub, zero collision with Hero) -->
+    <aside id="sticky-live-banner"
+      class="sticky top-0 z-40 w-full bg-[#06080c]/92 backdrop-blur-xl border-b transition-colors duration-200"
+      style="border-color: var(--border-hairline);">
+      <div class="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 py-2.5 flex items-center justify-between text-xs sm:text-sm">
+        <div class="flex items-center gap-2.5">
+          <span id="live-dot" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
+          <span id="live-text-badge" role="status" class="font-gaming font-bold text-slate-300 tracking-tight text-xs sm:text-[13px]">CHECKING</span>
+          <span id="live-banner-desc" class="text-slate-400 hidden sm:inline" data-i18n="banner_desc">• สตรีมหลักบน Twitch แวะมาเมาท์กันได้!</span>
+        </div>
+        <div class="flex items-center gap-2.5">
+          <button id="live-banner-btn" onclick="handleLiveBannerClick()"
+            class="px-3.5 py-1.5 rounded-full text-white text-xs font-semibold transition-colors flex items-center gap-1.5 bg-[#9146FF] hover:bg-[#772ce8] cursor-pointer">
+            <i aria-hidden="true" id="live-banner-btn-icon" class="fa-brands fa-twitch text-xs"></i>
+            <span id="live-banner-btn-text" data-i18n="banner_btn">ชมไลฟ์สด</span>
+          </button>
+          <button onclick="dismissLiveBanner()" aria-label="Dismiss Banner"
+            class="text-slate-400 hover:text-white p-1.5 transition-colors cursor-pointer">
+            <i aria-hidden="true" class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 pt-5 sm:pt-7">
+
+    <!-- Studio Utility Bar -->
+    <div id="top-status-bar" class="flex items-center justify-between pb-4 mb-6 border-b border-white/[0.08] flex-wrap gap-3">
+      <div class="flex items-center gap-2.5 flex-wrap">
         <!-- Theme Palette -->
         <div
-          class="flex items-center gap-1.5 bg-slate-900/80 border border-slate-800 backdrop-blur-md px-2.5 py-1.5 rounded-full shadow-lg">
-          <span class="text-[11px] text-slate-400 font-medium mr-1 hidden sm:inline" data-i18n="theme_label"><i
+          class="flex items-center gap-1.5 bg-[#0b0f17] border border-white/10 px-3 py-1.5 rounded-full">
+          <span class="text-xs text-slate-400 font-medium mr-1 hidden sm:inline" data-i18n="theme_label"><i
               class="fa-solid fa-palette text-xs mr-1"></i>ธีม</span>
           <button onclick="setTheme('emerald')" aria-label="Emerald Theme"
-            class="theme-color-dot active w-5 h-5 rounded-full bg-emerald-500 border-2 border-transparent transition-all cursor-pointer"
+            class="theme-color-dot active w-5 h-5 rounded-full bg-emerald-500 border-2 border-transparent transition-transform cursor-pointer"
             data-color="emerald" title="เขียว Toxic/Emerald"></button>
           <button onclick="setTheme('cyan')" aria-label="Cyan Theme"
-            class="theme-color-dot w-5 h-5 rounded-full bg-cyan-400 border-2 border-transparent transition-all cursor-pointer"
+            class="theme-color-dot w-5 h-5 rounded-full bg-cyan-400 border-2 border-transparent transition-transform cursor-pointer"
             data-color="cyan" title="ฟ้า Cyber Cyan"></button>
           <button onclick="setTheme('purple')" aria-label="Purple Theme"
-            class="theme-color-dot w-5 h-5 rounded-full bg-purple-500 border-2 border-transparent transition-all cursor-pointer"
+            class="theme-color-dot w-5 h-5 rounded-full bg-purple-500 border-2 border-transparent transition-transform cursor-pointer"
             data-color="purple" title="ม่วง Twitch Violet"></button>
           <button id="theme-dot-gold" onclick="setTheme('gold')" aria-label="Cyberpunk Gold Theme"
-            class="theme-color-dot hidden w-5 h-5 rounded-full bg-yellow-400 border-2 border-transparent transition-all cursor-pointer shadow-[0_0_10px_rgba(250,204,21,0.6)]"
+            class="theme-color-dot hidden w-5 h-5 rounded-full bg-yellow-400 border-2 border-transparent transition-transform cursor-pointer"
             data-color="gold" title="ทอง Cyberpunk Gold (Edition พิเศษ)"></button>
         </div>
 
-        <!-- Master Volume & Sound Toggle Pill Capsule -->
+        <!-- Master Volume & Sound Toggle Capsule -->
         <div class="relative flex items-center" id="volume-control-wrapper">
           <div
-            class="flex items-center bg-slate-900/80 border border-slate-800 rounded-full shadow-lg backdrop-blur-md p-0.5 hover:border-slate-700 transition">
-            <!-- Sound FX Toggle Button (Mute / Unmute) -->
+            class="flex items-center bg-[#0b0f17] border border-white/10 rounded-full p-0.5 hover:border-white/20 transition-colors">
             <button id="btn-sound-toggle" onclick="toggleSoundFx()" aria-label="Toggle Sound Effects"
-              class="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full text-slate-400 hover:text-white transition active:scale-95 cursor-pointer"
+              class="flex items-center justify-center w-8 h-8 rounded-full text-slate-400 hover:text-white transition-colors cursor-pointer"
               title="เปิด/ปิดเสียงเอฟเฟกต์ (Mute/Unmute)">
               <i aria-hidden="true" id="sound-icon" class="fa-solid fa-volume-high text-xs" style="color: var(--primary-color);"></i>
             </button>
 
-            <!-- Volume Dropdown Trigger Button with Badge -->
             <button id="btn-volume-dropdown" onclick="toggleVolumeDropdown(event)" aria-label="Adjust Master Volume"
-              class="flex items-center gap-1 pl-1 pr-2 py-1 rounded-full text-[10px] font-mono text-slate-300 hover:text-white hover:bg-slate-800/80 transition cursor-pointer select-none"
+              class="flex items-center gap-1.5 pl-1 pr-2.5 py-1 rounded-full text-xs font-mono text-slate-300 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer select-none"
               title="คลิกเพื่อปรับระดับเสียง 0 - 100%">
               <span id="volume-badge-text">80%</span>
               <i aria-hidden="true" id="volume-dropdown-chevron"
-                class="fa-solid fa-chevron-down text-[8px] text-slate-400 transition-transform duration-200"></i>
+                class="fa-solid fa-chevron-down text-[9px] text-slate-400 transition-transform duration-200"></i>
             </button>
           </div>
 
-          <!-- Master Volume Popover / Dropdown Panel -->
           <div id="volume-dropdown-panel"
-            class="hidden absolute top-full left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 mt-2 z-50 w-52 sm:w-56 p-3 sm:p-3.5 rounded-2xl bg-slate-900/95 border border-slate-800/90 backdrop-blur-xl shadow-2xl space-y-3">
+            class="hidden absolute top-full left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 mt-2 z-50 w-56 p-3.5 rounded-2xl bg-[#0b0f17]/95 border border-white/10 backdrop-blur-xl shadow-2xl space-y-3">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-white flex items-center gap-1.5">
-                <i aria-hidden="true" class="fa-solid fa-sliders text-[11px]" style="color: var(--primary-color);"></i>
+              <span class="text-xs font-semibold text-white flex items-center gap-1.5">
+                <i aria-hidden="true" class="fa-solid fa-sliders text-xs" style="color: var(--primary-color);"></i>
                 <span data-i18n="master_volume_title">ระดับเสียงหลัก</span>
               </span>
               <span id="volume-slider-label" class="text-xs font-mono font-bold text-emerald-400">80%</span>
             </div>
 
-            <!-- Volume Slider Track -->
             <div class="space-y-1.5">
               <input type="range" id="master-volume-slider" aria-label="ระดับเสียง / Master volume" min="0" max="100" value="80" step="1"
                 oninput="onVolumeSliderInput(this.value)"
                 class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
                 style="accent-color: var(--primary-color);" />
-              <div class="flex justify-between text-[9px] font-mono text-slate-400 px-0.5">
-                <span>0% (Mute)</span>
+              <div class="flex justify-between text-xs font-mono text-slate-400 px-0.5">
+                <span>0%</span>
                 <span>50%</span>
                 <span>100%</span>
               </div>
             </div>
 
-            <!-- Quick Presets -->
-            <div class="flex items-center justify-between gap-1 pt-1.5 border-t border-slate-800">
+            <div class="flex items-center justify-between gap-1.5 pt-2 border-t border-white/[0.08]">
               <button onclick="setQuickVolume(0)" type="button"
-                class="flex-1 py-1 rounded-lg text-[10px] font-mono font-medium text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800 transition cursor-pointer text-center">
+                class="flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-white/[0.06] border border-white/[0.08] transition-colors cursor-pointer text-center">
                 Mute
               </button>
               <button onclick="setQuickVolume(50)" type="button"
-                class="flex-1 py-1 rounded-lg text-[10px] font-mono font-medium text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800 transition cursor-pointer text-center">
+                class="flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-white/[0.06] border border-white/[0.08] transition-colors cursor-pointer text-center">
                 50%
               </button>
               <button onclick="setQuickVolume(80)" type="button"
-                class="flex-1 py-1 rounded-lg text-[10px] font-mono font-medium text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800 transition cursor-pointer text-center">
+                class="flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-white/[0.06] border border-white/[0.08] transition-colors cursor-pointer text-center">
                 80%
               </button>
               <button onclick="setQuickVolume(100)" type="button"
-                class="flex-1 py-1 rounded-lg text-[10px] font-mono font-medium text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800 transition cursor-pointer text-center">
+                class="flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-white/[0.06] border border-white/[0.08] transition-colors cursor-pointer text-center">
                 100%
               </button>
             </div>
@@ -525,269 +497,243 @@
 
         <!-- Language Switcher Button (TH / EN) -->
         <button id="btn-lang-toggle" onclick="toggleLanguage()"
-          class="px-2.5 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-slate-300 hover:text-white text-xs font-semibold tracking-wider transition active:scale-95 shadow-lg backdrop-blur-md flex items-center gap-1 cursor-pointer"
+          class="px-3 py-1.5 rounded-full bg-[#0b0f17] border border-white/10 text-slate-300 hover:text-white hover:border-white/20 text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
           title="สลับภาษา / Change Language">
-          <i aria-hidden="true" class="fa-solid fa-globe text-[11px]" style="color: var(--primary-color);"></i>
+          <i aria-hidden="true" class="fa-solid fa-globe text-xs" style="color: var(--primary-color);"></i>
           <span id="lang-indicator">EN</span>
         </button>
       </div>
 
       <div class="flex items-center gap-2">
-        <!-- Dance Hero Interactive Landing Page Link -->
         <a href="dance/"
-          class="flex items-center gap-1.5 text-xs font-gaming font-bold text-emerald-300 hover:text-white bg-emerald-950/60 border border-emerald-500/50 hover:border-emerald-400 px-3 py-1.5 rounded-full transition-all backdrop-blur-md shadow-[0_0_12px_rgba(16,185,129,0.25)] hover:shadow-[0_0_20px_rgba(16,185,129,0.5)] active:scale-95 group"
-          title="เข้าสู่หน้า Dance Hero Interactive Scrub Landing Page">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>🕺 DANCE HERO</span>
+          class="flex items-center gap-1.5 text-xs font-medium text-emerald-300 hover:text-white bg-[#0b0f17] border border-emerald-500/30 hover:border-emerald-400 px-3.5 py-1.5 rounded-full transition-colors">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <span>Dance Hero</span>
         </a>
 
-        <!-- Story Mode 3D Scrollytelling Link -->
         <a href="story/"
-          class="flex items-center gap-1.5 text-xs font-gaming font-bold text-cyan-300 hover:text-white bg-cyan-950/60 border border-cyan-500/50 hover:border-cyan-400 px-3 py-1.5 rounded-full transition-all backdrop-blur-md shadow-[0_0_12px_rgba(0,240,255,0.25)] hover:shadow-[0_0_20px_rgba(0,240,255,0.5)] active:scale-95 group"
-          title="เข้าสู่โหมด Scrollytelling 3D Journey">
-          <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
-          <i aria-hidden="true" class="fa-solid fa-cube text-[11px] text-cyan-400 group-hover:rotate-45 transition-transform"></i>
-          <span>STORY MODE</span>
+          class="flex items-center gap-1.5 text-xs font-medium text-cyan-300 hover:text-white bg-[#0b0f17] border border-cyan-500/30 hover:border-cyan-400 px-3.5 py-1.5 rounded-full transition-colors">
+          <i aria-hidden="true" class="fa-solid fa-cube text-xs text-cyan-400"></i>
+          <span>Story 3D</span>
         </a>
 
-        <!-- Share Button -->
         <button id="btn-share" aria-label="Share Profile"
-          class="flex items-center gap-1.5 text-xs text-slate-300 hover:text-white bg-slate-900/80 border border-slate-800 hover:border-emerald-500/40 px-3.5 py-1.5 rounded-full transition backdrop-blur-md cursor-pointer active:scale-95 shadow-lg">
+          class="flex items-center gap-1.5 text-xs font-medium text-slate-300 hover:text-white bg-[#0b0f17] border border-white/10 hover:border-emerald-500/40 px-3.5 py-1.5 rounded-full transition-colors cursor-pointer">
           <i aria-hidden="true" class="fa-solid fa-share-nodes" style="color: var(--primary-color);"></i>
           <span data-i18n="share_btn">แชร์</span>
         </button>
       </div>
     </div>
 
-    <!-- HERO BANNER SECTION (banner-480.png) -->
-    <div class="relative w-full rounded-3xl overflow-hidden mb-6 border shadow-2xl tilt-card group"
-      style="border-color: var(--primary-border);">
-      <div class="relative w-full aspect-[16/9] sm:aspect-[21/9] overflow-hidden bg-slate-950">
-        <img src="banner-480.png" alt="DaLines Official Banner" width="853" height="480" loading="lazy" decoding="async"
-          class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out select-none" />
-        <div class="absolute inset-0 bg-gradient-to-t from-[#06080c] via-transparent to-transparent"></div>
-        <div
-          class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-emerald-500/40 text-[10px] sm:text-xs font-gaming font-bold text-emerald-400 flex items-center gap-1.5 shadow-lg">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          OFFICIAL BANNER
+    <!-- ASYMMETRIC EDITORIAL IDENTITY SPLIT (7 Columns Identity + 5 Columns Experiences & Studio Brief) -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8 items-stretch" aria-label="Creator Identity & Experiences">
+
+      <!-- Left 7 Columns: Primary Creator Profile Stage -->
+      <div class="lg:col-span-7 studio-panel rounded-3xl overflow-hidden flex flex-col justify-between tilt-card group" style="border-color: var(--border-hairline);">
+        <div class="relative w-full aspect-[16/9] sm:aspect-[21/9] overflow-hidden bg-[#06080c]">
+          <img src="banner-480.png" alt="DaLines Official Banner" width="853" height="480" loading="lazy" decoding="async"
+            class="w-full h-full object-cover object-center group-hover:scale-[1.03] transition-transform duration-700 ease-out select-none" />
+          <div class="absolute inset-0 bg-gradient-to-t from-[#0b0f17] via-[#0b0f17]/20 to-transparent"></div>
         </div>
-      </div>
 
-      <!-- Profile Avatar Overlap -->
-      <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center">
-        <div id="profile-container" onclick="handleProfileEasterEgg(event)" class="relative group cursor-pointer" title="DaLines Profile (คลิกหรือแตะ 5 ครั้งเพื่อค้นหา Easter Egg)">
-          <div
-            class="w-24 h-24 sm:w-28 sm:h-28 rounded-full p-1 bg-gradient-to-tr from-emerald-400 via-cyan-400 to-purple-600 neon-border-glow transition-transform duration-300 group-hover:scale-105 shadow-2xl">
-            <img id="profile-img" referrerpolicy="no-referrer" src="Logo.png" width="300" height="300"
-              onerror="this.onerror=null;this.src='https://static-cdn.jtvnw.net/jtv_user_pictures/a917340f-26d3-4d3a-9b41-34ed68f6b3a1-profile_image-300x300.png'"
-              alt="DaLines Profile"
-              class="w-full h-full rounded-full object-cover bg-neutral-900 select-none cursor-pointer"
-              loading="lazy" decoding="async" />
-          </div>
-          <span
-            class="absolute bottom-1 right-1.5 sm:bottom-1.5 sm:right-2 w-4 h-4 sm:w-5 sm:h-5 bg-[#9146FF] border-2 sm:border-4 border-[#06080c] rounded-full animate-pulse shadow-md"
-            title="Twitch Affiliate"></span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Profile Header Info -->
-    <header class="flex flex-col items-center text-center mt-3 mb-6">
-      <h1
-        class="glitch-hover text-2xl sm:text-3xl font-extrabold font-gaming tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-white to-cyan-300 cursor-pointer select-none">
-        DaLines
-        <span class="sr-only"> | Official Streamer Hub, Twitch, Valorant Crosshair &amp; PC Specs</span>
-      </h1>
-      <p class="text-slate-400 text-xs sm:text-sm mt-1 max-w-xs sm:max-w-md px-2 leading-relaxed" data-i18n="bio_text">
-        🎮 สตรีมเมอร์สายยิง เน้นโยน จริงจังมาเยอะแล้วครับ! • Just an FPS & Battle Royale lover from Thailand 🇹🇭
-      </p>
-
-      <!-- Sub Profile & Stream Details -->
-      <div class="mt-2.5 flex flex-wrap items-center justify-center gap-2">
-        <div
-          class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/90 border border-slate-800 text-[11px] sm:text-xs text-slate-300 shadow-md">
-          <span class="text-emerald-400"><i aria-hidden="true" class="fa-solid fa-user"></i></span>
-          <span data-i18n="name_tag">ตวง (Tuang) • 30 yrs</span>
-        </div>
-        <div
-          class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/90 border border-slate-800 text-[11px] sm:text-xs text-slate-300 shadow-md">
-          <span class="text-purple-400"><i aria-hidden="true" class="fa-solid fa-award"></i></span>
-          <span data-i18n="stream_tag">Streaming Since May 2017</span>
-        </div>
-      </div>
-
-      <!-- Games Tags -->
-      <div class="flex items-center justify-center gap-2 mt-2.5 flex-wrap">
-        <span
-          class="px-2.5 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-medium bg-orange-500/10 text-orange-300 border border-orange-500/30 flex items-center gap-1">
-          <i aria-hidden="true" class="fa-solid fa-shield-halved text-[9px]"></i> Apex Legends
-        </span>
-        <span
-          class="px-2.5 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-medium bg-red-500/10 text-red-300 border border-red-500/30 flex items-center gap-1">
-          <i aria-hidden="true" class="fa-solid fa-crosshairs text-[9px]"></i> Valorant
-        </span>
-        <span
-          class="px-2.5 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-medium bg-blue-500/10 text-blue-300 border border-blue-500/30 flex items-center gap-1">
-          <i aria-hidden="true" class="fa-solid fa-bolt text-[9px]"></i> Fortnite
-        </span>
-      </div>
-
-      <!-- Quick Platform Buttons -->
-      <div class="flex items-center gap-2 sm:gap-3 mt-4 flex-wrap justify-center">
-        <a href="https://www.twitch.tv/dalines" target="_blank" rel="noopener noreferrer" aria-label="Twitch"
-          class="tilt-card w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-purple-950/40 hover:bg-purple-600/30 border border-purple-500/40 flex items-center justify-center text-purple-400 hover:text-white transition active:scale-95 shadow-lg">
-          <i aria-hidden="true" class="fa-brands fa-twitch text-base sm:text-lg"></i>
-        </a>
-        <a href="https://www.youtube.com/@DaLinesTTV" target="_blank" rel="noopener noreferrer" aria-label="YouTube"
-          class="tilt-card w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-red-950/40 hover:bg-red-600/30 border border-red-500/40 flex items-center justify-center text-red-500 hover:text-white transition active:scale-95 shadow-lg">
-          <i aria-hidden="true" class="fa-brands fa-youtube text-base sm:text-lg"></i>
-        </a>
-        <a href="https://discord.gg/3m9x688YCG" target="_blank" rel="noopener noreferrer" aria-label="Discord"
-          class="tilt-card w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-indigo-950/40 hover:bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center text-[#5865F2] hover:text-white transition active:scale-95 shadow-lg">
-          <i aria-hidden="true" class="fa-brands fa-discord text-base sm:text-lg"></i>
-        </a>
-        <a href="https://kick.com/dalinesth" target="_blank" rel="noopener noreferrer" aria-label="Kick"
-          class="tilt-card w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-emerald-950/40 hover:bg-emerald-600/30 border border-emerald-500/40 flex items-center justify-center text-emerald-400 hover:text-white transition active:scale-95 shadow-lg font-bold text-xs">
-          KICK
-        </a>
-        <a href="https://www.tiktok.com/@dalinestuang" target="_blank" rel="noopener noreferrer" aria-label="TikTok"
-          class="tilt-card w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-pink-950/40 hover:bg-pink-600/30 border border-pink-500/30 flex items-center justify-center text-pink-400 hover:text-white transition active:scale-95 shadow-lg">
-          <i aria-hidden="true" class="fa-brands fa-tiktok text-base sm:text-lg"></i>
-        </a>
-        <a href="https://www.facebook.com/DaLinesTuang" target="_blank" rel="noopener noreferrer" aria-label="Facebook"
-          class="tilt-card w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-blue-950/40 hover:bg-blue-600/30 border border-blue-500/30 flex items-center justify-center text-blue-400 hover:text-white transition active:scale-95 shadow-lg">
-          <i aria-hidden="true" class="fa-brands fa-facebook-f text-base sm:text-lg"></i>
-        </a>
-        <a href="https://www.instagram.com/tuangdanai/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
-          class="tilt-card w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-rose-950/40 hover:bg-rose-600/30 border border-rose-500/30 flex items-center justify-center text-rose-400 hover:text-white transition active:scale-95 shadow-lg">
-          <i aria-hidden="true" class="fa-brands fa-instagram text-base sm:text-lg"></i>
-        </a>
-      </div>
-    </header>
-
-    <!-- 🌌 BATTLESTATION 3D SCROLLYTELLING & DUAL MOTION SHOWCASE (V1 & V2) CARDS -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 sm:gap-3 mb-5">
-      <!-- 1. STORY MODE (3D Scrollytelling) -->
-      <a href="story/"
-        class="tilt-card block p-3.5 rounded-2xl bg-gradient-to-r from-cyan-950/70 via-slate-900/90 to-purple-950/60 border border-cyan-500/40 hover:border-cyan-400 transition-all duration-300 shadow-[0_0_20px_rgba(0,240,255,0.15)] hover:shadow-[0_0_25px_rgba(0,240,255,0.35)] group">
-        <div class="flex items-center justify-between gap-2.5">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <div
-              class="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-400/50 flex items-center justify-center text-cyan-400 text-base group-hover:scale-110 group-hover:rotate-12 transition-transform shadow-md shrink-0">
-              <i aria-hidden="true" class="fa-solid fa-cube"></i>
-            </div>
-            <div class="min-w-0">
-              <div class="flex items-center gap-1.5">
+        <header class="px-5 sm:px-7 pb-6 -mt-12 relative z-10 flex flex-col gap-4">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div class="flex items-end gap-4">
+              <!-- Avatar -->
+              <div id="profile-container" onclick="handleProfileEasterEgg(event)" class="relative group/avatar cursor-pointer shrink-0" title="DaLines Profile (คลิกหรือแตะ 5 ครั้งเพื่อค้นหา Easter Egg)">
+                <div
+                  class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl p-0.5 bg-gradient-to-tr from-emerald-400 via-cyan-400 to-purple-500 neon-border-glow transition-transform duration-300 group-hover/avatar:scale-105 shadow-2xl">
+                  <img id="profile-img" referrerpolicy="no-referrer" src="Logo.png" width="300" height="300"
+                    onerror="this.onerror=null;this.src='https://static-cdn.jtvnw.net/jtv_user_pictures/a917340f-26d3-4d3a-9b41-34ed68f6b3a1-profile_image-300x300.png'"
+                    alt="DaLines Profile"
+                    class="w-full h-full rounded-[14px] object-cover bg-[#06080c] select-none cursor-pointer"
+                    loading="lazy" decoding="async" />
+                </div>
                 <span
-                  class="text-xs font-bold font-gaming text-white group-hover:text-cyan-300 transition-colors truncate">
-                  STORY MODE
-                </span>
-                <span
-                  class="px-1.5 py-0.2 rounded text-[8px] font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shrink-0">
-                  3D SCROLL
-                </span>
+                  class="absolute -bottom-1 -right-1 w-4 h-4 bg-[#9146FF] border-2 border-[#0b0f17] rounded-full shadow-md"
+                  title="Twitch Affiliate"></span>
               </div>
-              <p class="text-[10px] text-slate-300 mt-0.5 font-light truncate">
-                Scrollytelling 3D เจาะลึกมุมโต๊ะคอม &amp; เส้นทาง
-              </p>
-            </div>
-          </div>
-          <i
-            class="fa-solid fa-arrow-right text-[11px] text-cyan-400 group-hover:translate-x-1 transition-transform shrink-0"></i>
-        </div>
-      </a>
 
-      <!-- 2. SHOWCASE V1 (12s WebGL Three.js Motion Graphic) -->
-      <a href="showcase/"
-        class="tilt-card block p-3.5 rounded-2xl bg-gradient-to-r from-sky-950/70 via-slate-900/90 to-blue-950/60 border border-sky-500/40 hover:border-sky-400 transition-all duration-300 shadow-[0_0_20px_rgba(14,165,233,0.15)] hover:shadow-[0_0_25px_rgba(14,165,233,0.35)] group">
-        <div class="flex items-center justify-between gap-2.5">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <div
-              class="w-9 h-9 rounded-xl bg-sky-500/20 border border-sky-400/50 flex items-center justify-center text-sky-400 text-base group-hover:scale-110 group-hover:rotate-12 transition-transform shadow-md shrink-0">
-              <i aria-hidden="true" class="fa-solid fa-cubes"></i>
-            </div>
-            <div class="min-w-0">
-              <div class="flex items-center gap-1.5">
-                <span
-                  class="text-xs font-bold font-gaming text-white group-hover:text-sky-300 transition-colors truncate">
-                  SHOWCASE V1
-                </span>
-                <span
-                  class="px-1.5 py-0.2 rounded text-[8px] font-mono font-bold bg-sky-500/20 text-sky-300 border border-sky-400/40 shrink-0">
-                  12S WEBGL
-                </span>
+              <div>
+                <h1 class="glitch-hover text-3xl sm:text-4xl font-bold font-gaming tracking-tight text-white cursor-pointer select-none">
+                  DaLines
+                  <span class="sr-only"> | Official Streamer Hub, Twitch, Valorant Crosshair &amp; PC Specs</span>
+                </h1>
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-xs sm:text-[13px] text-slate-400">
+                  <span data-i18n="name_tag">ตวง (Tuang) • 30 yrs</span>
+                  <span class="text-slate-600">/</span>
+                  <span data-i18n="stream_tag">Streaming Since May 2017</span>
+                </div>
               </div>
-              <p class="text-[10px] text-slate-300 mt-0.5 font-light truncate">
-                Three.js + GSAP 3D Brutalist Motion
-              </p>
+            </div>
+
+            <!-- Quick Platform Strip -->
+            <div class="flex items-center gap-2 flex-wrap">
+              <a href="https://www.twitch.tv/dalines" target="_blank" rel="noopener noreferrer" aria-label="Twitch"
+                class="w-9 h-9 rounded-xl bg-white/[0.04] hover:bg-[#9146FF]/25 border border-white/10 hover:border-[#9146FF]/60 flex items-center justify-center text-purple-300 hover:text-white transition-colors">
+                <i aria-hidden="true" class="fa-brands fa-twitch text-sm"></i>
+              </a>
+              <a href="https://www.youtube.com/@DaLinesTTV" target="_blank" rel="noopener noreferrer" aria-label="YouTube"
+                class="w-9 h-9 rounded-xl bg-white/[0.04] hover:bg-red-500/25 border border-white/10 hover:border-red-500/60 flex items-center justify-center text-red-400 hover:text-white transition-colors">
+                <i aria-hidden="true" class="fa-brands fa-youtube text-sm"></i>
+              </a>
+              <a href="https://discord.gg/3m9x688YCG" target="_blank" rel="noopener noreferrer" aria-label="Discord"
+                class="w-9 h-9 rounded-xl bg-white/[0.04] hover:bg-indigo-500/25 border border-white/10 hover:border-indigo-500/60 flex items-center justify-center text-indigo-400 hover:text-white transition-colors">
+                <i aria-hidden="true" class="fa-brands fa-discord text-sm"></i>
+              </a>
+              <a href="https://kick.com/dalinesth" target="_blank" rel="noopener noreferrer" aria-label="Kick"
+                class="w-9 h-9 rounded-xl bg-white/[0.04] hover:bg-emerald-500/25 border border-white/10 hover:border-emerald-500/60 flex items-center justify-center text-emerald-400 hover:text-white transition-colors font-bold text-xs">
+                K
+              </a>
+              <a href="https://www.tiktok.com/@dalinestuang" target="_blank" rel="noopener noreferrer" aria-label="TikTok"
+                class="w-9 h-9 rounded-xl bg-white/[0.04] hover:bg-pink-500/25 border border-white/10 hover:border-pink-500/60 flex items-center justify-center text-pink-300 hover:text-white transition-colors">
+                <i aria-hidden="true" class="fa-brands fa-tiktok text-sm"></i>
+              </a>
+              <a href="https://www.facebook.com/DaLinesTuang" target="_blank" rel="noopener noreferrer" aria-label="Facebook"
+                class="w-9 h-9 rounded-xl bg-white/[0.04] hover:bg-blue-500/25 border border-white/10 hover:border-blue-500/60 flex items-center justify-center text-blue-400 hover:text-white transition-colors">
+                <i aria-hidden="true" class="fa-brands fa-facebook-f text-sm"></i>
+              </a>
+              <a href="https://www.instagram.com/tuangdanai/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
+                class="w-9 h-9 rounded-xl bg-white/[0.04] hover:bg-rose-500/25 border border-white/10 hover:border-rose-500/60 flex items-center justify-center text-rose-400 hover:text-white transition-colors">
+                <i aria-hidden="true" class="fa-brands fa-instagram text-sm"></i>
+              </a>
             </div>
           </div>
-          <i
-            class="fa-solid fa-arrow-right text-[11px] text-sky-400 group-hover:translate-x-1 transition-transform shrink-0"></i>
-        </div>
-      </a>
 
-      <!-- 3. SHOWCASE V2 (15s 60fps Motion Graphic + Sound Synth) -->
-      <a href="showcase-v2/"
-        class="tilt-card block p-3.5 rounded-2xl bg-gradient-to-r from-lime-950/70 via-slate-900/90 to-emerald-950/60 border border-lime-500/40 hover:border-lime-400 transition-all duration-300 shadow-[0_0_20px_rgba(69,243,43,0.15)] hover:shadow-[0_0_25px_rgba(69,243,43,0.35)] group">
-        <div class="flex items-center justify-between gap-2.5">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <div
-              class="w-9 h-9 rounded-xl bg-lime-500/20 border border-lime-400/50 flex items-center justify-center text-lime-400 text-base group-hover:scale-110 group-hover:rotate-12 transition-transform shadow-md shrink-0">
-              <i aria-hidden="true" class="fa-solid fa-film"></i>
+          <p class="text-slate-300 text-sm sm:text-[15px] leading-relaxed max-w-[65ch]" data-i18n="bio_text">
+            สตรีมเมอร์สายยิง เน้นโยน จริงจังมาเยอะแล้วครับ! • Just an FPS &amp; Battle Royale lover from Thailand 🇹🇭
+          </p>
+
+          <div class="pt-3 border-t border-white/[0.08] flex flex-wrap items-center justify-between gap-3 text-xs sm:text-[13px] text-slate-400">
+            <div class="flex items-center gap-3 flex-wrap">
+              <span class="text-white font-medium">Valorant</span>
+              <span class="text-slate-600">·</span>
+              <span class="text-white font-medium">Apex Legends</span>
+              <span class="text-slate-600">·</span>
+              <span class="text-white font-medium">Fortnite</span>
             </div>
-            <div class="min-w-0">
-              <div class="flex items-center gap-1.5">
-                <span
-                  class="text-xs font-bold font-gaming text-white group-hover:text-lime-300 transition-colors truncate">
-                  SHOWCASE V2
-                </span>
-                <span
-                  class="px-1.5 py-0.2 rounded text-[8px] font-mono font-bold bg-lime-500/20 text-lime-300 border border-lime-400/40 shrink-0">
-                  15S 60FPS
-                </span>
+            <button type="button" onclick="copyHeroBusinessEmail()" class="text-emerald-400 hover:text-emerald-300 font-medium transition-colors cursor-pointer">
+              taung@windowslive.com
+            </button>
+          </div>
+        </header>
+      </div>
+
+      <!-- Right 5 Columns: Telemetry Highlights + Interactive Companion Index -->
+      <div class="lg:col-span-5 flex flex-col justify-between gap-4">
+
+        <!-- Studio Precision Overview Strip -->
+        <div class="studio-panel rounded-3xl p-5 sm:p-6 grid grid-cols-3 divide-x divide-white/[0.08] text-center sm:text-left">
+          <div class="pr-3">
+            <div class="text-xs text-slate-400 mb-1">Valorant</div>
+            <div class="text-base sm:text-lg font-bold text-white font-gaming tabular-nums">Diamond 1</div>
+            <div class="text-xs text-purple-300 tabular-nums">Peak Immo 1</div>
+          </div>
+          <div class="px-3">
+            <div class="text-xs text-slate-400 mb-1">Sensitivity</div>
+            <div class="text-base sm:text-lg font-bold text-white font-gaming tabular-nums">240 eDPI</div>
+            <div class="text-xs text-cyan-300 tabular-nums">800 × 0.30</div>
+          </div>
+          <div class="pl-3">
+            <div class="text-xs text-slate-400 mb-1">Broadcast</div>
+            <div class="text-base sm:text-lg font-bold text-white font-gaming tabular-nums">20:00+</div>
+            <div class="text-xs text-emerald-400">BKK Time</div>
+          </div>
+        </div>
+
+        <!-- Companion Experiences Directory (Hairline Stacked List — Zero Nested Card Clutter) -->
+        <div class="studio-panel rounded-3xl overflow-hidden divide-y divide-white/[0.08] flex-1 flex flex-col justify-between">
+          <!-- 1. STORY MODE -->
+          <a href="story/"
+            class="flex-1 px-5 py-4 hover:bg-white/[0.03] transition-colors flex items-center justify-between gap-3 group">
+            <div class="flex items-center gap-3.5 min-w-0">
+              <div class="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-base shrink-0">
+                <i aria-hidden="true" class="fa-solid fa-cube"></i>
               </div>
-              <p class="text-[10px] text-slate-300 mt-0.5 font-light truncate">
-                Brutalist Motion Graphic + ดนตรีสังเคราะห์
-              </p>
+              <div class="min-w-0">
+                <div class="text-sm font-semibold text-white group-hover:text-cyan-300 transition-colors truncate">
+                  Story Mode — 3D Scrollytelling
+                </div>
+                <p class="text-xs text-slate-400 truncate mt-0.5">
+                  เจาะลึกมุมโต๊ะคอมและเส้นทางสตรีมเมอร์แบบ 3 มิติ
+                </p>
+              </div>
             </div>
-          </div>
-          <i
-            class="fa-solid fa-arrow-right text-[11px] text-lime-400 group-hover:translate-x-1 transition-transform shrink-0"></i>
-        </div>
-      </a>
-    </div>
+            <i aria-hidden="true" class="fa-solid fa-arrow-right text-xs text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-0.5 transition-all shrink-0"></i>
+          </a>
 
-    <!-- Navigation Tabs (5 แท็บหลัก: Sticky Navigation เกาะติดใต้ Live Banner) -->
+          <!-- 2. SHOWCASE V1 -->
+          <a href="showcase/"
+            class="flex-1 px-5 py-4 hover:bg-white/[0.03] transition-colors flex items-center justify-between gap-3 group">
+            <div class="flex items-center gap-3.5 min-w-0">
+              <div class="w-10 h-10 rounded-xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 text-base shrink-0">
+                <i aria-hidden="true" class="fa-solid fa-cubes"></i>
+              </div>
+              <div class="min-w-0">
+                <div class="text-sm font-semibold text-white group-hover:text-sky-300 transition-colors truncate">
+                  Showcase V1 — 12s WebGL Motion
+                </div>
+                <p class="text-xs text-slate-400 truncate mt-0.5">
+                  Three.js + GSAP 3D Brutalist Motion Graphic
+                </p>
+              </div>
+            </div>
+            <i aria-hidden="true" class="fa-solid fa-arrow-right text-xs text-slate-500 group-hover:text-sky-400 group-hover:translate-x-0.5 transition-all shrink-0"></i>
+          </a>
+
+          <!-- 3. SHOWCASE V2 -->
+          <a href="showcase-v2/"
+            class="flex-1 px-5 py-4 hover:bg-white/[0.03] transition-colors flex items-center justify-between gap-3 group">
+            <div class="flex items-center gap-3.5 min-w-0">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-base shrink-0">
+                <i aria-hidden="true" class="fa-solid fa-film"></i>
+              </div>
+              <div class="min-w-0">
+                <div class="text-sm font-semibold text-white group-hover:text-emerald-300 transition-colors truncate">
+                  Showcase V2 — 15s 60fps + Synth
+                </div>
+                <p class="text-xs text-slate-400 truncate mt-0.5">
+                  Brutalist Motion Graphic พร้อมดนตรีสังเคราะห์
+                </p>
+              </div>
+            </div>
+            <i aria-hidden="true" class="fa-solid fa-arrow-right text-xs text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all shrink-0"></i>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Navigation Tabs (5 แท็บหลัก: Architectural Command Segmented Bar) -->
     <main id="main-content" tabindex="-1">
     <nav id="main-nav"
-      class="sticky z-30 grid grid-cols-5 p-1 sm:p-1.5 rounded-2xl bg-slate-900/90 border border-slate-800/90 backdrop-blur-lg mb-5 sm:mb-6 gap-1 shadow-2xl"
-      style="top: calc(var(--banner-height, 45px) + 6px);"
+      class="sticky z-30 max-w-4xl mx-auto grid grid-cols-5 p-1.5 rounded-2xl bg-[#0b0f17]/95 border border-white/10 backdrop-blur-xl mb-7 sm:mb-8 gap-1.5 shadow-2xl"
+      style="top: calc(var(--banner-height, 0px) + 10px);"
       aria-label="Main Navigation">
       <button type="button" data-tab="links"
-        class="tab-btn theme-active-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs rounded-xl transition-all duration-200 cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5">
+        class="tab-btn theme-active-btn py-2.5 px-2 text-xs sm:text-sm rounded-xl transition-colors cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
         <i aria-hidden="true" class="fa-solid fa-link text-xs"></i>
         <span class="truncate" data-i18n="tab_links">ช่องทาง</span>
       </button>
       <button type="button" data-tab="stream"
-        class="tab-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-white cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5">
+        class="tab-btn py-2.5 px-2 text-xs sm:text-sm font-medium rounded-xl transition-colors text-slate-400 hover:text-white cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
         <i aria-hidden="true" class="fa-solid fa-circle-play text-red-500 text-xs"></i>
         <span class="truncate" data-i18n="tab_stream">สตรีมสด</span>
       </button>
       <button type="button" data-tab="pc"
-        class="tab-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-white cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5">
+        class="tab-btn py-2.5 px-2 text-xs sm:text-sm font-medium rounded-xl transition-colors text-slate-400 hover:text-white cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
         <i aria-hidden="true" class="fa-solid fa-desktop text-xs"></i>
         <span class="truncate" data-i18n="tab_pc">สเปก PC</span>
       </button>
       <button type="button" data-tab="gear"
-        class="tab-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-white cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5">
+        class="tab-btn py-2.5 px-2 text-xs sm:text-sm font-medium rounded-xl transition-colors text-slate-400 hover:text-white cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
         <i aria-hidden="true" class="fa-solid fa-gamepad text-xs"></i>
         <span class="truncate" data-i18n="tab_gear">อุปกรณ์</span>
       </button>
       <button type="button" data-tab="rules"
-        class="tab-btn py-2 sm:py-2.5 px-0.5 text-[11px] sm:text-xs font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-white cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5">
+        class="tab-btn py-2.5 px-2 text-xs sm:text-sm font-medium rounded-xl transition-colors text-slate-400 hover:text-white cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
         <i aria-hidden="true" class="fa-solid fa-robot text-indigo-400 text-xs"></i>
-        <span class="truncate" data-i18n="tab_rules">แชท & บอท & มีม</span>
+        <span class="truncate" data-i18n="tab_rules">แชท &amp; บอท &amp; มีม</span>
       </button>
     </nav>
 
@@ -885,381 +831,325 @@
         </div>
       </div>
 
-      <!-- 1. Twitch Card (Main Platform) -->
-      <a href="https://www.twitch.tv/dalines" target="_blank" rel="noopener noreferrer"
-        class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-[#9146FF]/25 via-slate-900/80 to-slate-900/90 border border-[#9146FF]/50 backdrop-blur-md group shadow-xl">
-        <div class="flex items-center justify-between gap-3">
-          <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
-            <div
-              class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#9146FF]/25 flex items-center justify-center text-[#c084fc] text-lg sm:text-xl shrink-0 group-hover:scale-110 transition duration-300">
-              <i aria-hidden="true" class="fa-brands fa-twitch"></i>
-            </div>
-            <div class="min-w-0">
-              <div class="flex items-center gap-2">
-                <span class="font-semibold text-white text-sm sm:text-base truncate">Twitch Channel</span>
-                <span
-                  class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase shrink-0 bg-[#9146FF]/30 text-[#e9d5ff] border border-[#9146FF]/50">
-                  <span class="w-1.5 h-1.5 rounded-full bg-purple-300 inline-block mr-1"></span>MAIN STREAM
-                </span>
+      <!-- 12-Column Editorial Socials & Direct Support Workspace -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pt-2">
+
+        <!-- Left 7 Columns: Primary Broadcast Channels & Creator Tools -->
+        <div class="lg:col-span-7 space-y-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <!-- 1. Twitch Card (Main Platform - Full Span) -->
+            <a href="https://www.twitch.tv/dalines" target="_blank" rel="noopener noreferrer"
+              class="sm:col-span-2 tilt-card block p-4 sm:p-5 rounded-2xl studio-panel hover:border-[#9146FF]/60 group">
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center space-x-3.5 min-w-0">
+                  <div
+                    class="w-11 h-11 rounded-xl bg-[#9146FF]/20 border border-[#9146FF]/30 flex items-center justify-center text-[#c084fc] text-xl shrink-0 group-hover:scale-105 transition-transform">
+                    <i aria-hidden="true" class="fa-brands fa-twitch"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-2">
+                      <span class="font-semibold text-white text-base truncate">Twitch Channel</span>
+                      <span class="text-xs font-medium text-[#d8b4fe]">· Main Stream</span>
+                    </div>
+                    <p class="text-xs sm:text-[13px] text-slate-300 mt-0.5 truncate" data-i18n="twitch_sub">twitch.tv/dalines • สตรีมหลัก เล่นเกม &amp; ปาร์ตี้คุยสดที่นี่</p>
+                  </div>
+                </div>
+                <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-purple-400 text-sm shrink-0 transition-colors"></i>
               </div>
-              <p class="text-[11px] sm:text-xs text-slate-300 mt-0.5 truncate" data-i18n="twitch_sub">twitch.tv/dalines
-                • สตรีมหลัก เล่นเกม & ปาร์ตี้คุยสดที่นี่</p>
-            </div>
-          </div>
-          <i
-            class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-purple-400 text-xs sm:text-sm shrink-0 transition"></i>
-        </div>
-      </a>
+            </a>
 
-      <!-- 2. Donation & QR Code Card (EZDN) -->
-      <div
-        class="tilt-card p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/20 via-slate-900/85 to-emerald-500/15 border border-amber-500/40 backdrop-blur-md shadow-xl hover:border-amber-400/60 transition group">
-        <div class="flex items-center justify-between gap-3 mb-3">
-          <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
-            <div
-              class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-500/25 flex items-center justify-center text-amber-300 text-lg sm:text-xl shrink-0 shadow-md">
-              <i aria-hidden="true" class="fa-solid fa-heart text-amber-400"></i>
-            </div>
-            <div class="min-w-0">
-              <div class="flex items-center gap-2">
-                <span class="font-semibold text-white text-sm sm:text-base truncate" data-i18n="donate_title">สนับสนุน
-                  DaLines (Donate)</span>
-                <span
-                  class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-amber-500/25 text-amber-300 border border-amber-500/40 uppercase shrink-0">
-                  <i aria-hidden="true" class="fa-solid fa-bolt-lightning text-[9px] mr-1 text-amber-400"></i>DONATE
-                </span>
+            <!-- Discord Community Card -->
+            <a href="https://discord.gg/3m9x688YCG" target="_blank" rel="noopener noreferrer"
+              class="tilt-card block p-4 rounded-2xl studio-panel hover:border-indigo-400/50 group">
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center space-x-3 min-w-0">
+                  <div
+                    class="w-10 h-10 rounded-xl bg-[#5865F2]/20 border border-[#5865F2]/30 flex items-center justify-center text-[#818cf8] text-lg shrink-0">
+                    <i aria-hidden="true" class="fa-brands fa-discord"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <span class="font-semibold text-white text-sm sm:text-[15px] truncate block">Discord Community</span>
+                    <p class="text-xs text-slate-400 mt-0.5 truncate" data-i18n="discord_sub">
+                      ดิสคอร์ดคอมมูนิตี้ พูดคุย หาตี้เล่นเกม</p>
+                  </div>
+                </div>
+                <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-indigo-400 text-xs shrink-0 transition-colors"></i>
               </div>
-              <p class="text-[11px] sm:text-xs text-slate-300 mt-0.5 truncate" data-i18n="donate_sub">ezdn.app/dalines •
-                สแกน QR หรือกดลิงก์ โดเนทขึ้นจอสด</p>
-            </div>
-          </div>
-          <a href="https://ezdn.app/dalines" target="_blank" rel="noopener noreferrer" aria-label="Open EZDN"
-            class="w-8 h-8 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 flex items-center justify-center transition shrink-0"
-            title="เปิดหน้าเว็บ ezdn.app">
-            <i aria-hidden="true" class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-          </a>
-        </div>
+            </a>
 
-        <!-- QR Code Container -->
-        <div
-          class="flex flex-col sm:flex-row items-center justify-center gap-4 bg-black/50 border border-slate-800/80 rounded-xl p-3.5 mt-2">
-          <div class="relative shrink-0">
-            <div
-              class="w-36 h-36 sm:w-40 sm:h-40 bg-white p-2 rounded-xl shadow-2xl flex items-center justify-center transition-transform hover:scale-105">
-              <img src="qr-donate.png" alt="DaLines EZDN QR Code" loading="lazy" decoding="async" width="160" height="160"
-                class="w-full h-full object-contain rounded-md select-none" />
-            </div>
-          </div>
-          <div class="flex flex-col items-center sm:items-start text-center sm:text-left justify-center space-y-2">
-            <div class="flex items-center gap-1.5 flex-wrap justify-center sm:justify-start">
-              <span
-                class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">PromptPay</span>
-              <span
-                class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-500/20 text-orange-300 border border-orange-500/30">TrueMoney</span>
-              <span
-                class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">ขึ้นจอสด</span>
-            </div>
-            <p class="text-[11px] sm:text-xs text-slate-300 max-w-[240px] leading-relaxed" data-i18n="donate_qr_hint">
-              สแกน QR ผ่านแอปธนาคารหรือ TrueMoney โดเนทขึ้นจอสดได้เลยครับ!
-            </p>
-            <div class="flex items-center gap-2 pt-1 flex-wrap justify-center sm:justify-start">
-              <a href="https://ezdn.app/dalines" target="_blank" rel="noopener noreferrer"
-                class="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 font-bold text-xs transition flex items-center gap-1.5 shadow-md cursor-pointer">
-                <i aria-hidden="true" class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                <span data-i18n="open_ezdn_btn">เปิดหน้า EZDN</span>
-              </a>
-              <a href="qr-donate.png" download="DaLines-EZDN-QR.png"
-                class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-200 text-xs font-medium transition flex items-center gap-1.5 border border-slate-700 cursor-pointer">
-                <i aria-hidden="true" class="fa-solid fa-download text-[10px]"></i>
-                <span data-i18n="save_qr_btn">บันทึกรูป QR</span>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bank Account Direct Transfer Box -->
-        <div
-          class="mt-3 p-3 sm:p-3.5 rounded-xl bg-slate-950/70 border border-emerald-500/30 backdrop-blur-md flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shadow-inner">
-          <div class="flex items-center gap-3 min-w-0">
-            <!-- KBank Badge / Icon -->
-            <div
-              class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-emerald-600/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-lg sm:text-xl shrink-0 shadow-sm">
-              <i aria-hidden="true" class="fa-solid fa-building-columns"></i>
-            </div>
-            <!-- Bank Details -->
-            <div class="min-w-0">
-              <div class="flex items-center gap-2 flex-wrap">
-                <span class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5">
-                  <span class="w-2 h-2 rounded-full bg-[#137E3D]"></span>
-                  <span data-i18n="bank_name">ธนาคารกสิกรไทย</span>
-                  <span class="text-[10px] text-emerald-400 font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-950/60 border border-emerald-500/30">KBank</span>
-                </span>
-                <span class="text-[11px] sm:text-xs text-slate-300 font-medium">ดนัย วงศ์วิเชียร</span>
+            <!-- YouTube Channel Card -->
+            <a href="https://www.youtube.com/@DaLinesTTV" target="_blank" rel="noopener noreferrer"
+              class="tilt-card block p-4 rounded-2xl studio-panel hover:border-red-400/50 group">
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center space-x-3 min-w-0">
+                  <div
+                    class="w-10 h-10 rounded-xl bg-red-600/20 border border-red-500/30 flex items-center justify-center text-red-500 text-lg shrink-0">
+                    <i aria-hidden="true" class="fa-brands fa-youtube"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <span class="font-semibold text-white text-sm sm:text-[15px] truncate block">YouTube Channel</span>
+                    <p class="text-xs text-slate-400 mt-0.5 truncate" data-i18n="youtube_sub">
+                      youtube.com/@DaLinesTTV • ไฮไลท์ &amp; VOD</p>
+                  </div>
+                </div>
+                <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-red-400 text-xs shrink-0 transition-colors"></i>
               </div>
-              <div class="flex items-center gap-2 mt-0.5">
-                <span class="text-[11px] sm:text-xs text-slate-400 font-medium" data-i18n="bank_account_label">เลขที่บัญชี:</span>
-                <span class="font-mono font-bold text-sm sm:text-base text-emerald-400 tracking-wider select-all">632-2-17076-7</span>
+            </a>
+
+            <!-- Kick Card -->
+            <a href="https://kick.com/dalinesth" target="_blank" rel="noopener noreferrer"
+              class="tilt-card block p-4 rounded-2xl studio-panel hover:border-emerald-400/50 group">
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center space-x-3 min-w-0">
+                  <div
+                    class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xs font-extrabold shrink-0">
+                    KICK
+                  </div>
+                  <div class="min-w-0">
+                    <span class="font-semibold text-white text-sm sm:text-[15px] truncate block">Kick Channel</span>
+                    <p class="text-xs text-slate-400 mt-0.5 truncate" data-i18n="kick_sub">kick.com/dalinesth • สตรีมสำรอง</p>
+                  </div>
+                </div>
+                <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-emerald-400 text-xs shrink-0 transition-colors"></i>
               </div>
-            </div>
-          </div>
+            </a>
 
-          <!-- Copy Account Number Button -->
-          <button id="btn-copy-bank" onclick="copyBankAccount()" type="button"
-            class="px-3.5 py-2 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 active:scale-95 text-emerald-300 hover:text-white border border-emerald-500/40 font-semibold text-xs transition-all flex items-center justify-center gap-1.5 shrink-0 cursor-pointer shadow-sm min-h-[40px]"
-            title="คลิกเพื่อคัดลอกเฉพาะตัวเลข 6322170767">
-            <i aria-hidden="true" class="fa-solid fa-copy text-xs"></i>
-            <span data-i18n="copy_bank_btn">คัดลอกเลขบัญชี</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- 🎉 INTERACTIVE PARTY LOUNGE SHOWCASE (party.html) -->
-      <a href="party.html"
-        class="tilt-card group relative block overflow-hidden rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-pink-950/40 via-purple-950/30 to-slate-900/90 border border-pink-500/40 hover:border-pink-400 backdrop-blur-md transition-all duration-300 shadow-[0_0_25px_rgba(244,114,182,0.15)] hover:shadow-[0_0_35px_rgba(244,114,182,0.3)]">
-        <div class="flex items-center justify-between gap-4">
-          <div class="space-y-1.5 min-w-0">
-            <div class="flex items-center gap-2">
-              <span class="px-2.5 py-0.5 rounded-full text-[9px] font-mono font-bold bg-pink-500/20 text-pink-300 border border-pink-500/40 animate-pulse">🎉 NEW INTERACTIVE</span>
-              <span class="text-[11px] text-pink-300 font-medium">Chibi Party Lounge &amp; Stream Arcade</span>
-            </div>
-            <h3 class="text-sm sm:text-base font-bold text-white group-hover:text-pink-300 transition truncate flex items-center gap-2">
-              <span>DaLines Cozy Party Lounge</span>
-              <i aria-hidden="true" class="fa-solid fa-arrow-up-right-from-square text-xs text-pink-400 opacity-80 group-hover:opacity-100 transition"></i>
-            </h3>
-            <p class="text-[11px] sm:text-xs text-slate-300 line-clamp-1">
-              ตู้สุ่มการ์ดมีม Gacha Chibi 12 แบบ • วงล้อบทลงโทษสตรีม Wheel of Fate • มินิเกมเป่ายิ้งฉุบ • รองรับ OBS Studio Overlay
-            </p>
-          </div>
-          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500/20 to-purple-500/20 border border-pink-500/40 flex items-center justify-center text-pink-400 group-hover:scale-110 group-hover:bg-pink-500 group-hover:text-white transition-all duration-300 shrink-0 shadow-lg">
-            <i aria-hidden="true" class="fa-solid fa-wand-magic-sparkles text-xl"></i>
-          </div>
-        </div>
-      </a>
-
-      <!-- 🎙️ DALINES TTS STATION (tts.html) -->
-      <a href="tts.html"
-        class="tilt-card group relative block overflow-hidden rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-emerald-950/40 via-cyan-950/30 to-slate-900/90 border border-emerald-500/40 hover:border-emerald-400 backdrop-blur-md transition-all duration-300 shadow-[0_0_25px_rgba(16,185,129,0.15)] hover:shadow-[0_0_35px_rgba(16,185,129,0.3)]">
-        <div class="flex items-center justify-between gap-4">
-          <div class="space-y-1.5 min-w-0">
-            <div class="flex items-center gap-2">
-              <span class="px-2.5 py-0.5 rounded-full text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse">🎙️ LIVE CONTROL STATION</span>
-              <span class="text-[11px] text-emerald-300 font-medium">Discord &amp; Multi-channel Twitch TTS</span>
-            </div>
-            <h3 class="text-sm sm:text-base font-bold text-white group-hover:text-emerald-300 transition truncate flex items-center gap-2">
-              <span>DaLines TTS Control Station</span>
-              <i aria-hidden="true" class="fa-solid fa-arrow-up-right-from-square text-xs text-emerald-400 opacity-80 group-hover:opacity-100 transition"></i>
-            </h3>
-            <p class="text-[11px] sm:text-xs text-slate-300 line-clamp-1">
-              แผงควบคุมบอทอ่านเสียง 24/7 บน GCP • แชตทวิช DaLines, JxoExe, PaulJaw • สั่งอ่านเสียงไมค์ • เคลียร์คิว • ปรับความเร็ว
-            </p>
-          </div>
-          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300 shrink-0 shadow-lg">
-            <i aria-hidden="true" class="fa-solid fa-microphone-lines text-xl"></i>
-          </div>
-        </div>
-      </a>
-
-
-      <!-- 🛠️ CREATOR TOOLS / DEV PROJECTS SECTION -->
-      <div class="pt-2 pb-0.5 flex items-center justify-between">
-        <div class="flex items-center gap-2 text-xs font-bold text-slate-300">
-          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-          <span data-i18n="creator_tools_title">🛠️ Creator Tools &amp; Dev Projects (สำหรับสตรีมเมอร์)</span>
-        </div>
-        <span
-          class="text-[9px] font-mono text-cyan-400/90 bg-cyan-950/50 px-2 py-0.5 rounded-full border border-cyan-500/30">STREAM
-          APPS</span>
-      </div>
-
-      <!-- 2.5 TTS Reader Project Card (by DaLines & PaulJaw) -->
-      <div
-        class="tilt-card p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-cyan-500/20 via-slate-900/80 to-blue-900/25 border border-cyan-500/40 backdrop-blur-md shadow-xl group hover:border-cyan-400/60 transition">
-        <div class="flex items-center justify-between gap-3">
-          <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
-            <div
-              class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-cyan-500/20 flex items-center justify-center text-cyan-400 text-lg sm:text-xl shrink-0 group-hover:scale-110 transition duration-300 shadow-md">
-              <i aria-hidden="true" class="fa-solid fa-microphone-lines"></i>
-            </div>
-            <div class="min-w-0">
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="font-semibold text-white text-sm sm:text-base truncate">Twitch &amp; TikTok TTS
-                  Reader</span>
-                <span
-                  class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase shrink-0">
-                  🛠️ DEV PROJECT BY DALINES (สำหรับสตรีมเมอร์)
-                </span>
+            <!-- TikTok Card -->
+            <a href="https://www.tiktok.com/@dalinestuang" target="_blank" rel="noopener noreferrer"
+              class="tilt-card block p-4 rounded-2xl studio-panel hover:border-pink-400/50 group">
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center space-x-3 min-w-0">
+                  <div
+                    class="w-10 h-10 rounded-xl bg-pink-500/20 border border-pink-500/30 flex items-center justify-center text-pink-400 text-lg shrink-0">
+                    <i aria-hidden="true" class="fa-brands fa-tiktok"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <span class="font-semibold text-white text-sm sm:text-[15px] truncate block">TikTok Channel</span>
+                    <p class="text-xs text-slate-400 mt-0.5 truncate" data-i18n="tiktok_sub">@dalinestuang • คลิปสั้น &amp; ไฮไลท์</p>
+                  </div>
+                </div>
+                <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-pink-400 text-xs shrink-0 transition-colors"></i>
               </div>
-              <p class="text-[11px] sm:text-xs text-slate-300 mt-0.5 truncate">
-                tts-dalines.pages.dev • ระบบอ่านแชทจอสดอัตโนมัติ &amp; รีโมทคุมผ่านมือถือ
-              </p>
-            </div>
-          </div>
-          <div class="flex items-center gap-1.5 shrink-0">
-            <a href="https://tts-dalines.pages.dev/" target="_blank" rel="noopener noreferrer"
-              class="px-2.5 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 active:scale-95 text-white text-xs font-semibold transition flex items-center gap-1 shadow-md cursor-pointer"
-              title="เปิดหน้าเว็บ TTS Reader">
-              <span>เปิดใช้</span>
-              <i aria-hidden="true" class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            </a>
+
+            <!-- Facebook Fanpage -->
+            <a href="https://www.facebook.com/DaLinesTuang" target="_blank" rel="noopener noreferrer"
+              class="tilt-card block p-4 rounded-2xl studio-panel hover:border-blue-400/50 group">
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center space-x-3 min-w-0">
+                  <div
+                    class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 text-lg shrink-0">
+                    <i aria-hidden="true" class="fa-brands fa-facebook-f"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <span class="font-semibold text-white text-sm sm:text-[15px] truncate block">Facebook Page</span>
+                    <p class="text-xs text-slate-400 mt-0.5 truncate" data-i18n="facebook_sub">DaLines Tuang • ข่าวสาร &amp; ตารางสตรีม</p>
+                  </div>
+                </div>
+                <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-blue-400 text-xs shrink-0 transition-colors"></i>
+              </div>
+            </a>
+
+            <!-- Instagram -->
+            <a href="https://www.instagram.com/tuangdanai/" target="_blank" rel="noopener noreferrer"
+              class="tilt-card block p-4 rounded-2xl studio-panel hover:border-rose-400/50 group">
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center space-x-3 min-w-0">
+                  <div
+                    class="w-10 h-10 rounded-xl bg-rose-600/20 border border-rose-500/30 flex items-center justify-center text-rose-400 text-lg shrink-0">
+                    <i aria-hidden="true" class="fa-brands fa-instagram"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <span class="font-semibold text-white text-sm sm:text-[15px] truncate block">Instagram</span>
+                    <p class="text-xs text-slate-400 mt-0.5 truncate" data-i18n="instagram_sub">@tuangdanai • ไลฟ์สไตล์ &amp; เบื้องหลัง</p>
+                  </div>
+                </div>
+                <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-rose-400 text-xs shrink-0 transition-colors"></i>
+              </div>
             </a>
           </div>
+
+          <!-- Interactive Experiences & Creator Tools -->
+          <div class="space-y-3 pt-1">
+            <div class="flex items-center justify-between px-1">
+              <div class="flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-200">
+                <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                <span data-i18n="creator_tools_title">Creator Tools &amp; Interactive Experiences</span>
+              </div>
+              <span class="text-xs text-slate-400">Stream Apps</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <!-- 🎉 INTERACTIVE PARTY LOUNGE SHOWCASE (party.html) -->
+              <a href="party.html"
+                class="tilt-card group relative block overflow-hidden rounded-2xl p-4 studio-panel hover:border-pink-400/50">
+                <div class="flex items-center justify-between gap-3">
+                  <div class="space-y-1 min-w-0">
+                    <h3 class="text-sm font-semibold text-white group-hover:text-pink-300 transition-colors truncate flex items-center gap-2">
+                      <span>DaLines Cozy Party Lounge</span>
+                    </h3>
+                    <p class="text-xs text-slate-400 line-clamp-1">
+                      Gacha Chibi 12 แบบ • Wheel of Fate • เป่ายิ้งฉุบ OBS
+                    </p>
+                  </div>
+                  <div class="w-10 h-10 rounded-xl bg-pink-500/20 border border-pink-500/30 flex items-center justify-center text-pink-400 shrink-0">
+                    <i aria-hidden="true" class="fa-solid fa-wand-magic-sparkles text-base"></i>
+                  </div>
+                </div>
+              </a>
+
+              <!-- 🎙️ DALINES TTS STATION (tts.html) -->
+              <a href="tts.html"
+                class="tilt-card group relative block overflow-hidden rounded-2xl p-4 studio-panel hover:border-emerald-400/50">
+                <div class="flex items-center justify-between gap-3">
+                  <div class="space-y-1 min-w-0">
+                    <h3 class="text-sm font-semibold text-white group-hover:text-emerald-300 transition-colors truncate flex items-center gap-2">
+                      <span>DaLines TTS Control Station</span>
+                    </h3>
+                    <p class="text-xs text-slate-400 line-clamp-1">
+                      แผงควบคุมบอทอ่านเสียง 24/7 • DaLines, JxoExe, PaulJaw
+                    </p>
+                  </div>
+                  <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+                    <i aria-hidden="true" class="fa-solid fa-microphone-lines text-base"></i>
+                  </div>
+                </div>
+              </a>
+
+              <!-- 2.5 TTS Reader Project Card (by DaLines & PaulJaw) -->
+              <div
+                class="sm:col-span-2 tilt-card p-4 rounded-2xl studio-panel hover:border-cyan-400/50 group">
+                <div class="flex items-center justify-between gap-3">
+                  <div class="flex items-center space-x-3 min-w-0">
+                    <div
+                      class="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-lg shrink-0">
+                      <i aria-hidden="true" class="fa-solid fa-microphone-lines"></i>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <span class="font-semibold text-white text-sm sm:text-base truncate">Twitch &amp; TikTok TTS Reader</span>
+                        <span class="text-xs text-amber-300 font-medium">· Dev Project</span>
+                      </div>
+                      <p class="text-xs text-slate-400 mt-0.5 truncate">
+                        tts-dalines.pages.dev • ระบบอ่านแชทจอสดอัตโนมัติ &amp; รีโมทคุมผ่านมือถือ
+                      </p>
+                    </div>
+                  </div>
+                  <a href="https://tts-dalines.pages.dev/" target="_blank" rel="noopener noreferrer"
+                    class="px-3.5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-[#06080c] text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
+                    title="เปิดหน้าเว็บ TTS Reader">
+                    <span>เปิดใช้</span>
+                    <i aria-hidden="true" class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <!-- Right 5 Columns: Direct Support & EZDN QR Panel -->
+        <div class="lg:col-span-5">
+          <div
+            class="tilt-card p-5 sm:p-6 rounded-3xl studio-panel border-amber-500/30 hover:border-amber-400/50 group space-y-4">
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex items-center space-x-3.5 min-w-0">
+                <div
+                  class="w-11 h-11 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-300 text-lg shrink-0">
+                  <i aria-hidden="true" class="fa-solid fa-heart text-amber-400"></i>
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2">
+                    <span class="font-semibold text-white text-base truncate" data-i18n="donate_title">สนับสนุน DaLines (Donate)</span>
+                  </div>
+                  <p class="text-xs text-slate-400 mt-0.5 truncate" data-i18n="donate_sub">ezdn.app/dalines • โดเนทขึ้นจอสด</p>
+                </div>
+              </div>
+              <a href="https://ezdn.app/dalines" target="_blank" rel="noopener noreferrer" aria-label="Open EZDN"
+                class="w-9 h-9 rounded-xl bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 flex items-center justify-center transition-colors shrink-0"
+                title="เปิดหน้าเว็บ ezdn.app">
+                <i aria-hidden="true" class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+              </a>
+            </div>
+
+            <!-- QR Code Container -->
+            <div class="flex flex-col sm:flex-row lg:flex-col xl:flex-row items-center gap-4 bg-[#06080c]/70 border border-white/[0.08] rounded-2xl p-4">
+              <div class="relative shrink-0">
+                <div
+                  class="w-36 h-36 bg-white p-2 rounded-xl shadow-2xl flex items-center justify-center">
+                  <img src="qr-donate.png" alt="DaLines EZDN QR Code" loading="lazy" decoding="async" width="160" height="160"
+                    class="w-full h-full object-contain rounded-md select-none" />
+                </div>
+              </div>
+              <div class="flex flex-col items-center sm:items-start lg:items-center xl:items-start text-center sm:text-left lg:text-center xl:text-left justify-center space-y-2.5">
+                <div class="text-xs font-medium text-emerald-300">
+                  PromptPay · TrueMoney · ขึ้นจอสด
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed" data-i18n="donate_qr_hint">
+                  สแกน QR ผ่านแอปธนาคารหรือ TrueMoney โดเนทขึ้นจอสดได้เลยครับ!
+                </p>
+                <div class="flex items-center gap-2 pt-1 flex-wrap justify-center">
+                  <a href="https://ezdn.app/dalines" target="_blank" rel="noopener noreferrer"
+                    class="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#06080c] font-bold text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
+                    <i aria-hidden="true" class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                    <span data-i18n="open_ezdn_btn">เปิดหน้า EZDN</span>
+                  </a>
+                  <a href="qr-donate.png" download="DaLines-EZDN-QR.png"
+                    class="px-3.5 py-2 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-slate-200 text-xs font-medium transition-colors flex items-center gap-1.5 border border-white/10 cursor-pointer">
+                    <i aria-hidden="true" class="fa-solid fa-download text-xs"></i>
+                    <span data-i18n="save_qr_btn">บันทึกรูป QR</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bank Account Direct Transfer Box -->
+            <div
+              class="p-3.5 rounded-2xl bg-[#06080c]/70 border border-emerald-500/25 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+              <div class="flex items-center gap-3 min-w-0">
+                <div
+                  class="w-10 h-10 rounded-xl bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-lg shrink-0">
+                  <i aria-hidden="true" class="fa-solid fa-building-columns"></i>
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="text-xs font-semibold text-white" data-i18n="bank_name">ธนาคารกสิกรไทย (KBank)</span>
+                    <span class="text-xs text-slate-400">ดนัย วงศ์วิเชียร</span>
+                  </div>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <span class="text-xs text-slate-400" data-i18n="bank_account_label">เลขที่บัญชี:</span>
+                    <span class="font-mono font-bold text-sm sm:text-base text-emerald-400 tracking-wide select-all">632-2-17076-7</span>
+                  </div>
+                </div>
+              </div>
+
+              <button id="btn-copy-bank" onclick="copyBankAccount()" type="button"
+                class="px-3.5 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 hover:text-white border border-emerald-500/35 font-semibold text-xs transition-colors flex items-center justify-center gap-1.5 shrink-0 cursor-pointer min-h-[40px]"
+                title="คลิกเพื่อคัดลอกเฉพาะตัวเลข 6322170767">
+                <i aria-hidden="true" class="fa-solid fa-copy text-xs"></i>
+                <span data-i18n="copy_bank_btn">คัดลอกเลขบัญชี</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
-
-      <!-- 3. Discord Community Card -->
-      <a href="https://discord.gg/3m9x688YCG" target="_blank" rel="noopener noreferrer"
-        class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-indigo-500/25 via-slate-900/80 to-slate-900/90 border border-indigo-500/50 backdrop-blur-md group shadow-xl">
-        <div class="flex items-center justify-between gap-3">
-          <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
-            <div
-              class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#5865F2]/25 flex items-center justify-center text-[#818cf8] text-lg sm:text-xl shrink-0 group-hover:scale-110 transition duration-300">
-              <i aria-hidden="true" class="fa-brands fa-discord"></i>
-            </div>
-            <div class="min-w-0">
-              <div class="flex items-center gap-2">
-                <span class="font-semibold text-white text-sm sm:text-base truncate">Discord Community</span>
-                <span
-                  class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-[#5865F2]/25 text-[#c7d2fe] border border-[#5865F2]/40 uppercase shrink-0">
-                  Join Server
-                </span>
-              </div>
-              <p class="text-[11px] sm:text-xs text-slate-300 mt-0.5 truncate" data-i18n="discord_sub">
-                ดิสคอร์ดคอมมูนิตี้ พูดคุย หาตี้เล่นเกม และแจ้งเตือนไลฟ์</p>
-            </div>
-          </div>
-          <i
-            class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-indigo-400 text-xs sm:text-sm shrink-0 transition"></i>
-        </div>
-      </a>
-
-      <!-- 3. Kick Card -->
-      <a href="https://kick.com/dalinesth" target="_blank" rel="noopener noreferrer"
-        class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-emerald-500/20 via-slate-900/80 to-slate-900/90 border border-emerald-500/40 backdrop-blur-md group shadow-xl">
-        <div class="flex items-center justify-between gap-3">
-          <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
-            <div
-              class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-sm font-extrabold shrink-0 group-hover:scale-110 transition duration-300">
-              KICK
-            </div>
-            <div class="min-w-0">
-              <div class="flex items-center gap-2">
-                <span class="font-semibold text-white text-sm sm:text-base truncate">Kick Channel</span>
-                <span
-                  class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 uppercase shrink-0">
-                  Live Hub
-                </span>
-              </div>
-              <p class="text-[11px] sm:text-xs text-slate-300 mt-0.5 truncate" data-i18n="kick_sub">kick.com/dalinesth •
-                อีกหนึ่งช่องทางสตรีมสำรอง</p>
-            </div>
-          </div>
-          <i
-            class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-emerald-400 text-xs sm:text-sm shrink-0 transition"></i>
-        </div>
-      </a>
-
-      <!-- 4. YouTube Channel Card -->
-      <a href="https://www.youtube.com/@DaLinesTTV" target="_blank" rel="noopener noreferrer"
-        class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-red-600/20 via-slate-900/80 to-slate-900/90 border border-red-500/40 backdrop-blur-md group shadow-xl hover:border-red-500/60 transition">
-        <div class="flex items-center justify-between gap-3">
-          <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
-            <div
-              class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-red-600/25 flex items-center justify-center text-red-500 text-lg sm:text-xl shrink-0 group-hover:scale-110 transition duration-300 shadow-md">
-              <i aria-hidden="true" class="fa-brands fa-youtube"></i>
-            </div>
-            <div class="min-w-0">
-              <div class="flex items-center gap-2">
-                <span class="font-semibold text-white text-sm sm:text-base truncate">YouTube Channel</span>
-                <span
-                  class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-red-600/25 text-red-300 border border-red-500/40 uppercase shrink-0">
-                  VIDEOS
-                </span>
-              </div>
-              <p class="text-[11px] sm:text-xs text-slate-300 mt-0.5 truncate" data-i18n="youtube_sub">
-                youtube.com/@DaLinesTTV • ไฮไลท์สตรีม คลิปยิงคมๆ และ VOD ย้อนหลัง</p>
-            </div>
-          </div>
-          <i
-            class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-red-400 text-xs sm:text-sm shrink-0 transition"></i>
-        </div>
-      </a>
-
-      <!-- 5. TikTok Card -->
-      <a href="https://www.tiktok.com/@dalinestuang" target="_blank" rel="noopener noreferrer"
-        class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-pink-500/15 via-slate-900/70 to-slate-900/80 border border-pink-500/35 backdrop-blur-md group shadow-lg">
-        <div class="flex items-center justify-between gap-3">
-          <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
-            <div
-              class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-pink-500/20 flex items-center justify-center text-pink-400 text-lg sm:text-xl shrink-0 group-hover:scale-110 transition duration-300">
-              <i aria-hidden="true" class="fa-brands fa-tiktok"></i>
-            </div>
-            <div class="min-w-0">
-              <div class="flex items-center gap-2">
-                <span class="font-semibold text-white text-sm sm:text-base truncate">TikTok Channel</span>
-                <span
-                  class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-pink-500/20 text-pink-300 border border-pink-500/30 uppercase shrink-0">Shorts</span>
-              </div>
-              <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5 truncate" data-i18n="tiktok_sub">@dalinestuang •
-                คลิปไฮไลท์ & ช็อตฟันนี่โมเมนต์</p>
-            </div>
-          </div>
-          <i
-            class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-pink-400 text-xs sm:text-sm shrink-0 transition"></i>
-        </div>
-      </a>
-
-      <!-- 5. Facebook Fanpage -->
-      <a href="https://www.facebook.com/DaLinesTuang" target="_blank" rel="noopener noreferrer"
-        class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-blue-600/15 via-slate-900/70 to-slate-900/80 border border-blue-500/35 backdrop-blur-md group shadow-lg">
-        <div class="flex items-center justify-between gap-3">
-          <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
-            <div
-              class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-blue-600/20 flex items-center justify-center text-blue-400 text-lg sm:text-xl shrink-0 group-hover:scale-110 transition duration-300">
-              <i aria-hidden="true" class="fa-brands fa-facebook-f"></i>
-            </div>
-            <div class="min-w-0">
-              <span class="font-semibold text-white text-sm sm:text-base truncate block">Facebook Page</span>
-              <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5 truncate" data-i18n="facebook_sub">DaLines Tuang •
-                อัปเดตตารางเวลาสตรีมและข่าวสาร</p>
-            </div>
-          </div>
-          <i
-            class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-blue-400 text-xs sm:text-sm shrink-0 transition"></i>
-        </div>
-      </a>
-
-      <!-- 6. Instagram -->
-      <a href="https://www.instagram.com/tuangdanai/" target="_blank" rel="noopener noreferrer"
-        class="tilt-card block p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-rose-600/15 via-slate-900/70 to-slate-900/80 border border-rose-500/35 backdrop-blur-md group shadow-lg">
-        <div class="flex items-center justify-between gap-3">
-          <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
-            <div
-              class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-rose-600/20 flex items-center justify-center text-rose-400 text-lg sm:text-xl shrink-0 group-hover:scale-110 transition duration-300">
-              <i aria-hidden="true" class="fa-brands fa-instagram"></i>
-            </div>
-            <div class="min-w-0">
-              <span class="font-semibold text-white text-sm sm:text-base truncate block">Instagram</span>
-              <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5 truncate" data-i18n="instagram_sub">@tuangdanai •
-                ไลฟ์สไตล์และรูปภาพเบื้องหลัง</p>
-            </div>
-          </div>
-          <i
-            class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-rose-400 text-xs sm:text-sm shrink-0 transition"></i>
-        </div>
-      </a>
     </section>
 
     <!-- TAB 2: LIVE STREAM & TRAILER (DUAL PLAYER WITH CHAT) -->
-    <section id="tab-stream" class="tab-content space-y-3.5">
+    <section id="tab-stream" class="tab-content space-y-6">
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+        <!-- Left 7 Columns: Live Broadcast Theater & Chat -->
+        <div class="xl:col-span-7 space-y-4">
       <!-- Player Mode Switcher -->
       <div
-        class="p-2 rounded-2xl bg-slate-900/80 border border-slate-800 backdrop-blur-md flex items-center justify-center gap-2">
+        class="p-1.5 rounded-2xl studio-panel flex items-center justify-center gap-2">
         <button id="btn-mode-live" onclick="setPlayerMode('live')"
-          class="flex-1 py-2 px-3 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5 hover:bg-slate-800 cursor-pointer">
+          class="flex-1 py-2 px-3 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-colors flex items-center justify-center gap-1.5 hover:bg-white/[0.06] cursor-pointer">
           <span class="w-2 h-2 rounded-full bg-red-500"></span>
           <span data-i18n="btn_mode_live">🔴 ไลฟ์สด (Twitch Live)</span>
         </button>
         <button id="btn-mode-trailer" onclick="setPlayerMode('trailer')"
-          class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-emerald-600 text-white shadow-lg cursor-pointer">
+          class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5 bg-emerald-600 text-white shadow-lg cursor-pointer">
           <i aria-hidden="true" class="fa-solid fa-film text-xs"></i>
           <span data-i18n="btn_mode_trailer">🎬 เทรลเลอร์ช่อง (Trailer)</span>
         </button>
@@ -1267,20 +1157,20 @@
 
       <!-- Player Frame -->
       <div
-        class="tilt-card p-2 sm:p-3 rounded-2xl bg-slate-900/80 border backdrop-blur-md shadow-2xl flex flex-col items-center"
+        class="tilt-card p-2.5 sm:p-3 rounded-2xl studio-panel flex flex-col items-center"
         style="border-color: var(--primary-border);">
         <div class="video-responsive w-full shadow-inner bg-black relative">
           <!-- Facade Overlay (Click to Load Player) -->
           <div id="twitch-player-facade"
             onclick="loadTwitchPlayer()"
             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();loadTwitchPlayer();}"
-            class="absolute inset-0 z-20 flex flex-col items-center justify-center cursor-pointer bg-slate-950/85 hover:bg-slate-950/75 transition-all duration-300 group overflow-hidden"
+            class="absolute inset-0 z-20 flex flex-col items-center justify-center cursor-pointer bg-slate-950/85 hover:bg-slate-950/75 transition-opacity duration-300 group overflow-hidden"
             role="button"
             aria-label="คลิกเพื่อโหลดเครื่องเล่นสตรีมสด"
             tabindex="0">
             <!-- Background Cover Image (banner-480.png) -->
-            <img src="banner-480.png" alt="DaLines Stream Player Cover"
-              class="absolute inset-0 w-full h-full object-cover opacity-35 group-hover:opacity-50 group-hover:scale-105 transition-all duration-700 pointer-events-none select-none" />
+            <img src="banner-480.png" alt="DaLines Stream Player Cover" width="853" height="480"
+              class="absolute inset-0 w-full h-full object-cover opacity-35 group-hover:opacity-50 group-hover:scale-105 transition-transform duration-700 pointer-events-none select-none" />
 
             <!-- Vignette & Gradient Overlay -->
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-slate-950/70 pointer-events-none"></div>
@@ -1349,7 +1239,10 @@
           </div>
         </div>
       </div>
+        </div><!-- End Left 7 Columns -->
 
+        <!-- Right 5 Columns: Weekly Stream Schedule Countdown & Cyber Meme Soundboard -->
+        <div class="xl:col-span-5 space-y-5">
       <!-- 📅 1. WEEKLY STREAM SCHEDULE & CYBER RADAR COUNTDOWN -->
       <div class="cyber-hud-box p-3.5 sm:p-5 rounded-2xl space-y-3.5 shadow-xl">
         <!-- Card Header -->
@@ -1599,6 +1492,8 @@
           </button>
         </div>
       </div>
+        </div><!-- End Right 5 Columns -->
+      </div><!-- End 12-Col Stream Theater Grid -->
 
       <!-- HALL OF FAME: HIGHLIGHTS & MEME CLIPS VAULT (TWITCH CLIPS) -->
       <div
@@ -1726,7 +1621,7 @@
 
         <!-- Emotes Grid Container -->
         <div id="twitch-emotes-grid"
-          class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 sm:gap-2.5 max-h-[360px] overflow-y-auto pr-1">
+          class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2.5 max-h-[360px] overflow-y-auto pr-1">
         </div>
 
         <!-- Footer Notice -->
@@ -1742,13 +1637,13 @@
     </section>
 
     <!-- TAB 3: PC SPECS -->
-    <section id="tab-pc" class="tab-content space-y-3">
+    <section id="tab-pc" class="tab-content space-y-4">
       <div class="text-xs text-slate-400 flex items-center justify-between px-1 mb-1">
         <span data-i18n="hw_conf">Hardware Configuration</span>
         <span class="font-medium" style="color: var(--primary-color);">DaLines Battle Station</span>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- CPU -->
         <div
           class="tilt-card p-3 sm:p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md flex items-center justify-between gap-2 shadow-lg">
@@ -1853,8 +1748,8 @@
     </section>
 
     <!-- TAB 4: GAMING GEAR -->
-    <section id="tab-gear" class="tab-content space-y-3">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+    <section id="tab-gear" class="tab-content space-y-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- Mouse -->
         <div
           class="tilt-card p-3 sm:p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md flex items-center justify-between gap-2 shadow-lg">
@@ -1954,7 +1849,7 @@
 
         <!-- Webcam -->
         <div
-          class="tilt-card p-3 sm:p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md flex items-center justify-between gap-2 shadow-lg sm:col-span-2">
+          class="tilt-card p-3 sm:p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md flex items-center justify-between gap-2 shadow-lg sm:col-span-2 lg:col-span-3">
           <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
             <div
               class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 shrink-0">
@@ -1968,9 +1863,12 @@
         </div>
       </div>
 
+      <!-- 12-Column Esports Command Workbench -->
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start pt-2">
+        <div class="xl:col-span-6 space-y-5">
       <!-- 🎯 1. DALINES PRO SETTINGS & VALORANT SENSITIVITY SPEC TABLE -->
       <div
-        class="tilt-card p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-red-950/30 via-slate-900/90 to-cyan-950/30 border border-red-500/40 backdrop-blur-md shadow-xl mt-3 space-y-3.5">
+        class="tilt-card p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-red-950/30 via-slate-900/90 to-cyan-950/30 border border-red-500/40 backdrop-blur-md shadow-xl space-y-3.5">
         <div class="flex items-center justify-between flex-wrap gap-2">
           <div class="flex items-center gap-2.5">
             <div
@@ -2001,7 +1899,7 @@
         </div>
 
         <!-- Spec Table Grid (6 Cards) -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs font-mono">
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs font-mono">
           <!-- 1. Mouse -->
           <div class="p-2.5 rounded-xl bg-black/60 border border-slate-800 flex flex-col justify-between">
             <span class="text-[10px] text-slate-400 font-sans flex items-center gap-1">
@@ -2450,10 +2348,11 @@
           </button>
         </div>
       </div>
-
+        </div>
+        <div class="xl:col-span-6 space-y-5">
       <!-- 🎯 3. VALORANT ESPORTS CAREER & LIVE MATCH TRACKER -->
       <div id="valorant-tracker-section"
-        class="cyber-hud-box p-3.5 sm:p-5 rounded-2xl bg-gradient-to-br from-red-950/40 via-slate-900/90 to-purple-950/30 border border-red-500/40 backdrop-blur-md shadow-2xl mt-3 space-y-4">
+        class="cyber-hud-box p-3.5 sm:p-5 rounded-2xl bg-gradient-to-br from-red-950/40 via-slate-900/90 to-purple-950/30 border border-red-500/40 backdrop-blur-md shadow-2xl space-y-4">
 
         <!-- Header & Action Bar -->
         <div class="flex items-center justify-between flex-wrap gap-2.5 pb-3 border-b border-slate-800/80">
@@ -3062,10 +2961,14 @@
           </button>
         </div>
       </div>
+        </div>
+      </div>
     </section>
 
     <!-- TAB 5: CHAT RULES & PARTY BOT -->
-    <section id="tab-rules" class="tab-content space-y-3">
+    <section id="tab-rules" class="tab-content space-y-5">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="lg:col-span-5 space-y-5">
       <!-- Party & In-game ID -->
       <div
         class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-emerald-500/10 via-slate-900/70 to-cyan-900/20 border border-emerald-500/30 backdrop-blur-md shadow-lg">
@@ -3095,6 +2998,118 @@
           </a>
         </div>
       </div>
+
+      <!-- NIGHTBOT STREAM COMMANDS HUB -->
+      <div
+        class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-indigo-500/15 via-slate-900/80 to-blue-900/20 border border-indigo-500/30 backdrop-blur-md shadow-xl">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-3.5 flex-wrap gap-2">
+          <div class="flex items-center gap-2.5">
+            <div
+              class="w-8 h-8 rounded-lg bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400">
+              <i aria-hidden="true" class="fa-solid fa-robot text-sm"></i>
+            </div>
+            <div>
+              <div class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5">
+                <span>🤖 รวมคำสั่ง Nightbot ประจำช่อง DaLines</span>
+                <span
+                  class="px-2 py-0.5 rounded-full text-[9px] font-mono bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">NIGHTBOT</span>
+              </div>
+              <div class="text-[10px] sm:text-[11px] text-slate-400">
+                คัดลอกคำสั่งไปพิมพ์ในแชท Twitch หรือคลิกดูคำตอบได้ทันที ไม่ต้องรอถามในไลฟ์!
+              </div>
+            </div>
+          </div>
+          <a href="https://nightbot.tv/t/dalines/commands" target="_blank" rel="noopener noreferrer"
+            class="px-2.5 py-1 rounded-lg bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-500/30 text-indigo-300 text-[10px] font-medium transition active:scale-95 flex items-center gap-1 cursor-pointer"
+            title="ดูคำสั่งทั้งหมดบน Nightbot">
+            <span>Nightbot (620+ คำสั่ง)</span>
+            <i aria-hidden="true" class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+          </a>
+        </div>
+
+        <!-- Search & Filter Controls -->
+        <div class="space-y-2 mb-3.5">
+          <div class="relative">
+            <i aria-hidden="true" class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+            <input type="text" id="bot-cmd-search" aria-label="ค้นหาคำสั่งแชท / Search chat commands" oninput="filterBotCommands()"
+              placeholder="ค้นหาคำสั่ง เช่น !sens, !dpi, !specs, !ign, !badday..."
+              class="w-full bg-black/60 border border-slate-800 focus:border-indigo-500 rounded-xl pl-8 pr-8 py-2 text-xs text-white placeholder:text-slate-500 outline-none transition" />
+            <button type="button" id="btn-clear-cmd-search" aria-label="ล้างการค้นหา / Clear search" onclick="clearBotCommandSearch()"
+              class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white text-xs cursor-pointer">
+              <i aria-hidden="true" class="fa-solid fa-circle-xmark"></i>
+            </button>
+          </div>
+
+          <!-- Category Pills -->
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px]" style="scrollbar-width: none;">
+            <button type="button" data-bot-cat="all" onclick="setBotCmdCategory('all', this)"
+              class="cmd-cat-btn px-2.5 py-1 rounded-lg bg-indigo-600 text-white font-bold transition whitespace-nowrap active:scale-95 cursor-pointer">ทั้งหมด
+              (All)</button>
+            <button type="button" data-bot-cat="aim" onclick="setBotCmdCategory('aim', this)"
+              class="cmd-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer">🎯
+              เป้า & Sens</button>
+            <button type="button" data-bot-cat="ign" onclick="setBotCmdCategory('ign', this)"
+              class="cmd-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer">🎮
+              ชื่อในเกม (IGN)</button>
+            <button type="button" data-bot-cat="gear" onclick="setBotCmdCategory('gear', this)"
+              class="cmd-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer">💻
+              สเปก & อุปกรณ์</button>
+            <button type="button" data-bot-cat="social" onclick="setBotCmdCategory('social', this)"
+              class="cmd-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer">🌐
+              โซเชียล & ติดตาม</button>
+            <button type="button" data-bot-cat="fun" onclick="setBotCmdCategory('fun', this)"
+              class="cmd-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer">🤣
+              มีม & กวนๆ</button>
+          </div>
+        </div>
+
+        <!-- Commands Grid -->
+        <div id="bot-commands-grid"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-2 sm:gap-2.5 max-h-[380px] overflow-y-auto pr-1"></div>
+
+        <!-- No Results Fallback -->
+        <div id="bot-commands-empty" class="hidden py-8 text-center text-slate-500 text-xs">
+          <i aria-hidden="true" class="fa-solid fa-ghost text-2xl mb-1 text-slate-600 block"></i>
+          <span>ไม่พบคำสั่งที่ค้นหา ลองพิมพ์คำอื่นดูนะ!</span>
+        </div>
+
+        <!-- Footer Info -->
+        <div
+          class="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400">
+          <span class="flex items-center gap-1">
+            <i aria-hidden="true" class="fa-solid fa-lightbulb text-amber-400"></i>
+            <span>คลิกที่คำสั่งเพื่อคัดลอกลง Clipboard ทันที</span>
+          </span>
+          <span id="cmd-count-badge" class="font-mono text-indigo-300">แสดง 23 คำสั่ง</span>
+        </div>
+      </div>
+
+      <!-- Chat Rules -->
+      <div class="p-4 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md shadow-lg">
+        <div class="flex items-center gap-2 mb-2 text-xs font-semibold uppercase text-slate-400">
+          <i aria-hidden="true" class="fa-solid fa-comment-dots text-purple-400"></i>
+          <span data-i18n="chat_rules_title">กฎกติกาการพูดคุย (Chat Rules)</span>
+        </div>
+        <ul class="text-xs sm:text-sm space-y-2 text-slate-300 leading-relaxed">
+          <li class="flex items-start gap-2">
+            <span class="text-emerald-400 mt-0.5">•</span>
+            <span data-i18n="rule_1">พิมพ์คุยเล่นได้ตลอด ถามได้ไม่กัดครับ เป็นกันเองได้เลย</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-emerald-400 mt-0.5">•</span>
+            <span data-i18n="rule_2">ให้เกียรติเพื่อนๆ ในแชท ไม่สปอยล์ และงดใช้คำพูดเสียดสีรุนแรง</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-0.5">•</span>
+            <span data-i18n="rule_3">คำสั่งบอท: พิมพ์ <code
+                class="bg-slate-800 px-1.5 py-0.5 rounded text-emerald-300 font-mono text-xs">!commands</code> ในแชท
+              Twitch เพื่อเล่นกับบอทและดูคำสั่งทั้งหมด</span>
+          </li>
+        </ul>
+      </div>
+        </div>
+        <div class="lg:col-span-7">
 
       <!-- DALINES INTERACTIVE MEME SOUNDBOARD -->
       <div
@@ -3316,115 +3331,7 @@
           <span class="text-[10px] text-slate-500">Web Audio FX</span>
         </div>
       </div>
-
-      <!-- NIGHTBOT STREAM COMMANDS HUB -->
-      <div
-        class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-indigo-500/15 via-slate-900/80 to-blue-900/20 border border-indigo-500/30 backdrop-blur-md shadow-xl">
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-3.5 flex-wrap gap-2">
-          <div class="flex items-center gap-2.5">
-            <div
-              class="w-8 h-8 rounded-lg bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400">
-              <i aria-hidden="true" class="fa-solid fa-robot text-sm"></i>
-            </div>
-            <div>
-              <div class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5">
-                <span>🤖 รวมคำสั่ง Nightbot ประจำช่อง DaLines</span>
-                <span
-                  class="px-2 py-0.5 rounded-full text-[9px] font-mono bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">NIGHTBOT</span>
-              </div>
-              <div class="text-[10px] sm:text-[11px] text-slate-400">
-                คัดลอกคำสั่งไปพิมพ์ในแชท Twitch หรือคลิกดูคำตอบได้ทันที ไม่ต้องรอถามในไลฟ์!
-              </div>
-            </div>
-          </div>
-          <a href="https://nightbot.tv/t/dalines/commands" target="_blank" rel="noopener noreferrer"
-            class="px-2.5 py-1 rounded-lg bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-500/30 text-indigo-300 text-[10px] font-medium transition active:scale-95 flex items-center gap-1 cursor-pointer"
-            title="ดูคำสั่งทั้งหมดบน Nightbot">
-            <span>Nightbot (620+ คำสั่ง)</span>
-            <i aria-hidden="true" class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
-          </a>
         </div>
-
-        <!-- Search & Filter Controls -->
-        <div class="space-y-2 mb-3.5">
-          <div class="relative">
-            <i aria-hidden="true" class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
-            <input type="text" id="bot-cmd-search" aria-label="ค้นหาคำสั่งแชท / Search chat commands" oninput="filterBotCommands()"
-              placeholder="ค้นหาคำสั่ง เช่น !sens, !dpi, !specs, !ign, !badday..."
-              class="w-full bg-black/60 border border-slate-800 focus:border-indigo-500 rounded-xl pl-8 pr-8 py-2 text-xs text-white placeholder:text-slate-500 outline-none transition" />
-            <button type="button" id="btn-clear-cmd-search" aria-label="ล้างการค้นหา / Clear search" onclick="clearBotCommandSearch()"
-              class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white text-xs cursor-pointer">
-              <i aria-hidden="true" class="fa-solid fa-circle-xmark"></i>
-            </button>
-          </div>
-
-          <!-- Category Pills -->
-          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px]" style="scrollbar-width: none;">
-            <button type="button" data-bot-cat="all" onclick="setBotCmdCategory('all', this)"
-              class="cmd-cat-btn px-2.5 py-1 rounded-lg bg-indigo-600 text-white font-bold transition whitespace-nowrap active:scale-95 cursor-pointer">ทั้งหมด
-              (All)</button>
-            <button type="button" data-bot-cat="aim" onclick="setBotCmdCategory('aim', this)"
-              class="cmd-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer">🎯
-              เป้า & Sens</button>
-            <button type="button" data-bot-cat="ign" onclick="setBotCmdCategory('ign', this)"
-              class="cmd-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer">🎮
-              ชื่อในเกม (IGN)</button>
-            <button type="button" data-bot-cat="gear" onclick="setBotCmdCategory('gear', this)"
-              class="cmd-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer">💻
-              สเปก & อุปกรณ์</button>
-            <button type="button" data-bot-cat="social" onclick="setBotCmdCategory('social', this)"
-              class="cmd-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer">🌐
-              โซเชียล & ติดตาม</button>
-            <button type="button" data-bot-cat="fun" onclick="setBotCmdCategory('fun', this)"
-              class="cmd-cat-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white font-medium transition whitespace-nowrap active:scale-95 cursor-pointer">🤣
-              มีม & กวนๆ</button>
-          </div>
-        </div>
-
-        <!-- Commands Grid -->
-        <div id="bot-commands-grid"
-          class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 max-h-[380px] overflow-y-auto pr-1"></div>
-
-        <!-- No Results Fallback -->
-        <div id="bot-commands-empty" class="hidden py-8 text-center text-slate-500 text-xs">
-          <i aria-hidden="true" class="fa-solid fa-ghost text-2xl mb-1 text-slate-600 block"></i>
-          <span>ไม่พบคำสั่งที่ค้นหา ลองพิมพ์คำอื่นดูนะ!</span>
-        </div>
-
-        <!-- Footer Info -->
-        <div
-          class="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400">
-          <span class="flex items-center gap-1">
-            <i aria-hidden="true" class="fa-solid fa-lightbulb text-amber-400"></i>
-            <span>คลิกที่คำสั่งเพื่อคัดลอกลง Clipboard ทันที</span>
-          </span>
-          <span id="cmd-count-badge" class="font-mono text-indigo-300">แสดง 23 คำสั่ง</span>
-        </div>
-      </div>
-
-      <!-- Chat Rules -->
-      <div class="p-4 rounded-2xl bg-slate-900/70 border border-slate-800 backdrop-blur-md shadow-lg">
-        <div class="flex items-center gap-2 mb-2 text-xs font-semibold uppercase text-slate-400">
-          <i aria-hidden="true" class="fa-solid fa-comment-dots text-purple-400"></i>
-          <span data-i18n="chat_rules_title">กฎกติกาการพูดคุย (Chat Rules)</span>
-        </div>
-        <ul class="text-xs sm:text-sm space-y-2 text-slate-300 leading-relaxed">
-          <li class="flex items-start gap-2">
-            <span class="text-emerald-400 mt-0.5">•</span>
-            <span data-i18n="rule_1">พิมพ์คุยเล่นได้ตลอด ถามได้ไม่กัดครับ เป็นกันเองได้เลย</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="text-emerald-400 mt-0.5">•</span>
-            <span data-i18n="rule_2">ให้เกียรติเพื่อนๆ ในแชท ไม่สปอยล์ และงดใช้คำพูดเสียดสีรุนแรง</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="text-cyan-400 mt-0.5">•</span>
-            <span data-i18n="rule_3">คำสั่งบอท: พิมพ์ <code
-                class="bg-slate-800 px-1.5 py-0.5 rounded text-emerald-300 font-mono text-xs">!commands</code> ในแชท
-              Twitch เพื่อเล่นกับบอทและดูคำสั่งทั้งหมด</span>
-          </li>
-        </ul>
       </div>
     </section>
 
