@@ -105,3 +105,24 @@ test('TTS API proxy preserves its path, query, method, credentials and response'
   assert.equal(response.headers.get('access-control-allow-origin'), '*');
   assert.deepEqual(await response.json(), { ok: true });
 });
+
+test('Twitch live status endpoint returns parsed stream state and caches upstream checks', async () => {
+  const { worker, requests } = createWorker(async (url) => {
+    if (String(url).includes('/uptime/')) return new Response('2 hours, 15 minutes');
+    if (String(url).includes('/game/')) return new Response('VALORANT');
+    return new Response('');
+  });
+  const first = await worker.fetch(new Request('https://dalines.test/api/twitch-status'), {}, {});
+  assert.equal(first.status, 200);
+  assert.match(first.headers.get('cache-control'), /max-age=30/);
+  const body = await first.json();
+  assert.equal(body.status, 'success');
+  assert.equal(body.data.isLive, true);
+  assert.equal(body.data.uptime, '2 hours, 15 minutes');
+  assert.equal(body.data.game, 'VALORANT');
+  assert.equal(requests.length, 2);
+
+  const second = await worker.fetch(new Request('https://dalines.test/api/twitch-status'), {}, {});
+  assert.equal(second.status, 200);
+  assert.equal(requests.length, 2, 'Cached window should avoid duplicate upstream requests');
+});

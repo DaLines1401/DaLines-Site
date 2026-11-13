@@ -298,6 +298,7 @@ async function copyTextToClipboard(text, successMessage) {
         hero_nav_setup: "สเปกคอม",
         hero_nav_story: "สตอรี่",
         hero_cta: "🔴 ดูสตรีมสด",
+        cmd_palette_btn: "ค้นหาด่วน",
         hero_sound_on: "เปิดเสียง",
         hero_sound_off: "ปิดเสียง",
         hero_scrub_hint: "ขยับเมาส์ หรือปาดหน้าจอเพื่อสครับท่าเต้น • กด Spacebar เพื่อเต้นอัตโนมัติ",
@@ -414,6 +415,7 @@ async function copyTextToClipboard(text, successMessage) {
         hero_nav_setup: "Setup & Gear",
         hero_nav_story: "Story",
         hero_cta: "🔴 Watch Live",
+        cmd_palette_btn: "Quick Command",
         hero_sound_on: "Sound On",
         hero_sound_off: "Sound Off",
         hero_scrub_hint: "Drag mouse or swipe to scrub dance • Press Space to auto-dance",
@@ -2400,23 +2402,47 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
         modalFocus.delete(modal);
       }
     }
+    function closeModalById(modalId) {
+      if (modalId === 'modal-clip-player') closeClipModal();
+      else if (modalId === 'modal-aim-result') closeAimResultModal();
+      else if (modalId === 'modal-command-palette') closeCommandPalette();
+      else closeTtsHelperModal();
+    }
     function setupModals() {
-      ['modal-tts-helper', 'modal-clip-player', 'modal-aim-result'].forEach(id => {
+      ['modal-tts-helper', 'modal-clip-player', 'modal-aim-result', 'modal-command-palette'].forEach(id => {
         const modal = document.getElementById(id);
         if (!modal) return;
         modal.setAttribute('role', 'dialog');
         modal.setAttribute('aria-modal', 'true');
         modal.setAttribute('aria-hidden', 'true');
         modal.addEventListener('click', event => {
-          if (event.target === modal) id === 'modal-clip-player' ? closeClipModal() : id === 'modal-aim-result' ? closeAimResultModal() : closeTtsHelperModal();
+          if (event.target === modal) closeModalById(id);
         });
       });
       document.addEventListener('keydown', event => {
-        const modal = ['modal-clip-player', 'modal-tts-helper', 'modal-aim-result'].map(id => document.getElementById(id)).find(el => el && !el.classList.contains('hidden'));
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+          event.preventDefault();
+          const paletteModal = document.getElementById('modal-command-palette');
+          if (paletteModal && !paletteModal.classList.contains('hidden')) closeCommandPalette();
+          else openCommandPalette();
+          return;
+        }
+        const modal = ['modal-command-palette', 'modal-clip-player', 'modal-tts-helper', 'modal-aim-result']
+          .map(id => document.getElementById(id))
+          .find(el => el && !el.classList.contains('hidden'));
         if (!modal) return;
+        if (modal.id === 'modal-command-palette') {
+          if (event.key === 'ArrowDown') { event.preventDefault(); moveCommandPaletteSelection(1); return; }
+          if (event.key === 'ArrowUp') { event.preventDefault(); moveCommandPaletteSelection(-1); return; }
+          if (event.key === 'Enter' && document.activeElement?.id === 'cmd-palette-input') {
+            event.preventDefault();
+            executeActiveCommandPaletteItem();
+            return;
+          }
+        }
         if (event.key === 'Escape') {
           event.preventDefault();
-          modal.id === 'modal-clip-player' ? closeClipModal() : modal.id === 'modal-aim-result' ? closeAimResultModal() : closeTtsHelperModal();
+          closeModalById(modal.id);
         } else if (event.key === 'Tab') {
           const controls = Array.from(modal.querySelectorAll('button, a[href], input, select, textarea, iframe, [tabindex="0"]')).filter(el => !el.disabled && !el.closest('.hidden'));
           if (!controls.length) { event.preventDefault(); return; }
@@ -4411,3 +4437,302 @@ Crosshair: 0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6;a;0;f;0;m;1;0l;3;0o;7;0a;0;0f;0;1
     // 🛸 CYBERPUNK FUTURISTIC ENHANCEMENTS ENGINE (CANVAS, RADAR, SOUNDBOARD, RANDOMIZER)
     // =========================================================================
 
+
+    // =========================================================================
+    // ⌘ STUDIO COMMAND PALETTE (Ctrl+K / Cmd+K)
+    // =========================================================================
+    let cmdPaletteActiveIndex = 0;
+    let cmdPaletteFiltered = [];
+
+    function getCommandPaletteItems() {
+      const isEn = currentLang === 'en';
+      const items = [
+        {
+          id: 'tab:links',
+          category: isEn ? 'Navigation' : 'นำทางแท็บ',
+          title: isEn ? 'Links & Support Hub' : 'แท็บ: ลิงก์ติดตาม & สนับสนุน QR',
+          subtitle: isEn ? 'Social links, QR Donate & KBank transfer' : 'ช่องทางโซเชียล, QR Code โดเนท และบัญชีธนาคาร',
+          icon: 'fa-solid fa-link',
+          keywords: 'links social donate qr bank kbank ติดตาม โดเนท'
+        },
+        {
+          id: 'tab:stream',
+          category: isEn ? 'Navigation' : 'นำทางแท็บ',
+          title: isEn ? 'Live Stream, Clips & Emotes' : 'แท็บ: ไลฟ์สด, คลิปเด็ด & อีโมตช่อง',
+          subtitle: isEn ? 'Twitch player, stream countdown & emote vault' : 'หน้าจอสตรีม Twitch, นับถอยหลังไลฟ์ และคลังอีโมต',
+          icon: 'fa-brands fa-twitch',
+          keywords: 'stream live twitch clips emotes schedule สตรีม คลิป อีโมต'
+        },
+        {
+          id: 'tab:pc',
+          category: isEn ? 'Navigation' : 'นำทางแท็บ',
+          title: isEn ? 'PC Hardware Specs' : 'แท็บ: สเปกคอม Battle Station',
+          subtitle: isEn ? 'CPU, GPU, RAM, Monitor & streaming rig' : 'สเปก CPU, การ์ดจอ, จอ 165Hz และอุปกรณ์เครื่องหลัก',
+          icon: 'fa-solid fa-microchip',
+          keywords: 'pc specs hardware cpu gpu ram monitor สเปก คอม'
+        },
+        {
+          id: 'tab:gear',
+          category: isEn ? 'Navigation' : 'นำทางแท็บ',
+          title: isEn ? 'Gear, Pro Settings, eDPI & Valorant Tracker' : 'แท็บ: เกมมิ่งเกียร์, ค่าเมาส์ & Valorant Tracker',
+          subtitle: isEn ? 'Crosshair simulator, Aim Challenge & Rank lookup' : 'คำนวณ eDPI, ฝึกยิง 10 วิ และเช็กแรงก์ Valorant สด',
+          icon: 'fa-solid fa-crosshairs',
+          keywords: 'gear pro settings edpi crosshair aim valorant tracker เกียร์ เป้า แรงก์'
+        },
+        {
+          id: 'tab:rules',
+          category: isEn ? 'Navigation' : 'นำทางแท็บ',
+          title: isEn ? 'Chat Rules, Nightbot & Meme Soundboard' : 'แท็บ: กติกาแชท, คำสั่งบอท & Soundboard',
+          subtitle: isEn ? '23 Nightbot commands, Riot ID & OBS TTS Sync' : 'รวมคำสั่ง Nightbot, Riot ID และแผงกดเสียงมีม OBS',
+          icon: 'fa-solid fa-robot',
+          keywords: 'rules nightbot commands soundboard obs chat กติกา บอท เสียงมีม'
+        },
+        {
+          id: 'copy:crosshair',
+          category: isEn ? 'Quick Copy' : 'คัดลอกด่วน',
+          title: isEn ? 'Copy Valorant Crosshair Code' : 'คัดลอกโค้ดเป้าเล็ง Valorant ของ DaLines',
+          subtitle: '0;p;0;c;1;s;1;P;c;7;t;6;o;1;d;1;z;6...',
+          icon: 'fa-solid fa-crosshairs',
+          keywords: 'copy crosshair valorant code เป้า โค้ดเป้า'
+        },
+        {
+          id: 'copy:prosettings',
+          category: isEn ? 'Quick Copy' : 'คัดลอกด่วน',
+          title: isEn ? 'Copy Full Pro Settings Summary' : 'คัดลอกสรุปค่าตั้งค่า Valorant ครบทุกตัวเลข',
+          subtitle: 'DPI 800 • Sens 0.45 • eDPI 360 • 1000Hz',
+          icon: 'fa-solid fa-sliders',
+          keywords: 'copy pro settings dpi sens edpi ความไว'
+        },
+        {
+          id: 'copy:ign',
+          category: isEn ? 'Quick Copy' : 'คัดลอกด่วน',
+          title: isEn ? 'Copy Riot ID (DaLines#TTV)' : 'คัดลอกชื่อในเกม / Riot ID: DaLines#TTV',
+          subtitle: isEn ? 'Add in-game to join viewer games' : 'คัดลอกไปแอดเพื่อนเล่นด้วยกันใน Valorant',
+          icon: 'fa-solid fa-id-badge',
+          keywords: 'ign riot id dalines ttv ชื่อในเกม แอดเพื่อน'
+        },
+        {
+          id: 'copy:email',
+          category: isEn ? 'Quick Copy' : 'คัดลอกด่วน',
+          title: isEn ? 'Copy Business Email (taung@windowslive.com)' : 'คัดลอกอีเมลติดต่องาน (taung@windowslive.com)',
+          subtitle: isEn ? 'Sponsorship & business inquiries' : 'ติดต่อสปอนเซอร์และงานโฆษณา',
+          icon: 'fa-solid fa-envelope',
+          keywords: 'email business contact sponsor อีเมล ติดต่องาน สปอนเซอร์'
+        },
+        {
+          id: 'copy:bank',
+          category: isEn ? 'Quick Copy' : 'คัดลอกด่วน',
+          title: isEn ? 'Copy KBank Account (632-2-17076-7)' : 'คัดลอกเลขบัญชีกสิกรไทย (632-2-17076-7)',
+          subtitle: isEn ? 'Danai Wongwichian • Kasikornbank' : 'ดนัย วงศ์วิเชียร • โดเนทตรงไม่หักค่าธรรมเนียม',
+          icon: 'fa-solid fa-building-columns',
+          keywords: 'bank kbank donate account กสิกร โอน บัญชี โดเนท'
+        },
+        {
+          id: 'sound:headshot',
+          category: isEn ? 'Soundboard FX' : 'เสียงมีมทันใจ',
+          title: isEn ? 'Play Meme FX: Headshot!' : 'เล่นเสียงมีม: ยิงหัวแตก! 🎯',
+          subtitle: isEn ? 'Play synth FX through browser audio' : 'เล่นเสียงเอฟเฟกต์ผ่านลำโพง/หูฟัง',
+          icon: 'fa-solid fa-volume-high',
+          keywords: 'sound meme fx headshot เสียง มีม ยิงหัว'
+        },
+        {
+          id: 'sound:yorn',
+          category: isEn ? 'Soundboard FX' : 'เสียงมีมทันใจ',
+          title: isEn ? 'Play Meme FX: Throw Game' : 'เล่นเสียงมีม: โยนแล้ว 1! 🗑️',
+          subtitle: isEn ? 'Classic DaLines streamer meme FX' : 'เสียงเอฟเฟกต์ประจำช่องสายยิงเน้นโยน',
+          icon: 'fa-solid fa-volume-high',
+          keywords: 'sound meme fx yorn throw เสียง โยน มีม'
+        },
+        {
+          id: 'pref:lang',
+          category: isEn ? 'Preferences' : 'ตั้งค่าระบบ',
+          title: isEn ? 'Switch Language (TH / EN)' : 'สลับภาษาเว็บไซต์ (ไทย / English)',
+          subtitle: isEn ? 'Currently: English' : 'ภาษาปัจจุบัน: ภาษาไทย',
+          icon: 'fa-solid fa-globe',
+          keywords: 'language lang th en ภาษา สลับภาษา'
+        },
+        {
+          id: 'theme:emerald',
+          category: isEn ? 'Preferences' : 'ตั้งค่าระบบ',
+          title: isEn ? 'Theme: Emerald Studio' : 'เปลี่ยนธีมสี: Emerald Studio',
+          subtitle: '#10b981 Signature Accent',
+          icon: 'fa-solid fa-palette',
+          keywords: 'theme emerald green สี เขียว'
+        },
+        {
+          id: 'theme:cyan',
+          category: isEn ? 'Preferences' : 'ตั้งค่าระบบ',
+          title: isEn ? 'Theme: Cyber Cyan' : 'เปลี่ยนธีมสี: Cyber Cyan',
+          subtitle: '#06b6d4 Tactical Accent',
+          icon: 'fa-solid fa-palette',
+          keywords: 'theme cyan blue สี ฟ้า'
+        },
+        {
+          id: 'theme:purple',
+          category: isEn ? 'Preferences' : 'ตั้งค่าระบบ',
+          title: isEn ? 'Theme: Twitch Violet' : 'เปลี่ยนธีมสี: Twitch Violet',
+          subtitle: '#a855f7 Broadcast Accent',
+          icon: 'fa-solid fa-palette',
+          keywords: 'theme purple violet twitch สี ม่วง'
+        },
+        {
+          id: 'page:dance/',
+          category: isEn ? 'Companion Pages' : 'หน้าพิเศษในเครือ',
+          title: isEn ? 'Open Dance Hero' : 'เปิดหน้า: Dance Hero',
+          subtitle: '/dance/',
+          icon: 'fa-solid fa-arrow-up-right-from-square',
+          keywords: 'page dance hero เต้น'
+        },
+        {
+          id: 'page:story/',
+          category: isEn ? 'Companion Pages' : 'หน้าพิเศษในเครือ',
+          title: isEn ? 'Open DaLines Story' : 'เปิดหน้า: DaLines Story',
+          subtitle: '/story/',
+          icon: 'fa-solid fa-arrow-up-right-from-square',
+          keywords: 'page story สตอรี่ ประวัติ'
+        },
+        {
+          id: 'page:party.html',
+          category: isEn ? 'Companion Pages' : 'หน้าพิเศษในเครือ',
+          title: isEn ? 'Open Party Lounge (Gacha & Wheel)' : 'เปิดหน้า: Party Lounge (กาชา & วงล้อ)',
+          subtitle: '/party.html',
+          icon: 'fa-solid fa-arrow-up-right-from-square',
+          keywords: 'page party gacha wheel ปาร์ตี้ กาชา วงล้อ'
+        },
+        {
+          id: 'page:tts.html',
+          category: isEn ? 'Companion Pages' : 'หน้าพิเศษในเครือ',
+          title: isEn ? 'Open TTS Station Control' : 'เปิดหน้า: TTS Station Hub',
+          subtitle: '/tts.html',
+          icon: 'fa-solid fa-arrow-up-right-from-square',
+          keywords: 'page tts voice bot บอท อ่านแชท'
+        }
+      ];
+
+      if (typeof NIGHTBOT_COMMANDS !== 'undefined' && Array.isArray(NIGHTBOT_COMMANDS)) {
+        NIGHTBOT_COMMANDS.forEach(cmd => {
+          items.push({
+            id: `bot:${cmd.name}`,
+            category: 'Nightbot',
+            title: `${cmd.name} — ${cmd.desc}`,
+            subtitle: cmd.response,
+            icon: 'fa-solid fa-terminal',
+            keywords: `${cmd.name} ${cmd.desc} ${(cmd.tags || []).join(' ')}`
+          });
+        });
+      }
+      return items;
+    }
+
+    function openCommandPalette() {
+      playSound('pop');
+      const modal = document.getElementById('modal-command-palette');
+      const input = document.getElementById('cmd-palette-input');
+      if (!modal) return;
+      if (input) input.value = '';
+      cmdPaletteActiveIndex = 0;
+      filterCommandPalette();
+      setModalOpen(modal, true);
+    }
+
+    function closeCommandPalette() {
+      const modal = document.getElementById('modal-command-palette');
+      if (!modal || modal.classList.contains('hidden')) return;
+      playSound('pop');
+      setModalOpen(modal, false);
+    }
+
+    function filterCommandPalette() {
+      const input = document.getElementById('cmd-palette-input');
+      const query = (input ? input.value : '').trim().toLowerCase();
+      const allItems = getCommandPaletteItems();
+      cmdPaletteFiltered = !query
+        ? allItems.slice(0, 14)
+        : allItems.filter(item =>
+            item.title.toLowerCase().includes(query) ||
+            item.subtitle.toLowerCase().includes(query) ||
+            item.category.toLowerCase().includes(query) ||
+            item.keywords.toLowerCase().includes(query)
+          ).slice(0, 18);
+      if (cmdPaletteActiveIndex >= cmdPaletteFiltered.length) cmdPaletteActiveIndex = 0;
+      renderCommandPaletteList();
+    }
+
+    function renderCommandPaletteList() {
+      const list = document.getElementById('cmd-palette-list');
+      const countEl = document.getElementById('cmd-palette-count');
+      if (!list) return;
+      if (countEl) {
+        countEl.innerText = currentLang === 'en'
+          ? `${cmdPaletteFiltered.length} items`
+          : `${cmdPaletteFiltered.length} รายการ`;
+      }
+      if (!cmdPaletteFiltered.length) {
+        list.innerHTML = `<div class="py-10 text-center text-xs text-slate-400">${currentLang === 'en' ? 'No matching commands found.' : 'ไม่พบคำสั่งหรือเมนูที่ค้นหา ลองพิมพ์คำอื่นดูครับ'}</div>`;
+        return;
+      }
+      list.innerHTML = cmdPaletteFiltered.map((item, idx) => {
+        const isActive = idx === cmdPaletteActiveIndex;
+        return `<button type="button" role="option" aria-selected="${isActive}" data-cmd-idx="${idx}"
+          onclick="runCommandPaletteAction('${escapeAttr(item.id)}')"
+          class="w-full text-left px-3 py-2.5 rounded-xl flex items-center justify-between gap-3 transition-colors cursor-pointer ${isActive ? 'bg-emerald-500/15 border border-emerald-400/40 text-white' : 'hover:bg-white/[0.05] border border-transparent text-slate-200'}">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-8 h-8 rounded-lg ${isActive ? 'bg-emerald-400/20 text-emerald-300' : 'bg-white/[0.05] text-slate-400'} flex items-center justify-center shrink-0 text-xs">
+              <i aria-hidden="true" class="${escapeHtml(item.icon)}"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-xs sm:text-[13px] font-semibold truncate">${escapeHtml(item.title)}</div>
+              <div class="text-xs text-slate-400 truncate">${escapeHtml(item.subtitle)}</div>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded-md bg-white/[0.06] text-[11px] font-mono text-slate-300 shrink-0">${escapeHtml(item.category)}</span>
+        </button>`;
+      }).join('');
+    }
+
+    function moveCommandPaletteSelection(delta) {
+      if (!cmdPaletteFiltered.length) return;
+      cmdPaletteActiveIndex = (cmdPaletteActiveIndex + delta + cmdPaletteFiltered.length) % cmdPaletteFiltered.length;
+      renderCommandPaletteList();
+      const activeBtn = document.querySelector(`#cmd-palette-list [data-cmd-idx="${cmdPaletteActiveIndex}"]`);
+      if (activeBtn && typeof activeBtn.scrollIntoView === 'function') {
+        activeBtn.scrollIntoView({ block: 'nearest' });
+      }
+    }
+
+    function executeActiveCommandPaletteItem() {
+      const selected = cmdPaletteFiltered[cmdPaletteActiveIndex];
+      if (selected) runCommandPaletteAction(selected.id);
+    }
+
+    function runCommandPaletteAction(actionId) {
+      closeCommandPalette();
+      if (!actionId) return;
+      const [kind, value] = [actionId.slice(0, actionId.indexOf(':')), actionId.slice(actionId.indexOf(':') + 1)];
+      if (kind === 'tab') {
+        switchTab(value, true, true);
+        document.getElementById('hub-main')?.scrollIntoView({ behavior: prefersQuietEffects() ? 'auto' : 'smooth' });
+      } else if (kind === 'copy') {
+        if (value === 'crosshair') copyValorantCrosshair();
+        else if (value === 'prosettings') copyProSettingsSummary();
+        else if (value === 'ign') copyIGN();
+        else if (value === 'email') copyHeroBusinessEmail();
+        else if (value === 'bank') copyBankAccount();
+      } else if (kind === 'sound') {
+        if (value === 'headshot') playMemeSound('headshot', 'ยิงหัวแตก', null);
+        else if (value === 'yorn') playMemeSound('yorn', 'โยนแล้วหนึ่ง', null);
+      } else if (kind === 'pref') {
+        if (value === 'lang') toggleLanguage();
+      } else if (kind === 'theme') {
+        setTheme(value);
+      } else if (kind === 'page') {
+        window.location.href = value;
+      } else if (kind === 'bot') {
+        const cmd = typeof NIGHTBOT_COMMANDS !== 'undefined'
+          ? NIGHTBOT_COMMANDS.find(c => c.name === value)
+          : null;
+        if (cmd) {
+          copyTextToClipboard(cmd.name, `${cmd.name}: ${cmd.response}`);
+        }
+      }
+    }

@@ -42,7 +42,8 @@ for (const name of ['app', 'effects', 'hero']) {
 const imageSizes = {};
 for (const [source, target, options] of [
   ['banner-480.png', 'banner.webp', { quality: 82, effort: 5 }],
-  ['Logo.png', 'avatar.webp', { quality: 85, effort: 5 }]
+  ['Logo.png', 'avatar.webp', { quality: 85, effort: 5 }],
+  ['qr-donate.png', 'qrdonate.webp', { quality: 88, effort: 5 }]
 ]) {
   const original = await fs.readFile(path.join(root, source));
   const bytes = await sharp(original).webp(options).toBuffer();

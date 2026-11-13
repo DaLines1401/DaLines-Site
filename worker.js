@@ -70,6 +70,53 @@ async function syncFromKyroskoh() {
   }
 }
 
+let liveTwitchCache = {
+  channel: "dalines",
+  isLive: false,
+  uptime: "dalines is offline",
+  game: "VALORANT",
+  lastUpdated: 0,
+  source: "DecAPI Twitch Edge Sync"
+};
+
+let lastTwitchSyncTime = 0;
+
+async function syncTwitchFromDecapi() {
+  const now = Date.now();
+  if (now - lastTwitchSyncTime < 30000) {
+    return;
+  }
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+    const [uptimeRes, gameRes] = await Promise.all([
+      fetch('https://decapi.me/twitch/uptime/dalines', { signal: controller.signal }),
+      fetch('https://decapi.me/twitch/game/dalines', { signal: controller.signal })
+    ]);
+    clearTimeout(timeout);
+    if (uptimeRes.ok) {
+      const uptimeText = (await uptimeRes.text()).trim();
+      const gameText = gameRes && gameRes.ok ? (await gameRes.text()).trim() : liveTwitchCache.game;
+      if (uptimeText && !/error|not found|rate limit|too many|unknown/i.test(uptimeText)) {
+        const hasDuration = /\d+\s*(?:days?|hours?|minutes?|seconds?)/i.test(uptimeText);
+        if (hasDuration || /offline/i.test(uptimeText)) {
+          liveTwitchCache = {
+            channel: "dalines",
+            isLive: hasDuration && !/offline/i.test(uptimeText),
+            uptime: uptimeText,
+            game: gameText || liveTwitchCache.game,
+            lastUpdated: now,
+            source: "DecAPI Twitch Edge Sync"
+          };
+          lastTwitchSyncTime = now;
+        }
+      }
+    }
+  } catch (err) {
+    // Keep last cached Twitch status on upstream error
+  }
+}
+
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
@@ -228,6 +275,34 @@ export default {
       return new Response(JSON.stringify({ error: 'Method Not Allowed' }), {
         status: 405,
         headers: CORS_HEADERS
+      });
+    }
+
+    // 2.5 Edge-Cached Twitch Live Status API (/api/twitch-status)
+    if (url.pathname === '/api/twitch-status') {
+      if (request.method !== 'GET') {
+        return new Response(JSON.stringify({ error: 'Method Not Allowed' }), {
+          status: 405,
+          headers: CORS_HEADERS
+        });
+      }
+      if (lastTwitchSyncTime === 0) {
+        await syncTwitchFromDecapi();
+      } else if (ctx && typeof ctx.waitUntil === 'function') {
+        ctx.waitUntil(syncTwitchFromDecapi());
+      } else {
+        await syncTwitchFromDecapi();
+      }
+      return new Response(JSON.stringify({
+        status: 'success',
+        data: liveTwitchCache,
+        serverTimestamp: Date.now()
+      }), {
+        status: 200,
+        headers: {
+          ...CORS_HEADERS,
+          'Cache-Control': 'public, max-age=30, stale-while-revalidate=60'
+        }
       });
     }
 

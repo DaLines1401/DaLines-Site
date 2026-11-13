@@ -460,3 +460,19 @@ test('aim countdowns and running games stop when leaving the panel or hiding the
   assert.equal(site.evaluate('isChallengeRunning'), false);
   assert.equal(site.document.getElementById('challenge-target').classList.contains('hidden'), true);
 });
+
+test('studio command palette opens, filters actions, runs tab switches, and closes', async () => {
+  const site = await createSite();
+  const modal = site.document.getElementById('modal-command-palette');
+  const input = site.document.getElementById('cmd-palette-input');
+  assert.equal(modal.classList.contains('hidden'), true);
+  site.context.openCommandPalette();
+  assert.equal(modal.classList.contains('hidden'), false);
+  assert.ok(site.document.getElementById('cmd-palette-list').children.length > 0);
+  input.value = '!sens';
+  site.context.filterCommandPalette();
+  assert.ok(site.document.getElementById('cmd-palette-list').textContent.includes('!sens'));
+  site.context.runCommandPaletteAction('tab:gear');
+  assertSelected(site, 'gear');
+  assert.equal(modal.classList.contains('hidden'), true);
+});

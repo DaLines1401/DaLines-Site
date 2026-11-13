@@ -112,6 +112,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin />
 
   <!-- CDN Resources -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
@@ -196,6 +197,13 @@
 
         <!-- Right Controls -->
         <div class="flex items-center gap-2.5 sm:gap-3">
+          <button type="button" onclick="openCommandPalette()" aria-label="ค้นหาด่วน / Command Palette (Ctrl+K)"
+            class="flex items-center gap-2 px-3 py-1.5 rounded-full text-[13px] font-medium bg-white/[0.06] text-neutral-200 hover:bg-white/[0.14] hover:text-white border border-white/10 transition-colors cursor-pointer">
+            <i aria-hidden="true" class="fa-solid fa-magnifying-glass text-xs text-emerald-400"></i>
+            <span class="hidden lg:inline" data-i18n="cmd_palette_btn">ค้นหาด่วน</span>
+            <kbd class="hidden sm:inline-block px-1.5 py-0.5 text-[11px] font-mono bg-black/50 border border-white/10 rounded text-neutral-400">Ctrl K</kbd>
+          </button>
+
           <button onclick="toggleLanguage()" class="flex items-center gap-1 px-3 py-1.5 rounded-full text-[13px] font-semibold bg-white/[0.06] text-white hover:bg-emerald-400 hover:text-black border border-white/10 transition-colors cursor-pointer">
             <span id="hero-lang-label">EN</span>
           </button>
@@ -504,7 +512,14 @@
         </button>
       </div>
 
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 flex-wrap">
+        <button type="button" id="btn-open-command-palette" onclick="openCommandPalette()" aria-label="ค้นหาด่วน / Command Palette (Ctrl+K)"
+          class="flex items-center gap-2 text-xs font-medium text-slate-200 hover:text-white bg-[#0b0f17] border border-white/15 hover:border-emerald-400/50 px-3.5 py-1.5 rounded-full transition-colors cursor-pointer">
+          <i aria-hidden="true" class="fa-solid fa-terminal text-emerald-400 text-xs"></i>
+          <span data-i18n="cmd_palette_btn">ค้นหาด่วน</span>
+          <kbd class="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono bg-black/60 border border-white/10 rounded text-slate-400">Ctrl K</kbd>
+        </button>
+
         <a href="dance/"
           class="flex items-center gap-1.5 text-xs font-medium text-emerald-300 hover:text-white bg-[#0b0f17] border border-emerald-500/30 hover:border-emerald-400 px-3.5 py-1.5 rounded-full transition-colors">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
@@ -3515,6 +3530,34 @@
             ปิด
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STUDIO COMMAND PALETTE MODAL (Ctrl+K) -->
+  <div role="dialog" aria-modal="true" aria-label="Command Palette ค้นหาด่วน" id="modal-command-palette"
+    class="fixed inset-0 z-[95] bg-black/80 backdrop-blur-md flex items-start justify-center pt-14 sm:pt-24 p-3 sm:p-4 hidden">
+    <div class="w-full max-w-xl bg-[#0b0f17] border border-white/15 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
+      <div class="flex items-center gap-3 px-4 py-3.5 border-b border-white/10 bg-[#06080c]/70">
+        <i aria-hidden="true" class="fa-solid fa-magnifying-glass text-emerald-400 text-sm"></i>
+        <input type="text" id="cmd-palette-input" aria-label="พิมพ์ค้นหาคำสั่ง แท็บ หรือการตั้งค่า"
+          oninput="filterCommandPalette()"
+          placeholder="พิมพ์ค้นหาแท็บ, โค้ดเป้า, !sens, เสียงมีม หรือตั้งค่า... (↑↓ เลือก, Enter ใช้งาน)"
+          class="w-full bg-transparent text-sm text-white placeholder:text-slate-500 outline-none" />
+        <button type="button" onclick="closeCommandPalette()" aria-label="ปิดหน้าต่างค้นหา / Close Command Palette"
+          class="px-2 py-1 rounded-lg bg-white/[0.06] hover:bg-white/[0.12] text-slate-400 hover:text-white text-xs font-mono transition-colors cursor-pointer shrink-0">
+          ESC
+        </button>
+      </div>
+      <div id="cmd-palette-list" role="listbox" aria-label="รายการคำสั่งด่วน"
+        class="overflow-y-auto p-2 space-y-1 max-h-[58vh] divide-y divide-white/[0.04]"></div>
+      <div class="px-4 py-2.5 border-t border-white/10 bg-[#06080c]/80 flex items-center justify-between text-xs text-slate-400">
+        <span class="flex items-center gap-3">
+          <span><kbd class="px-1.5 py-0.5 rounded bg-white/[0.06] border border-white/10 font-mono text-[11px]">↑↓</kbd> เลื่อน</span>
+          <span><kbd class="px-1.5 py-0.5 rounded bg-white/[0.06] border border-white/10 font-mono text-[11px]">Enter</kbd> เลือก</span>
+          <span><kbd class="px-1.5 py-0.5 rounded bg-white/[0.06] border border-white/10 font-mono text-[11px]">Esc</kbd> ปิด</span>
+        </span>
+        <span id="cmd-palette-count" class="font-mono text-emerald-400">0 รายการ</span>
       </div>
     </div>
   </div>
