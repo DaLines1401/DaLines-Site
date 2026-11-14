@@ -30,6 +30,7 @@ showcase-v2/frames/
 
 # Archives & Secrets
 *.zip
+!bot_update.zip
 .env
 .env.*
 !.env.example
