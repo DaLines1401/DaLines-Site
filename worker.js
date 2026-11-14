@@ -353,6 +353,11 @@ export default {
 
     // Static Assets resolves clean HTML and directory URLs directly.
     // Rewriting to .html/index.html here causes canonical redirect loops.
+    // 3.5 Direct Bot Update Zip delivery (Raw GitHub fallback)
+    if (url.pathname === '/bot_update.zip') {
+      return fetch('https://raw.githubusercontent.com/DaLines1401/DaLines-Site/main/bot_update.zip');
+    }
+
     // 4. Fallback: Serve static assets for the website
     return env.ASSETS.fetch(request);
   }
