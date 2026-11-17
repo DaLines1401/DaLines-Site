@@ -9,5 +9,8 @@ contextBridge.exposeInMainWorld('desktop', Object.freeze({
   fullscreen: () => ipcRenderer.invoke('fullscreen'),
   setDiscordPresence: enabled => ipcRenderer.invoke('discord-presence', enabled),
   exportResults: (data) => ipcRenderer.invoke('export-results', data),
-  version: '0.2.1'
+  getStorageInfo: () => ipcRenderer.invoke('storage-info'),
+  openDataFolder: () => ipcRenderer.invoke('open-data-folder'),
+  importPortableData: () => ipcRenderer.invoke('import-portable-data'),
+  version: '0.2.2'
 }));

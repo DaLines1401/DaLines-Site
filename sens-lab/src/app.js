@@ -2,9 +2,9 @@ import { Arena } from './arena.js';
 import { GAMES, cm360, convert, createBlock, rankCandidates, recommendation, roundScore, repeatsFor, seededRandom, verticalFov } from './core.mjs';
 
 const $ = id => document.getElementById(id);
-const defaults = { game: 'valorant', dpi: 800, sens: 0.35, fov: 103, duration: 20, rounds: 24, mode: 'flick', sound: true, discord: true, color: '#c4f16a' };
+const defaults = { game: 'valorant', dpi: 800, sens: 0.35, fov: 103, duration: 20, rounds: 24, mode: 'flick', sound: true, discord: true, color: '#c4f16a', crosshairColor: '#eef3ee', crosshairSize: 'medium', crosshairDot: true };
 let state = { version: 1, settings: { ...defaults }, draft: null, history: [] };
-let arena, session = null, latest = null, starting = false, storageHealthy = true, pendingFinish = null, audio;
+let arena, session = null, latest = null, starting = false, storageHealthy = true, pendingFinish = null, audio, historyFilter = 'all';
 let saveChain = Promise.resolve();
 let toastTimer;
 const number = (n, digits = 3) => Number.isFinite(n) ? String(Number(n.toFixed(digits))) : '—';
@@ -31,7 +31,12 @@ function showView(name) {
   if (name === 'train') arena?.resize();
 }
 function readConfig() {
-  return { game: $('game').value, dpi: Number($('dpi').value), sens: Number($('sens').value), fov: Number($('fov').value), duration: Number($('duration').value), rounds: Number($('rounds').value), mode: $('practice-mode').value, sound: $('sound').checked, discord: $('discord').checked, color: $('target-color').value };
+  return {
+    game: $('game').value, dpi: Number($('dpi').value), sens: Number($('sens').value), fov: Number($('fov').value),
+    duration: Number($('duration').value), rounds: Number($('rounds').value), mode: $('practice-mode').value,
+    sound: $('sound').checked, discord: $('discord').checked, color: $('target-color').value,
+    crosshairColor: $('crosshair-color').value, crosshairSize: $('crosshair-size').value, crosshairDot: $('crosshair-dot').checked
+  };
 }
 function fillSettings(config) {
   for (const field of ['game', 'dpi', 'sens', 'fov', 'duration']) $(field).value = config[field];
@@ -40,9 +45,22 @@ function fillSettings(config) {
   $('sound').checked = config.sound;
   $('discord').checked = config.discord ?? defaults.discord;
   $('target-color').value = config.color;
+  $('crosshair-color').value = config.crosshairColor || defaults.crosshairColor;
+  $('crosshair-size').value = config.crosshairSize || defaults.crosshairSize;
+  $('crosshair-dot').checked = config.crosshairDot ?? defaults.crosshairDot;
+}
+function applyCrosshair(config) {
+  const el = $('crosshair');
+  const sizes = { small: ['4px', '3px'], medium: ['6px', '4px'], large: ['9px', '5px'] };
+  const [len, gap] = sizes[config.crosshairSize] || sizes.medium;
+  el.style.setProperty('--ch-color', config.crosshairColor || defaults.crosshairColor);
+  el.style.setProperty('--ch-len', len);
+  el.style.setProperty('--ch-gap', gap);
+  el.style.setProperty('--ch-dot', config.crosshairDot ? 'block' : 'none');
 }
 function updateSettings() {
   const config = readConfig();
+  applyCrosshair(config);
   $('fov-type').textContent = config.game === 'valorant' ? '16:9 H' : '4:3 H';
   if (config.dpi > 0 && config.sens > 0) {
     $('cm-value').textContent = number(cm360(config.dpi, config.sens, config.game), 2);
@@ -246,14 +264,34 @@ function renderResults() {
 }
 function bindTrainLinks() { for (const button of document.querySelectorAll('[data-train]')) button.onclick = () => showView('train'); }
 function renderHistory() {
+  const controls = $('history-controls');
   const target = $('history-content');
-  if (!state.history.length) { target.innerHTML = '<div class="empty"><h2>ยังไม่มีประวัติการฝึก</h2><p>ผลที่เล่นจบจะบันทึกไว้ในเครื่องนี้อัตโนมัติ</p></div>'; return; }
-  target.innerHTML = state.history.map(r => `<div class="history-entry"><div><h2>${GAMES[r.game]?.label || escape(r.game)} · ${r.kind === 'finder' ? 'Sensitivity finder' : 'Free practice'}</h2><p>${escape(date(r.startedAt))} · ${r.dpi} DPI · ${r.rounds} รอบ · ${r.status === 'complete' ? 'ครบเซสชัน' : r.status === 'practice' ? 'ฝึกอิสระ' : 'ข้อมูลบางส่วน'}${r.bestSens && r.status === 'complete' ? ` · Sens ${number(r.bestSens, 4)}` : ''}</p></div><button class="secondary" data-session="${escape(r.id)}">ดูผล →</button></div>`).join('');
+  if (!state.history.length) {
+    controls.hidden = true;
+    target.innerHTML = '<div class="empty"><h2>ยังไม่มีประวัติการฝึก</h2><p>ผลที่เล่นจบจะบันทึกไว้ในเครื่องนี้อัตโนมัติ หรือนำเข้าข้อมูลจากรุ่น Portable ได้จากปุ่มด้านบน</p></div>';
+    return;
+  }
+  const filtered = historyFilter === 'all' ? state.history : state.history.filter(r => r.game === historyFilter);
+  const latestBest = filtered.find(r => r.bestSens && r.status === 'complete');
+  controls.hidden = false;
+  controls.innerHTML = `<div class="history-filters">${[['all', 'ทั้งหมด'], ...Object.entries(GAMES).map(([k, g]) => [k, g.label])].map(([key, label]) => `<button type="button" class="filter-chip ${historyFilter === key ? 'active' : ''}" data-filter="${key}">${label}</button>`).join('')}</div><span class="history-summary">${filtered.length} เซสชัน${latestBest ? ` · ค่าแนะนำล่าสุด <strong>${number(latestBest.bestSens, 4)}</strong>` : ''}</span>`;
+  for (const btn of controls.querySelectorAll('[data-filter]')) btn.onclick = () => { historyFilter = btn.dataset.filter; renderHistory(); };
+  if (!filtered.length) {
+    target.innerHTML = '<div class="empty"><h2>ยังไม่มีประวัติในเกมนี้</h2><p>ลองเลือกดูทั้งหมด หรือเริ่มฝึกในเกมที่ต้องการ</p></div>';
+    return;
+  }
+  target.innerHTML = filtered.map(r => `<div class="history-entry"><div><h2>${GAMES[r.game]?.label || escape(r.game)} · ${r.kind === 'finder' ? 'Sensitivity finder' : 'Free practice'}</h2><p>${escape(date(r.startedAt))} · ${r.dpi} DPI · ${r.rounds} รอบ · ${r.status === 'complete' ? 'ครบเซสชัน' : r.status === 'practice' ? 'ฝึกอิสระ' : 'ข้อมูลบางส่วน'}${r.bestSens && r.status === 'complete' ? ` · Sens ${number(r.bestSens, 4)}` : ''}</p></div><button class="secondary" data-session="${escape(r.id)}">ดูผล →</button></div>`).join('');
   for (const button of target.querySelectorAll('[data-session]')) button.onclick = async () => { try { const loaded = await window.desktop.readSession(button.dataset.session); if (!loaded) { toast('ไม่พบไฟล์ผลการฝึกนี้'); return; } latest = loaded; showView('results'); } catch (error) { toast(error.message); } };
 }
 async function init() {
   if (!window.desktop) { fail('กรุณาเปิดผ่านโปรแกรม DaLines Sens Lab.exe'); return; }
   try {
+    const info = await window.desktop.getStorageInfo?.();
+    if (info) {
+      const modeLabel = { portable: 'Portable', store: 'Microsoft Store', appdata: 'AppData', dev: 'Dev', qa: 'QA' }[info.mode] || 'Portable';
+      $('app-version').textContent = `${modeLabel} · v${info.version || window.desktop.version}`;
+      if (info.mode === 'store' || info.mode === 'appdata') $('storage-subtitle').textContent = 'เก็บข้อมูลใน AppData ของ Windows';
+    }
     const saved = await window.desktop.load();
     if (saved) {
       if (saved.version !== 1 || !Array.isArray(saved.history) || !saved.settings || !GAMES[saved.settings.game]) throw new Error('รูปแบบไฟล์ข้อมูลไม่ถูกต้อง กรุณาสำรองโฟลเดอร์ data');
@@ -313,6 +351,21 @@ async function init() {
   });
   $('setup').addEventListener('input', () => { if (!session) updateSettings(); });
   $('export-results').onclick = async () => { if (!latest) return; try { const saved = await window.desktop.exportResults(JSON.stringify({ format: 'dalines-sens-lab', version: 1, exportedAt: new Date().toISOString(), session: latest }, null, 2)); if (saved) toast('ส่งออกไฟล์แล้ว'); } catch (error) { toast(error.message); } };
+  $('open-data-dir').onclick = async () => { try { await window.desktop.openDataFolder(); } catch (error) { toast(error.message); } };
+  $('import-portable').onclick = async () => {
+    if (session) { toast('กรุณายุติเซสชันที่กำลังฝึกก่อนนำเข้าข้อมูล'); return; }
+    try {
+      const res = await window.desktop.importPortableData();
+      if (res?.canceled) return;
+      if (res?.workspace) {
+        state = { version: 1, settings: { ...defaults, ...res.workspace.settings }, draft: res.workspace.draft || null, history: res.workspace.history || [] };
+        fillSettings(state.settings); updateSettings();
+        if (state.history[0]) latest = await window.desktop.readSession(state.history[0].id);
+        renderHistory();
+      }
+      toast(`นำเข้าสำเร็จ: เพิ่ม ${res.importedSessions} เซสชัน (รวม ${res.totalHistory} รายการ)`);
+    } catch (error) { toast(error.message); }
+  };
   if (window.desktop.qaMode) window.sensLabQA = { input: async () => {
     await startRound();
     if (arena.phase !== 'countdown' || !arena.raw) throw new Error('Raw mouse pointer lock did not activate');
@@ -359,7 +412,8 @@ async function init() {
     fillSettings(defaults); updateSettings(); await persist();
     const check = (name, condition) => { checks.push({ name, ok: Boolean(condition) }); if (!condition) throw new Error(name); };
     check('3D renderer created', Boolean(arena?.renderer.getContext()));
-    check('offline bridge present', Boolean(window.desktop.saveSession));
+    check('offline bridge present', Boolean(window.desktop.saveSession && window.desktop.getStorageInfo && window.desktop.importPortableData));
+    check('storage mode reported', Boolean((await window.desktop.getStorageInfo())?.mode));
     check('profile persistence', (await window.desktop.load()).version === 1);
     check('cm/360 conversion', Math.abs(cm360(800, 0.35, 'valorant') - cm360(800, convert(0.35, 'valorant', 'cs2'), 'cs2')) < 1e-8);
     check('FOV conversion', Math.abs(verticalFov(90, 4 / 3) - 73.739795) < 1e-4);

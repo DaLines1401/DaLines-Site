@@ -17,7 +17,7 @@
       <button class="nav" data-view="history"><span>↺</span>ประวัติการฝึก</button>
       <button class="nav" data-view="guide"><span>?</span>วิธีใช้งาน</button>
     </nav>
-    <div class="rail-bottom"><span class="local-dot"></span> Offline & local<small>ข้อมูลอยู่ในเครื่องของคุณ</small><span class="version">Portable · v0.2.1</span></div>
+    <div class="rail-bottom"><span class="local-dot"></span> Offline & local<small id="storage-subtitle">ข้อมูลอยู่ในเครื่องของคุณ</small><span class="version" id="app-version">Portable · v0.2.2</span></div>
   </aside>
   <main>
     <header class="topbar"><span id="breadcrumb">Workspace / สนามฝึก</span><button id="fullscreen" class="text-button">เต็มจอ <kbd>F11</kbd></button></header>
@@ -50,8 +50,10 @@
           <p id="rounds-help" class="rounds-help">แต่ละค่าเล่น Flick และ Tracking อย่างละ 2 รอบต่อช่วง</p>
           <div class="divider"></div>
           <label for="practice-mode">โหมดวอร์มมือ / ฝึกอิสระ</label><select id="practice-mode"><option value="flick">Flick · ย้ายเป้าแล้วยิง</option><option value="tracking">Tracking · ตามเป้าที่เคลื่อนที่</option></select>
-          <details class="advanced"><summary>เสียงและสีเป้า</summary><label class="switch-row"><span>เสียงเมื่อยิงโดน</span><input id="sound" type="checkbox" checked></label>
-          <label for="target-color">สีเป้าฝึก</label><select id="target-color"><option value="#c4f16a">Lime</option><option value="#56d9ed">Cyan</option><option value="#ff8b83">Coral</option></select></details>
+          <details class="advanced"><summary>เสียง เป้าฝึก และเป้าเล็ง</summary><label class="switch-row"><span>เสียงเมื่อยิงโดน</span><input id="sound" type="checkbox" checked></label>
+          <label for="target-color">สีเป้าฝึก</label><select id="target-color"><option value="#c4f16a">Lime</option><option value="#56d9ed">Cyan</option><option value="#ff8b83">Coral</option></select>
+          <div class="field-pair"><div><label for="crosshair-color">สีเป้าเล็ง</label><select id="crosshair-color"><option value="#eef3ee">ขาว</option><option value="#c4f16a">Lime</option><option value="#56d9ed">Cyan</option><option value="#ff8b83">Coral</option></select></div><div><label for="crosshair-size">ขนาดเป้าเล็ง</label><select id="crosshair-size"><option value="small">เล็ก</option><option value="medium" selected>กลาง</option><option value="large">ใหญ่</option></select></div></div>
+          <label class="switch-row" for="crosshair-dot"><span>จุดกลางเป้าเล็ง</span><input id="crosshair-dot" type="checkbox" checked></label></details>
           <div class="discord-setting"><label class="switch-row" for="discord"><span>แสดงสถานะใน Discord</span><input id="discord" type="checkbox" checked aria-describedby="discord-help"></label><p id="discord-help">แสดงชื่อแอป โลโก้ และเวลาใช้งานเมื่อเปิด Discord บนคอมพิวเตอร์ · ไม่แชร์คะแนนหรือประวัติการฝึก</p></div>
           <button type="submit" id="start-finder" class="primary">เริ่มค้นหา Sens <span>→</span></button>
           <button type="button" id="practice" class="secondary">ฝึกอิสระ / วอร์มมือ</button>
@@ -65,7 +67,8 @@
       <div id="results-content"></div>
     </section>
     <section id="view-history" class="view" hidden>
-      <div class="page-title"><div><h1>ประวัติการฝึก</h1><p>แต่ละเครื่องมีประวัติของตัวเอง ข้อมูลไม่ถูกอัปโหลด</p></div></div>
+      <div class="page-title"><div><h1>ประวัติการฝึก</h1><p>แต่ละเครื่องมีประวัติของตัวเอง ข้อมูลไม่ถูกอัปโหลด</p></div><div class="history-actions"><button type="button" id="import-portable" class="secondary">นำเข้าข้อมูล Portable ↗</button><button type="button" id="open-data-dir" class="secondary">เปิดโฟลเดอร์ข้อมูล</button></div></div>
+      <div id="history-controls" class="history-controls" hidden></div>
       <div id="history-content"></div>
     </section>
     <section id="view-guide" class="view guide" hidden>

@@ -1,14 +1,22 @@
-const { app, BrowserWindow, ipcMain, dialog, protocol, net, Menu, clipboard } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, protocol, net, Menu, clipboard, shell } = require('electron');
 const path = require('node:path');
 const fs = require('node:fs/promises');
 const { pathToFileURL } = require('node:url');
 const { DiscordPresence } = require('./discord.cjs');
-const base = app.isPackaged ? path.dirname(process.execPath) : path.join(__dirname, '..');
+const { resolveStorageLayout, importPortableData } = require('./storage.cjs');
 const inputTest = process.argv.includes('--input-test');
 const selfTest = process.argv.includes('--self-test') || inputTest;
+const storageLayout = resolveStorageLayout({
+  isPackaged: app.isPackaged,
+  selfTest,
+  execPath: process.execPath,
+  projectRoot: path.join(__dirname, '..'),
+  appDataPath: app.getPath('appData')
+});
+const base = storageLayout.base;
 const discord = new DiscordPresence();
 app.setAppUserModelId('com.dalines.senslab');
-app.setPath('userData', path.join(base, selfTest ? 'qa-output/profile' : (app.isPackaged ? 'data' : '.local-data')));
+app.setPath('userData', storageLayout.userDataDir);
 app.setPath('sessionData', app.getPath('userData'));
 app.setPath('crashDumps', path.join(app.getPath('userData'), 'crashes'));
 app.setAppLogsPath(path.join(app.getPath('userData'), 'logs'));
@@ -84,6 +92,30 @@ app.whenReady().then(async () => {
     if (result.canceled) return false;
     await fs.writeFile(result.filePath, data, 'utf8');
     return true;
+  });
+  ipcMain.handle('storage-info', event => {
+    if (!fromApp(event)) throw new Error('Invalid sender');
+    return { mode: storageLayout.mode, recordsDir: records, version: app.getVersion() };
+  });
+  ipcMain.handle('open-data-folder', async event => {
+    if (!fromApp(event)) throw new Error('Invalid sender');
+    await fs.mkdir(records, { recursive: true });
+    const err = await shell.openPath(records);
+    if (err) throw new Error(err);
+    return true;
+  });
+  ipcMain.handle('import-portable-data', async event => {
+    if (!fromApp(event)) throw new Error('Invalid sender');
+    const picked = await dialog.showOpenDialog(win, {
+      title: 'เลือกโฟลเดอร์รุ่น Portable เดิม หรือโฟลเดอร์ data',
+      properties: ['openDirectory']
+    });
+    if (picked.canceled || !picked.filePaths[0]) return { canceled: true };
+    let result;
+    await (writeQueue = writeQueue.catch(() => {}).then(async () => {
+      result = await importPortableData(picked.filePaths[0], records);
+    }));
+    return result;
   });
   if (selfTest) {
     const errors = [];
