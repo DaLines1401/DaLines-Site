@@ -1,0 +1,17 @@
+{
+  "name": "dalines-sens-lab",
+  "productName": "DaLines Sens Lab",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Offline 3D mouse sensitivity finder for Valorant, CS2 and Apex Legends",
+  "main": "desktop/main.cjs",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "start": "npm run build && electron .",
+    "test": "node --test tests/*.test.mjs",
+    "package": "npm run build && node scripts/package.mjs",
+    "verify": "npm run build && npm test && electron . --self-test"
+  },
+  "dependencies": { "three": "0.187.0" },
+  "devDependencies": { "electron": "45.3.3", "esbuild": "0.28.2" }
+}

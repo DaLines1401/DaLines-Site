@@ -2,6 +2,8 @@
 
 Official Profile Hub & Battle Station for **DaLines** — Streamer, Gamer, and FPS/Battle Royale Creator.
 
+ดาวน์โหลด **DaLines Sens Lab Portable** สำหรับ Windows ได้ที่ [หน้า Sens Lab](https://dalines-site.dalines.workers.dev/sens-lab/) ไฟล์ ZIP เก็บบน Google Drive ส่วนซอร์สโปรแกรมอยู่ใน `sens-lab/` และหน้าดาวน์โหลดอยู่ใน `downloads/sens-lab.html` การ Build เว็บเผยแพร่เฉพาะหน้าดาวน์โหลดและภาพตัวอย่าง ไม่รวมไฟล์โปรแกรมหรือข้อมูลการฝึก
+
 🌐 **Live URL:** [https://dalines-site.dalines.workers.dev/](https://dalines-site.dalines.workers.dev/)
 
 ## พัฒนาและตรวจเว็บเวอร์ชันปัจจุบัน

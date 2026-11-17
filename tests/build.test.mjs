@@ -35,6 +35,7 @@ test('deployment contains only public assets and excludes source, tooling and pr
       || /^assets\/[a-z]+\.[a-f0-9]{12}\.(?:js|css|webp)$/.test(filename)
       || /^icons\/icon-(?:32|180|192|512|maskable-512)\.png$/.test(filename)
       || /^story\/(?:[^/]+\/)*[^/]+\.html$/.test(filename)
+      || filename === 'sens-lab/index.html'
       || /^dance\/(?:index\.html|Logo\.png|assets\/[^/]+\.(?:js|css|png|webp|jpg|svg|woff2?))$/.test(filename)
       || /^showcase(?:-v2)?\/(?:index\.html|[^/]+\.(?:mp4|wav))$/.test(filename),
     `Unexpected file in deployment: ${filename}`);

@@ -52,6 +52,12 @@ for (const [source, target, options] of [
   imageSizes[source] = { original: original.length, optimized: bytes.length };
 }
 
+// Publish the download page without shipping the desktop app source or ZIP.
+const sensLabImage = await asset('senslab.webp', await fs.readFile(path.join(root, 'assets/senslab-preview.webp')));
+await fs.mkdir(path.join(output, 'sens-lab'), { recursive: true });
+const sensLabPage = await fs.readFile(path.join(root, 'downloads/sens-lab.html'), 'utf8');
+await fs.writeFile(generated('sens-lab/index.html'), sensLabPage.replace('/assets/senslab-preview.webp', '/' + sensLabImage));
+
 const logo = await fs.readFile(path.join(root, 'Logo.png'));
 await fs.mkdir(path.join(output, 'icons'), { recursive: true });
 for (const size of [32, 180, 192, 512]) {
@@ -97,7 +103,7 @@ async function cleanFiles(directory = output, prefix = '') {
     const filename = prefix + entry.name;
     if (entry.isSymbolicLink()) throw new Error(`Unexpected link in dist: ${filename}`);
     if (entry.isDirectory()) {
-      if (!['assets', 'icons', 'dance', 'dance/assets', 'story', 'showcase', 'showcase-v2'].includes(filename)) throw new Error(`Unexpected directory in dist: ${filename}`);
+      if (!['assets', 'icons', 'dance', 'dance/assets', 'story', 'showcase', 'showcase-v2', 'sens-lab'].includes(filename)) throw new Error(`Unexpected directory in dist: ${filename}`);
       await cleanFiles(path.join(directory, entry.name), filename + '/');
     } else if (!generatedFiles.has(filename)) {
       await fs.unlink(path.join(directory, entry.name));

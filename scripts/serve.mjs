@@ -9,9 +9,10 @@ const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=
 const server = http.createServer(async (req, res) => {
   try {
     const pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
-    const filename = path.resolve(root, `.${pathname === '/' ? '/index.html' : pathname}`);
+    let filename = path.resolve(root, `.${pathname === '/' ? '/index.html' : pathname}`);
     const relative = path.relative(root, filename);
     if (relative.startsWith('..') || path.isAbsolute(relative) || relative.split(path.sep).some(p => p.startsWith('.') || p === '_headers')) throw new Error('Not found');
+    if ((await fs.stat(filename)).isDirectory()) filename = path.join(filename, 'index.html');
     const bytes = await fs.readFile(filename);
     res.writeHead(200, { 'Content-Type': types[path.extname(filename)] || 'application/octet-stream', 'X-Content-Type-Options': 'nosniff', 'Cache-Control': 'no-cache' });
     res.end(req.method === 'HEAD' ? undefined : bytes);
