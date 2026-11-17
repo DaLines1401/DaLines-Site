@@ -53,10 +53,21 @@ for (const [source, target, options] of [
 }
 
 // Publish the download page without shipping the desktop app source or ZIP.
+function escapeHtml(text) {
+  return String(text).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+}
+function renderSensLabChangelog(changelog) {
+  const releases = Array.isArray(changelog?.releases) ? changelog.releases : [];
+  return `<div class="changelog-list">${releases.map((rel, idx) => `<article class="release-card${idx === 0 ? ' is-latest' : ''}"><div class="release-head"><div class="release-ver"><span>v${escapeHtml(rel.version)}</span>${rel.tag ? `<span class="release-tag">${escapeHtml(rel.tag)}</span>` : ''}</div><span class="release-date">${escapeHtml(rel.date)}</span></div>${rel.summary ? `<p class="release-summary">${escapeHtml(rel.summary)}</p>` : ''}<ul>${(rel.changes || []).map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul></article>`).join('')}</div>`;
+}
+const sensLabChangelog = JSON.parse(await fs.readFile(path.join(root, 'sens-lab/CHANGELOG.json'), 'utf8'));
 const sensLabImage = await asset('senslab.webp', await fs.readFile(path.join(root, 'assets/senslab-preview.webp')));
 await fs.mkdir(path.join(output, 'sens-lab'), { recursive: true });
-const sensLabPage = await fs.readFile(path.join(root, 'downloads/sens-lab.html'), 'utf8');
-await fs.writeFile(generated('sens-lab/index.html'), sensLabPage.replace('/assets/senslab-preview.webp', '/' + sensLabImage));
+let sensLabPage = await fs.readFile(path.join(root, 'downloads/sens-lab.html'), 'utf8');
+sensLabPage = sensLabPage
+  .replace('/assets/senslab-preview.webp', '/' + sensLabImage)
+  .replace('<!--SENS_LAB_CHANGELOG-->', renderSensLabChangelog(sensLabChangelog));
+await fs.writeFile(generated('sens-lab/index.html'), sensLabPage);
 
 const logo = await fs.readFile(path.join(root, 'Logo.png'));
 await fs.mkdir(path.join(output, 'icons'), { recursive: true });
