@@ -2,9 +2,12 @@ const { app, BrowserWindow, ipcMain, dialog, protocol, net, Menu, clipboard } = 
 const path = require('node:path');
 const fs = require('node:fs/promises');
 const { pathToFileURL } = require('node:url');
+const { DiscordPresence } = require('./discord.cjs');
 const base = app.isPackaged ? path.dirname(process.execPath) : path.join(__dirname, '..');
 const inputTest = process.argv.includes('--input-test');
 const selfTest = process.argv.includes('--self-test') || inputTest;
+const discord = new DiscordPresence();
+app.setAppUserModelId('com.dalines.senslab');
 app.setPath('userData', path.join(base, selfTest ? 'qa-output/profile' : (app.isPackaged ? 'data' : '.local-data')));
 app.setPath('sessionData', app.getPath('userData'));
 app.setPath('crashDumps', path.join(app.getPath('userData'), 'crashes'));
@@ -31,7 +34,7 @@ let win;
 app.whenReady().then(async () => {
   protocol.handle('senslab', (request) => {
     const url = new URL(request.url);
-    const allowed = new Map([['/', 'index.html'], ['/index.html', 'index.html'], ['/app.js', 'app.js'], ['/style.css', 'style.css']]);
+    const allowed = new Map([['/', 'index.html'], ['/index.html', 'index.html'], ['/app.js', 'app.js'], ['/style.css', 'style.css'], ['/logo.png', 'logo.png']]);
     if (url.host !== 'app' || !allowed.has(url.pathname)) return new Response('Not found', { status: 404 });
     return net.fetch(pathToFileURL(path.join(__dirname, '../dist', allowed.get(url.pathname))).href);
   });
@@ -39,6 +42,7 @@ app.whenReady().then(async () => {
   win = new BrowserWindow({
     width: 1440, height: 960, minWidth: 1050, minHeight: 740,
     title: 'DaLines Sens Lab', backgroundColor: '#101412', show: !selfTest || inputTest,
+    icon: path.join(__dirname, '../assets/app.ico'),
     webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false, additionalArguments: selfTest ? ['--senslab-qa'] : [] }
   });
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
@@ -50,6 +54,11 @@ app.whenReady().then(async () => {
   });
   ipcMain.handle('fullscreen', (event) => { if (event.sender !== win.webContents) return; win.setFullScreen(!win.isFullScreen()); return win.isFullScreen(); });
   const fromApp = event => event.sender === win.webContents && event.senderFrame.url.startsWith('senslab://app/');
+  ipcMain.handle('discord-presence', (event, enabled) => {
+    if (!fromApp(event) || typeof enabled !== 'boolean') throw new Error('Invalid Discord setting');
+    if (!selfTest) discord.setEnabled(enabled);
+    return selfTest ? 'disabled' : discord.status;
+  });
   ipcMain.handle('load-state', event => { if (!fromApp(event)) throw new Error('Invalid sender'); return readJSON('workspace.json', null); });
   ipcMain.handle('copy-sens', (event, text) => {
     if (!fromApp(event) || typeof text !== 'string' || !/^\d{1,6}\.\d{1,8}$/.test(text) || Number(text) <= 0) throw new Error('Invalid sensitivity');
@@ -90,6 +99,18 @@ app.whenReady().then(async () => {
       }
       await fs.mkdir(path.join(base, 'qa-output'), { recursive: true });
       await fs.writeFile(path.join(base, 'qa-output/desktop.png'), (await win.webContents.capturePage()).toPNG());
+      report.previews = [];
+      for (const variant of ['complete', 'quick', 'tied', 'edge', 'stopped', 'practice']) {
+        report.previews.push(await win.webContents.executeJavaScript(`window.sensLabQA.preview(${JSON.stringify(variant)})`));
+        await fs.writeFile(path.join(base, `qa-output/results-${variant}.png`), (await win.webContents.capturePage()).toPNG());
+      }
+      win.setSize(1050, 740);
+      report.previews.push(await win.webContents.executeJavaScript('window.sensLabQA.preview("complete")'));
+      await fs.writeFile(path.join(base, 'qa-output/results-small-window.png'), (await win.webContents.capturePage()).toPNG());
+      win.setSize(1440, 960);
+      await win.webContents.executeJavaScript('window.sensLabQA.preview("complete").then(() => { document.querySelector(".candidate-grid").scrollIntoView({ block: "start" }); return new Promise(resolve => setTimeout(resolve, 180)); })');
+      await fs.writeFile(path.join(base, 'qa-output/results-comparison.png'), (await win.webContents.capturePage()).toPNG());
+      await fs.writeFile(path.join(base, 'qa-output/report.json'), JSON.stringify({ ...report, errors }, null, 2));
       console.log(JSON.stringify({ ...report, errors }));
       clearTimeout(timer);
       app.exit(report.ok && !errors.length ? 0 : 1);
@@ -99,6 +120,7 @@ app.whenReady().then(async () => {
 app.on('window-all-closed', () => app.quit());
 let closing = false;
 app.on('before-quit', event => {
+  discord.disconnect();
   if (closing || selfTest) return;
   event.preventDefault();
   closing = true;

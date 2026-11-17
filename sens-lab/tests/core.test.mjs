@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { cm360, sensFromCm, convert, createBlock, rankCandidates, recommendation, roundScore, verticalFov, seededRandom } from '../src/core.mjs';
+import { cm360, sensFromCm, convert, createBlock, rankCandidates, recommendation, roundScore, verticalFov, seededRandom, repeatsFor, ROUND_COUNTS } from '../src/core.mjs';
 test('physical distance is conserved across three games and DPI changes', () => {
   assert.ok(Math.abs(cm360(800, 0.35, 'valorant') - 46.6530612245) < 1e-8);
   for (const from of ['valorant', 'cs2', 'apex']) for (const to of ['valorant', 'cs2', 'apex']) {
@@ -74,4 +74,46 @@ test('game preference can change ranking without changing raw task scores', () =
 test('target random streams are reproducible for matched trials', () => {
   const a = seededRandom(42), b = seededRandom(42);
   assert.deepEqual(Array.from({ length: 100 }, a), Array.from({ length: 100 }, b));
+});
+
+for (const total of ROUND_COUNTS) test(`${total} rounds compare every sensitivity equally and require the full chosen block`, () => {
+  const repeats = repeatsFor(total);
+  const coarse = createBlock(0.35, 0, 187, repeats);
+  const fine = createBlock(0.35, 1, 6194, repeats);
+  assert.equal(coarse.length + fine.length, total);
+  for (const plan of [coarse, fine]) {
+    for (const id of new Set(plan.map(r => r.id))) for (const mode of ['flick', 'tracking']) {
+      assert.equal(plan.filter(r => r.id === id && r.mode === mode).length, repeats);
+    }
+    for (let repeat = 0; repeat < repeats; repeat++) {
+      for (const mode of ['flick', 'tracking']) {
+        assert.equal(new Set(plan.filter(r => r.repeat === repeat && r.mode === mode).map(r => r.seed)).size, 1);
+      }
+      if (repeat) assert.deepEqual(plan.slice(repeat * 6, repeat * 6 + 6).filter(r => r.mode === 'flick').map(r => r.id), plan.slice((repeat - 1) * 6, repeat * 6).filter(r => r.mode === 'flick').map(r => r.id).reverse());
+    }
+  }
+  const runs = fine.map(r => ({ ...r, complete: true, raw: true, duration: 20, hits: r.id === '1-1' ? 40 : 10, shots: 42, onTarget: r.id === '1-1' ? 16 : 5 }));
+  const rec = recommendation(runs, 'valorant', 1, repeats);
+  assert.equal(rec.best.id, '1-1');
+  assert.equal(rec.repeated, total > 12);
+  assert.equal(rec.stable, total > 12);
+  assert.equal(recommendation(runs.slice(0, -1), 'valorant', 1, repeats), null);
+  for (const flag of ['raw', 'complete', 'practice']) {
+    const invalid = runs.map((r, i) => i === 0 ? { ...r, [flag]: flag === 'practice' } : r);
+    assert.equal(recommendation(invalid, 'valorant', 1, repeats), null);
+  }
+});
+
+test('consistency includes later repeats instead of only the first two', () => {
+  const runs = createBlock(0.35, 1, 98, 4).map(r => ({ ...r, complete: true, raw: true, duration: 20, hits: r.id === '1-1' ? 25 : 20, shots: 30, onTarget: r.repeat === 3 ? 0 : 16 }));
+  const rec = recommendation(runs, 'valorant', 1, 4);
+  assert.equal(rec.noise, 80);
+  assert.equal(rec.stable, false);
+});
+
+test('session length defaults to the legacy plan and rejects unsupported counts', () => {
+  assert.equal(repeatsFor(), 2);
+  assert.deepEqual(createBlock(0.35, 0, 1), createBlock(0.35, 0, 1, 2));
+  for (const n of [0, 6, 18, 25, 60, NaN, '24']) assert.throws(() => repeatsFor(n));
+  for (const n of [0, 1.5, 5]) assert.throws(() => createBlock(0.35, 0, 1, n));
 });

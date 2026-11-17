@@ -7,6 +7,7 @@ contextBridge.exposeInMainWorld('desktop', Object.freeze({
   readSession: (id) => ipcRenderer.invoke('read-session', id),
   copySens: (text) => ipcRenderer.invoke('copy-sens', text),
   fullscreen: () => ipcRenderer.invoke('fullscreen'),
+  setDiscordPresence: enabled => ipcRenderer.invoke('discord-presence', enabled),
   exportResults: (data) => ipcRenderer.invoke('export-results', data),
-  version: '0.1.0'
+  version: '0.2.1'
 }));
