@@ -6,11 +6,12 @@ contextBridge.exposeInMainWorld('desktop', Object.freeze({
   saveSession: (data) => ipcRenderer.invoke('save-session', data),
   readSession: (id) => ipcRenderer.invoke('read-session', id),
   copySens: (text) => ipcRenderer.invoke('copy-sens', text),
+  copyCrosshair: (code) => ipcRenderer.invoke('copy-crosshair', code),
   fullscreen: () => ipcRenderer.invoke('fullscreen'),
   setDiscordPresence: enabled => ipcRenderer.invoke('discord-presence', enabled),
   exportResults: (data) => ipcRenderer.invoke('export-results', data),
   getStorageInfo: () => ipcRenderer.invoke('storage-info'),
   openDataFolder: () => ipcRenderer.invoke('open-data-folder'),
   importPortableData: () => ipcRenderer.invoke('import-portable-data'),
-  version: '0.2.2'
+  version: '0.2.3'
 }));

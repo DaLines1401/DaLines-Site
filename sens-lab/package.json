@@ -1,7 +1,7 @@
 {
   "name": "dalines-sens-lab",
   "productName": "DaLines Sens Lab",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "description": "Offline 3D mouse sensitivity finder for Valorant, CS2 and Apex Legends",
   "main": "desktop/main.cjs",

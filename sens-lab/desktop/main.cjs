@@ -73,6 +73,11 @@ app.whenReady().then(async () => {
     clipboard.writeText(text);
     return true;
   });
+  ipcMain.handle('copy-crosshair', (event, code) => {
+    if (!fromApp(event) || typeof code !== 'string' || code.length > 180 || !/^[0-9A-Za-z;]+$/.test(code)) throw new Error('Invalid crosshair code');
+    clipboard.writeText(code);
+    return true;
+  });
   ipcMain.handle('save-state', (event, data) => {
     if (!fromApp(event) || !data || typeof data !== 'object' || JSON.stringify(data).length > 8_000_000) throw new Error('Invalid state');
     return atomicJSON('workspace.json', data);

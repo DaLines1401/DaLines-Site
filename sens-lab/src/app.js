@@ -1,8 +1,9 @@
 import { Arena } from './arena.js';
 import { GAMES, cm360, convert, createBlock, rankCandidates, recommendation, roundScore, repeatsFor, seededRandom, verticalFov } from './core.mjs';
+import { DEFAULT_CROSSHAIR, exportValorantCrosshairCode, normalizeCrosshair, parseValorantCrosshairCode } from './crosshair.mjs';
 
 const $ = id => document.getElementById(id);
-const defaults = { game: 'valorant', dpi: 800, sens: 0.35, fov: 103, duration: 20, rounds: 24, mode: 'flick', sound: true, discord: true, color: '#c4f16a', crosshairColor: '#eef3ee', crosshairSize: 'medium', crosshairDot: true };
+const defaults = { game: 'valorant', dpi: 800, sens: 0.35, fov: 103, duration: 20, rounds: 24, mode: 'flick', sound: true, discord: true, color: '#c4f16a', weaponType: 'rifle', weaponHand: 'right', weaponSkin: 'emerald', ...DEFAULT_CROSSHAIR };
 let state = { version: 1, settings: { ...defaults }, draft: null, history: [] };
 let arena, session = null, latest = null, starting = false, storageHealthy = true, pendingFinish = null, audio, historyFilter = 'all';
 let saveChain = Promise.resolve();
@@ -31,12 +32,35 @@ function showView(name) {
   if (name === 'train') arena?.resize();
 }
 function readConfig() {
+  const ch = normalizeCrosshair({
+    crosshairColor: $('crosshair-color').value,
+    innerLength: $('inner-length').value,
+    innerThickness: $('inner-thickness').value,
+    innerOffset: $('inner-offset').value,
+    innerOpacity: $('inner-opacity').value,
+    outlines: $('crosshair-outlines').checked,
+    crosshairDot: $('crosshair-dot').checked,
+    dotSize: $('dot-size').value
+  });
   return {
     game: $('game').value, dpi: Number($('dpi').value), sens: Number($('sens').value), fov: Number($('fov').value),
     duration: Number($('duration').value), rounds: Number($('rounds').value), mode: $('practice-mode').value,
     sound: $('sound').checked, discord: $('discord').checked, color: $('target-color').value,
-    crosshairColor: $('crosshair-color').value, crosshairSize: $('crosshair-size').value, crosshairDot: $('crosshair-dot').checked
+    weaponType: $('weapon-type').value, weaponHand: $('weapon-hand').value, weaponSkin: $('weapon-skin').value,
+    ...ch
   };
+}
+function ensureColorOption(select, hex) {
+  const normalized = hex.toLowerCase();
+  if (![...select.options].some(o => o.value.toLowerCase() === normalized)) {
+    const opt = document.createElement('option');
+    opt.value = normalized;
+    opt.textContent = `โค้ด (${normalized})`;
+    select.appendChild(opt);
+  }
+  for (const opt of select.options) {
+    if (opt.value.toLowerCase() === normalized) { select.value = opt.value; break; }
+  }
 }
 function fillSettings(config) {
   for (const field of ['game', 'dpi', 'sens', 'fov', 'duration']) $(field).value = config[field];
@@ -45,18 +69,32 @@ function fillSettings(config) {
   $('sound').checked = config.sound;
   $('discord').checked = config.discord ?? defaults.discord;
   $('target-color').value = config.color;
-  $('crosshair-color').value = config.crosshairColor || defaults.crosshairColor;
-  $('crosshair-size').value = config.crosshairSize || defaults.crosshairSize;
-  $('crosshair-dot').checked = config.crosshairDot ?? defaults.crosshairDot;
+  $('weapon-type').value = config.weaponType || defaults.weaponType;
+  $('weapon-hand').value = config.weaponHand || defaults.weaponHand;
+  $('weapon-skin').value = config.weaponSkin || defaults.weaponSkin;
+  const ch = normalizeCrosshair(config);
+  ensureColorOption($('crosshair-color'), ch.crosshairColor);
+  $('inner-opacity').value = String([1, 0.8, 0.6, 0.4].reduce((a, b) => Math.abs(b - ch.innerOpacity) < Math.abs(a - ch.innerOpacity) ? b : a));
+  $('inner-length').value = ch.innerLength;
+  $('inner-thickness').value = ch.innerThickness;
+  $('inner-offset').value = ch.innerOffset;
+  $('dot-size').value = ch.dotSize;
+  $('crosshair-outlines').checked = ch.outlines;
+  $('crosshair-dot').checked = ch.crosshairDot;
 }
 function applyCrosshair(config) {
-  const el = $('crosshair');
-  const sizes = { small: ['4px', '3px'], medium: ['6px', '4px'], large: ['9px', '5px'] };
-  const [len, gap] = sizes[config.crosshairSize] || sizes.medium;
-  el.style.setProperty('--ch-color', config.crosshairColor || defaults.crosshairColor);
-  el.style.setProperty('--ch-len', len);
-  el.style.setProperty('--ch-gap', gap);
-  el.style.setProperty('--ch-dot', config.crosshairDot ? 'block' : 'none');
+  const ch = normalizeCrosshair(config);
+  for (const el of [$('crosshair'), $('crosshair-preview')]) {
+    if (!el) continue;
+    el.style.setProperty('--ch-color', ch.crosshairColor);
+    el.style.setProperty('--ch-len', `${ch.innerLength}px`);
+    el.style.setProperty('--ch-thick', `${ch.innerThickness}px`);
+    el.style.setProperty('--ch-gap', `${ch.innerOffset}px`);
+    el.style.setProperty('--ch-dot', ch.crosshairDot ? 'block' : 'none');
+    el.style.setProperty('--ch-dot-size', `${ch.dotSize}px`);
+    el.style.setProperty('--ch-opacity', String(ch.innerOpacity));
+    el.style.setProperty('--ch-outline', ch.outlines ? '0 0 0 1px rgba(0,0,0,.85)' : 'none');
+  }
 }
 function updateSettings() {
   const config = readConfig();
@@ -340,7 +378,7 @@ async function init() {
     catch (error) { toast(error.message); }
   };
   $('setup').addEventListener('change', async event => {
-    if (session) return;
+    if (session || event.target.id === 'crosshair-code') return;
     if (event.target.id === 'game') {
       const old = state.settings.game, next = $('game').value;
       $('sens').value = number(convert(Number($('sens').value) || defaults.sens, old, next), 6);
@@ -349,7 +387,24 @@ async function init() {
     updateSettings();
     if ($('setup').checkValidity()) await persist().catch(() => {});
   });
-  $('setup').addEventListener('input', () => { if (!session) updateSettings(); });
+  $('setup').addEventListener('input', event => { if (!session && event.target.id !== 'crosshair-code') updateSettings(); });
+  $('inspect-weapon').onclick = () => { if (!session && $('weapon-hand').value === 'hidden') { toast('เลือกมือขวาหรือมือซ้ายก่อนดูท่าส่องปืน'); return; } arena?.inspectWeapon(); };
+  $('import-crosshair').onclick = async () => {
+    if (session) { toast('กรุณายุติเซสชันที่กำลังฝึกก่อนนำเข้าเป้าเล็ง'); return; }
+    try {
+      const parsed = parseValorantCrosshairCode($('crosshair-code').value);
+      fillSettings({ ...readConfig(), ...parsed });
+      updateSettings();
+      await persist();
+      toast('นำเข้าเป้าเล็งจากโค้ดแล้ว');
+    } catch (error) { toast(error.message); }
+  };
+  $('copy-crosshair-code').onclick = async () => {
+    const code = exportValorantCrosshairCode(readConfig());
+    $('crosshair-code').value = code;
+    try { await window.desktop.copyCrosshair(code); toast('คัดลอกโค้ดเป้าเล็งแล้ว'); }
+    catch { toast(`โค้ดเป้า: ${code}`); }
+  };
   $('export-results').onclick = async () => { if (!latest) return; try { const saved = await window.desktop.exportResults(JSON.stringify({ format: 'dalines-sens-lab', version: 1, exportedAt: new Date().toISOString(), session: latest }, null, 2)); if (saved) toast('ส่งออกไฟล์แล้ว'); } catch (error) { toast(error.message); } };
   $('open-data-dir').onclick = async () => { try { await window.desktop.openDataFolder(); } catch (error) { toast(error.message); } };
   $('import-portable').onclick = async () => {
@@ -422,6 +477,13 @@ async function init() {
     arena.random = seededRandom(71); arena.trackPhase = 0;
     arena.target.position.set(0, 2, -17); arena.camera.rotation.set(0, 0, 0);
     check('centered target raycast hits', arena.onTarget());
+    const imported = parseValorantCrosshairCode('0;P;c;5;h;0;d;1;z;2;0t;1;0l;4;0o;2;0a;0.8;1b;0');
+    check('Valorant crosshair code parses color and lines', imported.crosshairColor === '#00ffff' && imported.innerLength === 4 && imported.outlines === false && imported.crosshairDot === true);
+    check('crosshair code exports roundtrip', exportValorantCrosshairCode(imported).includes('0;P;c;5;h;0'));
+    check('weapon viewmodel attached cleanly', Boolean(arena.viewmodel && arena.viewmodel.root.parent === arena.camera));
+    arena.configure({ ...defaults, weaponType: 'sidearm', weaponHand: 'left', weaponSkin: 'gold' });
+    check('weapon skin and sidearm apply cleanly', arena.viewmodel.type === 'sidearm' && arena.viewmodel.hand === 'left' && arena.viewmodel.skin === 'gold');
+    arena.configure(defaults);
     arena.camera.rotation.y = 1;
     check('off-target raycast misses', !arena.onTarget());
     arena.camera.rotation.set(0, 0, 0);

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GAMES, clamp, seededRandom, verticalFov } from './core.mjs';
+import { Viewmodel } from './viewmodel.js';
 
 const DEG = Math.PI / 180;
 export class Arena {
@@ -15,6 +16,8 @@ export class Arena {
     this.camera = new THREE.PerspectiveCamera(70, 1, 0.1, 100);
     this.camera.position.set(0, 2, 0);
     this.camera.rotation.order = 'YXZ';
+    this.scene.add(this.camera);
+    this.viewmodel = new Viewmodel(this.camera);
     this.scene.add(new THREE.HemisphereLight('#e1f4df', '#344038', 2.8));
     const light = new THREE.DirectionalLight('#f0fce7', 2.2);
     light.position.set(-6, 12, 3);
@@ -57,6 +60,9 @@ export class Arena {
     new ResizeObserver(() => this.resize()).observe(canvas.parentElement);
     document.addEventListener('mousemove', e => this.mouse(e));
     document.addEventListener('mousedown', e => { if (e.button === 0) this.shoot(); });
+    document.addEventListener('keydown', e => {
+      if ((e.key === 'y' || e.key === 'Y') && document.pointerLockElement === this.canvas) this.viewmodel.triggerInspect();
+    });
     canvas.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('pointerlockchange', () => {
       if (document.pointerLockElement !== canvas && ['countdown', 'running'].includes(this.phase)) this.pause('หยุดพักแล้ว รอบนี้จะเริ่มใหม่');
@@ -89,7 +95,11 @@ export class Arena {
     this.targetMaterial.color.set(config.color);
     this.targetMaterial.emissive.set(config.color);
     this.targetMaterial.emissiveIntensity = 0.18;
+    this.viewmodel.applyConfig(config);
     this.render();
+  }
+  inspectWeapon() {
+    this.viewmodel.triggerInspect();
   }
   async start(round, config) {
     if (this.phase !== 'idle') return false;
@@ -114,6 +124,7 @@ export class Arena {
     this.phase = 'countdown';
     this.countdown = 3;
     this.lastFrame = performance.now();
+    this.viewmodel.resetMotion();
     this.resetTarget();
     this.hooks.locked(this.raw);
     return true;
@@ -143,6 +154,7 @@ export class Arena {
     this.yaw = Math.atan2(Math.sin(this.yaw), Math.cos(this.yaw));
     this.camera.rotation.set(this.pitch, this.yaw, 0, 'YXZ');
     this.camera.updateMatrixWorld(true);
+    this.viewmodel.onMouseDelta(event.movementX, event.movementY);
     if (this.phase === 'running') this.stats.pathDegrees += Math.hypot(event.movementX, event.movementY) * multiplier / DEG;
   }
   onTarget() {
@@ -154,6 +166,7 @@ export class Arena {
   shoot() {
     if (document.pointerLockElement !== this.canvas || this.phase !== 'running' || this.round.mode !== 'flick') return;
     this.stats.shots++;
+    this.viewmodel.triggerShot();
     if (this.onTarget()) {
       this.stats.hits++;
       this.stats.hitTimes.push(this.sinceHit);
@@ -187,10 +200,13 @@ export class Arena {
     const elapsed = Math.max(0, (now - this.lastFrame) / 1000);
     this.lastFrame = now;
     if (this.phase === 'idle') {
-      if (!document.hidden && now - this.lastIdle > 100) { this.render(); this.lastIdle = now; }
+      const inspecting = this.viewmodel.inspectTime > 0;
+      if (inspecting) this.viewmodel.update(Math.min(elapsed, 0.05), now);
+      if (!document.hidden && (inspecting || now - this.lastIdle > 100)) { this.viewmodel.update(Math.min(elapsed, 0.05), now); this.render(); this.lastIdle = now; }
       return;
     }
     if (elapsed > 0.3) { this.pause('เฟรมหยุดนานเกินไป รอบนี้จะเริ่มใหม่เพื่อให้คะแนนเทียบกันได้'); return; }
+    this.viewmodel.update(Math.min(elapsed, 0.05), now);
     if (this.phase === 'countdown') {
       this.countdown -= elapsed;
       this.hooks.countdown(Math.ceil(this.countdown));
